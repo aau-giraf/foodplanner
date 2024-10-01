@@ -11,6 +11,17 @@ class LoginPage extends StatelessWidget {
   final passwordController = TextEditingController();
 
   void signUserIn() {}
+  void DirectSignUpPage(){}
+
+  void _showButtonPressDialog(BuildContext context, String provider) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('$provider Button Pressed!'),
+        backgroundColor: Colors.black26,
+        duration: const Duration(milliseconds: 400),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +65,23 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 25),
             CustomButton(onTab: signUserIn),
+            const SizedBox(height: 10),
+
+
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 150),
+              child: Divider(
+                color: Colors.black,
+                thickness: 1,
+              ),
+            ),
+            const SizedBox(height: 25),
+            CustomButton(
+              onTab: DirectSignUpPage,
+              text: 'Sign Up',
+              MainColor: Colors.blue,
+            ),
           ],
         ),
       )),
