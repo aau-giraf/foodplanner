@@ -5,6 +5,7 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Foodplanner would like to use your gallery</string>
 	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Foodplanner would like to access your gallery</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Foodplanner would like to use your gallery</string>
 	<key>NSMicrophoneUsageDescription</key>
