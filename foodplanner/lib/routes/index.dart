@@ -4,6 +4,7 @@ import '../main.dart';
 import 'user_roles.dart'; // enum med rollerne, vi kalder det senere med en authProvider
 import '../pages/login.dart';
 import '../routes/paths.dart';
+import '../pages/signup.dart';
 
 
 
@@ -17,10 +18,22 @@ final GoRouter router = GoRouter(
       path: '/',
       builder: (context, state) => const MyHomePage(title: 'Flutter Demo Home Page'),
     ),
+
     GoRoute(
       path: LOGIN_PAGE,
       builder:(context, state) => const LoginPage(),
-      ),
+    ),
+
+    GoRoute(
+    path: SIGNUP_PAGE,
+    builder:(context, state) => const SingupPage(),
+    ),
+
+    GoRoute(
+    path: TEACHER_HOME_ROUTE,
+    builder:(context, state) => const SingupPage(),
+    ),
+
 
 
   ],
