@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'main.dart';
+import '../main.dart';
+import 'user_roles.dart'; // enum med rollerne, vi kalder det senere med en authProvider
+import '../pages/login.dart';
+import '../routes/paths.dart';
+
 
 
 
@@ -14,9 +18,10 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const MyHomePage(title: 'Flutter Demo Home Page'),
     ),
     GoRoute(
-      path: '/login' 
+      path: LOGIN_PAGE,
+      builder:(context, state) => const LoginPage(),
       ),
-      
+
 
   ],
 );
