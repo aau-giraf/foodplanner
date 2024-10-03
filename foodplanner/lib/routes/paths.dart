@@ -3,6 +3,7 @@ const String MAIN_ROOT = '/';
 const String ADMIN_ROOT = '/admin';
 const String TEACHER_ROOT = '/teacher';
 const String STUDENT_ROOT = '/student';
+const String PARENT_ROOT = '/parent';
 
 // additional pages
 const String MAIN_PAGE = '/home';
