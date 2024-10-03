@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/config/text_styles.dart';
 
 class CustomButton extends StatelessWidget {
   final Function()? onTab;
   final String text;
-  final Color MainColor;
+  final Color mainColor;
 
   const CustomButton({
     super.key,
     required this.onTab,
     this.text = 'Login', // default text
-    this.MainColor = const Color(0xffF9A825), // default color
+    this.mainColor = AppColors.primary, // default color
   });
 
   @override
@@ -20,14 +22,13 @@ class CustomButton extends StatelessWidget {
         padding: EdgeInsets.all(15),
         margin: EdgeInsets.symmetric(horizontal: 150),
         decoration: BoxDecoration(
-          color: MainColor,
+          color: mainColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
           child: Text(
             text,
-            style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 26),
+            style: AppTextStyles.buttonText,
           ),
         ),
       ),

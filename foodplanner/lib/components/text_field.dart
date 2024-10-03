@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/config/colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final controller;
@@ -11,7 +12,7 @@ class CustomTextField extends StatelessWidget {
       required this.controller,
       required this.hintText,
       this.obscureText = false, // default value
-      this.color = const Color(0xffF3F8F2) // default color
+      this.color = AppColors.textFieldBackground // default color
       });
 
   @override
@@ -23,15 +24,15 @@ class CustomTextField extends StatelessWidget {
         obscureText: obscureText,
         decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey.shade400),
+              borderSide: BorderSide(color: AppColors.textFieldBorder),
               borderRadius: BorderRadius.circular(10)),
           focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
+              borderSide: BorderSide(color: AppColors.textFieldBorderFocus),
               borderRadius: BorderRadius.circular(10)),
           fillColor: color,
           filled: true,
           hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.grey),
+          hintStyle: const TextStyle(color: AppColors.textFieldHint),
         ),
       ),
     );

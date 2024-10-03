@@ -62,7 +62,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             CustomButton(
               onTab: validateEmail,
               text: 'Send email',
-              MainColor: Colors.blue,
+              mainColor: Colors.blue,
             ),
             if (errorMessage != null)
               Padding(
@@ -81,7 +81,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 );
               },
               text: 'Tilbage til login',
-              MainColor: Colors.blue,
+              mainColor: Colors.blue,
             ),
           ],
         ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
+import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/config/text_styles.dart';
 import 'forgot_password_page.dart';
 
 class LoginPage extends StatelessWidget {
@@ -12,22 +14,12 @@ class LoginPage extends StatelessWidget {
   final passwordController = TextEditingController();
 
   void signUserIn() {}
-  void DirectSignUpPage(){}
-
-  void _showButtonPressDialog(BuildContext context, String provider) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$provider Button Pressed!'),
-        backgroundColor: Colors.black26,
-        duration: const Duration(milliseconds: 400),
-      ),
-    );
-  }
+  void directSignUpPage() {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEBE9E9),
+      backgroundColor: AppColors.background,
       body: SafeArea(
           child: Center(
         child: Column(
@@ -41,10 +33,7 @@ class LoginPage extends StatelessWidget {
             const SizedBox(height: 50),
             const Text(
               'Login herunder',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
+              style: AppTextStyles.headline1,
             ),
             const SizedBox(height: 25),
             CustomTextField(
@@ -64,14 +53,16 @@ class LoginPage extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                        MaterialPageRoute(
+                            builder: (context) => ForgotPasswordPage()),
                       );
                     },
                     child: Text(
                       "Glemt adgangskode?",
-                      style: TextStyle(
-                        color: Colors.blue,
+                      style: AppTextStyles.standard.copyWith(
+                        color: AppColors.secondary,
                         decoration: TextDecoration.underline,
+                        decorationColor: AppColors.secondary,
                       ),
                     ),
                   ),
@@ -81,21 +72,41 @@ class LoginPage extends StatelessWidget {
             const SizedBox(height: 25),
             CustomButton(onTab: signUserIn),
             const SizedBox(height: 10),
-
-
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 150),
-              child: Divider(
-                color: Colors.black,
-                thickness: 1,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Divider(
+                      color: Colors.black,
+                      thickness: 2,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: const Text(
+                      "ELLER",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: Colors.black,
+                      thickness: 2,
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 25),
             CustomButton(
-              onTab: DirectSignUpPage,
+              onTab: directSignUpPage,
               text: 'Opret bruger',
-              MainColor: Colors.blue,
+              mainColor: AppColors.secondary,
             ),
           ],
         ),
