@@ -14,6 +14,8 @@ class SignupPage extends StatelessWidget {
 
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-zA-ZæøåÆØÅ]+$');
+  final RegExp emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+  final RegExp passwordRegExp = RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
 
   //Function to validate form inputs
   void validateInputs(BuildContext context) {
@@ -46,12 +48,33 @@ class SignupPage extends StatelessWidget {
       );
       return;
     }
+
     //Step 3: Email Validation
+    if (!emailRegExp.hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Det er ikke en gyldig email'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+      return;
+    }
 
     //Step 4: Password Validation
+    if (!passwordRegExp.hasMatch(password)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Adgangskode opfyldt ikke alle kraverne'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+      return;
+    }
 
     //Step 5: Confirm Password Validation
-      if (password != confirmPassword) {
+    if (password != confirmPassword) {
         // Show an error message if passwords do not match
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -61,7 +84,7 @@ class SignupPage extends StatelessWidget {
        ),
       );
       return;
-    }
+    }  
 
     //proceed with sign-up logic if everything is correct
     signUserUp(context);
@@ -155,3 +178,5 @@ class SignupPage extends StatelessWidget {
     );
   }
 }
+
+
