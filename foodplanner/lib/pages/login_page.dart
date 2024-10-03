@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
+import 'forgot_password_page.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -59,7 +60,21 @@ class LoginPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text("Glemt adgangskode?"),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                      );
+                    },
+                    child: Text(
+                      "Glemt adgangskode?",
+                      style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -79,7 +94,7 @@ class LoginPage extends StatelessWidget {
             const SizedBox(height: 25),
             CustomButton(
               onTab: DirectSignUpPage,
-              text: 'Sign Up',
+              text: 'Opret bruger',
               MainColor: Colors.blue,
             ),
           ],
