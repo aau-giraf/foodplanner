@@ -3,91 +3,134 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
 
-class SignupPage extends StatelessWidget {
+class SignupPage extends StatefulWidget {
   SignupPage({super.key});
 
+  @override
+  _SignupPageState createState() => _SignupPageState();
+}
+
+
+class _SignupPage extends State<SignupPage> {
+
   // Text editing controllers
-  final fullNameController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final emailController = TextEditingController();
 
   //Regular expression for vildationg full name, Email, password¨
-  final RegExp nameRegExp = RegExp(r'^[a-zA-ZæøåÆØÅ]+$');
+  final RegExp nameRegExp = RegExp(r'^[a-zA-ZæøåÆØÅ\s]+$');
   final RegExp emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-  final RegExp passwordRegExp = RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
+  final RegExp passwordLowercaseRegExp = RegExp(r'[a-zæøå]');
+  final RegExp passwordUppercaseRegExp = RegExp(r'[A-ZÆØÅ]');
+  final RegExp passwordDigitRegExp = RegExp(r'\d');
+
+  // Variables to hold error messages
+  String fullNameError = '';
+  String emailError = '';
+  String passwordError = '';
+  String confirmPasswordError = '';
 
   //Function to validate form inputs
   void validateInputs(BuildContext context) {
-    String fullName = fullNameController.text.trim();
+    String firstName = firstNameController.text.trim();
+    String lastName = lastNameController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String email = emailController.text.trim();
+
+    // Reset error messages
+    setState(() {
+      fullNameError = '';
+      emailError = '';
+      passwordError = '';
+      confirmPasswordError = '';
+    });
     
-    //Step 1: Check om alle felter er udfyldt
-    if (fullName.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      // Show an error message if any field is empty
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Alle felter skal være udfyldt.'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
-        ),
-      );
+    // Step 1: Check if all fields are filled
+    if (firstName.isEmpty || lastName.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      showErrorSnackbar(context, 'Alle felter skal være udfyldt.');
+      return; // Stop if there's an error
     }
 
-    //Step 2: Full Name Validation
-    
-    if (!nameRegExp.hasMatch(fullName)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Dit navn må kun indhold bogstaver'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
-        ),
-      );
-      return;
+    // Step 2: Name Validation
+    if (!nameRegExp.hasMatch(firstName)) {
+      showErrorSnackbar(context, 'Dit navn må kun indhold bogstaver');
+      return; // Stop if there's an error
     }
 
-    //Step 3: Email Validation
+    if (!nameRegExp.hasMatch(lastName)) {
+      showErrorSnackbar(context, 'Dit navn må kun indhold bogstaver');
+      return; // Stop if there's an error
+    }
+
+    // Step 3: Email Validation
     if (!emailRegExp.hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Det er ikke en gyldig email'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
-        ),
-      );
-      return;
+      showErrorSnackbar(context, 'Det er ikke en gyldig email');
+      return; // Stop if there's an error
     }
 
-    //Step 4: Password Validation
-    if (!passwordRegExp.hasMatch(password)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Adgangskode opfyldt ikke alle kraverne'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
-        ),
-      );
-      return;
+    // Step 4: Password Validation
+    if (!validatePassword(context, password)) {
+      return; // Stop if there's an error in password validation
     }
 
-    //Step 5: Confirm Password Validation
+    // Step 5: Confirm Password Validation
     if (password != confirmPassword) {
-        // Show an error message if passwords do not match
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Adgangskode passer ikke'),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 5),
-       ),
-      );
-      return;
-    }  
+      showErrorSnackbar(context, 'Adgangskode passer ikke');
+      return; // Stop if passwords do not match
+    }
 
-    //proceed with sign-up logic if everything is correct
+    // Proceed with sign-up logic if everything is correct
     signUserUp(context);
+  }
+
+  // Function to validate password
+  bool validatePassword(BuildContext context, String password) {
+    // Check for at least one lowercase letter
+    if (!passwordLowercaseRegExp.hasMatch(password)) {
+      showErrorSnackbar(context, 'Adgangskode skal indholde mindst ét lille bogstav.');
+      return false; // Indicate an error
+    }
+
+    // Check for at least one uppercase letter
+    if (!passwordUppercaseRegExp.hasMatch(password)) {
+      showErrorSnackbar(context, 'Adgangskode skal indholde mindst ét stort bogstav.');
+      return false; // Indicate an error
+    }
+
+    // Check for at least one digit
+    if (!passwordDigitRegExp.hasMatch(password)) {
+      showErrorSnackbar(context, 'Adgangskode skal indholde mindst ét tal.');
+      return false; // Indicate an error
+    }
+
+    // Check if the length is at least 8 characters
+    if (password.length < 8) {
+      showErrorSnackbar(context, 'Adgangskode skal være mindst 8 tegn lang.');
+      return false; // Indicate an error
+    }
+
+    // Check if the length does not exceed 30 characters
+    if (password.length > 30) {
+      showErrorSnackbar(context, 'Adgangskode må ikke overstige 30 tegn.');
+      return false; // Indicate an error
+    }
+
+    return true; // No errors found
+  }
+  
+  // Helper method to show error messages in a snackbar
+  void showErrorSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 5),
+      ),
+    );
   }
 
   //Placeholder function for sign-up logic
@@ -135,7 +178,10 @@ class SignupPage extends StatelessWidget {
             ),
             const SizedBox(height: 25),
             CustomTextField(
-                hintText: "Fulde Navn", controller: fullNameController),
+                hintText: "Fornavn", controller: firstNameController),
+            const SizedBox(height: 15),
+            CustomTextField(
+                hintText: "Efternavn", controller: lastNameController),
             const SizedBox(height: 15),
             CustomTextField(
                 hintText: "Email", controller: emailController),
@@ -158,18 +204,25 @@ class SignupPage extends StatelessWidget {
             ),
         
 
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 150),
-              child: Divider(
-                color: Colors.black,
-                thickness: 1,
-              ),
-            ),
+            
             const SizedBox(height: 25),
             CustomButton(
               onTab: () => validateInputs(context),
               text: 'Tilmeld dig',
+              MainColor: Colors.blue,
+            ),
+            const SizedBox(height: 15),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 150),
+              child: Divider(
+                color: Colors.black,
+                thickness: 2,
+              ),
+            ),
+            const SizedBox(height: 15),
+            CustomButton(
+              onTab: () => validateInputs(context),
+              text: 'Har allerede en bruger',
               MainColor: Colors.blue,
             ),
           ],
