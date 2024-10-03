@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/config/text_styles.dart';
 import 'package:validators/validators.dart';
 import 'login_page.dart';
 
@@ -28,7 +30,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
+        backgroundColor: AppColors.background,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -48,10 +52,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             SizedBox(height: 50),
             Text(
               'Indtast din email, så sender vi et nyt kodeord',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
+              style: AppTextStyles.headline1,
             ),
             SizedBox(height: 25),
             CustomTextField(
@@ -62,7 +63,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             CustomButton(
               onTab: validateEmail,
               text: 'Send email',
-              mainColor: Colors.blue,
+              mainColor: AppColors.secondary,
             ),
             if (errorMessage != null)
               Padding(
@@ -81,7 +82,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 );
               },
               text: 'Tilbage til login',
-              mainColor: Colors.blue,
+              mainColor: AppColors.secondary,
             ),
           ],
         ),
