@@ -3,6 +3,7 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:validators/validators.dart';
+import 'login_page.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   @override
@@ -27,6 +28,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -63,6 +72,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   style: TextStyle(color: Colors.red),
                 ),
               ),
+            SizedBox(height: 10),
+            CustomButton(
+              onTab: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              text: 'Tilbage til login',
+              MainColor: Colors.blue,
+            ),
           ],
         ),
       ),
