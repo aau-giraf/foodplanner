@@ -15,7 +15,8 @@ class SignupPage extends StatelessWidget {
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-zA-ZæøåÆØÅ]+$');
   final RegExp emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-  final RegExp passwordRegExp = RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
+  final RegExp passwordRegExp =
+      RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
 
   //Function to validate form inputs
   void validateInputs(BuildContext context) {
@@ -23,9 +24,12 @@ class SignupPage extends StatelessWidget {
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String email = emailController.text.trim();
-    
+
     //Step 1: Check om alle felter er udfyldt
-    if (fullName.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+    if (fullName.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
       // Show an error message if any field is empty
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -37,7 +41,7 @@ class SignupPage extends StatelessWidget {
     }
 
     //Step 2: Full Name Validation
-    
+
     if (!nameRegExp.hasMatch(fullName)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -75,16 +79,16 @@ class SignupPage extends StatelessWidget {
 
     //Step 5: Confirm Password Validation
     if (password != confirmPassword) {
-        // Show an error message if passwords do not match
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Adgangskode passer ikke'),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 5),
-       ),
+      // Show an error message if passwords do not match
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Adgangskode passer ikke'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
       );
       return;
-    }  
+    }
 
     //proceed with sign-up logic if everything is correct
     signUserUp(context);
@@ -137,8 +141,7 @@ class SignupPage extends StatelessWidget {
             CustomTextField(
                 hintText: "Fulde Navn", controller: fullNameController),
             const SizedBox(height: 15),
-            CustomTextField(
-                hintText: "Email", controller: emailController),
+            CustomTextField(hintText: "Email", controller: emailController),
             const SizedBox(height: 15),
             CustomTextField(
                 hintText: "Adgangskode",
@@ -156,8 +159,6 @@ class SignupPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
               ),
             ),
-        
-
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 150),
@@ -170,7 +171,7 @@ class SignupPage extends StatelessWidget {
             CustomButton(
               onTab: () => validateInputs(context),
               text: 'Tilmeld dig',
-              MainColor: Colors.blue,
+              mainColor: Colors.blue,
             ),
           ],
         ),
@@ -178,5 +179,3 @@ class SignupPage extends StatelessWidget {
     );
   }
 }
-
-
