@@ -5,16 +5,28 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/components/user.dart';
-import 'package:http/http.dart' as http;
 
-class SignupPage extends StatelessWidget {
+class SignupPage extends StatefulWidget {
   SignupPage({super.key});
 
+  @override
+  _SignupPageState createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
   // Text editing controllers
-  final fullNameController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final emailController = TextEditingController();
+
+  // Text error messages
+  String firstNameError = '';
+  String lastNameError = '';
+  String emailError = '';
+  String passwordError = '';
+  String confirmPasswordError = '';
 
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
@@ -22,15 +34,46 @@ class SignupPage extends StatelessWidget {
   final RegExp passwordRegExp =
       RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
 
+  void updateErrorState(String field, String error) {
+    setState(() {
+      switch (field) {
+        case 'First_name':
+          firstNameError = error;
+          break;
+        case 'Last_name':
+          lastNameError = error;
+          break;
+        case 'Email':
+          emailError = error;
+          break;
+        case 'Password':
+          passwordError = error;
+          break;
+      }
+    });
+  }
+
+  void handleErrors(Map<String, dynamic> error) {
+    updateErrorState('First_name',
+        error['First_name'] != null ? error['First_name'][0] : '');
+    updateErrorState(
+        'Last_name', error['Last_name'] != null ? error['Last_name'][0] : '');
+    updateErrorState('Email', error['Email'] != null ? error['Email'][0] : '');
+    updateErrorState(
+        'Password', error['Password'] != null ? error['Password'][0] : '');
+  }
+
   //Function to validate form inputs
   void validateInputs(BuildContext context) {
-    String fullName = fullNameController.text.trim();
+    String firstName = firstNameController.text.trim();
+    String lastName = lastNameController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String email = emailController.text.trim();
 
     //Step 1: Check om alle felter er udfyldt
-    if (fullName.isEmpty ||
+    if (firstName.isEmpty ||
+        lastName.isEmpty ||
         email.isEmpty ||
         password.isEmpty ||
         confirmPassword.isEmpty) {
@@ -45,67 +88,72 @@ class SignupPage extends StatelessWidget {
     }
 
     //Step 2: Full Name Validation
-
-    if (!nameRegExp.hasMatch(fullName)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Dit navn må kun indhold bogstaver'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
-        ),
-      );
+    if (!nameRegExp.hasMatch(firstName)) {
+      setState(() {
+        firstNameError = 'Dit navn må kun indholde bogstaver';
+      });
       return;
+    } else {
+      setState(() {
+        firstNameError = '';
+      });
+    }
+
+    if (!nameRegExp.hasMatch(lastName)) {
+      setState(() {
+        lastNameError = 'Dit navn må kun indholde bogstaver';
+      });
+      return;
+    } else {
+      setState(() {
+        lastNameError = '';
+      });
     }
 
     //Step 3: Email Validation
     if (!emailRegExp.hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Det er ikke en gyldig email'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
-        ),
-      );
+      setState(() {
+        emailError = 'Det er ikke en gyldig email';
+      });
       return;
+    } else {
+      setState(() {
+        emailError = '';
+      });
     }
 
     //Step 4: Password Validation
     if (!passwordRegExp.hasMatch(password)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Adgangskode opfyldt ikke alle kraverne'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
-        ),
-      );
+      setState(() {
+        passwordError =
+            'Adgangskoden skal være mellem 8 og 30 tegn og indeholde mindst et stort bogstav, et lille bogstav og et tal';
+      });
       return;
+    } else {
+      setState(() {
+        passwordError = '';
+      });
     }
 
     //Step 5: Confirm Password Validation
     if (password != confirmPassword) {
-      // Show an error message if passwords do not match
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Adgangskode passer ikke'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
-        ),
-      );
+      setState(() {
+        confirmPasswordError = 'Adgangskoderne passer ikke';
+      });
       return;
+    } else {
+      setState(() {
+        confirmPasswordError = '';
+      });
     }
 
     //proceed with sign-up logic if everything is correct
-    signUserUp(context, fullName, email, password, confirmPassword);
+    signUserUp(context, firstName, lastName, email, password, confirmPassword);
   }
 
   //Placeholder function for sign-up logic
-  void signUserUp(BuildContext context, String fullName, String email,
-      String password, String confirmPassword) async {
-    List<String> nameParts = fullName.split(' ');
-    String firstName = nameParts[0];
-    String lastName =
-        nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
-
+  void signUserUp(BuildContext context, String firstName, String lastName,
+      String email, String password, String confirmPassword) async {
     try {
       final response = await createUser(firstName, lastName, email, password);
 
@@ -118,13 +166,8 @@ class SignupPage extends StatelessWidget {
           ),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${response.body}'),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 5),
-          ),
-        );
+        var error = jsonDecode(response.body);
+        handleErrors(error);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -173,20 +216,32 @@ class SignupPage extends StatelessWidget {
             ),
             const SizedBox(height: 25),
             CustomTextField(
-                hintText: "Fulde Navn", controller: fullNameController),
-            const SizedBox(height: 15),
-            CustomTextField(hintText: "Email", controller: emailController),
-            const SizedBox(height: 15),
+                hintText: "Fornavn",
+                controller: firstNameController,
+                errorText: firstNameError),
+            const SizedBox(height: 10),
+            CustomTextField(
+                hintText: "Efternavn",
+                controller: lastNameController,
+                errorText: lastNameError),
+            const SizedBox(height: 10),
+            CustomTextField(
+                hintText: "Email",
+                controller: emailController,
+                errorText: emailError),
+            const SizedBox(height: 10),
             CustomTextField(
                 hintText: "Adgangskode",
                 obscureText: true,
-                controller: passwordController),
-            const SizedBox(height: 15),
+                controller: passwordController,
+                errorText: passwordError),
+            const SizedBox(height: 10),
             CustomTextField(
-                hintText: "Gentage Adgangskode",
+                hintText: "Gentag Adgangskode",
                 obscureText: true,
-                controller: confirmPasswordController),
-            const SizedBox(height: 15),
+                controller: confirmPasswordController,
+                errorText: confirmPasswordError),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 150),
               child: Row(

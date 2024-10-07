@@ -4,15 +4,15 @@ import 'package:http/http.dart' as http;
 
 class User {
   final int id;
-  final String first_name;
-  final String last_name;
+  final String firstName;
+  final String lastName;
   final String email;
   final String password;
 
   const User({
     required this.id,
-    required this.first_name,
-    required this.last_name,
+    required this.firstName,
+    required this.lastName,
     required this.email,
     required this.password,
   });
@@ -21,15 +21,15 @@ class User {
     return switch (json) {
       {
         'id': int id,
-        'first_name': String first_name,
-        'last_name': String last_name,
+        'first_name': String firstName,
+        'last_name': String lastName,
         'email': String email,
         'password': String password,
       } =>
         User(
           id: id,
-          first_name: first_name,
-          last_name: last_name,
+          firstName: firstName,
+          lastName: lastName,
           email: email,
           password: password,
         ),

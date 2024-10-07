@@ -8,6 +8,8 @@ import 'package:validators/validators.dart';
 import 'login_page.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({super.key});
+
   @override
   _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
 }
@@ -58,6 +60,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             CustomTextField(
               hintText: "Email",
               controller: emailController,
+              errorText: '',
             ),
             SizedBox(height: 10),
             CustomButton(

@@ -48,12 +48,15 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 25),
             CustomTextField(
-                hintText: "Brugernavn", controller: usernameController),
+                hintText: "Brugernavn",
+                controller: usernameController,
+                errorText: ''),
             const SizedBox(height: 15),
             CustomTextField(
                 hintText: "Adgangskode",
                 obscureText: true,
-                controller: passwordController),
+                controller: passwordController,
+                errorText: ''),
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 150),

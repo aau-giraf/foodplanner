@@ -14,4 +14,5 @@ class AppColors {
   static const Color textFieldBorder = Color(0xFFBDBDBD);
   static const Color textFieldBorderFocus = Color(0xFF000000);
   static const Color textFieldHint = Color(0xFF9E9E9E);
+  static const Color errorText = Color(0xFFD32F2F);
 }
