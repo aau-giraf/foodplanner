@@ -5,6 +5,7 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'forgot_password_page.dart';
+import 'signup_page.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -13,8 +14,18 @@ class LoginPage extends StatelessWidget {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void signUserIn() {}
-  void directSignUpPage() {}
+  void signUserIn(BuildContext context) {}
+
+  void loginInpage() {}
+
+  void directSignUpPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SignupPage(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +81,8 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 25),
-            CustomButton(onTab: signUserIn),
+            CustomButton(
+                onTab: () => signUserIn(context)), // Wrap in anonymous function
             const SizedBox(height: 10),
             const SizedBox(height: 10),
             Padding(
@@ -104,7 +116,7 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 25),
             CustomButton(
-              onTab: directSignUpPage,
+              onTab: () => directSignUpPage(context),
               text: 'Opret bruger',
               mainColor: AppColors.secondary,
             ),
