@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
+import 'package:foodplanner/components/user.dart';
 import 'package:http/http.dart' as http;
 
 class SignupPage extends StatelessWidget {
@@ -14,7 +17,7 @@ class SignupPage extends StatelessWidget {
   final emailController = TextEditingController();
 
   //Regular expression for vildationg full name, Email, password¨
-  final RegExp nameRegExp = RegExp(r'^[a-zA-ZæøåÆØÅ]+$');
+  final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
   final RegExp emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
   final RegExp passwordRegExp =
       RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
@@ -92,18 +95,46 @@ class SignupPage extends StatelessWidget {
     }
 
     //proceed with sign-up logic if everything is correct
-    signUserUp(context);
+    signUserUp(context, fullName, email, password, confirmPassword);
   }
 
   //Placeholder function for sign-up logic
-  void signUserUp(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Opretter bruger...'),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 5),
-      ),
-    );
+  void signUserUp(BuildContext context, String fullName, String email,
+      String password, String confirmPassword) async {
+    List<String> nameParts = fullName.split(' ');
+    String firstName = nameParts[0];
+    String lastName =
+        nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
+
+    try {
+      final response = await createUser(firstName, lastName, email, password);
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Bruger oprettet!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 5),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${response.body}'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 5),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Fejl ved oprettelse af bruger: $e'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    }
   }
 
   void showButtonPressDialog(BuildContext context, String provider) {
@@ -115,6 +146,8 @@ class SignupPage extends StatelessWidget {
       ),
     );
   }
+
+  late Future<User?> futureUser = Future.value(null);
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +165,7 @@ class SignupPage extends StatelessWidget {
             ),
             const SizedBox(height: 50),
             const Text(
-              'Tilmeld dig herunde',
+              'Tilmeld dig herunder',
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
