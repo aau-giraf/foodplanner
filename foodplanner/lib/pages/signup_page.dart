@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
+import 'package:http/http.dart' as http;
 
 class SignupPage extends StatelessWidget {
   SignupPage({super.key});
