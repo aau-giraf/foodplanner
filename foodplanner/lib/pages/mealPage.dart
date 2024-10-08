@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
+
 import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:gal/gal.dart';
+import 'package:image_picker/image_picker.dart';
 
 //StatefulWidget is a widget that has mutable state. This allows the class to update.
 class MealPage extends StatefulWidget {
@@ -15,6 +18,8 @@ class MealPage extends StatefulWidget {
 class _MealPageState extends State<MealPage> with WidgetsBindingObserver {
   List<CameraDescription> cameras = [];
   CameraController? cameraController;
+
+  File? _selectedImage;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -83,7 +88,23 @@ class _MealPageState extends State<MealPage> with WidgetsBindingObserver {
                 Icons.camera,
                 color: Color.fromARGB(255, 244, 168, 54),
               ),
-            )
+            ),
+            IconButton(
+              onPressed: () {
+                _pickImageFromGallery();
+              },
+              iconSize: 100,
+              icon: const Icon(
+                Icons.collections,
+                color: Color.fromARGB(255, 0, 46, 196),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            _selectedImage != null
+                ? Image.file(_selectedImage!)
+                : const Text("Please select an image")
           ],
         ),
       ),
@@ -92,12 +113,12 @@ class _MealPageState extends State<MealPage> with WidgetsBindingObserver {
 
   Future<void> _SetupCameraController() async {
     // Checks if the device has any available cameras
-    List<CameraDescription> _cameras = await availableCameras();
-    if (_cameras.isNotEmpty) {
+    List<CameraDescription> cameras = await availableCameras();
+    if (cameras.isNotEmpty) {
       setState(() {
-        cameras = _cameras;
+        cameras = cameras;
         cameraController = CameraController(
-          _cameras.first, // Uses the front facing camera.
+          cameras.first, // Uses the front facing camera.
           ResolutionPreset.high, // Sets the resolution of the camera as 720p.
         );
       });
@@ -111,6 +132,21 @@ class _MealPageState extends State<MealPage> with WidgetsBindingObserver {
       }).catchError((Object e) {
         print(e);
       });
+    }
+  }
+
+  Future _pickImageFromGallery() async {
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    // Check if an image was actually selected
+    if (returnedImage != null) {
+      setState(() {
+        _selectedImage = File(returnedImage.path);
+      });
+    } else {
+      // Handle the case when no image is selected (optional)
+      print("No image selected.");
     }
   }
 }
