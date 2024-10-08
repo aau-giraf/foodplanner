@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
+import 'package:foodplanner/components/Strengthbar.dart';
+
 
 class SignupPage extends StatefulWidget {
   SignupPage({super.key});
@@ -10,9 +12,7 @@ class SignupPage extends StatefulWidget {
   _SignupPageState createState() => _SignupPageState();
 }
 
-
-class _SignupPage extends State<SignupPage> {
-
+class _SignupPageState extends State<SignupPage> {
   // Text editing controllers
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
@@ -26,12 +26,10 @@ class _SignupPage extends State<SignupPage> {
   final RegExp passwordLowercaseRegExp = RegExp(r'[a-zæøå]');
   final RegExp passwordUppercaseRegExp = RegExp(r'[A-ZÆØÅ]');
   final RegExp passwordDigitRegExp = RegExp(r'\d');
+  final RegExp passwordSpecialCharRegExp = RegExp(r'[!@#\$&£%*~]');
 
-  // Variables to hold error messages
-  String fullNameError = '';
-  String emailError = '';
-  String passwordError = '';
-  String confirmPasswordError = '';
+  // Password strength score
+  double passwordStrength = 0;
 
   //Function to validate form inputs
   void validateInputs(BuildContext context) {
@@ -40,14 +38,6 @@ class _SignupPage extends State<SignupPage> {
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String email = emailController.text.trim();
-
-    // Reset error messages
-    setState(() {
-      fullNameError = '';
-      emailError = '';
-      passwordError = '';
-      confirmPasswordError = '';
-    });
     
     // Step 1: Check if all fields are filled
     if (firstName.isEmpty || lastName.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
@@ -121,6 +111,21 @@ class _SignupPage extends State<SignupPage> {
 
     return true; // No errors found
   }
+
+  // Function to calculate password strength
+  double calculatePasswordStrength(String password) {
+    int strength = 0;
+
+    if (password.length >= 8) strength++; // Basic length requirement
+    if (password.length >= 12) strength++; 
+    if (password.length >= 16) strength++; 
+    if (passwordLowercaseRegExp.hasMatch(password)) strength++; // Contains lowercase
+    if (passwordUppercaseRegExp.hasMatch(password)) strength++; // Contains uppercase
+    if (passwordDigitRegExp.hasMatch(password)) strength++; // Contains digit
+    if (passwordSpecialCharRegExp.hasMatch(password)) strength++; // Contains special character
+
+    return (strength / 7).clamp(0, 1); // Return value between 0 and 1
+  }
   
   // Helper method to show error messages in a snackbar
   void showErrorSnackbar(BuildContext context, String message) {
@@ -140,16 +145,6 @@ class _SignupPage extends State<SignupPage> {
         content: Text('Opretter bruger...'),
         backgroundColor: Colors.green,
         duration: Duration(seconds: 5),
-      ),
-    );
-  }
-
-  void showButtonPressDialog(BuildContext context, String provider) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$provider Button Pressed!'),
-        backgroundColor: Colors.black26,
-        duration: const Duration(milliseconds: 400),
       ),
     );
   }
@@ -186,11 +181,23 @@ class _SignupPage extends State<SignupPage> {
             CustomTextField(
                 hintText: "Email", controller: emailController),
             const SizedBox(height: 15),
-            CustomTextField(
+        
+            // Password field with strength bar
+              StrengthBar(
                 hintText: "Adgangskode",
                 obscureText: true,
-                controller: passwordController),
-            const SizedBox(height: 15),
+                controller: passwordController,
+                onChanged: (value) {
+                  setState(() {
+                    passwordStrength = calculatePasswordStrength(value);
+                  });
+                },
+              ),
+              const SizedBox(height: 5),
+
+              // Password Strength Bar
+              PasswordStrengthBar(strength: passwordStrength),
+
             CustomTextField(
                 hintText: "Gentage Adgangskode",
                 obscureText: true,
@@ -203,8 +210,6 @@ class _SignupPage extends State<SignupPage> {
               ),
             ),
         
-
-            
             const SizedBox(height: 25),
             CustomButton(
               onTab: () => validateInputs(context),
@@ -231,5 +236,4 @@ class _SignupPage extends State<SignupPage> {
     );
   }
 }
-
 
