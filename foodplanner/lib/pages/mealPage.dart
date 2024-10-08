@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
+import 'alternateMealPage.dart';
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 import 'package:gal/gal.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -46,13 +49,6 @@ class _MealPageState extends State<MealPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    // Scaffold is a layout structure from the flutter library for the UI.
-    return Scaffold(
-      body: _buildUI(),
-    );
-  }
-
-  Widget _buildUI() {
     // Checks if the controller is not initialized
     if (cameraController == null ||
         cameraController?.value.isInitialized == false) {
@@ -61,50 +57,118 @@ class _MealPageState extends State<MealPage> with WidgetsBindingObserver {
             CircularProgressIndicator(), // Creates a loading circle in the middle of the screen.
       );
     }
-    return SafeArea(
-      child: SizedBox.expand(
-        child: Column(
-          mainAxisAlignment:
-              MainAxisAlignment.spaceEvenly, // Alligns the vertical axis.
-          crossAxisAlignment:
-              CrossAxisAlignment.center, // Alligns the horizontal axis.
-          children: [
-            SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.3,
-              width: MediaQuery.sizeOf(context).width * 0.8,
-              child: CameraPreview(
-                cameraController!,
+    // Scaffold is a layout structure from the flutter library for the UI.
+    return Scaffold(
+      body: Container(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment:
+                CrossAxisAlignment.stretch, // Alligns the horizontal axis.
+            children: <Widget>[
+              Expanded(
+                flex: 1,
+                child: _cameraPreviewWidget(),
               ),
-            ),
-            IconButton(
-              onPressed: () async {
-                XFile picture = await cameraController!.takePicture();
-                Gal.putImage(
-                  picture.path,
-                );
-              },
-              iconSize: 100,
-              icon: const Icon(
-                Icons.camera,
-                color: Color.fromARGB(255, 244, 168, 54),
+              _controlPanel(context),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _controlPanel(BuildContext context) {
+    return Container(
+      height: 120,
+      padding: const EdgeInsets.all(15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          _galleryControlWidget(context),
+          _cameraControlWidget(context),
+          _navigateButton(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _cameraPreviewWidget() {
+    return AspectRatio(
+      aspectRatio: cameraController!.value.aspectRatio,
+      child: CameraPreview(cameraController!),
+    );
+  }
+
+  Widget _cameraControlWidget(context) {
+    return Expanded(
+      child: Align(
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            FloatingActionButton(
+                child: Icon(
+                  Icons.camera,
+                  color: Color.fromARGB(255, 244, 168, 54),
+                ),
+                backgroundColor: Colors.white,
+                onPressed: () async {
+                  XFile picture = await cameraController!.takePicture();
+                  Gal.putImage(
+                    picture.path,
+                  );
+                })
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _galleryControlWidget(context) {
+    return Expanded(
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            FloatingActionButton(
+              child: Icon(
+                Icons.collections,
+                color: Color.fromARGB(255, 123, 116, 242),
               ),
-            ),
-            IconButton(
+              backgroundColor: Colors.white,
               onPressed: () {
                 _pickImageFromGallery();
               },
-              iconSize: 100,
-              icon: const Icon(
-                Icons.collections,
-                color: Color.fromARGB(255, 0, 46, 196),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            _selectedImage != null
-                ? Image.file(_selectedImage!)
-                : const Text("Please select an image")
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _navigateButton(BuildContext context) {
+    return Expanded(
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            FloatingActionButton(
+              child: const Icon(Icons.arrow_forward, color: Colors.white),
+              backgroundColor: Colors.blue,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const AlternateMealpage()), // Naviger til den nye side
+                );
+              },
+            )
           ],
         ),
       ),
@@ -138,7 +202,6 @@ class _MealPageState extends State<MealPage> with WidgetsBindingObserver {
   Future _pickImageFromGallery() async {
     final returnedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-
     // Check if an image was actually selected
     if (returnedImage != null) {
       setState(() {
@@ -148,5 +211,10 @@ class _MealPageState extends State<MealPage> with WidgetsBindingObserver {
       // Handle the case when no image is selected (optional)
       print("No image selected.");
     }
+  }
+
+  void _showCameraException(CameraException e) {
+    String errorText = 'Error:${e.code}\nError message : ${e.description}';
+    print(errorText);
   }
 }
