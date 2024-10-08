@@ -7,7 +7,7 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/components/user.dart';
 
 class SignupPage extends StatefulWidget {
-  SignupPage({super.key});
+  const SignupPage({super.key});
 
   @override
   _SignupPageState createState() => _SignupPageState();
