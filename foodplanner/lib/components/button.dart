@@ -6,12 +6,15 @@ class CustomButton extends StatelessWidget {
   final Function()? onTab;
   final String text;
   final Color mainColor;
+  final EdgeInsets horizontalMargin;
 
   const CustomButton({
     super.key,
     required this.onTab,
     this.text = 'Login', // default text
     this.mainColor = AppColors.primary, // default color
+    this.horizontalMargin =
+        const EdgeInsets.symmetric(horizontal: 150), // default margin
   });
 
   @override
@@ -20,7 +23,7 @@ class CustomButton extends StatelessWidget {
       onTap: onTab,
       child: Container(
         padding: EdgeInsets.all(15),
-        margin: EdgeInsets.symmetric(horizontal: 150),
+        margin: horizontalMargin,
         decoration: BoxDecoration(
           color: mainColor,
           borderRadius: BorderRadius.circular(10),
