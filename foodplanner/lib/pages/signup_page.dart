@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/dropdownBar.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/components/user.dart';
 
@@ -20,6 +20,12 @@ class _SignupPageState extends State<SignupPage> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final emailController = TextEditingController();
+
+  // Dropdownbar
+  String? selectedDropdownValue;
+  final List<String> dropdownItems = ['Forældre', 'Lærer'];
+  final double fieldWidth = 300.0; // Example width, adjust as needed
+  
 
   // Text error messages
   String firstNameError = '';
@@ -153,7 +159,7 @@ class _SignupPageState extends State<SignupPage> {
 
   //Placeholder function for sign-up logic
   void signUserUp(BuildContext context, String firstName, String lastName,
-      String email, String password, String confirmPassword) async {
+      String email, String password, String confirmPassword,) async {
     try {
       final response = await createUser(firstName, lastName, email, password);
 
@@ -197,8 +203,8 @@ class _SignupPageState extends State<SignupPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFEBE9E9),
       body: SafeArea(
-          child: Center(
-        child: Column(
+        child: Center(
+          child: Column( 
           children: [
             const SizedBox(height: 100),
             const SFIcon(
@@ -241,6 +247,19 @@ class _SignupPageState extends State<SignupPage> {
                 obscureText: true,
                 controller: confirmPasswordController,
                 errorText: confirmPasswordError),
+            const SizedBox(height: 10),
+             Container(
+              child: DropdownBar(
+                width: fieldWidth, // Pass the width parameter
+                items: dropdownItems,
+                selectedValue: selectedDropdownValue,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedDropdownValue = newValue;
+                  });
+                },
+              ),  
+            ),
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 150),
