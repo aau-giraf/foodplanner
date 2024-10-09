@@ -20,6 +20,7 @@ class SignupPageState extends State<SignupPage> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final emailController = TextEditingController();
+  final dropdownController = TextEditingController();
 
   // Dropdownbar
   String? selectedDropdownValue;
@@ -76,6 +77,7 @@ class SignupPageState extends State<SignupPage> {
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String email = emailController.text.trim();
+    String role = dropdownController.text.trim();
 
     //Step 1: Check om alle felter er udfyldt
     if (firstName.isEmpty ||
@@ -153,7 +155,6 @@ class SignupPageState extends State<SignupPage> {
       });
     }
 
-    String role = 'User';
     //proceed with sign-up logic if everything is correct
     signUserUp(
         context, firstName, lastName, email, password, confirmPassword, role);
@@ -264,6 +265,7 @@ class SignupPageState extends State<SignupPage> {
                 child: DropdownBar(
                   width: fieldWidth, // Pass the width parameter
                   items: dropdownItems,
+                  controller: dropdownController,
                   selectedValue: selectedDropdownValue,
                   onChanged: (String? newValue) {
                     setState(() {

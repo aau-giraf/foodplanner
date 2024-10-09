@@ -7,6 +7,7 @@ class DropdownBar extends StatefulWidget {
   final String? selectedValue;
   final List<String> items;
   final ValueChanged<String?> onChanged;
+  final TextEditingController controller;
   final Color color;
 
   DropdownBar({
@@ -14,6 +15,7 @@ class DropdownBar extends StatefulWidget {
     required this.items,
     this.selectedValue,
     required this.onChanged,
+    required this.controller,
     this.color = AppColors.textFieldBackground // default color
   });
 
@@ -36,6 +38,7 @@ class _DropdownBarState extends State<DropdownBar> {
         child: DropdownButton<String>(
           value: widget.selectedValue,
           hint: Text(
+            style: AppTextStyles.standard.copyWith(fontSize: 16),
             'Vælg din role',
           ),
           icon: Icon(Icons.arrow_drop_down, color: const Color.fromARGB(255, 0, 0, 0)),
@@ -44,6 +47,7 @@ class _DropdownBarState extends State<DropdownBar> {
             return DropdownMenuItem<String>(
               value: value,
               child: Text(
+                style: AppTextStyles.standard.copyWith(fontSize: 16),
                 value,
               ),
             );
