@@ -10,10 +10,10 @@ class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
   @override
-  _SignupPageState createState() => _SignupPageState();
+  SignupPageState createState() => SignupPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class SignupPageState extends State<SignupPage> {
   // Text editing controllers
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
@@ -153,15 +153,24 @@ class _SignupPageState extends State<SignupPage> {
       });
     }
 
+    String role = 'User';
     //proceed with sign-up logic if everything is correct
-    signUserUp(context, firstName, lastName, email, password, confirmPassword);
+    signUserUp(
+        context, firstName, lastName, email, password, confirmPassword, role);
   }
 
   //Placeholder function for sign-up logic
-  void signUserUp(BuildContext context, String firstName, String lastName,
-      String email, String password, String confirmPassword,) async {
+  void signUserUp(
+      BuildContext context,
+      String firstName,
+      String lastName,
+      String email,
+      String password,
+      String confirmPassword,
+      String role) async {
     try {
-      final response = await createUser(firstName, lastName, email, password);
+      final response =
+          await createUser(firstName, lastName, email, password, role);
 
       if (response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(

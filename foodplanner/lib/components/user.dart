@@ -8,6 +8,8 @@ class User {
   final String lastName;
   final String email;
   final String password;
+  final String role;
+  final bool roleApproved;
 
   const User({
     required this.id,
@@ -15,6 +17,8 @@ class User {
     required this.lastName,
     required this.email,
     required this.password,
+    required this.role,
+    required this.roleApproved,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -25,6 +29,8 @@ class User {
         'last_name': String lastName,
         'email': String email,
         'password': String password,
+        'role': String role,
+        'role_approved': bool roleApproved,
       } =>
         User(
           id: id,
@@ -32,6 +38,8 @@ class User {
           lastName: lastName,
           email: email,
           password: password,
+          role: role,
+          roleApproved: roleApproved,
         ),
       _ => throw const FormatException('Bruger kunne ikke findes.'),
     };
@@ -49,8 +57,8 @@ Future<User> fetchUser() async {
   }
 }
 
-Future<http.Response> createUser(
-    String firstName, String lastName, String email, String password) async {
+Future<http.Response> createUser(String firstName, String lastName,
+    String email, String password, String role) async {
   final response = await http.post(
     Uri.parse('http://127.0.0.1:80/api/Users/Create'),
     headers: <String, String>{
@@ -59,6 +67,22 @@ Future<http.Response> createUser(
     body: jsonEncode(<String, String>{
       'first_name': firstName,
       'last_name': lastName,
+      'email': email,
+      'password': password,
+      'role': role
+    }),
+  );
+
+  return response;
+}
+
+Future<http.Response> loginUser(String email, String password) async {
+  final response = await http.post(
+    Uri.parse('http://127.0.0.1:80/api/Users/Login'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
       'email': email,
       'password': password,
     }),
