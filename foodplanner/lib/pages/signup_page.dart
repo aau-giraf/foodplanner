@@ -20,13 +20,11 @@ class SignupPageState extends State<SignupPage> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final emailController = TextEditingController();
-  final dropdownController = TextEditingController();
 
   // Dropdownbar
   String? selectedDropdownValue;
   final List<String> dropdownItems = ['Forældre', 'Lærer'];
   final double fieldWidth = 300.0; // Example width, adjust as needed
-  
 
   // Text error messages
   String firstNameError = '';
@@ -77,7 +75,7 @@ class SignupPageState extends State<SignupPage> {
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String email = emailController.text.trim();
-    String role = dropdownController.text.trim();
+    String role = selectedDropdownValue ?? '';
 
     //Step 1: Check om alle felter er udfyldt
     if (firstName.isEmpty ||
@@ -213,8 +211,8 @@ class SignupPageState extends State<SignupPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFEBE9E9),
       body: SafeArea(
-        child: Center(
-          child: Column( 
+          child: Center(
+        child: Column(
           children: [
             const SizedBox(height: 100),
             const SFIcon(
@@ -258,14 +256,13 @@ class SignupPageState extends State<SignupPage> {
                 controller: confirmPasswordController,
                 errorText: confirmPasswordError),
             const SizedBox(height: 10),
-             Padding(
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 150),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: DropdownBar(
                   width: fieldWidth, // Pass the width parameter
                   items: dropdownItems,
-                  controller: dropdownController,
                   selectedValue: selectedDropdownValue,
                   onChanged: (String? newValue) {
                     setState(() {

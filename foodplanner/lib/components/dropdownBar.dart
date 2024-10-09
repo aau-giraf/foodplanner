@@ -2,28 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
-class DropdownBar extends StatefulWidget {
+class DropdownBar extends StatelessWidget {
   final double width;
   final String? selectedValue;
   final List<String> items;
   final ValueChanged<String?> onChanged;
-  final TextEditingController controller;
   final Color color;
 
-  DropdownBar({
-    required this.width,
-    required this.items,
-    this.selectedValue,
-    required this.onChanged,
-    required this.controller,
-    this.color = AppColors.textFieldBackground // default color
-  });
+  const DropdownBar(
+      {super.key,
+      required this.width,
+      required this.items,
+      this.selectedValue,
+      required this.onChanged,
+      this.color = AppColors.textFieldBackground // default color
+      });
 
   @override
-  _DropdownBarState createState() => _DropdownBarState();
+  Widget build(BuildContext context) {
+    return DropdownMenu<String>(
+      initialSelection: items.first,
+      onSelected: (String? value) {
+        onChanged(value);
+      },
+      dropdownMenuEntries: items.map<DropdownMenuEntry<String>>((String value) {
+        return DropdownMenuEntry<String>(value: value, label: value);
+      }).toList(),
+    );
+  }
 }
 
-class _DropdownBarState extends State<DropdownBar> {
+/* class _DropdownBarState extends State<DropdownBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,16 +41,17 @@ class _DropdownBarState extends State<DropdownBar> {
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 255, 255, 255),
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: const Color.fromARGB(255, 0, 0, 0)), 
+        border: Border.all(color: const Color.fromARGB(255, 0, 0, 0)),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          value: widget.selectedValue,
+          value: widget.controller.text,
           hint: Text(
             style: AppTextStyles.standard.copyWith(fontSize: 16),
             'Vælg din role',
           ),
-          icon: Icon(Icons.arrow_drop_down, color: const Color.fromARGB(255, 0, 0, 0)),
+          icon: Icon(Icons.arrow_drop_down,
+              color: const Color.fromARGB(255, 0, 0, 0)),
           isExpanded: true,
           items: widget.items.map((String value) {
             return DropdownMenuItem<String>(
@@ -52,9 +62,15 @@ class _DropdownBarState extends State<DropdownBar> {
               ),
             );
           }).toList(),
-          onChanged: widget.onChanged,
+          onChanged: (String? newValue) {
+            widget.onChanged(newValue);
+            setState(() {
+              widget.controller.text = newValue!;
+            });
+          },
         ),
       ),
     );
   }
 }
+ */
