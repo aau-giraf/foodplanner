@@ -248,17 +248,21 @@ class _SignupPageState extends State<SignupPage> {
                 controller: confirmPasswordController,
                 errorText: confirmPasswordError),
             const SizedBox(height: 10),
-             Container(
-              child: DropdownBar(
-                width: fieldWidth, // Pass the width parameter
-                items: dropdownItems,
-                selectedValue: selectedDropdownValue,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedDropdownValue = newValue;
-                  });
-                },
-              ),  
+             Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 150),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: DropdownBar(
+                  width: fieldWidth, // Pass the width parameter
+                  items: dropdownItems,
+                  selectedValue: selectedDropdownValue,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedDropdownValue = newValue;
+                    });
+                  },
+                ),
+              ),
             ),
             const SizedBox(height: 10),
             Padding(
