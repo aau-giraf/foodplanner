@@ -11,7 +11,7 @@ class AdminApprovePage extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 150.0),
+          padding: EdgeInsets.symmetric(horizontal: 5.0),
           child: Center(
             child: Container(
               padding: EdgeInsets.all(32.0),
