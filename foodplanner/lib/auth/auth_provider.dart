@@ -24,4 +24,10 @@ class AuthProvider with ChangeNotifier {
   bool hasRole(ROLES role) {
     return _isLoggedIn && _userRole == role;
   }
+
+  Future<void> setRole(ROLES role) async {
+    _isLoggedIn = true;
+    _userRole = role;
+    notifyListeners();
+  }
 }

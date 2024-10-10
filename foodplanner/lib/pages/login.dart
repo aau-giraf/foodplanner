@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../routes/user_roles.dart';
 
 
@@ -36,17 +37,15 @@ class LoginPage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                // Log in as a teacher
-                //Provider.of<AuthProvider>(context, listen: false).login(ROLES.teacher);
-              },
-              child: const Text('Login as Teacher'),
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                authProvider.setRole(ROLES.admin);},
+              child: const Text('Set role to admin'),
             ),
             ElevatedButton(
               onPressed: () {
-                // Log in as a student
-                //Provider.of<AuthProvider>(context, listen: false).login(ROLES.student);
+                context.go(ADMIN_ROOT); 
               },
-              child: const Text('Login as Student'),
+              child: const Text('Go to admin page'),
             ),
           ],
         ),
