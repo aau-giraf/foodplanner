@@ -3,6 +3,8 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../routes/index.dart';
+import 'pages/login_page.dart';
+
 
 void main() {
   runApp(
@@ -17,10 +19,13 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      home: LoginPage(),
       theme: ThemeData(
        
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -79,6 +84,12 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), 
+=======
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LoginPage(),
     );
   }
 }
