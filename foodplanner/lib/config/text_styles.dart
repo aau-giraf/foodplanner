@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/config/colors.dart';
 
 class AppTextStyles {
+  static const TextStyle title = TextStyle(
+    fontSize: 22.0,
+    fontWeight: FontWeight.bold,
+    color: AppColors.textPrimary, // You can use AppColors here if needed
+  );
+
   static const TextStyle headline1 = TextStyle(
     fontSize: 32.0,
     fontWeight: FontWeight.bold,
