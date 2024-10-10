@@ -1,14 +1,15 @@
 // login.dart
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/pages/home_page.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../routes/user_roles.dart';
 
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class LoginPage2 extends StatelessWidget {
+  const LoginPage2({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +47,15 @@ class LoginPage extends StatelessWidget {
                 context.go(ADMIN_ROOT); 
               },
               child: const Text('Go to admin page'),
+            ),
+             const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => HomePage()));
+              },
+              child: const Text('Go to home page'),
             ),
           ],
         ),

@@ -4,8 +4,8 @@ import 'package:foodplanner/main.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:go_router/go_router.dart';
 
-class SignupPage extends StatelessWidget {
-  const SignupPage({Key? key}) : super(key: key);
+class SignupPage2 extends StatelessWidget {
+  const SignupPage2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
