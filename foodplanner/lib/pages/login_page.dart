@@ -82,7 +82,7 @@ class LoginPageState extends State<LoginPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SignupPage(),
+        builder: (context) => Signup(),
       ),
     );
   }
@@ -145,7 +145,9 @@ class LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 25),
             CustomButton(
-                onTab: () => signUserIn(context)), // Wrap in anonymous function
+              text: "Login",
+              onTab: () => signUserIn(context),
+            ), // Wrap in anonymous function
             const SizedBox(height: 10),
             const SizedBox(height: 10),
             Padding(
@@ -181,7 +183,7 @@ class LoginPageState extends State<LoginPage> {
             CustomButton(
               onTab: () => directSignUpPage(context),
               text: 'Opret bruger',
-              mainColor: AppColors.secondary,
+              backgroundColor: AppColors.secondary,
             ),
           ],
         ),

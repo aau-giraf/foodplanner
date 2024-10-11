@@ -10,8 +10,8 @@ class AppColors {
   static const Color textSecondary = Color(0xFFFFFFFF);
 
   // Text field colors
-  static const Color textFieldBackground = Color(0xFFF3F8F2);
-  static const Color textFieldBorder = Color(0xFFBDBDBD);
+  static const Color textFieldBackground = Color(0xFFF5F5F5);
+  static const Color textFieldBorder = Color(0xFF9E9E9E);
   static const Color textFieldBorderFocus = Color(0xFF000000);
   static const Color textFieldHint = Color(0xFF9E9E9E);
   static const Color errorText = Color(0xFFD32F2F);

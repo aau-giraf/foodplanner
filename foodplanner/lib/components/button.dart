@@ -5,31 +5,33 @@ import 'package:foodplanner/config/text_styles.dart';
 class CustomButton extends StatelessWidget {
   final Function()? onTab;
   final String text;
-  final Color mainColor;
+  final Color backgroundColor;
+  final Color foregroundColor;
 
   const CustomButton({
     super.key,
     required this.onTab,
-    this.text = 'Login', // default text
-    this.mainColor = AppColors.primary, // default color
+    required this.text,
+    this.backgroundColor = AppColors.primary, // default color
+    this.foregroundColor = AppColors.textSecondary, // default color
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTab,
-      child: Container(
-        padding: EdgeInsets.all(15),
-        margin: EdgeInsets.symmetric(horizontal: 150),
-        decoration: BoxDecoration(
-          color: mainColor,
-          borderRadius: BorderRadius.circular(10),
+    return SizedBox(
+      width: double.infinity,
+      height: 75,
+      child: ElevatedButton(
+        onPressed: onTab,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: backgroundColor,
+          foregroundColor: foregroundColor,
+          disabledForegroundColor: foregroundColor.withOpacity(0.5),
+          elevation: 3,
         ),
-        child: Center(
-          child: Text(
-            text,
-            style: AppTextStyles.buttonText,
-          ),
+        child: Text(
+          text,
+          style: AppTextStyles.buttonText,
         ),
       ),
     );

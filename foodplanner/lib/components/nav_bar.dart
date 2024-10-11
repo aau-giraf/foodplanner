@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/pages/home.dart';
-import 'package:foodplanner/pages/madPakke.dart';
+import 'package:foodplanner/pages/mad_pakke.dart';
 import 'package:foodplanner/pages/profile.dart';
 import 'package:foodplanner/pages/settings.dart';
 

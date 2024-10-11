@@ -20,10 +20,15 @@ class AppTextStyles {
     color: AppColors.textPrimary,
   );
 
+  static const TextStyle bigText = TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textPrimary,
+  );
+
   static const TextStyle buttonText = TextStyle(
     fontSize: 26.0,
     fontWeight: FontWeight.bold,
-    color: AppColors.textSecondary,
   );
 
   static const TextStyle errorText = TextStyle(
