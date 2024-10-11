@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/config/colors.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});

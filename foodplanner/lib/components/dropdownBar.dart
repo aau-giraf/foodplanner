@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/config/text_styles.dart';
 
 class DropdownBar extends StatelessWidget {
   final double width;

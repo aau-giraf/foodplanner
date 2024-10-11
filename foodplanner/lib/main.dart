@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/navBar.dart';
 import 'package:foodplanner/pages/Signup.dart';
 
 void main() {
