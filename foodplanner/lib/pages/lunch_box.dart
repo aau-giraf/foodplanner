@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Madpakke extends StatelessWidget {
-  const Madpakke({super.key});
+class LunchBox extends StatelessWidget {
+  const LunchBox({super.key});
 
   @override
   Widget build(BuildContext context) {

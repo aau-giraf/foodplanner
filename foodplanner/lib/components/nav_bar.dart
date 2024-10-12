@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/pages/home.dart';
-import 'package:foodplanner/pages/mad_pakke.dart';
+import 'package:foodplanner/pages/additional_lunch_box.dart';
+import 'package:foodplanner/pages/lunch_box.dart';
 import 'package:foodplanner/pages/profile.dart';
 import 'package:foodplanner/pages/settings.dart';
 
@@ -40,7 +40,7 @@ class _NavBarState extends State<NavBar> {
                 color: Colors.white,
               ),
               icon: SFIcon(SFIcons.sf_shippingbox),
-              label: 'Hjem',
+              label: 'Ekstra madpakke',
             ),
             NavigationDestination(
               selectedIcon: SFIcon(
@@ -69,7 +69,12 @@ class _NavBarState extends State<NavBar> {
           ],
         ),
       ),
-      body: [Home(), Madpakke(), Profile(), Settings()][currentPageIndex],
+      body: [
+        AdditionalLunchBox(),
+        LunchBox(),
+        Profile(),
+        Settings()
+      ][currentPageIndex],
     );
   }
 }

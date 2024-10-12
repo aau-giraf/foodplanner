@@ -177,7 +177,7 @@ class _SignupState extends State<Signup> {
     if (!passwordRegExp.hasMatch(password)) {
       setState(() {
         passwordError =
-            'Adgangskoden skal være mellem 8 og 30 tegn og indeholde mindst et stort bogstav, et lille bogstav og et tal';
+            'Skal være mellem 8-30 tegn, indeholde et stort bogstav og et tal';
       });
       return;
     } else {

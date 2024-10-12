@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class AdditionalLunchBox extends StatelessWidget {
+  const AdditionalLunchBox({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.cyan,
       appBar: AppBar(
-        title: const Text('Hjem'),
+        title: const Text('Ekstra madpakke'),
       ),
       body: const Center(
-        child: Text('Hjem'),
+        child: Text('Ekstra madpakke'),
       ),
     );
   }
