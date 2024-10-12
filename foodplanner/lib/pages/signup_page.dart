@@ -50,6 +50,35 @@ class _SignupState extends State<Signup> {
     ),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    firstNameController.addListener(_updateButtonState);
+    lastNameController.addListener(_updateButtonState);
+    emailController.addListener(_updateButtonState);
+    passwordController.addListener(_updateButtonState);
+    confirmPasswordController.addListener(_updateButtonState);
+  }
+
+  @override
+  void dispose() {
+    firstNameController.removeListener(_updateButtonState);
+    lastNameController.removeListener(_updateButtonState);
+    emailController.removeListener(_updateButtonState);
+    passwordController.removeListener(_updateButtonState);
+    confirmPasswordController.removeListener(_updateButtonState);
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _updateButtonState() {
+    setState(() {});
+  }
+
   void updateErrorState(String field, String error) {
     setState(() {
       switch (field) {
