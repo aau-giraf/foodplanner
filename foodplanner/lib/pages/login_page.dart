@@ -94,21 +94,50 @@ Widget build(BuildContext context) {
       body: SafeArea(
         child: Center(
           child: Column(
-            
             children: [
-              const SizedBox(height: 100),
+              const SizedBox(height: 20),
               Text(
                 'Egebakkeskolen',
-                style: AppTextStyles.headline2,
+                style: AppTextStyles.headline1,
               ),
               const SizedBox(height: 10,),
               Text(
                 'Foodplanner',
-                style: AppTextStyles.headline2,
+                style: AppTextStyles.headline1,
               ),
-              const SizedBox(height: 50,),
+              const SizedBox(height: 30,),
               Image(image: AssetImage('assets/images/logo.png'),
-              height: 200,
+              height: 180,
+              ),
+              const SizedBox(height: 20),
+              Container(
+                width: 320,
+                height: 400,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300], // Light grey color
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 20),
+                    Text(
+                      'Log ind',
+                      style: AppTextStyles.headline3,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Brugernavn',
+                      style: AppTextStyles.headline4,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Adgangskode',
+                      style: AppTextStyles.headline4,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
