@@ -8,6 +8,12 @@ class AppTextStyles {
     color: AppColors.textPrimary, // You can use AppColors here if needed
   );
 
+  static const TextStyle headline2 = TextStyle(
+    fontSize: 28.0,
+    fontWeight: FontWeight.bold,
+    color: AppColors.textPrimary, // You can use AppColors here if needed
+  );
+
   static const TextStyle standard = TextStyle(
     fontSize: 12.0,
     fontWeight: FontWeight.normal,

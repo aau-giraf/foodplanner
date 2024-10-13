@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
@@ -87,7 +86,40 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  @override
+@override
+Widget build(BuildContext context) {
+  return MaterialApp(
+    home: Scaffold(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            
+            children: [
+              const SizedBox(height: 100),
+              Text(
+                'Egebakkeskolen',
+                style: AppTextStyles.headline2,
+              ),
+              const SizedBox(height: 10,),
+              Text(
+                'Foodplanner',
+                style: AppTextStyles.headline2,
+              ),
+              const SizedBox(height: 50,),
+              Image(image: AssetImage('assets/images/logo.png'),
+              height: 200,
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+
+ /* @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -95,11 +127,11 @@ class LoginPageState extends State<LoginPage> {
           child: Center(
         child: Column(
           children: [
-            const SizedBox(height: 100),
-            const SFIcon(
-              SFIcons.sf_lock_shield_fill,
-              fontSize: 100,
-              fontWeight: FontWeight.w400,
+            const SizedBox(height: 300),
+            Image(
+              image: AssetImage('assert/images/logo.png'),
+              width: 300,
+              height: 300,
             ),
             const SizedBox(height: 50),
             const Text(
@@ -187,5 +219,5 @@ class LoginPageState extends State<LoginPage> {
         ),
       )),
     );
-  }
+  }*/
 }
