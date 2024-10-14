@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/ingredient_list.dart';
+import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/pages/choose_ingredient_page.dart';
 
 class AddIngredientPage extends StatelessWidget {
-  const AddIngredientPage({super.key});
+  final Meal meal;
+
+  const AddIngredientPage({
+    super.key,
+    required this.meal,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // leading: IconButton(
-        //   icon: Icon(Icons.arrow_back),
-        //   onPressed: () {
-        //     // Siden den skal tilbage til :)
-        //   }, 
-        // ),
         title: const Text("Redigér madpakke"),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -32,10 +32,11 @@ class AddIngredientPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const Expanded (
+            Expanded (
               child: IngredientList(
                 interactive: true,
-                textStyle: TextStyle(
+                ingredients: meal.ingredients,
+                textStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20.0,
                 ),
@@ -52,7 +53,7 @@ class AddIngredientPage extends StatelessWidget {
                     color: Colors.grey.withOpacity(0.5),
                     spreadRadius: 1,
                     blurRadius: 1,
-                    offset: Offset(0, 2), // changes position of shadow
+                    offset: const Offset(0, 2), // changes position of shadow
                     ),
                   ],
               ),

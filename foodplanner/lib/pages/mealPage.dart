@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/pages/mealPage.dart';
+import 'package:foodplanner/pages/add_ingredient_page.dart';
 import '/pages/cameraPage.dart';
 
 class MealPage extends StatelessWidget {
@@ -9,12 +9,12 @@ class MealPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            // Siden den skal tilbage til :)
-          }, 
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //     // Siden den skal tilbage til :)
+        //   }, 
+        // ),
         title: const Text("Opret madpakke"),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -52,7 +52,7 @@ class MealPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // text 
             TextField(
@@ -64,15 +64,19 @@ class MealPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // add Ingredient button
             ElevatedButton.icon(
               onPressed: ()
               {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AddIngredientPage(meal: )),
+                );
               }, 
-              icon: Icon(Icons.add),
-              label: Text('Beskriv ingredienserne'),
+              icon: const Icon(Icons.add),
+              label: const Text('Beskriv ingredienserne'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
                 shape: RoundedRectangleBorder(
