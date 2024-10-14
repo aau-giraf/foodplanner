@@ -103,6 +103,22 @@ Future<http.Response> createUser(
       'last_name': lastName,
       'email': email,
       'password': password,
+      'role': role
+    }),
+  );
+
+  return response;
+}
+
+Future<http.Response> loginUser(String email, String password) async {
+  final response = await http.post(
+    Uri.parse('http://127.0.0.1:80/api/Users/Login'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'email': email,
+      'password': password,
     }),
   );
 
