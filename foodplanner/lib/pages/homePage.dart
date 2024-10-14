@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePageExample> {
   int currentPageIndex = 0;
 
    final List<Widget> _pages = [
-    const Center(child: Text('Home Page')),
+    const Center(child: Text('Temporary Home Page')),
     const MealPage(),
     const ProfilePage(),
     const SettingsPage(),
@@ -46,19 +46,19 @@ class _HomePageState extends State<HomePageExample> {
         destinations: const <NavigationDestination>[
           NavigationDestination(
             icon: Icon(Icons.home), 
-            label: 'Home',
+            label: 'Hjem',
           ),
           NavigationDestination(
             icon: Icon(Icons.inventory), 
-            label: 'Meals',
+            label: 'Måltider',
           ),
           NavigationDestination(
             icon: Icon(Icons.person), 
-            label: 'Profile',
+            label: 'Profil',
           ),
           NavigationDestination(
             icon: Icon(Icons.settings), 
-            label: 'Settings',
+            label: 'Indstillinger',
           ),
         ],
       ),

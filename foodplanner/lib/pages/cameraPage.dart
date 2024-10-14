@@ -207,12 +207,12 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
       });
     } else {
       // Handle the case when no image is selected (optional)
-      print("No image selected.");
+      print("Intet billede valgt.");
     }
   }
 
   void _showCameraException(CameraException e) {
-    String errorText = 'Error:${e.code}\nError message : ${e.description}';
+    String errorText = 'Fejl:${e.code}\nFejl besked : ${e.description}';
     print(errorText);
   }
 }
