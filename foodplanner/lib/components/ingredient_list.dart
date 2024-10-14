@@ -1,24 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/icon_button.dart';
+import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/choose_ingredient_page.dart';
 
 class IngredientList extends StatelessWidget {
   final bool interactive;
   final TextStyle textStyle;
+  final List<Ingredient> ingredients;
 
   const IngredientList({
     super.key,
     this.interactive = false,
     this.textStyle = AppTextStyles.standard,
+    required this.ingredients,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      itemCount: 3,
+      itemCount: ingredients.length,
       itemBuilder: (context, index) {
-        return interactive ? InteractiveIngredientListElement(textStyle: textStyle) : NonInteractiveIngredientListElement(textStyle: textStyle);
+        return interactive ? 
+          InteractiveIngredientListElement(
+            textStyle: textStyle,
+            ingredient: ingredients[index],
+          ) :
+          NonInteractiveIngredientListElement(
+            textStyle: textStyle,
+            ingredient: ingredients[index],
+          );
       },
       separatorBuilder: (BuildContext context, int index) {
         return const SizedBox(height: 10);
@@ -29,10 +40,12 @@ class IngredientList extends StatelessWidget {
 
 class NonInteractiveIngredientListElement extends StatelessWidget {
   final TextStyle textStyle;
+  final Ingredient ingredient;
   
   const NonInteractiveIngredientListElement({
     super.key,
     this.textStyle = AppTextStyles.standard,
+    required this.ingredient,
   });
 
   @override
@@ -58,7 +71,7 @@ class NonInteractiveIngredientListElement extends StatelessWidget {
         children: [
           const SizedBox(width: 10),
           Text(
-            'Knækbrød',
+            ingredient.name,
             style: textStyle,
           ),
         ]
@@ -69,11 +82,13 @@ class NonInteractiveIngredientListElement extends StatelessWidget {
 
 class InteractiveIngredientListElement extends StatefulWidget {
   final TextStyle textStyle;
+  final Ingredient ingredient;
   final bool isActive;
   
   const InteractiveIngredientListElement({
     super.key,
     this.textStyle = AppTextStyles.standard,
+    required this.ingredient,
     this.isActive = false,
   });
 
