@@ -81,7 +81,7 @@ class LoginPageState extends State<LoginPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SignupPage(),
+        builder: (context) => Signup(),
       ),
     );
   }
@@ -206,7 +206,9 @@ Widget build(BuildContext context) {
             ),
             const SizedBox(height: 25),
             CustomButton(
-                onTab: () => signUserIn(context)), // Wrap in anonymous function
+              text: "Login",
+              onTab: () => signUserIn(context),
+            ), // Wrap in anonymous function
             const SizedBox(height: 10),
             const SizedBox(height: 10),
             Padding(
@@ -242,7 +244,7 @@ Widget build(BuildContext context) {
             CustomButton(
               onTab: () => directSignUpPage(context),
               text: 'Opret bruger',
-              mainColor: AppColors.secondary,
+              backgroundColor: AppColors.secondary,
             ),
           ],
         ),
