@@ -1,85 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/components/icon_button.dart';
+import 'package:foodplanner/components/ingredient_list.dart';
+import 'package:foodplanner/pages/choose_ingredient_page.dart';
 
-class CustomIconButton extends StatelessWidget {
-  final Function()? onTab;
-  final Icon icon;
-  final String text;
-  final Color mainColor;
-
-  const CustomIconButton({
-    super.key,
-    required this.onTab,
-    required this.icon,
-    this.text = '',
-    this.mainColor = AppColors.primary, 
-  });
+class AddIngredientPage extends StatelessWidget {
+  const AddIngredientPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column (
-      children: [
-        SizedBox(height: 8),
-        IconButton (
-          icon: icon,
-            onPressed: onTab,
-          style: ElevatedButton.styleFrom(
-            iconColor: mainColor,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        // leading: IconButton(
+        //   icon: Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //     // Siden den skal tilbage til :)
+        //   }, 
+        // ),
+        title: const Text("Redigér madpakke"),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 1.0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
         ),
-        Text(
-          text,
-          style: AppTextStyles.standard,
-        ),
-      ]
-    );
-  }
-}
+      ),
 
-class CustomAddButton extends StatelessWidget {
-  final Function()? onTab;
-  final String text;
-  final double height;
-  final double width;
-
-  const CustomAddButton({
-    super.key,
-    required this.onTab,
-    this.text = '',
-    this.height = 50,
-    this.width = 100,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container (
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(height/2),
-        boxShadow: [
-            BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 1,
-            offset: Offset(0, 2), // changes position of shadow
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Expanded (
+              child: IngredientList(),
             ),
-          ],
-      ),
-      child: IconButton(
-        icon: Icon(Icons.add),
-        onPressed: () {
-          
-        }, 
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.orange,
-          iconColor: Colors.white,
-          minimumSize: Size(width, height),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(height/2)
-          ),
-        ),
-      ),
+
+            SizedBox(height: 20),
+
+            Container (
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                boxShadow: [
+                    BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 1,
+                    blurRadius: 1,
+                    offset: Offset(0, 2), // changes position of shadow
+                    ),
+                  ],
+              ),
+              child: CustomAddButton(
+                onTab: () {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChooseIngredientPage()),
+                );
+                },
+                width: MediaQuery.sizeOf(context).width/2,
+              ),
+            ),
+          ]
+        )
+      )
     );
   }
-  
 }
