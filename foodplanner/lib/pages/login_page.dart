@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/components/user.dart';
@@ -86,66 +85,133 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-@override
-Widget build(BuildContext context) {
-  return MaterialApp(
-    home: Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              Text(
-                'Egebakkeskolen',
-                style: AppTextStyles.headline1,
-              ),
-              const SizedBox(height: 10,),
-              Text(
-                'Foodplanner',
-                style: AppTextStyles.headline1,
-              ),
-              const SizedBox(height: 30,),
-              Image(image: AssetImage('assets/images/logo.png'),
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            Text(
+              'Egebakkeskolen',
+              style: AppTextStyles.headline1,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Foodplanner',
+              style: AppTextStyles.headline1,
+            ),
+            const SizedBox(height: 30),
+            Image(
+              image: AssetImage('assets/images/logo.png'),
               height: 180,
-              ),
-              const SizedBox(height: 20),
-              Container(
-                width: 320,
-                height: 400,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300], // Light grey color
-                  borderRadius: BorderRadius.circular(25),
+            ),
+            const SizedBox(height: 20),
+            Column(
+              children: [
+                const SizedBox(height: 10),
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  color: AppColors.background,
+                  surfaceTintColor: AppColors.background,
+                  elevation:  3,
+                    child: Column(
+                      children: [
+                        Text(
+                          'Log ind',
+                          style: AppTextStyles.headline2,
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Brugernavn',
+                          style: AppTextStyles.headline3,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: CustomTextField(
+                            hintText: "Brugernavn",
+                            controller: usernameController,
+                            errorText: emailError),
+                        ),
+                        const SizedBox(height: 15),
+                        Text(
+                          'Adgangskode',
+                          style: AppTextStyles.headline3,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: CustomTextField(
+                            hintText: "Adgangskode",
+                            obscureText: true,
+                            controller: passwordController,
+                            errorText: passwordError),
+                        ),
+                        const SizedBox(height: 15),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 150),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ForgotPasswordPage()),
+                                  );
+                                },
+                                child: Text(
+                                  "Glemt adgangskode?",
+                                  style: AppTextStyles.standard.copyWith(
+                                    color: AppColors.secondary,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: AppColors.secondary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      'Log ind',
-                      style: AppTextStyles.headline3,
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Brugernavn',
-                      style: AppTextStyles.headline4,
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Adgangskode',
-                      style: AppTextStyles.headline4,
+                    Expanded(  
+                      child: CustomButton(
+                        onTab: () => directSignUpPage(context),
+                        text: 'Tilbage',
+                        backgroundColor: AppColors.secondary,
+                      ),
+                    ),  
+                    SizedBox(width: 20),
+                    Expanded(
+                      child: CustomButton(
+                        text: "Login",
+                        onTab: () => signUserIn(context),
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
       ),
-    ),
-  );
-}
+    );
+  }
+
 
 
  /* @override
