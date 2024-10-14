@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:gal/gal.dart';
 import 'package:image_picker/image_picker.dart';
 
-//StatefulWidget is a widget that has mutable state. This allows the class to update.
+/// This class is used to set up the in-app camera, to allow users to use their device's cameras.
+///
+/// StatefulWidget is a widget that has mutable state. This allows the class to update.
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
 
@@ -16,24 +18,23 @@ class CameraPage extends StatefulWidget {
 // The state object which builds child widgets.
 // Binding observer notifies object of changes in the environment.
 class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
-  List<CameraDescription> cameras = [];
+  List<CameraDescription> cameras = []; // List for containing the available cameras of the device.
   CameraController? cameraController;
 
   File? _selectedImage;
 
+  /// A method for checking whether the app becomes inactive.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (cameraController == null ||
-        cameraController?.value.isInitialized == false) {
+        cameraController?.value.isInitialized == false) { // Checks if the device does not contain any cameras
       return;
     }
 
-    if (state == AppLifecycleState.inactive) {
-      // Checks if the app is inactive. If yes, it destroys the controller.
+    if (state == AppLifecycleState.inactive) { // Checks if the app is inactive. If yes, it destroys the controller.
       cameraController?.dispose();
-    } else if (state == AppLifecycleState.resumed) {
-      // If the app becomes active again, the controller is reconstructed.
+    } else if (state == AppLifecycleState.resumed) { // If the app becomes active again, the controller is reconstructed.
       _SetupCameraController();
     }
   }
@@ -44,11 +45,11 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
     _SetupCameraController();
   }
 
+  /// The method which contains all the UI widgets, and forms them into the front end.
   @override
   Widget build(BuildContext context) {
-    // Checks if the controller is not initialized
     if (cameraController == null ||
-        cameraController?.value.isInitialized == false) {
+        cameraController?.value.isInitialized == false) { // Checks if the controller is not initialized
       return const Center(
         child:
             CircularProgressIndicator(), // Creates a loading circle in the middle of the screen.
@@ -66,7 +67,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
                 flex: 1,
                 child: _cameraPreviewWidget(),
               ),
-              _controlPanel(context),
+              _controlPanel(context), // The control panel which contains the buttons.
             ],
           ),
         ),
@@ -74,10 +75,11 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
     );
   }
 
+  /// A method that contains the methods for creating the 3 buttons for the camera.
   Widget _controlPanel(BuildContext context) {
     return Container(
       height: 120,
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(15), // Insets the buttens 15 pixels from the edge of the screen.
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -89,13 +91,15 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
     );
   }
 
+  /// The method which sets up the camera preview, which allows the user to see what the camera sees.
   Widget _cameraPreviewWidget() {
     return AspectRatio(
       aspectRatio: cameraController!.value.aspectRatio,
-      child: CameraPreview(cameraController!),
+      child: CameraPreview(cameraController!), // Sets up the camera controller for the device's cameras.
     );
   }
 
+  /// The method which creates the button for taking a picture.
   Widget _cameraControlWidget(context) {
     return Expanded(
       child: Align(
@@ -110,9 +114,9 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
                   color: Color.fromARGB(255, 244, 168, 54),
                 ),
                 backgroundColor: Colors.white,
-                onPressed: () async {
-                  XFile picture = await cameraController!.takePicture();
-                  Gal.putImage(
+                onPressed: () async { // Awaits for the button to be pressed.
+                  XFile picture = await cameraController!.takePicture(); // Makes the device take a picture.
+                  Gal.putImage( // Saves the new picture in the device's gallery app.
                     picture.path,
                   );
                 })
@@ -122,6 +126,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
     );
   }
 
+  /// The method which creates the button for opening the gallery through the camera.
   Widget _galleryControlWidget(context) {
     return Expanded(
       child: Align(
@@ -146,6 +151,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
     );
   }
 
+  ///           !!! Old method which is no longer needed !!!
   Widget _navigateButton(BuildContext context) {
     return Expanded(
       child: Align(
@@ -173,9 +179,9 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
     );
   }
 
+  /// The method which sets up the camera controller for using the device's cameras.
   Future<void> _SetupCameraController() async {
-    // Checks if the device has any available cameras
-    List<CameraDescription> cameras = await availableCameras();
+    List<CameraDescription> cameras = await availableCameras(); // Checks if the device has any available cameras
     if (cameras.isNotEmpty) {
       setState(() {
         cameras = cameras;
@@ -184,10 +190,8 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
           ResolutionPreset.high, // Sets the resolution of the camera as 720p.
         );
       });
-      // Initializes the camera and then rebuilds the widget tree to make the camera appear on the UI.
-      cameraController?.initialize().then((_) {
-        // Checks if the state is not currently a part of a tree.
-        if (!mounted) {
+      cameraController?.initialize().then((_) { // Initializes the camera and then rebuilds the widget tree to make the camera appear on the UI.
+        if (!mounted) { // Checks if the state is not currently a part of a tree.
           return;
         }
         setState(() {});
@@ -197,19 +201,19 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
     }
   }
 
+  /// The method which allows the user to select an image from the gallery app.
   Future _pickImageFromGallery() async {
     final returnedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-    // Check if an image was actually selected
-    if (returnedImage != null) {
+    if (returnedImage != null) { // Check if an image was actually selected
       setState(() {
         _selectedImage = File(returnedImage.path);
       });
-    } else {
-      // Handle the case when no image is selected (optional)
+    } else { // Handle the case when no image is selected (optional)
       print("Intet billede valgt.");
     }
   }
+
 
   void _showCameraException(CameraException e) {
     String errorText = 'Fejl:${e.code}\nFejl besked : ${e.description}';

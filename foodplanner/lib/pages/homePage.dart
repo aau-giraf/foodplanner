@@ -3,27 +3,20 @@ import '/pages/mealPage.dart';
 import '/pages/profilePage.dart';
 import '/pages/settingsPage.dart';
 
-
-class HomePage extends StatelessWidget {
+/// This class is used to create the home page of the app.
+/// 
+/// It is also where the navigation bar is located.
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
-  @override Widget build(BuildContext context) {
-    return const MaterialApp(home: HomePageExample());
-  }
+  State<HomePage> createState() => _HomePageState(); 
 }
 
-class HomePageExample extends StatefulWidget {
-  const HomePageExample({super.key});
-
-  @override 
-  State<HomePageExample> createState() => 
-  _HomePageState(); 
-}
-
-class _HomePageState extends State<HomePageExample> {
+/// The state which contains all of the UI elements for the home page.
+class _HomePageState extends State<HomePage> {
   int currentPageIndex = 0;
 
-   final List<Widget> _pages = [
+  final List<Widget> _pages = [ // The list for all the different pages that are accessed from the navigation bar.
     const Center(child: Text('Temporary Home Page')),
     const MealPage(),
     const ProfilePage(),
@@ -36,14 +29,14 @@ class _HomePageState extends State<HomePageExample> {
     final ThemeData theme = Theme.of(context);
     return Scaffold(
       bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
+        onDestinationSelected: (int index) { // The index is changed and set to match the index of the clicked page.
           setState(() {
             currentPageIndex = index;
           });
         },
         indicatorColor: Colors.amber,
         selectedIndex: currentPageIndex,
-        destinations: const <NavigationDestination>[
+        destinations: const <NavigationDestination>[ // This is where the buttons for the navigation bar are made.
           NavigationDestination(
             icon: Icon(Icons.home), 
             label: 'Hjem',
@@ -62,10 +55,7 @@ class _HomePageState extends State<HomePageExample> {
           ),
         ],
       ),
-      // body: <Widget>[
-      //     // Det er her hvor navigator index'ere siderne
-      // ][currentPageIndex],
-      body: _pages[currentPageIndex],
+      body: _pages[currentPageIndex], // Sets the shown page to be the selected index.
     );
   }
 }

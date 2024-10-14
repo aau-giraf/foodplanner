@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import '/pages/cameraPage.dart';
 
+/// This class is used to create the meal page where the user can create an individual meal for their children.
 class MealPage extends StatelessWidget {
   const MealPage({super.key});
 
@@ -26,13 +27,14 @@ class MealPage extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
+
+      // The button for opening the camera page.
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            GestureDetector(
-              onTap: () {
-                // Navigér til en anden side
+            GestureDetector( 
+              onTap: () { // When clicked, leads to the camera page.
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const CameraPage()),
@@ -54,7 +56,7 @@ class MealPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // text 
+            // Textfield for the title of the meal.
             TextField(
               decoration: InputDecoration(
                 labelText:'Giv den en titel!',
@@ -66,14 +68,14 @@ class MealPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // add Ingredient button
+            // Add Ingredient button
             ElevatedButton.icon(
-              onPressed: ()
+              onPressed: () // Leads the user to the 'AddIngredientPage'
               {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddIngredientPage(meal: )),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const AddIngredientPage(meal: )),
+                // );
               }, 
               icon: const Icon(Icons.add),
               label: const Text('Beskriv ingredienserne'),
@@ -82,13 +84,14 @@ class MealPage extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)
                 ),
-              ),            ),
+              ),            
+            ),
             Spacer(),
 
-            //create meal button
+            // Create meal button
             ElevatedButton(
               onPressed: () {
-                // Handle meal
+                // Handle meal           !!! Missing !!!
               },
               child:Text('Opret madpakke'),
               style: ElevatedButton.styleFrom(
