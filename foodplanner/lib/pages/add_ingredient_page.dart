@@ -32,8 +32,14 @@ class AddIngredientPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Expanded (
-              child: IngredientList(),
+            const Expanded (
+              child: IngredientList(
+                interactive: true,
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                ),
+              ),
             ),
 
             SizedBox(height: 20),
