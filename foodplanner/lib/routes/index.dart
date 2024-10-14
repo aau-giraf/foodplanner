@@ -35,6 +35,7 @@ final router = GoRouter(
       builder: (context, state) => ForgotPasswordPage(),
     ),
 
+
     //no need for wildcard handling as flutter already does it 
    
     

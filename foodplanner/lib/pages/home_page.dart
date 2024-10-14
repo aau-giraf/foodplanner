@@ -44,10 +44,46 @@ class HomePage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                context.go(ADMIN_ROOT); 
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                if (authProvider.hasRole(ROLES.admin)) {
+                  context.go(ADMIN_ROOT); 
+                } else {
+                  context.go('/unauthorized'); 
+                }
               },
-              child: const Text('Go to admin page'),
+              child: const Text('Go to Admin Page'),
             ),
+
+            ElevatedButton(
+            onPressed: () async {
+              final authProvider = Provider.of<AuthProvider>(context, listen: false);
+              await authProvider.login(ROLES.admin, 'TEST'); // token has to come from backend :) so when stokholm fix his shit we can fix ours 
+              print('Logged in: ${authProvider.isLoggedIn}');
+              print('User Role: ${authProvider.userRole}');
+              print('JWT Token: ${authProvider.jwtToken}');
+            },
+            child: const Text('Login TESTING TOKENS'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                await authProvider.logout(); // Just call it; don't try to store a result
+                print('Logged out'); // For debugging purposes
+              },
+              child: const Text('Logout'),
+            ),
+
+
+
+            ElevatedButton(
+              onPressed: () async {
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                final token = await authProvider.retrieveToken();
+                print('Retrieved JWT Token: $token');
+              },
+              child: const Text('Retrieve Token'),
+            ),
+
            
           ],
         ),
