@@ -49,6 +49,21 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
   );
 
+  static const TextStyle buttonTextMedium = TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle buttonTextSmall = TextStyle(
+    fontSize: 12.0,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle buttonTextBig = TextStyle(
+    fontSize: 32.0,
+    fontWeight: FontWeight.bold,
+  );
+
   static const TextStyle errorText = TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.normal,
