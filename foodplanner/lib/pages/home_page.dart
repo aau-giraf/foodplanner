@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/pages/login_page.dart';
+import 'package:foodplanner/routes/paths.dart';
+import 'package:foodplanner/routes/user_roles.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -17,7 +22,7 @@ class HomePage extends StatelessWidget {
           children: [
             const SizedBox(height: 100),
             const Text(
-              'Du er nu logget ind!',
+              'HOME PAGE HOME PAGE',
               style: TextStyle(fontSize: 20),
             ),
          const SizedBox(height: 20),
@@ -29,6 +34,19 @@ class HomePage extends StatelessWidget {
                 );
               },
               child: const Text('Go to Login Page'),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                authProvider.setRole(ROLES.admin);},
+              child: const Text('Set role to admin'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.go(ADMIN_ROOT); 
+              },
+              child: const Text('Go to admin page'),
             ),
            
           ],
