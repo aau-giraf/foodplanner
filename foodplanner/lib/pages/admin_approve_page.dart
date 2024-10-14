@@ -20,10 +20,10 @@ class AdminApprovePage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Text('Approve Users', style: AppTextStyles.headline1),
+                  Text('Godkend Nye Brugere', style: AppTextStyles.headline1),
                   SizedBox(height: 16.0),
                   Text(
-                    'Approve or deny users who want to join your platform',
+                    'Godkend eller afvis brugere som gerne vil tilgå din platform',
                     style: AppTextStyles.standard,
                   ),
                   SizedBox(height: 16.0), // Add some spacing before the list
@@ -39,7 +39,8 @@ class AdminApprovePage extends StatelessWidget {
                               child: Text('Error: ${snapshot.error}'));
                         } else if (!snapshot.hasData ||
                             snapshot.data!.isEmpty) {
-                          return Center(child: Text('No users to approve.'));
+                          return Center(
+                              child: Text('Ingen nye bugere til godkendelse.'));
                         } else {
                           final users = snapshot.data!;
                           return SingleChildScrollView(

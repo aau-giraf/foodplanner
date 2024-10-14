@@ -32,7 +32,7 @@ class ApproveBox extends StatelessWidget {
           // Name and Role Text
           Expanded(
             child: Text(
-              '$name wants to be a $role',
+              '$name vil gerne være $role',
               style: AppTextStyles.standard, // Ensure text color contrast
             ),
           ),
@@ -40,16 +40,19 @@ class ApproveBox extends StatelessWidget {
           Row(
             children: [
               CustomButton(
-                  onTab: onApprove,
-                  text: 'Approve',
-                  mainColor: AppColors.primary,
-                  horizontalMargin: EdgeInsets.symmetric(
-                      horizontal: 8.0)), // Space between buttons
+                onTab: onApprove,
+                text: 'Godkend',
+                backgroundColor: AppColors.primary,
+                customWidth: 80,
+                size: ButtonSize.small,
+              ),
               CustomButton(
-                  onTab: onDeny,
-                  text: 'Deny',
-                  mainColor: AppColors.secondary,
-                  horizontalMargin: EdgeInsets.symmetric(horizontal: 8.0)),
+                onTab: onDeny,
+                text: 'Afvis',
+                backgroundColor: AppColors.secondary,
+                customWidth: 80,
+                size: ButtonSize.small,
+              ),
             ],
           ),
         ],

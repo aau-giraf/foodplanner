@@ -91,8 +91,8 @@ Future<List<User>> unapproveUsers(int id) async {
   }
 }
 
-Future<http.Response> createUser(
-    String firstName, String lastName, String email, String password) async {
+Future<http.Response> createUser(String firstName, String lastName,
+    String email, String password, String role) async {
   final response = await http.post(
     Uri.parse('http://127.0.0.1:80/api/Users/Create'),
     headers: <String, String>{
