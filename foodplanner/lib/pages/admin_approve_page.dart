@@ -4,10 +4,47 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/components/user.dart';
 
-class AdminApprovePage extends StatelessWidget {
+class AdminApprovePage extends StatefulWidget {
+  @override
+  _AdminApprovePageState createState() => _AdminApprovePageState();
+}
+
+class _AdminApprovePageState extends State<AdminApprovePage> {
+  List<User> _users = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsers();
+  }
+
+  // Function to load users asynchronously
+  Future<void> _loadUsers() async {
+    final users = await fetchApproveUsers();
+    setState(() {
+      _users = users;
+    });
+  }
+
+  // Function to remove a user after approval or denial
+  void _removeUser(int userId) {
+    setState(() {
+      _users.removeWhere((user) => user.id == userId);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        title: const Text(
+          'Godkend nye brugere',
+          style: AppTextStyles.title,
+          textAlign: TextAlign.center,
+        ),
+        centerTitle: true,
+      ),
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
@@ -19,49 +56,42 @@ class AdminApprovePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Godkend Nye Brugere', style: AppTextStyles.headline1),
-                  SizedBox(height: 16.0),
                   Text(
                     'Godkend eller afvis brugere som gerne vil tilgå din platform',
                     style: AppTextStyles.standard,
+                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 16.0), // Add some spacing before the list
+                  SizedBox(height: 16.0),
+
+                  // Expanded widget for the list of users
                   Expanded(
-                    child: FutureBuilder<List<User>>(
-                      future: fetchApproveUsers(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData ||
-                            snapshot.data!.isEmpty) {
-                          return Center(
-                              child: Text('Ingen nye bugere til godkendelse.'));
-                        } else {
-                          final users = snapshot.data!;
-                          return SingleChildScrollView(
+                    child: _users.isEmpty
+                        ? Center(
+                            child: Text('Ingen nye bugere til godkendelse.'),
+                          )
+                        : SingleChildScrollView(
                             child: Column(
-                              children: users.map((user) {
+                              children: _users.map((user) {
                                 return ApproveBox(
                                   name: user.firstName,
+                                  LastName: user.lastName,
                                   role: user.role,
                                   onApprove: () async {
                                     await updateApproveUsers(user.id);
+                                    _removeUser(user
+                                        .id); // Remove the user from the list
                                   },
                                   onDeny: () async {
                                     await unapproveUsers(user.id);
+                                    _removeUser(user
+                                        .id); // Remove the user from the list
                                   },
                                 );
                               }).toList(),
                             ),
-                          );
-                        }
-                      },
-                    ),
+                          ),
                   ),
                 ],
               ),
