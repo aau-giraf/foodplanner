@@ -179,6 +179,7 @@ class LoginPageState extends State<LoginPage> {
                                       color: AppColors.secondary,
                                       decoration: TextDecoration.underline,
                                       decorationColor: AppColors.secondary,
+                                      fontSize: 14,
                                     ),
                                   ),
                                 ),
