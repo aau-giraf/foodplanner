@@ -42,6 +42,8 @@ class CustomAddButton extends StatelessWidget {
   final String text;
   final double height;
   final double width;
+  final Color backgroundColor;
+  final Color iconColor;
 
   const CustomAddButton({
     super.key,
@@ -49,6 +51,8 @@ class CustomAddButton extends StatelessWidget {
     this.text = '',
     this.height = 50,
     this.width = 100,
+    this.backgroundColor = AppColors.primary,
+    this.iconColor = AppColors.background,
   });
 
   @override
@@ -71,8 +75,8 @@ class CustomAddButton extends StatelessWidget {
           
         }, 
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.orange,
-          iconColor: Colors.white,
+          backgroundColor: backgroundColor,
+          iconColor: iconColor,
           minimumSize: Size(width, height),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(height/2)

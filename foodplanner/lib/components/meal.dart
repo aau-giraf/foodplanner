@@ -15,12 +15,12 @@ class Meal {
   final String altText;
 
   const Meal({
-    required this.id,
-    required this.name,
+    this.id = 0,
+    this.name = '',
     this.description,
     this.image,
-    required this.ingredients,
-    required this.altText,
+    this.ingredients = const <Ingredient>[],
+    this.altText = '',
   });
 
   factory Meal.fromJson(Map<String, dynamic> json) {

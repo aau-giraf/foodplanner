@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
@@ -16,6 +17,7 @@ class MealPage extends StatefulWidget {
 }
 
 class _MealPageState extends State<MealPage> {
+  final Meal meal = Meal();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   Image? _selectedImage;
@@ -33,7 +35,7 @@ class _MealPageState extends State<MealPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          // Button for taking the user back to the home pa
+          // Button for taking the user back to the home page
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.push(
@@ -56,9 +58,13 @@ class _MealPageState extends State<MealPage> {
 
       // The button for opening the camera page.
       body: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(top: 4.0, bottom: 4.0, right: 16.0, left: 16.0),
           child: Column(
             children: [
+              Text(
+                'Start med at tilføje et billede af madpakken', 
+                style: TextStyle(color: AppColors.textFieldHint),
+              ),
               GestureDetector(
                 onTap: () {
                   // When clicked, leads to the camera page.
@@ -69,7 +75,7 @@ class _MealPageState extends State<MealPage> {
                 },
                 child: Container(
                   width: double.infinity,
-                  height: 200,
+                  height: 170,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Colors.grey)),
@@ -83,63 +89,73 @@ class _MealPageState extends State<MealPage> {
               const SizedBox(height: 20),
 
               // Textfield for the title of the meal.
-              TextField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  labelText: 'Giv den en titel!',
-                  hintText: 'Skriv her...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+              Text(
+                'Giv den en titel',
+                style: TextStyle(color: AppColors.textFieldHint),
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: TextField(
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    hintText: 'Skriv her...',
+                    hintStyle: TextStyle(
+                      color: AppColors.textFieldHint,
+                    ),
+                    border: UnderlineInputBorder(),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
 
-              // Textfield for a description and notes for the meal.
-              TextField(
-                controller: _descriptionController,
-                keyboardType: TextInputType.multiline,
-                minLines: 1,
-                maxLines: 4,
-                decoration: InputDecoration(
-                  labelText: 'Beskriv måltidet her.',
-                  hintText: 'Skriv her...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
+              // // Textfield for a description and notes for the meal.
+              // TextField(
+              //   controller: _descriptionController,
+              //   keyboardType: TextInputType.multiline,
+              //   minLines: 1,
+              //   maxLines: 4,
+              //   decoration: InputDecoration(
+              //     labelText: 'Beskriv måltidet her.',
+              //     hintText: 'Skriv her...',
+              //     border: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(12),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(height: 20),
 
               // Add Ingredient button
-              ElevatedButton.icon(
-                onPressed: () // Leads the user to the 'AddIngredientPage'
-                    {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => const AddIngredientPage(meal: )),
-                  // );
+              Text(
+                'Beskriv ingredienserne',
+                style: TextStyle(color: AppColors.textFieldHint),
+              ),
+              CustomAddButton(
+                onTab: () {
+
                 },
-                icon: const Icon(Icons.add),
-                label: const Text('Beskriv ingredienserne'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
+                backgroundColor: const Color.fromARGB(255, 252, 206, 138),
+                width: MediaQuery.sizeOf(context).width/2,
               ),
               Spacer(),
 
               // Create meal button
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  minimumSize: const Size(double.infinity, 50),
+                  minimumSize: Size(MediaQuery.sizeOf(context).width/2, 50),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(25)),
                 ),
-                child: const Text('Opret madpakke'),
+                child: const Text(
+                  'Opret madpakke',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           )),
