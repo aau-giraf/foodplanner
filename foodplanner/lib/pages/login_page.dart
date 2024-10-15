@@ -9,9 +9,12 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'forgot_password_page.dart';
 import 'signup_page.dart';
+import 'package:foodplanner/fetches/fetch_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+  static final AuthService authService = AuthService(apiUrl: 'http://localhost');
+ 
 
   @override
   LoginPageState createState() => LoginPageState();
@@ -46,9 +49,11 @@ class LoginPageState extends State<LoginPage> {
   }
 
   void signUserIn(BuildContext context) async {
+    
     try {
       final response =
           await loginUser(usernameController.text, passwordController.text);
+          await LoginPage.authService.fetchAuthData(usernameController.text, passwordController.text);
 
       if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
@@ -77,6 +82,8 @@ class LoginPageState extends State<LoginPage> {
   }
 
   void loginInpage() {}
+
+  
 
   void directSignUpPage(BuildContext context) {
     Navigator.push(

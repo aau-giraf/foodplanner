@@ -78,7 +78,7 @@ Future<http.Response> createUser(String firstName, String lastName,
 
 Future<http.Response> loginUser(String email, String password) async {
   final response = await http.post(
-    Uri.parse('http://127.0.0.1:80/api/Users/Login'),
+    Uri.parse('http://localhost/api/Users/Login'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
