@@ -94,7 +94,7 @@ class _MealPageState extends State<MealPage> {
                 style: TextStyle(color: AppColors.textFieldHint),
               ),
               Container(
-                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                padding: const EdgeInsets.only(left: 50.0, right: 50.0),
                 child: TextField(
                   controller: _titleController,
                   decoration: InputDecoration(
