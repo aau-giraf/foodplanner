@@ -5,6 +5,7 @@ import 'package:foodplanner/config/colors.dart';
 
 class ApproveBox extends StatelessWidget {
   final String name;
+  final String LastName;
   final String role;
   final VoidCallback onApprove;
   final VoidCallback onDeny;
@@ -12,6 +13,7 @@ class ApproveBox extends StatelessWidget {
   ApproveBox({
     required this.name,
     required this.role,
+    required this.LastName,
     required this.onApprove,
     required this.onDeny,
   });
@@ -32,10 +34,13 @@ class ApproveBox extends StatelessWidget {
           // Name and Role Text
           Expanded(
             child: Text(
-              '$name vil gerne være $role',
+              '$name $LastName vil gerne være $role',
               style: AppTextStyles.standard, // Ensure text color contrast
             ),
           ),
+          // Add a SizedBox for spacing between text and buttons
+          SizedBox(width: 16.0), // Adjust this value for desired space
+
           // Buttons aligned to the right
           Row(
             children: [
@@ -46,6 +51,7 @@ class ApproveBox extends StatelessWidget {
                 customWidth: 80,
                 size: ButtonSize.small,
               ),
+              SizedBox(width: 8.0),
               CustomButton(
                 onTab: onDeny,
                 text: 'Afvis',
