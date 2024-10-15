@@ -97,25 +97,25 @@ class LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           children: [
-            const SizedBox(height: 10),
             Text(
               'Egebakkeskolen',
-              style: AppTextStyles.headline1,
+              style: AppTextStyles.headline2
+                .copyWith(fontSize: 26),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
             Text(
               'Foodplanner',
-              style: AppTextStyles.headline1,
+              style: AppTextStyles.headline2
+                .copyWith(fontSize: 26),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 35),
             Image(
               image: AssetImage('assets/images/logo.png'),
-              height: 180,
+              height: 160,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 35),
             Column(
               children: [
-                const SizedBox(height: 10),
                 Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -125,14 +125,17 @@ class LoginPageState extends State<LoginPage> {
                   elevation:  3,
                     child: Column(
                       children: [
+                        const SizedBox(height: 15),
                         Text(
                           'Log ind',
-                          style: AppTextStyles.headline2,
+                          style: AppTextStyles.headline3
+                              .copyWith(fontSize: 22),                         
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 30),
                         Text(
                           'Brugernavn',
-                          style: AppTextStyles.headline3,
+                          style: AppTextStyles.headline4
+                              .copyWith(fontSize: 18),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -141,10 +144,11 @@ class LoginPageState extends State<LoginPage> {
                             controller: usernameController,
                             errorText: emailError),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 50),
                         Text(
                           'Adgangskode',
-                          style: AppTextStyles.headline3,
+                          style: AppTextStyles.headline4
+                              .copyWith(fontSize: 18),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -154,37 +158,39 @@ class LoginPageState extends State<LoginPage> {
                             controller: passwordController,
                             errorText: passwordError),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 25),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 150),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ForgotPasswordPage()),
-                                  );
-                                },
-                                child: Text(
-                                  "Glemt adgangskode?",
-                                  style: AppTextStyles.standard.copyWith(
-                                    color: AppColors.secondary,
-                                    decoration: TextDecoration.underline,
-                                    decorationColor: AppColors.secondary,
+                              Flexible(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ForgotPasswordPage()),
+                                    );
+                                  },
+                                  child: Text(
+                                    "Glemt adgangskode?",
+                                    style: AppTextStyles.standard.copyWith(
+                                      color: AppColors.secondary,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: AppColors.secondary,
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 25),
                       ],
                     ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -195,7 +201,7 @@ class LoginPageState extends State<LoginPage> {
                         backgroundColor: AppColors.secondary,
                       ),
                     ),  
-                    SizedBox(width: 20),
+                    SizedBox(width: 15),
                     Expanded(
                       child: CustomButton(
                         text: "Login",

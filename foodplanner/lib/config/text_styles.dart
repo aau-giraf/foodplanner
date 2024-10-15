@@ -19,7 +19,7 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary, // You can use AppColors here if needed
   );
-
+  
   static const TextStyle headline3 = TextStyle(
     fontSize: 24.0,
     fontWeight: FontWeight.bold,
