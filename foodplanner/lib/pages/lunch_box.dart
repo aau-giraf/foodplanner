@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/config/colors.dart';
 
 class LunchBox extends StatelessWidget {
   const LunchBox({super.key});
@@ -9,6 +10,7 @@ class LunchBox extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Madpakke side'),
       ),
+      backgroundColor: AppColors.background,
       body: const Center(
         child: Text('Madpakke side'),
       ),

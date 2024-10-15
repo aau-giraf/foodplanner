@@ -18,7 +18,7 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.cyan,
+      backgroundColor: AppColors.background,
       bottomNavigationBar: ClipRRect(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(30),
@@ -40,7 +40,7 @@ class _NavBarState extends State<NavBar> {
                 color: Colors.white,
               ),
               icon: SFIcon(SFIcons.sf_shippingbox),
-              label: 'Ekstra madpakke',
+              label: 'Ekstra',
             ),
             NavigationDestination(
               selectedIcon: SFIcon(
