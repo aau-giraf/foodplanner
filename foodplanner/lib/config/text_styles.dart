@@ -19,7 +19,7 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary, // You can use AppColors here if needed
   );
-
+  
   static const TextStyle headline3 = TextStyle(
     fontSize: 24.0,
     fontWeight: FontWeight.bold,
@@ -46,6 +46,21 @@ class AppTextStyles {
 
   static const TextStyle buttonText = TextStyle(
     fontSize: 26.0,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle buttonTextMedium = TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle buttonTextSmall = TextStyle(
+    fontSize: 12.0,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle buttonTextBig = TextStyle(
+    fontSize: 32.0,
     fontWeight: FontWeight.bold,
   );
 
