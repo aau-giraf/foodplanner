@@ -1,12 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/components/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'forgot_password_page.dart';
 import 'signup_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -86,69 +82,73 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-@override
-Widget build(BuildContext context) {
-  return MaterialApp(
-    home: Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              Text(
-                'Egebakkeskolen',
-                style: AppTextStyles.headline1,
-              ),
-              const SizedBox(height: 10,),
-              Text(
-                'Foodplanner',
-                style: AppTextStyles.headline1,
-              ),
-              const SizedBox(height: 30,),
-              Image(image: AssetImage('assets/images/logo.png'),
-              height: 180,
-              ),
-              const SizedBox(height: 20),
-              Container(
-                width: 320,
-                height: 400,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300], // Light grey color
-                  borderRadius: BorderRadius.circular(25),
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: AppColors.background,
+        body: SafeArea(
+          child: Center(
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                Text(
+                  'Egebakkeskolen',
+                  style: AppTextStyles.headline1,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      'Log ind',
-                      style: AppTextStyles.headline3,
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Brugernavn',
-                      style: AppTextStyles.headline4,
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Adgangskode',
-                      style: AppTextStyles.headline4,
-                    ),
-                  ],
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
-            ],
+                Text(
+                  'Foodplanner',
+                  style: AppTextStyles.headline1,
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Image(
+                  image: AssetImage('assets/images/logo.png'),
+                  height: 180,
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  width: 320,
+                  height: 400,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300], // Light grey color
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 20),
+                      Text(
+                        'Log ind',
+                        style: AppTextStyles.headline3,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Brugernavn',
+                        style: AppTextStyles.headline4,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Adgangskode',
+                        style: AppTextStyles.headline4,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-
- /* @override
+  /* @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
