@@ -5,6 +5,7 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/components/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'signup_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -90,20 +91,16 @@ class LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        title: Text(
+          'Egebakkeskolen\nFoodplanner',
+          style: AppTextStyles.title,
+          textAlign: TextAlign.center,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           children: [
-            Text(
-              'Egebakkeskolen',
-              style: AppTextStyles.headline2.copyWith(fontSize: 26),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              'Foodplanner',
-              style: AppTextStyles.headline2.copyWith(fontSize: 26),
-            ),
             const SizedBox(height: 35),
             Image(
               image: AssetImage('assets/images/logo.png'),
