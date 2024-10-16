@@ -12,8 +12,8 @@ import 'package:provider/provider.dart';
 import '../auth/auth_provider.dart';
 import '../main.dart';
 import '../pages/signup.dart';
-import '../pages/login_page.dart'; 
-import '../pages/login.dart'; 
+import '../pages/login_page.dart';
+import '../pages/login.dart';
 import '../pages/unauthorized_page.dart';
 import '../pages/teacher_page.dart';
 import '../pages/student_page.dart';
@@ -29,54 +29,55 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/login',
-      builder: (context, state) =>  LoginPage(),
+      builder: (context, state) => LoginPage(),
     ),
-GoRoute(
+    GoRoute(
       path: '/login2',
-      builder: (context, state) =>  LoginPage2(),
+      builder: (context, state) => LoginPage2(),
     ),
-     GoRoute(
+    GoRoute(
       path: '/signup',
-      builder: (context, state) =>  SignupPage(),
+      builder: (context, state) => SignupPage(),
     ),
     GoRoute(
       path: '/signup2',
-      builder: (context, state) =>  SignupPage2(),
+      builder: (context, state) => SignupPage2(),
     ),
-   
-    
     GoRoute(
       path: TEACHER_ROOT,
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        return authProvider.hasRole(ROLES.teacher) ? const TeacherPage() : const UnauthorizedPage();
+        return authProvider.hasRole(ROLES.teacher)
+            ? const TeacherPage()
+            : const UnauthorizedPage();
       },
     ),
     GoRoute(
       path: STUDENT_ROOT,
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        return authProvider.hasRole(ROLES.student) ? const StudentPage() : const UnauthorizedPage();
+        return authProvider.hasRole(ROLES.student)
+            ? const StudentPage()
+            : const UnauthorizedPage();
       },
     ),
     GoRoute(
       path: ADMIN_ROOT,
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        return authProvider.hasRole(ROLES.admin) ? const AdminPage() : const UnauthorizedPage();
+        return authProvider.hasRole(ROLES.admin)
+            ? const AdminPage()
+            : const UnauthorizedPage();
       },
     ),
     GoRoute(
       path: PARENT_ROOT,
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        return authProvider.hasRole(ROLES.parent) ? const ParentPage() : const UnauthorizedPage();
+        return authProvider.hasRole(ROLES.parent)
+            ? const ParentPage()
+            : const UnauthorizedPage();
       },
     ),
   ],
 );
-
-
-
-
-
