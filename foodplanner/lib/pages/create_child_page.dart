@@ -141,6 +141,21 @@ class _SignupChildState extends State<CreateChildPage> {
     }
   } */
 
+  List<String> classes = [
+    '0A',
+    '0B',
+    '1A',
+    '1B',
+    '2A',
+    '2B',
+    '3A',
+    '3B',
+    '4A',
+    '4B',
+    '5A',
+    '5B'
+  ];
+
   bool showButton() {
     return firstNameController.text.isNotEmpty &&
         lastNameController.text.isNotEmpty;
@@ -205,6 +220,31 @@ class _SignupChildState extends State<CreateChildPage> {
                     'Klasse',
                     style: AppTextStyles.bigText
                         .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: DropdownMenu(
+                      width: double.infinity,
+                      menuStyle: MenuStyle(
+                        shape: WidgetStatePropertyAll<OutlinedBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                8.0), // Adjust the radius as needed
+                            side: BorderSide(
+                              color: Colors.blue, // Border color
+                              width: 1.0, // Border width
+                            ),
+                          ),
+                        ),
+                      ),
+                      dropdownMenuEntries: classes
+                          .map<DropdownMenuEntry<String>>((String value) {
+                        return DropdownMenuEntry<String>(
+                          value: value,
+                          label: value,
+                        );
+                      }).toList(),
+                    ),
                   ),
                   SizedBox(height: 15),
                 ],
