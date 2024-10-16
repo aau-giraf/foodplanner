@@ -8,14 +8,14 @@ import 'package:foodplanner/components/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
-  State<Signup> createState() => _SignupState();
+  State<SignupPage> createState() => _SignupState();
 }
 
-class _SignupState extends State<Signup> {
+class _SignupState extends State<SignupPage> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();

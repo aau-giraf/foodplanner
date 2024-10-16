@@ -80,7 +80,7 @@ class LoginPageState extends State<LoginPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Signup(),
+        builder: (context) => SignupPage(),
       ),
     );
   }
@@ -189,7 +189,7 @@ class LoginPageState extends State<LoginPage> {
                     Expanded(
                       child: CustomButton(
                         onTab: () => directSignUpPage(context),
-                        text: 'Tilbage',
+                        text: 'Opret',
                         backgroundColor: AppColors.secondary,
                       ),
                     ),
