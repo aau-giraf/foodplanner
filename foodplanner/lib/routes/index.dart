@@ -11,7 +11,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../auth/auth_provider.dart';
 import '../main.dart';
-import '../pages/signup.dart';
 import '../pages/login_page.dart';
 import '../pages/login.dart';
 import '../pages/unauthorized_page.dart';
@@ -38,10 +37,6 @@ final router = GoRouter(
     GoRoute(
       path: '/signup',
       builder: (context, state) => SignupPage(),
-    ),
-    GoRoute(
-      path: '/signup2',
-      builder: (context, state) => SignupPage2(),
     ),
     GoRoute(
       path: TEACHER_ROOT,

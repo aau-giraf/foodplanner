@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/login_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -20,7 +21,7 @@ class HomePage extends StatelessWidget {
               'Du er nu logget ind!',
               style: TextStyle(fontSize: 20),
             ),
-         const SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -30,7 +31,15 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Go to Login Page'),
             ),
-           
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CreateChildPage()),
+                );
+              },
+              child: const Text('Go to Child Creation Page'),
+            ),
           ],
         ),
       ),
