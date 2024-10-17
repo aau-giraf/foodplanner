@@ -16,20 +16,20 @@ void main() {
 
   group('AuthProvider', () {
     test('login sets values correctly and writes to secure storage', () async {
-      // Arrange
+      // Arrange mock data
       final role = ROLES.admin;
       final token = 'fake_jwt_token';
       final isLoggedIn = true;
 
-      // Act
+      // Act / we call login method from auth_provider.dart
       await authProvider.login(role, token, isLoggedIn);
 
-      // Assert
+      // Assert the values are set correctly through login
       expect(authProvider.isLoggedIn, isLoggedIn);
       expect(authProvider.userRole, role);
       expect(authProvider.jwtToken, token);
 
-      // Verify secure storage writes
+      // We verify that the method is called once and once only, and that the values are in the proper fields matching their keys
       verify(mockSecureStorage.write(key: 'isLoggedIn', value: isLoggedIn.toString())).called(1);
       verify(mockSecureStorage.write(key: 'userRole', value: role.toString())).called(1);
       verify(mockSecureStorage.write(key: 'jwtToken', value: token)).called(1);
