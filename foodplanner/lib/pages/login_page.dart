@@ -54,7 +54,7 @@ class LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                'Du er nu logget ind. ${user.firstName}, ${user.lastName}'),
+                'Du er nu logget ind'),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 5),
           ),
@@ -62,6 +62,9 @@ class LoginPageState extends State<LoginPage> {
       } else {
         var error = jsonDecode(response.body);
         handleErrors(error);
+        setState(() {
+          emailError = 'Brugernavn eller adgangskode er forkert';
+        });
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

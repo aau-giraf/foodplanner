@@ -3,34 +3,26 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class User {
-  final int id;
-  final String firstName;
-  final String lastName;
-  final String email;
+  final String jwt;
   final String role;
+  final bool roleApproved;
 
   const User({
-    required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.email,
+    required this.jwt,
     required this.role,
+    required this.roleApproved,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
-        'id': int id,
-        'first_name': String firstName,
-        'last_name': String lastName,
-        'email': String email,
+        'jwt': String jwt,
+        'roleApproved': bool roleApproved,
         'role': String role,
       } =>
         User(
-          id: id,
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
+          jwt: jwt,
+          roleApproved: roleApproved,
           role: role,
         ),
       _ => throw const FormatException('Bruger kunne ikke findes.'),
@@ -112,7 +104,7 @@ Future<http.Response> createUser(String firstName, String lastName,
 
 Future<http.Response> loginUser(String email, String password) async {
   final response = await http.post(
-    Uri.parse('http://127.0.0.1:80/api/Users/Login'),
+    Uri.parse('http://127.0.0.1:8080/api/Users/Login'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
