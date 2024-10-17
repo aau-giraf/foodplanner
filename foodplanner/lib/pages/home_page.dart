@@ -35,7 +35,7 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Go to Login Page'),
             ),
-
+            // Used for development purposes
             ElevatedButton(
               onPressed: () {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);

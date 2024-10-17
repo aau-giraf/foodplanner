@@ -27,7 +27,7 @@ class AuthProvider with ChangeNotifier {
     await _secureStorage.write(key: 'jwtToken', value: token);
     notifyListeners();
 
-    _secureStorage.read(key: 'jwtToken');
+    
   }
 
   Future<void> logout() async {
@@ -41,8 +41,11 @@ class AuthProvider with ChangeNotifier {
   }
 
   bool hasRole(ROLES role) {
+    loadFromStorage();
     return _isLoggedIn && _userRole == role;
   }
+
+// Used for development purposes, using guards 
 
   Future<void> setRole(ROLES role) async {
     _isLoggedIn = true;
