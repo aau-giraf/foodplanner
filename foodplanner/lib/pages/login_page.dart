@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
-import 'package:foodplanner/components/user.dart';
+import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';

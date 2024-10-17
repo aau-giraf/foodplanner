@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'dart:ffi';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/components/text_field.dart';
-import 'package:foodplanner/components/user.dart';
+import 'package:foodplanner/models/class.dart';
+import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
@@ -26,11 +30,19 @@ class _SignupChildState extends State<CreateChildPage> {
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
 
+  Future<List<Class>> classesFuture = fetchAllClasses();
+  List<Class> classes = [];
+
   @override
   void initState() {
     super.initState();
     firstNameController.addListener(_updateButtonState);
     lastNameController.addListener(_updateButtonState);
+    classesFuture.then((classes) {
+      setState(() {
+        this.classes = classes;
+      });
+    });
   }
 
   @override
@@ -70,6 +82,8 @@ class _SignupChildState extends State<CreateChildPage> {
   void validateInputs(BuildContext context) {
     String firstName = firstNameController.text.trim();
     String lastName = lastNameController.text.trim();
+    int selectedClassId =
+        selectedValue!.isNotEmpty ? int.parse(selectedValue!) : 0;
     //Step 1: Check om alle felter er udfyldt
     if (firstName.isEmpty || lastName.isEmpty) {
       // Show an error message if any field is empty
@@ -106,14 +120,16 @@ class _SignupChildState extends State<CreateChildPage> {
     }
 
     //proceed with sign-up logic if everything is correct
-    //createChild(context, firstName, lastName);
+    createChildHandler(context, firstName, lastName, 1, selectedClassId);
   }
 
   //Placeholder function for sign-up logic
-  /* void createChild(
-      BuildContext context, String firstName, String lastName) async {
-    try {
-      final response = await createChild(firstName, lastName);
+  void createChildHandler(BuildContext context, String firstName,
+      String lastName, int parentId, int classId) async {
+    print('Creating child, classId: $classId');
+    /* try {
+      final response =
+          await createChild(firstName, lastName, parentId, classId);
 
       if (!context.mounted) return;
 
@@ -138,27 +154,15 @@ class _SignupChildState extends State<CreateChildPage> {
           duration: Duration(seconds: 5),
         ),
       );
-    }
-  } */
+    } */
+  }
 
-  List<String> classes = [
-    '0A',
-    '0B',
-    '1A',
-    '1B',
-    '2A',
-    '2B',
-    '3A',
-    '3B',
-    '4A',
-    '4B',
-    '5A',
-    '5B'
-  ];
+  String? selectedValue;
 
   bool showButton() {
     return firstNameController.text.isNotEmpty &&
-        lastNameController.text.isNotEmpty;
+        lastNameController.text.isNotEmpty &&
+        selectedValue != null;
   }
 
   @override
@@ -221,36 +225,103 @@ class _SignupChildState extends State<CreateChildPage> {
                     style: AppTextStyles.bigText
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
+                  SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: DropdownMenu(
-                      width: double.infinity,
-                      menuStyle: MenuStyle(
-                        shape: WidgetStatePropertyAll<OutlinedBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                8.0), // Adjust the radius as needed
-                            side: BorderSide(
-                              color: Colors.blue, // Border color
-                              width: 1.0, // Border width
-                            ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton2<String>(
+                        isExpanded: true,
+                        hint: Text(
+                          'Vælg klasse',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textSecondary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        items: classes
+                            .map((Class _class) => DropdownMenuItem<String>(
+                                  value: _class.classId.toString(),
+                                  child: Text(
+                                    _class.className,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ))
+                            .toList(),
+                        value: selectedValue,
+                        onChanged: (String? value) {
+                          setState(() {
+                            selectedValue = value;
+                          });
+                        },
+                        selectedItemBuilder: (BuildContext context) {
+                          return classes.map((Class _class) {
+                            return Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                _class.className,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            );
+                          }).toList();
+                        },
+                        buttonStyleData: ButtonStyleData(
+                          height: 50,
+                          width: 200,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            color: AppColors.primary,
+                          ),
+                          elevation: 2,
+                        ),
+                        iconStyleData: const IconStyleData(
+                          icon: SFIcon(
+                            SFIcons.sf_chevron_forward,
+                          ),
+                          openMenuIcon: SFIcon(
+                            SFIcons.sf_chevron_down,
+                          ),
+                          iconSize: 16,
+                          iconEnabledColor: AppColors.textSecondary,
+                          iconDisabledColor: Colors.grey,
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                          maxHeight: 200,
+                          width: 200,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            color: AppColors.background,
+                          ),
+                          scrollbarTheme: ScrollbarThemeData(
+                            radius: const Radius.circular(40),
+                            thickness: WidgetStatePropertyAll<double>(6),
+                            thumbVisibility: WidgetStatePropertyAll<bool>(true),
                           ),
                         ),
+                        menuItemStyleData: const MenuItemStyleData(
+                          height: 40,
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                        ),
                       ),
-                      dropdownMenuEntries: classes
-                          .map<DropdownMenuEntry<String>>((String value) {
-                        return DropdownMenuEntry<String>(
-                          value: value,
-                          label: value,
-                        );
-                      }).toList(),
                     ),
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 20),
                 ],
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 15),
             CustomButton(
               text: 'Registrer barn',
               onTab: showButton() ? () => validateInputs(context) : null,

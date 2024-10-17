@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/components/approve_box.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/components/user.dart';
+import 'package:foodplanner/models/user.dart';
 
 class AdminApprovePage extends StatefulWidget {
   @override

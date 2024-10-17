@@ -4,7 +4,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/components/text_field.dart';
-import 'package:foodplanner/components/user.dart';
+import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
