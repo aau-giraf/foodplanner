@@ -1,31 +1,30 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:foodplanner/components/user.dart';
+import 'package:foodplanner/components/ingredient.dart';
+import 'package:foodplanner/components/meal.dart';
 import 'package:http/http.dart' as http;
 
-class Ingredient {
-  final String name;
-  // final User user;
-  final Image? image;
-  
+class PackedIngredient {
+  final Meal mealRef;
+  final Ingredient ingredientRef;
+  final int id;
 
-  const Ingredient({
-    this.name = '',
-    // this.user,
-    this.image,
+  const PackedIngredient({
+    this.mealRef = const Meal(),
+    this.ingredientRef = const Ingredient(),
+    this.id = 0,
   });
 
-  factory Ingredient.fromJson(Map<String, dynamic> json) {
+  factory PackedIngredient.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
-        'name': String name,
-        // 'user': User user,
-        'image': Image image,
+        'mealRef': Meal mealRef,
+        'ingredientRef': Ingredient ingredientRef,
+        'id': int id,
       } =>
-        Ingredient(
-          name: name,
-          // user: user,
-          image: image,
+        PackedIngredient(
+            mealRef: mealRef,
+            ingredientRef: ingredientRef,
+            id: id,
         ),
       _ => throw const FormatException('Ingrediens kunne ikke findes.'),
     };
@@ -43,16 +42,16 @@ Future<Ingredient> fetchIngredient(int id) async {
   }
 }
 
-Future<http.Response> createIngredient(String name, /*User user, */ Image image) async {
+Future<http.Response> createIngredient(Meal mealRef, Ingredient ingredientRef, int id) async {
   final response = await http.post(
     Uri.parse('http://127.0.0.1:80/api/Ingredients/Create'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
-    body: jsonEncode(<String, String>{
-      'name': name,
-      // 'user': user,
-      'image': image.toString(),
+    body: jsonEncode({
+      'mealRef': mealRef,
+      'ingredientRef': ingredientRef,
+      'id': id,
     }),
   );
 

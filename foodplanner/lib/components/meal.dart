@@ -2,44 +2,45 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:foodplanner/components/ingredient.dart';
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/packed_ingredient.dart';
+import 'package:foodplanner/components/user.dart';
 import 'package:http/http.dart' as http;
 
 class Meal {
   final int id;
-  final String name;
-  final String? description;
+  // final User user;
+  final String title;
   final Image? image;
-  final List<Ingredient> ingredients;
-  final String altText;
+  final DateTime? date;
+  final List<PackedIngredient> ingredients;
 
   const Meal({
     this.id = 0,
-    this.name = '',
-    this.description,
+    // this.user = new User(),
+    this.title = '',
     this.image,
-    this.ingredients = const <Ingredient>[],
-    this.altText = '',
+    this.date,
+    this.ingredients = const <PackedIngredient>[],
   });
 
   factory Meal.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
         'id': int id,
-        'name': String name,
-        'description': String description,
+        // 'user': User user,
+        'title': String title,
         'image': Image image,
-        'ingredients': List<Ingredient> ingredients,
-        'alt_text': String altText,
+        'date' : DateTime date,
+        'ingredients': List<PackedIngredient> ingredients,
       } =>
         Meal(
           id: id,
-          name: name,
-          description: description,
+          // user: user,
+          title: title,
           image: image,
+          date: date,
           ingredients: ingredients,
-          altText: altText,
         ),
       _ => throw const FormatException('Måltid kunne ikke findes.'),
     };
@@ -57,8 +58,7 @@ Future<Meal> fetchMeal(int id) async {
   }
 }
 
-Future<http.Response> createMeal(int id, String name, String description, Image image, List<Ingredient> ingredients,
-    String altText) async {
+Future<http.Response> createMeal(final int id, /*final User user,*/ final String title, final Image? image, final DateTime? date, final List<PackedIngredient> ingredients) async {
   final response = await http.post(
     Uri.parse('http://127.0.0.1:80/api/Meals/Create'),
     headers: <String, String>{
@@ -66,11 +66,11 @@ Future<http.Response> createMeal(int id, String name, String description, Image 
     },
     body: jsonEncode({
         'id': id,
-        'name': name,
-        'description': description,
+        // 'user': user,
+        'title': title,
         'image': image.toString(),
+        'date': date,
         'ingredients': ingredients,
-        'alt_text': altText,
     }),
   );
 
