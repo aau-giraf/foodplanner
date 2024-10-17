@@ -54,16 +54,16 @@ class HomePage extends StatelessWidget {
               child: const Text('Go to Admin Page'),
             ),
 
-            ElevatedButton(
-            onPressed: () async {
-              final authProvider = Provider.of<AuthProvider>(context, listen: false);
-              await authProvider.login(ROLES.admin, 'TEST'); // token has to come from backend :) so when stokholm fix his shit we can fix ours 
-              print('Logged in: ${authProvider.isLoggedIn}');
-              print('User Role: ${authProvider.userRole}');
-              print('JWT Token: ${authProvider.jwtToken}');
-            },
-            child: const Text('Login TESTING TOKENS'),
-            ),
+            // ElevatedButton(
+            // onPressed: () async {
+            //   final authProvider = Provider.of<AuthProvider>(context, listen: false);
+            //   await authProvider.login(ROLES.admin, AuthProvider().jwtToken, AuthProvider().isLoggedIn); // token has to come from backend :) so when stokholm fix his shit we can fix ours 
+            //   print('Logged in: ${authProvider.isLoggedIn}');
+            //   print('User Role: ${authProvider.userRole}');
+            //   print('JWT Token: ${authProvider.jwtToken}');
+            // },
+            // child: const Text('Login TESTING TOKENS'),
+            // ),
             ElevatedButton(
               onPressed: () async {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);

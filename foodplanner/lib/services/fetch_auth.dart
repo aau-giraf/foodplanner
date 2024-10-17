@@ -23,16 +23,20 @@ class AuthService {
         final data = jsonDecode(response.body);
         final String jwt = data['jwt'];
         final String status = data['status'];
-        final String role = data['role'];
+        final ROLES role = data['role'];
         bool isLoggedIn = false;
 
         if (status == 'Active'){
           isLoggedIn= true;
           };
-        print('$jwt $status $role');
+
+        AuthProvider().login(role, jwt, isLoggedIn);
+        
+        
       } else {
         throw Exception('Failed to load auth data');
       }
+      // sabrina carpenter <3
     } catch (e) {
       print('Error fetching auth data: $e');
     }
