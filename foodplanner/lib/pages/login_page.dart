@@ -50,7 +50,7 @@ class LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
-        User user = User.fromJson(body);
+        UserLogin user = UserLogin.fromJsonLogin(body);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
