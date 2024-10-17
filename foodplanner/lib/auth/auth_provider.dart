@@ -4,19 +4,21 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../routes/user_roles.dart'; 
 
 class AuthProvider with ChangeNotifier {
-   final FlutterSecureStorage _secureStorage = FlutterSecureStorage(
-    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
-   );
-
-
+  final FlutterSecureStorage _secureStorage;
   bool _isLoggedIn = false;
   ROLES? _userRole;
   String? _jwtToken;
 
+  AuthProvider({FlutterSecureStorage? secureStorage})
+      : _secureStorage = secureStorage ?? const FlutterSecureStorage(
+          iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+        );
 
   bool get isLoggedIn => _isLoggedIn;
   ROLES? get userRole => _userRole;
   String? get jwtToken => _jwtToken;
+
+
 
   Future<void> login(ROLES role, String token, bool isLoggedIn) async {
     _isLoggedIn = isLoggedIn;
@@ -26,8 +28,6 @@ class AuthProvider with ChangeNotifier {
     await _secureStorage.write(key: 'userRole', value: role.toString());
     await _secureStorage.write(key: 'jwtToken', value: token);
     notifyListeners();
-
-    
   }
 
   Future<void> logout() async {
@@ -45,15 +45,13 @@ class AuthProvider with ChangeNotifier {
     return _isLoggedIn && _userRole == role;
   }
 
-// Used for development purposes, using guards 
-
   Future<void> setRole(ROLES role) async {
     _isLoggedIn = true;
     _userRole = role;
-     await _secureStorage.write(key: 'userRole', value: role.toString());
+    await _secureStorage.write(key: 'userRole', value: role.toString());
     notifyListeners();
   }
-  
+
   Future<void> loadFromStorage() async {
     String? isLoggedIn = await _secureStorage.read(key: 'isLoggedIn');
     String? userRole = await _secureStorage.read(key: 'userRole');
@@ -62,7 +60,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-   Future<String?> retrieveToken() async {
+  Future<String?> retrieveToken() async {
     _jwtToken = await _secureStorage.read(key: 'jwtToken');
     notifyListeners();
     return _jwtToken;
