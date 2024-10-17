@@ -22,11 +22,11 @@ class AuthService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final String jwt = data['jwt'];
-        final String status = data['status'];
+        final String roleApproved = data['roleApproved'];
         final ROLES role = data['role'];
         bool isLoggedIn = false;
 
-        if (status == 'Active'){
+        if (roleApproved == 'True'){
           isLoggedIn= true;
           };
 
