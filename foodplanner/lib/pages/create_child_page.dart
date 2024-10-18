@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/components/segment_button.dart';
@@ -11,9 +12,12 @@ import 'package:foodplanner/models/class.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateChildPage extends StatefulWidget {
-  const CreateChildPage({super.key});
+  final int id;
+  const CreateChildPage({super.key, required this.id});
 
   @override
   State<CreateChildPage> createState() => _SignupChildState();
@@ -120,14 +124,20 @@ class _SignupChildState extends State<CreateChildPage> {
     }
 
     //proceed with sign-up logic if everything is correct
-    createChildHandler(context, firstName, lastName, 1, selectedClassId);
+    createChildHandler(context, firstName, lastName, selectedClassId);
   }
 
   //Placeholder function for sign-up logic
-  void createChildHandler(BuildContext context, String firstName,
-      String lastName, int parentId, int classId) async {
-    print('Creating child, classId: $classId');
-    /* try {
+  void createChildHandler(
+    BuildContext context,
+    String firstName,
+    String lastName,
+    int classId,
+  ) async {
+    final parentId = widget.id;
+
+    print('Creating child, classId: $classId, parentId: $parentId');
+    try {
       final response =
           await createChild(firstName, lastName, parentId, classId);
 
@@ -136,11 +146,12 @@ class _SignupChildState extends State<CreateChildPage> {
       if (response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Bruger oprettet!'),
+            content: Text('Barn oprettet!'),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 5),
           ),
         );
+        context.go('/');
       } else {
         var error = jsonDecode(response.body);
         handleErrors(error);
@@ -149,12 +160,12 @@ class _SignupChildState extends State<CreateChildPage> {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Fejl ved oprettelse af bruger: $e'),
+          content: Text('Fejl ved oprettelse af barn: $e'),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 5),
         ),
       );
-    } */
+    }
   }
 
   String? selectedValue;

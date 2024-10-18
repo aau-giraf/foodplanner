@@ -4,12 +4,10 @@ const String ADMIN_ROOT = '/admin';
 const String TEACHER_ROOT = '/teacher';
 const String STUDENT_ROOT = '/student';
 const String PARENT_ROOT = '/parent';
-
 // additional pages
 const String MAIN_PAGE = '/home';
 const String LOGIN_PAGE = '/login';
 const String SIGNUP_PAGE = '/signup';
-
 
 // routing through concat of pages from above (lavet baseret på vores p3 dont ask why)
 const String MAIN_PAGE_ROUTE = MAIN_PAGE;

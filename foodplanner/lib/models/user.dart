@@ -41,6 +41,34 @@ class User {
   }
 }
 
+class UserLogin {
+  final String jwt;
+  final bool roleApproved;
+  final String role;
+
+  const UserLogin({
+    required this.jwt,
+    required this.roleApproved,
+    required this.role,
+  });
+
+  factory UserLogin.fromJsonLogin(Map<String, dynamic> json) {
+    return switch (json) {
+      {
+        'jwt': String jwt,
+        'roleApproved': bool roleApproved,
+        'role': String role,
+      } =>
+        UserLogin(
+          jwt: jwt,
+          roleApproved: roleApproved,
+          role: role,
+        ),
+      _ => throw const FormatException('Bruger kunne ikke findes.'),
+    };
+  }
+}
+
 Future<User> fetchUser() async {
   final response =
       await http.get(Uri.parse('${ApiConfig.baseUrl}/api/Users/Get/1'));
@@ -102,8 +130,8 @@ Future<http.Response> createUser(String firstName, String lastName,
       'Content-Type': 'application/json; charset=UTF-8',
     },
     body: jsonEncode(<String, String>{
-      'first_name': firstName,
-      'last_name': lastName,
+      'firstName': firstName,
+      'lastName': lastName,
       'email': email,
       'password': password,
       'role': role

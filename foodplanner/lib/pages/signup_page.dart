@@ -7,6 +7,8 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/pages/login_page.dart';
+import 'package:go_router/go_router.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -226,6 +228,24 @@ class _SignupState extends State<SignupPage> {
             duration: Duration(seconds: 5),
           ),
         );
+
+        final error =
+            await LoginPage.authService.fetchAuthData(email, password);
+
+        if (error != null) {
+          handleErrors(error);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Fejl ved login af bruger: $error'),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 5),
+            ),
+          );
+        } else {
+          print('User logged in $response');
+          final userId = response.body;
+          context.go('/signup/create-child/$userId');
+        }
       } else {
         var error = jsonDecode(response.body);
         handleErrors(error);

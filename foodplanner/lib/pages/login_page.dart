@@ -9,6 +9,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'signup_page.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -41,25 +42,37 @@ class LoginPageState extends State<LoginPage> {
   }
 
   void handleErrors(Map<String, dynamic> error) {
-    updateErrorState('Email', error['Email'] != null ? error['Email'][0] : '');
-    updateErrorState(
-        'Password', error['Password'] != null ? error['Password'][0] : '');
+    if (error['Message'] != null) {
+      updateErrorState('Email', ' ');
+      updateErrorState('Password', error['Message'][0]);
+    } else {
+      updateErrorState(
+          'Email', error['Email'] != null ? error['Email'][0] : '');
+      updateErrorState(
+          'Password', error['Password'] != null ? error['Password'][0] : '');
+    }
   }
 
   void signUserIn(BuildContext context) async {
     try {
-      final response =
-          await loginUser(usernameController.text, passwordController.text);
-      await LoginPage.authService
+      /* final response =
+          await loginUser(usernameController.text, passwordController.text); */
+      final error = await LoginPage.authService
           .fetchAuthData(usernameController.text, passwordController.text);
+      print(error);
+      if (error != null) {
+        handleErrors(error);
+      } else {
+        context.go('/');
+      }
 
-      if (response.statusCode == 200) {
+      /* if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
-        User user = User.fromJson(body);
+        UserLogin user = UserLogin.fromJsonLogin(body);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                'Du er nu logget ind. ${user.firstName}, ${user.lastName}'),
+                'Du er nu logget ind. Din rolle er: ${user.role} og din token er: ${user.jwt}'),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 5),
           ),
@@ -67,7 +80,7 @@ class LoginPageState extends State<LoginPage> {
       } else {
         var error = jsonDecode(response.body);
         handleErrors(error);
-      }
+      } */
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

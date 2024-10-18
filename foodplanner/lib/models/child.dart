@@ -52,14 +52,14 @@ Future<Child> fetchChild() async {
 Future<http.Response> createChild(
     String firstName, String lastName, int parentId, int classId) async {
   final response = await http.post(
-    Uri.parse('http://127.0.0.1:80/api/Childrens/Create'),
+    Uri.parse('http://127.0.0.1:8080/api/Childrens/Create'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
     body: jsonEncode(<String, String>{
-      'first_name': firstName,
-      'last_name': lastName,
-      'parent_id': parentId.toString(),
+      'firstName': firstName,
+      'lastName': lastName,
+      'parentId': parentId.toString(),
       'classId': classId.toString(),
     }),
   );

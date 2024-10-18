@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/pages/admin_page.dart';
+import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
+import 'package:foodplanner/pages/landing_page.dart';
 import 'package:foodplanner/pages/parent_page.dart';
 import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/student_page.dart';
@@ -20,7 +22,7 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => HomePage(),
+      builder: (context, state) => LandingPage(),
     ),
     GoRoute(
       path: '/login',
@@ -29,6 +31,17 @@ final router = GoRouter(
     GoRoute(
       path: '/signup',
       builder: (context, state) => SignupPage(),
+    ),
+    GoRoute(
+      path: '/signup/create-child/:id',
+      builder: (context, state) {
+        final id = int.parse(state.pathParameters['id']!);
+        return CreateChildPage(id: id);
+      },
+    ),
+    GoRoute(
+      path: '/unauthorized',
+      builder: (context, state) => UnauthorizedPage(),
     ),
 
     GoRoute(
