@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/homePage.dart';
 import '/pages/cameraPage.dart';
@@ -9,14 +10,14 @@ import '/pages/cameraPage.dart';
 import 'package:foodplanner/config/colors.dart';
 
 /// This class is used to create the meal page where the user can create an individual meal for their children.
-class MealPage extends StatefulWidget {
-  const MealPage({super.key});
+class AddMealPage extends StatefulWidget {
+  const AddMealPage({super.key});
 
   @override
-  _MealPageState createState() => _MealPageState();
+  _AddMealPageState createState() => _AddMealPageState();
 }
 
-class _MealPageState extends State<MealPage> {
+class _AddMealPageState extends State<AddMealPage> {
   final Meal meal = Meal();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -58,39 +59,39 @@ class _MealPageState extends State<MealPage> {
 
       // The button for opening the camera page.
       body: Padding(
-          padding: const EdgeInsets.only(top: 4.0, bottom: 4.0, right: 16.0, left: 16.0),
+          padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, right: 16.0, left: 16.0),
           child: Column(
             children: [
-              Text(
-                'Start med at tilføje et billede af madpakken', 
-                style: TextStyle(color: AppColors.textFieldHint),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // When clicked, leads to the camera page.
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CameraPage()),
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 170,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey)),
-                  child: const Icon(
-                    Icons.camera_alt,
-                    size: 40,
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
+          //     Text(
+          //       'Start med at tilføje et billede af madpakken', 
+          //       style: TextStyle(color: AppColors.textFieldHint),
+          //     ),
+          //     GestureDetector(
+          //       onTap: () {
+          //         // When clicked, leads to the camera page.
+          //         Navigator.push(
+          //           context,
+          //           MaterialPageRoute(builder: (context) => const CameraPage()),
+          //         );
+          //       },
+          //       child: Container(
+          //         width: double.infinity,
+          //         height: 170,
+          //         decoration: BoxDecoration(
+          //             borderRadius: BorderRadius.circular(12),
+          //             border: Border.all(color: Colors.grey)),
+          //         child: const Icon(
+          //           Icons.camera_alt,
+          //           size: 40,
+          //           color: Colors.grey,
+          //         ),
+          //       ),
+          //     ),
+          //     const SizedBox(height: 20),
 
               // Textfield for the title of the meal.
               Text(
-                'Giv den en titel',
+                'Start med at give madpakken en titel',
                 style: TextStyle(color: AppColors.textFieldHint),
               ),
               Container(
@@ -106,55 +107,33 @@ class _MealPageState extends State<MealPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
 
-              // // Textfield for a description and notes for the meal.
-              // TextField(
-              //   controller: _descriptionController,
-              //   keyboardType: TextInputType.multiline,
-              //   minLines: 1,
-              //   maxLines: 4,
-              //   decoration: InputDecoration(
-              //     labelText: 'Beskriv måltidet her.',
-              //     hintText: 'Skriv her...',
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(12),
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(height: 20),
+              const SizedBox(height: 50),
 
               // Add Ingredient button
               Text(
-                'Beskriv ingredienserne',
+                'Tilføj ingredienser',
                 style: TextStyle(color: AppColors.textFieldHint),
               ),
               CustomElevatedButton(
                 onTab: () {
 
                 },
-                widget: Icon(Icons.add),
+                widget: Icon(Icons.add, color: AppColors.textSecondary),
+                backgroundColor: AppColors.secondary,
                 width: MediaQuery.sizeOf(context).width/2,
               ),
               Spacer(),
 
               // Create meal button
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomePage()),
-                  );
+              CustomElevatedButton(
+                onTab: () {
+
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  minimumSize: Size(MediaQuery.sizeOf(context).width/2, 50),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25)),
-                ),
-                child: const Text(
+                width: MediaQuery.sizeOf(context).width/2,
+                widget: const Text(
                   'Opret madpakke',
-                  style: TextStyle(color: Colors.white),
+                  style: AppTextStyles.buttonText,
                 ),
               ),
             ],
