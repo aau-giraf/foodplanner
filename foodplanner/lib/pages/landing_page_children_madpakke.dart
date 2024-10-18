@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/config/text_styles.dart';
+import 'package:intl/intl.dart';
+import 'package:foodplanner/config/colors.dart';
 import 'landing_page_children_se_madpakke.dart'; // Correct import
 
 class ChildLandingPageMadpakke extends StatelessWidget {
@@ -6,66 +9,102 @@ class ChildLandingPageMadpakke extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the current date   
+    String currentDate = DateFormat('dd. MMMM').format(DateTime.now());
+
+    // Get the size of the screen
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Se Madpakke'),
-      ),
+      appBar: AppBar(),
       body: Center(
-        child: Container(
-          width: 375, // Width of an iPhone screen
-          height: 667, // Height of an iPhone screen
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: Offset(0, 3), // changes position of shadow
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Text(
+              'Welcome' + ' ' + 'Child',
+              style: TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: size.width * 0.9, // 90% of the screen width
+              height: size.height * 0.7, // 70% of the screen height
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 243, 243, 243), // image box background color
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3), // changes position of shadow
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Image.network(
-                  'https://example.com/static_image.jpg', // Replace with your image URL
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Center(child: Text('Image not available'));
-                  },
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Madpakke i dag d. $currentDate',
+                    style: AppTextStyles.standard,
+                  ),
+                  const SizedBox(height: 15),
+                  const Text(
+                    'Madpakke text',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    width: double.infinity,
+                    height: size.height * 0.4, // 40% of the screen height
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                       'https://cdn-icons-png.flaticon.com/512/739/739249.png',
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Center(child: Text('Image not available'));
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return const Center(child: CircularProgressIndicator());
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: SizedBox(
+                      width: 250, // Set the desired width
+                      height: 40, // Set the desired height
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ChildLandingPageSeMadpakke()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          shadowColor: Colors.black, // Set the shadow color to black
+                          elevation: 5, // Set the elevation to create a shadow effect
+                        ),
+                        child: const Text('Se madpakke', style: AppTextStyles.buttonText),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              const Text(
-                'Placeholder text for the madpakke page.',
-                style: TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ChildLandingPageSeMadpakke()),
-                  );
-                },
-                child: const Text('Se madpakke'),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
