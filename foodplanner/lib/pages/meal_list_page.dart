@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/components/icon_button.dart';
-import 'package:foodplanner/components/meal_list.dart';
+import 'package:foodplanner/components/empty_meal_list_element.dart';
+import 'package:foodplanner/components/meal_list_element.dart';
 import 'package:foodplanner/components/meal.dart';
-import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/choose_ingredient_page.dart';
 
 class MealListPage extends StatelessWidget {
-
   const MealListPage({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    dynamic meals = <Meal>[
+      // Meal(title: 'Knækbrød med ost + frugt', date: DateTime.now())
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Velkommen, ."),
@@ -34,10 +33,14 @@ class MealListPage extends StatelessWidget {
         child: Column(
           children: [
             Expanded (
-              child: MealList(
-                meals: <Meal>[
-                  Meal(title: 'Knækbrød med ost + frugt', date: DateTime.now())
-                  ],
+              child: meals.isEmpty ? EmptyMealListElement() : ListView.separated(
+                itemCount: meals.length,
+                itemBuilder: (context, index) {
+                  return MealListElement(meal: meals[index]);
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const SizedBox(height: 10);
+                },
               ),
             ),
           ]
