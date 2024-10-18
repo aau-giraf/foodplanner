@@ -10,7 +10,7 @@ class AppColors {
   static const Color textSecondary = Color(0xFFFFFFFF);
 
   // Text field colors
-  static const Color textFieldBackground = Color(0xFFF3F8F2);
+  static const Color textFieldBackground = Color(0xFFF2F2F2);
   static const Color textFieldBorder = Color(0xFFBDBDBD);
   static const Color textFieldBorderFocus = Color(0xFF000000);
   static const Color textFieldHint = Color(0xFF9E9E9E);

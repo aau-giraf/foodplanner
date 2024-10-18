@@ -3,6 +3,7 @@ import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/components/packed_ingredient.dart';
 import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/config/text_styles.dart';
 
 class AddIngredientPage extends StatelessWidget {
   final Meal meal;
@@ -15,7 +16,11 @@ class AddIngredientPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Ingredient> ingredients = <Ingredient>[
-
+      Ingredient(name: 'Knækbrød'),
+      Ingredient(name: 'ost:brie'),
+      Ingredient(name: 'ost:mozeralla'),
+      Ingredient(name: 'æble'),
+      Ingredient(name: 'banan'),
     ];
     PackedIngredient new_ingredient = PackedIngredient();
 
@@ -38,7 +43,7 @@ class AddIngredientPage extends StatelessWidget {
             padding: EdgeInsets.only(top: 5, right: 16, left: 16),
             child: TextField(
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
+                border: InputBorder.none,
                 hintText: 'Skriv her...',
                 hintStyle: TextStyle(
                   color: AppColors.textFieldHint,
@@ -49,13 +54,23 @@ class AddIngredientPage extends StatelessWidget {
             ),
           ),
           
+
+          Divider(color: AppColors.textFieldBorder,),
           Expanded(
             child: ListView.separated(
               itemCount: ingredients.length,
               itemBuilder: (BuildContext context, int index) {
-                return ElevatedButton(
+                return TextButton(
                   onPressed: () {},
-                  child: Text(ingredients[index].name),
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    )
+                  ), 
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(ingredients[index].name, style: AppTextStyles.standard),
+                  )
                 );
               }, 
               separatorBuilder: (BuildContext context, int index) {

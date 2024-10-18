@@ -103,7 +103,7 @@ class _AddMealPageState extends State<AddMealPage> {
                     hintStyle: TextStyle(
                       color: AppColors.textFieldHint,
                     ),
-                    border: UnderlineInputBorder(),
+                    // border: UnderlineInputBorder(),
                   ),
                 ),
               ),
