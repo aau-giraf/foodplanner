@@ -37,22 +37,22 @@ class CustomIconButton extends StatelessWidget {
   }
 }
 
-class CustomAddButton extends StatelessWidget {
+class CustomElevatedButton extends StatelessWidget {
   final Function()? onTab;
   final String text;
   final double height;
   final double width;
   final Color backgroundColor;
-  final Color iconColor;
+  final Widget widget;
 
-  const CustomAddButton({
+  const CustomElevatedButton({
     super.key,
     required this.onTab,
     this.text = '',
     this.height = 50,
     this.width = 100,
     this.backgroundColor = AppColors.primary,
-    this.iconColor = AppColors.background,
+    this.widget = const Text('Button', style: AppTextStyles.buttonText,),
   });
 
   @override
@@ -69,14 +69,13 @@ class CustomAddButton extends StatelessWidget {
             ),
           ],
       ),
-      child: IconButton(
-        icon: Icon(Icons.add),
+      child: ElevatedButton(
+        child: widget,
         onPressed: () {
           
         }, 
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
-          iconColor: iconColor,
           minimumSize: Size(width, height),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(height/2)

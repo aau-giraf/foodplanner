@@ -129,11 +129,11 @@ class _MealPageState extends State<MealPage> {
                 'Beskriv ingredienserne',
                 style: TextStyle(color: AppColors.textFieldHint),
               ),
-              CustomAddButton(
+              CustomElevatedButton(
                 onTab: () {
 
                 },
-                backgroundColor: const Color.fromARGB(255, 252, 206, 138),
+                widget: Icon(Icons.add),
                 width: MediaQuery.sizeOf(context).width/2,
               ),
               Spacer(),
