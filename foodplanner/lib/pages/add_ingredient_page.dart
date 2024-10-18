@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
@@ -61,7 +62,24 @@ class AddIngredientPage extends StatelessWidget {
               itemCount: ingredients.length,
               itemBuilder: (BuildContext context, int index) {
                 return TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if(ingredients[index].image == null) {
+                      showCupertinoDialog(
+                        context: context, 
+                        builder: (BuildContext context) => CupertinoAlertDialog(
+                          title: Text('Der er ikke et billede til denne ingrediens, tilføj dette nu.'),
+                          actions: <CupertinoDialogAction>[
+                            CupertinoDialogAction(
+                              isDefaultAction: true,
+                              onPressed: () {},
+                              child: const Text("OK"),
+                            ),
+                          ],
+                        )
+                      );
+                    }
+                    
+                  },
                   style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero,
@@ -75,9 +93,10 @@ class AddIngredientPage extends StatelessWidget {
               }, 
               separatorBuilder: (BuildContext context, int index) {
                 return Divider(color: AppColors.textFieldBorder,);
-              }, 
+              },
             )
           ),
+          Divider(color: AppColors.textFieldBorder,),
         ],
       ),
     );
