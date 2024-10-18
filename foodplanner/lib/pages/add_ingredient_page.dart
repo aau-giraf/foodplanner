@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/icon_button.dart';
-import 'package:foodplanner/components/ingredient_list.dart';
+import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
-import 'package:foodplanner/pages/choose_ingredient_page.dart';
+import 'package:foodplanner/components/packed_ingredient.dart';
+import 'package:foodplanner/config/colors.dart';
 
 class AddIngredientPage extends StatelessWidget {
   final Meal meal;
@@ -14,62 +14,57 @@ class AddIngredientPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Ingredient> ingredients = <Ingredient>[
+
+    ];
+    PackedIngredient new_ingredient = PackedIngredient();
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Redigér madpakke"),
+        title: const Text("Find madvare"),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.background,
         elevation: 1.0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: AppColors.textPrimary),
         titleTextStyle: const TextStyle(
-          color: Colors.black,
+          color: AppColors.textPrimary,
           fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
       ),
-
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded (
-              child: IngredientList(
-                interactive: true,
-                ingredients: meal.ingredients,
-                textStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 5, right: 16, left: 16),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Skriv her...',
+                hintStyle: TextStyle(
+                  color: AppColors.textFieldHint,
                 ),
+                filled: true,
+                fillColor: AppColors.textFieldBackground,
               ),
             ),
-
-            SizedBox(height: 20),
-
-            Container (
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-                boxShadow: [
-                    BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 1,
-                    offset: const Offset(0, 2), // changes position of shadow
-                    ),
-                  ],
-              ),
-              child: CustomAddButton(
-                onTab: () {
-                  Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ChooseIngredientPage()),
+          ),
+          
+          Expanded(
+            child: ListView.separated(
+              itemCount: ingredients.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ElevatedButton(
+                  onPressed: () {},
+                  child: Text(ingredients[index].name),
                 );
-                },
-                width: MediaQuery.sizeOf(context).width/2,
-              ),
-            ),
-          ]
-        )
-      )
+              }, 
+              separatorBuilder: (BuildContext context, int index) {
+                return Divider(color: AppColors.textFieldBorder,);
+              }, 
+            )
+          ),
+        ],
+      ),
     );
   }
 }
