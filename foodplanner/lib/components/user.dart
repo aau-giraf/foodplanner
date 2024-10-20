@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import '../services/api_config.dart';
 
 class User {
   final int id;
@@ -16,6 +17,8 @@ class User {
     required this.email,
     required this.role,
   });
+
+  //I LOVE SABRINA CARPENTER <3
 
   factory User.fromJson(Map<String, dynamic> json) {
     return switch (json) {
@@ -55,7 +58,6 @@ class UserLogin {
         'jwt': String jwt,
         'roleApproved': bool roleApproved,
         'role': String role,
-        
       } =>
         UserLogin(
           jwt: jwt,
@@ -69,7 +71,7 @@ class UserLogin {
 
 Future<User> fetchUser() async {
   final response =
-      await http.get(Uri.parse('http://127.0.0.1:80/api/Users/Get/1'));
+      await http.get(Uri.parse('${ApiConfig.baseUrl}/api/Users/Get/1'));
 
   if (response.statusCode == 200) {
     return User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
@@ -123,7 +125,7 @@ Future<List<User>> unapproveUsers(int id) async {
 Future<http.Response> createUser(String firstName, String lastName,
     String email, String password, String role) async {
   final response = await http.post(
-    Uri.parse('http://127.0.0.1:80/api/Users/Create'),
+    Uri.parse('${ApiConfig.baseUrl}/api/Users/Create'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -141,7 +143,7 @@ Future<http.Response> createUser(String firstName, String lastName,
 
 Future<http.Response> loginUser(String email, String password) async {
   final response = await http.post(
-    Uri.parse('http://127.0.0.1:8080/api/Users/Login'),
+    Uri.parse('${ApiConfig.baseUrl}/api/Users/Login'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/pages/admin_page.dart';
+import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/parent_page.dart';
 import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/student_page.dart';
@@ -15,10 +16,6 @@ import '../pages/signup.dart';
 import '../pages/login_page.dart';
 import '../pages/login.dart';
 import '../pages/unauthorized_page.dart';
-import '../pages/teacher_page.dart';
-import '../pages/student_page.dart';
-import '../pages/admin_page.dart';
-import '../pages/parent_page.dart';
 import '../pages/home_page.dart'; // Import HomePage
 
 final router = GoRouter(
@@ -39,10 +36,13 @@ final router = GoRouter(
       path: '/signup',
       builder: (context, state) => SignupPage(),
     ),
+
     GoRoute(
-      path: '/signup2',
-      builder: (context, state) => SignupPage2(),
+      path: '/forgot-password',
+      builder: (context, state) => ForgotPasswordPage(),
     ),
+
+    //no need for wildcard handling as flutter already does it
     GoRoute(
       path: TEACHER_ROOT,
       builder: (context, state) {

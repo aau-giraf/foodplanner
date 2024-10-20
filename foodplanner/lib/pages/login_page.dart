@@ -5,11 +5,14 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/components/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'signup_page.dart';
+import 'package:foodplanner/services/fetch_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+  static final AuthService authService = AuthService(apiUrl: ApiConfig.baseUrl);
 
   @override
   LoginPageState createState() => LoginPageState();
@@ -47,14 +50,15 @@ class LoginPageState extends State<LoginPage> {
     try {
       final response =
           await loginUser(usernameController.text, passwordController.text);
+      await LoginPage.authService
+          .fetchAuthData(usernameController.text, passwordController.text);
 
       if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
         UserLogin user = UserLogin.fromJsonLogin(body);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                'Du er nu logget ind'),
+            content: Text('Du er nu logget ind'),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 5),
           ),

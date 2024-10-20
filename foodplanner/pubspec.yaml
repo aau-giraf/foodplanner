@@ -34,13 +34,15 @@ dependencies:
 
     validators: ^3.0.0
 
-    # The following adds the Cupertino Icons font to your application.
-    # Use with the CupertinoIcons class for iOS style icons.
-    cupertino_icons: ^1.0.8
-    provider: ^6.1.2
-    http: ^1.2.2
-    flutter_sficon: ^1.1.2
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.2
+  http: ^1.2.2
+  flutter_sficon: ^1.1.2
+  flutter_secure_storage: ^9.2.2
 
+   
 flutter_sficon: ^1.1.2
 webview_flutter: ^2.0.10
 http: ^1.2.2
@@ -48,6 +50,8 @@ http: ^1.2.2
 dev_dependencies:
     flutter_test:
         sdk: flutter
+    mockito: ^5.0.16
+    build_runner: ^2.1.7
 
     # The "flutter_lints" package below contains a set of recommended lints to
     # encourage good coding practices. The lint set provided by the package is
