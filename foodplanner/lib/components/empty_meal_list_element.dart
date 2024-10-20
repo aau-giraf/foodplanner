@@ -4,6 +4,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/month_picker.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
+/// This class is used to create the element for when no meals are found.
 class EmptyMealListElement extends StatelessWidget {
   const EmptyMealListElement({
     super.key,
@@ -13,6 +14,7 @@ class EmptyMealListElement extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // The element for when no meals are found
         Container( 
           width: MediaQuery.sizeOf(context).width,
           height: 120,
@@ -33,6 +35,7 @@ class EmptyMealListElement extends StatelessWidget {
             padding: const EdgeInsets.only(top: 5, right: 5, left: 5, bottom: 25),
             child: Column(
               children: [
+                // The text displaying the date of the meal.
                 Text(
                   'Madpakke i dag d. ${DateTime.now().day.toString()}. ${MonthPicker.pick(DateTime.now().month)}',
                   style: AppTextStyles.standard,
@@ -40,6 +43,7 @@ class EmptyMealListElement extends StatelessWidget {
 
                 SizedBox(height: 20),
 
+                // The text saying that no meals were found.
                 Text(
                   'Ingen madpakke at vise',
                   style: AppTextStyles.headline1,
@@ -52,8 +56,11 @@ class EmptyMealListElement extends StatelessWidget {
 
         SizedBox(height: 40),
 
+        // The button for creating a new meal
         CustomElevatedButton(
-          onTab: () {}, 
+          onTab: () { // Leads to the "add_meal_page"
+
+          }, 
           widget: Icon(Icons.add, color: AppColors.textSecondary),
           width: MediaQuery.sizeOf(context).width/2,
         ),

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 
+/// This class is used to allow DatePicker to display the month in words and in danish format.
 class MonthPicker {
   static String pick(int? monthIndex) {
     if(monthIndex == 1) return 'januar';

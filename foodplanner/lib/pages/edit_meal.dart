@@ -6,8 +6,9 @@ import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
+/// This class is used to create the page for editing an already existing meal.
 class EditMeal extends StatelessWidget {
-  final Meal meal;
+  final Meal meal; // The meal which is being edited.
   
   const EditMeal({
     super.key,
@@ -16,9 +17,9 @@ class EditMeal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Ingredient> ingredients = <Ingredient>[
-      Ingredient(name: "Knækbrød"),
-      Ingredient(name: "Æble"),
+    List<Ingredient> ingredients = <Ingredient>[ // The list containing the ingredients of the meal.
+      Ingredient(name: "Knækbrød"),   /// TEST ///
+      Ingredient(name: "Æble"),       /// TEST ///
     ];
 
     return Scaffold(
@@ -39,9 +40,10 @@ class EditMeal extends StatelessWidget {
         padding: EdgeInsets.only(top: 5, left: 16, right: 16, bottom: 12),
         child: Column(
           children: [
+            // The list of elements which are created for each of the ingredients.
             Expanded(
               child: ListView.separated(
-                itemCount: ingredients.length,
+                itemCount: ingredients.length, // Creates an element for each ingredient.
                 itemBuilder: (BuildContext context, int index) {
                   return EditMealIngredientListElement(ingredient: ingredients[index]);
                 },
@@ -51,8 +53,9 @@ class EditMeal extends StatelessWidget {
               ),
             ),
             
+            // The button for adding a new ingredient to the meal.
             CustomElevatedButton(
-              onTab: () {
+              onTab: () { // Leads to the "add_ingredient_page"
 
               },
               widget: Icon(Icons.add, color: AppColors.textSecondary),
@@ -60,8 +63,9 @@ class EditMeal extends StatelessWidget {
               width: MediaQuery.sizeOf(context).width/2,
             ),
 
+            // The button for saving the changes made to meal.
             CustomElevatedButton(
-              onTab: () {
+              onTab: () { 
 
               },
               width: MediaQuery.sizeOf(context).width/2,

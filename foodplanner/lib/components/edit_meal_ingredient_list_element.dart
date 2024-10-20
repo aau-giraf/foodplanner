@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
+/// This class is used for creating the individual elements for the ingredients.
 class EditMealIngredientListElement extends StatelessWidget{
   final Ingredient ingredient;
 
@@ -37,9 +38,12 @@ class EditMealIngredientListElement extends StatelessWidget{
             Column(
               children: [
                 Spacer(),
+
+                // The image displaying the ingredient.
                 // Indsæt image
                 Container(height: 150, width: 150, color: Colors.blue, child: Text('Temporary box to show picture size')),
 
+                // The button for editing the image.
                 TextButton(
                   onPressed: () {},
                   child: Text("Redigér billede"),
@@ -53,8 +57,10 @@ class EditMealIngredientListElement extends StatelessWidget{
               children: [
                 Spacer(),
 
+                // The text displaying the title of the ingredient.
                 Text(ingredient.name, style: AppTextStyles.headline1),
 
+                // The button for editing the title of the ingredient.
                 TextButton(
                   onPressed: () {},
                   child: Text("Redigér tekst"),

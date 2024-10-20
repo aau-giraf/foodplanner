@@ -24,6 +24,7 @@ class _AddMealPageState extends State<AddMealPage> {
   Image? _selectedImage;
   final List<Ingredient> _selectedIngredients = [];
 
+  // Method for deleting the controllers when they are done being used.
   @override
   void dispose() {
     _titleController.dispose();
@@ -57,38 +58,10 @@ class _AddMealPageState extends State<AddMealPage> {
         ),
       ),
 
-      // The button for opening the camera page.
       body: Padding(
           padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, right: 16.0, left: 16.0),
           child: Column(
             children: [
-          //     Text(
-          //       'Start med at tilføje et billede af madpakken', 
-          //       style: TextStyle(color: AppColors.textFieldHint),
-          //     ),
-          //     GestureDetector(
-          //       onTap: () {
-          //         // When clicked, leads to the camera page.
-          //         Navigator.push(
-          //           context,
-          //           MaterialPageRoute(builder: (context) => const CameraPage()),
-          //         );
-          //       },
-          //       child: Container(
-          //         width: double.infinity,
-          //         height: 170,
-          //         decoration: BoxDecoration(
-          //             borderRadius: BorderRadius.circular(12),
-          //             border: Border.all(color: Colors.grey)),
-          //         child: const Icon(
-          //           Icons.camera_alt,
-          //           size: 40,
-          //           color: Colors.grey,
-          //         ),
-          //       ),
-          //     ),
-          //     const SizedBox(height: 20),
-
               // Textfield for the title of the meal.
               Text(
                 'Start med at give madpakken en titel',

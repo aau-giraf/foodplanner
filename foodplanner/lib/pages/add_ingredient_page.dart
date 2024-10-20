@@ -6,8 +6,9 @@ import 'package:foodplanner/components/packed_ingredient.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
+/// This class is used for selecting which ingredients should be added to the meal.
 class AddIngredientPage extends StatelessWidget {
-  final Meal meal;
+  final Meal meal; // The meal which the ingredients should be added to.
 
   const AddIngredientPage({
     super.key,
@@ -16,12 +17,12 @@ class AddIngredientPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Ingredient> ingredients = <Ingredient>[
-      Ingredient(name: 'Knækbrød'),
-      Ingredient(name: 'ost:brie'),
-      Ingredient(name: 'ost:mozeralla'),
-      Ingredient(name: 'æble'),
-      Ingredient(name: 'banan'),
+    List<Ingredient> ingredients = <Ingredient>[ // This list contains all the available ingredients.
+      Ingredient(name: 'Knækbrød'),       /// TEST ///
+      Ingredient(name: 'ost:brie'),       /// TEST ///
+      Ingredient(name: 'ost:mozeralla'),  /// TEST ///
+      Ingredient(name: 'æble'),           /// TEST ///
+      Ingredient(name: 'banan'),          /// TEST ///
     ];
     PackedIngredient new_ingredient = PackedIngredient();
 
@@ -38,8 +39,10 @@ class AddIngredientPage extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
+
       body: Column(
         children: [
+          // The search field for the user to search for specific ingredients.
           Padding(
             padding: EdgeInsets.only(top: 5, right: 16, left: 16),
             child: TextField(
@@ -57,21 +60,25 @@ class AddIngredientPage extends StatelessWidget {
           
 
           Divider(color: AppColors.textFieldBorder,),
+
+          // The list of available ingredients.
           Expanded(
             child: ListView.separated(
-              itemCount: ingredients.length,
+              itemCount: ingredients.length, // Creates an element for each item in the ingredients list.
               itemBuilder: (BuildContext context, int index) {
                 return TextButton(
                   onPressed: () {
-                    if(ingredients[index].image == null) {
-                      showCupertinoDialog(
+                    if(ingredients[index].image == null) { // Chekcs if the ingredient has an image.
+                      showCupertinoDialog( // If not, it opens a pop-up window.
                         context: context, 
                         builder: (BuildContext context) => CupertinoAlertDialog(
                           title: Text('Der er ikke et billede til denne ingrediens, tilføj dette nu.'),
                           actions: <CupertinoDialogAction>[
                             CupertinoDialogAction(
                               isDefaultAction: true,
-                              onPressed: () {},
+                              onPressed: () { // Leads the user to the camera page.
+
+                              },
                               child: const Text("OK"),
                             ),
                           ],

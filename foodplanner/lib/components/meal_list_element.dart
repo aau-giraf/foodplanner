@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/config/month_picker.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
+/// This class is used to create the individual elements for the meal_list_page.
 class MealListElement extends StatelessWidget {
   final Meal meal;
   
@@ -12,8 +16,6 @@ class MealListElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // String formattedDate = DateFormat("d. MMMM", "da").format(meal.date!);
-    
     return Container( 
       width: MediaQuery.sizeOf(context).width,
       height: 250,
@@ -26,7 +28,7 @@ class MealListElement extends StatelessWidget {
           color: Colors.grey.withOpacity(0.5),
           spreadRadius: 1,
           blurRadius: 1,
-          offset: const Offset(0, 2), // changes position of shadow
+          offset: const Offset(0, 2), // changes position of shadow.
           ),
         ],
       ),
@@ -34,13 +36,15 @@ class MealListElement extends StatelessWidget {
           padding: const EdgeInsets.only(top: 5, right: 5, left: 5, bottom: 25),
           child: Column(
             children: [
-              // Text(
-              //   'Madpakke i dag d. ${meal.date?.day.toString()}. ${MonthPicker.pick(meal.date?.month)}',
-              //   style: AppTextStyles.standard,
-              // ),
+              // The text showing the date for that the meal is made for.
+              Text(
+                'Madpakke i dag d. ${meal.date?.day.toString()}. ${MonthPicker.pick(meal.date?.month)}',
+                style: AppTextStyles.standard,
+              ),
 
-              // SizedBox(height: 20),
+              SizedBox(height: 20),
 
+              // The title of the meal.
               Text(
                 meal.title,
                 style: AppTextStyles.headline1,
@@ -48,21 +52,23 @@ class MealListElement extends StatelessWidget {
 
               // Spacer(),
 
+              // The image of the meal.
               // Image.asset(
               //   ,
               //   height: 200.0,
               //   width: 200.0,
               // ),
-              Container(height: 200, width: 200, color: Colors.blue, child: Text('Temporary box to show picture size'))
+              Container(height: 200, width: 200, color: Colors.blue, child: Text('Temporary box to show picture size')),
 
-              // Spacer(),
+              Spacer(),
               
-              // CustomElevatedButton(
-              //   onTab: () {},
-              //   widget: Text('Se madpakke', style: AppTextStyles.buttonText,),
-              //   backgroundColor: AppColors.secondary,
-              //   width: MediaQuery.sizeOf(context).width/2,
-              // )
+              // The button for opening the selected meal.
+              CustomElevatedButton(
+                onTab: () {},
+                widget: Text('Se madpakke', style: AppTextStyles.buttonText,),
+                backgroundColor: AppColors.secondary,
+                width: MediaQuery.sizeOf(context).width/2,
+              )
             ]
           ),
         ),
