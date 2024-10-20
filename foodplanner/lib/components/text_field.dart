@@ -3,8 +3,8 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
 class CustomTextField extends StatelessWidget {
-  final controller;
-  final errorText;
+  final TextEditingController controller;
+  final String errorText;
   final dynamic hintText;
   final dynamic obscureText;
   final dynamic color;
@@ -20,45 +20,46 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 150),
-      child: Column(
-        children: [
-          TextField(
-            controller: controller,
-            obscureText: obscureText,
-            decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: errorText.isNotEmpty
-                        ? AppColors.errorText
-                        : AppColors.textFieldBorder,
-                  ),
-                  borderRadius: BorderRadius.circular(10)),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: errorText.isNotEmpty
-                        ? AppColors.errorText
-                        : AppColors.textFieldBorderFocus,
-                  ),
-                  borderRadius: BorderRadius.circular(10)),
-              fillColor: color,
-              filled: true,
-              hintText: hintText,
-              hintStyle: const TextStyle(color: AppColors.textFieldHint),
+    return Column(
+      children: [
+        TextField(
+          controller: controller,
+          obscureText: obscureText,
+          textAlign: TextAlign.center,
+          cursorColor: AppColors.primary,
+          cursorErrorColor: AppColors.errorText,
+          decoration: InputDecoration(
+            fillColor: color,
+            filled: true,
+            hintText: hintText,
+            hintStyle: const TextStyle(color: AppColors.textFieldHint),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                  color: errorText.isEmpty
+                      ? AppColors.textFieldBorderFocus
+                      : AppColors.errorText),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                  color: errorText.isEmpty
+                      ? AppColors.textFieldBorder
+                      : AppColors.errorText),
+            ),
+            errorBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppColors.errorText),
             ),
           ),
-          errorText.isNotEmpty
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(errorText, style: AppTextStyles.errorText),
-                  ),
-                )
-              : SizedBox(),
-        ],
-      ),
+        ),
+        errorText.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(errorText, style: AppTextStyles.errorText),
+                ),
+              )
+            : SizedBox(),
+      ],
     );
   }
 }
