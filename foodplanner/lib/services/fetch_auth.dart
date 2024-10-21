@@ -30,7 +30,7 @@ class AuthService {
         final String role = data['role'];
 
         ROLES authRole = roleFromString(role.toLowerCase());
-        await AuthProvider().login(authRole, jwt, roleApproved);
+        AuthProvider().login(authRole, jwt, roleApproved);
       } else {
         var error = jsonDecode(response.body);
         return error;
