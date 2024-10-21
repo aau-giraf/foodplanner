@@ -5,6 +5,7 @@ import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/landing_page.dart';
 import 'package:foodplanner/pages/parent_page.dart';
+import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/student_page.dart';
 import 'package:foodplanner/pages/teacher_page.dart';
@@ -47,6 +48,11 @@ final router = GoRouter(
     GoRoute(
       path: '/forgot-password',
       builder: (context, state) => ForgotPasswordPage(),
+    ),
+
+    GoRoute(
+      path: '/pin_code',
+      builder: (context, state) => PinCode(),
     ),
 
     //no need for wildcard handling as flutter already does it
