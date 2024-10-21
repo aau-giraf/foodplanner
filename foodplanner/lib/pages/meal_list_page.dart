@@ -9,6 +9,8 @@ class MealListPage extends StatelessWidget {
     super.key,
   });
 
+  static const String routeName = '/meal_list_page';
+
   @override
   Widget build(BuildContext context) {
     dynamic meals = <Meal>[ // List of meals that will be shown

@@ -5,12 +5,16 @@ import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/routes/paths.dart';
+import 'package:go_router/go_router.dart';
 
 /// This class is used to create the page for editing an already existing meal.
-class EditMeal extends StatelessWidget {
+class EditMealPage extends StatelessWidget {
   final Meal meal; // The meal which is being edited.
+
+  static const String routeName = '/edit_meal_page';
   
-  const EditMeal({
+  const EditMealPage({
     super.key,
     required this.meal,
   });
@@ -56,7 +60,7 @@ class EditMeal extends StatelessWidget {
             // The button for adding a new ingredient to the meal.
             CustomElevatedButton(
               onTab: () { // Leads to the "add_ingredient_page"
-
+                context.go(ADD_INGREDIENT_PAGE); 
               },
               widget: Icon(Icons.add, color: AppColors.textSecondary),
               backgroundColor: AppColors.secondary,
@@ -66,7 +70,7 @@ class EditMeal extends StatelessWidget {
             // The button for saving the changes made to meal.
             CustomElevatedButton(
               onTab: () { 
-
+                context.pop();
               },
               width: MediaQuery.sizeOf(context).width/2,
               widget: const Text(

@@ -15,6 +15,8 @@ import 'package:foodplanner/config/colors.dart';
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
 
+  static const String routeName = '/camera_page';
+
   @override
   State<CameraPage> createState() => _MealPageState();
 }

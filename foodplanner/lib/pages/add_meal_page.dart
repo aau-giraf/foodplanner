@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/ingredient.dart';
@@ -5,6 +6,8 @@ import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/homePage.dart';
+import 'package:foodplanner/routes/paths.dart';
+import 'package:go_router/go_router.dart';
 import '/pages/cameraPage.dart';
 
 import 'package:foodplanner/config/colors.dart';
@@ -13,9 +16,13 @@ import 'package:foodplanner/config/colors.dart';
 class AddMealPage extends StatefulWidget {
   const AddMealPage({super.key});
 
+  static const String routeName = '/add_meal_page';
+
   @override
   _AddMealPageState createState() => _AddMealPageState();
 }
+
+
 
 class _AddMealPageState extends State<AddMealPage> {
   final Meal meal = Meal();
@@ -90,7 +97,7 @@ class _AddMealPageState extends State<AddMealPage> {
               ),
               CustomElevatedButton(
                 onTab: () {
-
+                  context.go(ADD_INGREDIENT_PAGE);
                 },
                 widget: Icon(Icons.add, color: AppColors.textSecondary),
                 backgroundColor: AppColors.secondary,
@@ -101,7 +108,28 @@ class _AddMealPageState extends State<AddMealPage> {
               // Create meal button
               CustomElevatedButton(
                 onTab: () {
-
+                  showCupertinoDialog( // If not, it opens a pop-up window.
+                        context: context, 
+                        builder: (BuildContext context) => CupertinoAlertDialog(
+                          title: Text('Vil du tilføje et billede af madpakken?  '),
+                          actions: <CupertinoDialogAction>[
+                            CupertinoDialogAction(
+                              isDefaultAction: true,
+                              onPressed: () { // Leads the user to the camera page.
+                                context.go(CAMERA_PAGE); 
+                              },
+                              child: const Text("Ja"),
+                            ),
+                            CupertinoDialogAction(
+                              isDestructiveAction: true,
+                              onPressed: () {
+                                context.go(MEAL_LIST_PAGE); 
+                              },
+                              child: const Text('Nej'),
+                            ),
+                          ],
+                        )
+                      );
                 },
                 width: MediaQuery.sizeOf(context).width/2,
                 widget: const Text(

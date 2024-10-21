@@ -71,9 +71,7 @@ class CustomElevatedButton extends StatelessWidget {
       ),
       child: ElevatedButton(
         child: widget,
-        onPressed: () {
-          
-        }, 
+        onPressed: onTab, 
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           minimumSize: Size(width, height),
