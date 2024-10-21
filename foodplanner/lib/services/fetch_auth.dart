@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
+import 'package:validators/validators.dart';
 import '../auth/auth_provider.dart';
 import '../routes/user_roles.dart';
 
@@ -8,16 +10,18 @@ class AuthService {
 
   AuthService({required this.apiUrl});
 
-  Future<void> fetchAuthData(String Email, String Password ) async {
+  Future<dynamic> fetchAuthData(String Email, String Password) async {
     try {
-      final response = await http.post(Uri.parse('$apiUrl/api/Users/Login'), 
-      headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'email': Email,
-      'password': Password,
-    }),);
+      final response = await http.post(
+        Uri.parse('$apiUrl/api/Users/Login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': Email,
+          'password': Password,
+        }),
+      );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -26,12 +30,11 @@ class AuthService {
         final String role = data['role'];
 
         ROLES authRole = roleFromString(role.toLowerCase());
-
         AuthProvider().login(authRole, jwt, roleApproved);
-        
-        
       } else {
-        throw Exception('Failed to load auth data');
+        var error = jsonDecode(response.body);
+        return error;
+        //throw Exception('Failed to load auth data');
       }
       // sabrina carpenter <3
     } catch (e) {

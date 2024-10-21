@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/config/text_styles.dart';
 
 class DropdownBar extends StatelessWidget {
-  final double width;
   final String? selectedValue;
   final List<String> items;
   final ValueChanged<String?> onChanged;
@@ -11,7 +9,6 @@ class DropdownBar extends StatelessWidget {
 
   const DropdownBar(
       {super.key,
-      required this.width,
       required this.items,
       this.selectedValue,
       required this.onChanged,
@@ -20,16 +17,49 @@ class DropdownBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu<String>(
-      initialSelection: items.first,
-      onSelected: (String? value) {
-        onChanged(value);
-      },
-      dropdownMenuEntries: items.map<DropdownMenuEntry<String>>((String value) {
-        return DropdownMenuEntry<String>(value: value, label: value);
-      }).toList(),
+    return Container(
+      decoration: BoxDecoration(
+          color: color,
+          border: Border.all(color: Colors.transparent, width: 0)),
+      child: DropdownMenu<String>(
+        width: double.infinity,
+        initialSelection: items.first,
+        onSelected: (String? value) {
+          onChanged(value);
+        },
+        dropdownMenuEntries:
+            items.map<DropdownMenuEntry<String>>((String value) {
+          return DropdownMenuEntry<String>(value: value, label: value);
+        }).toList(),
+      ),
     );
   }
+
+  /* @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Center(
+        child: DropdownButton<String>(
+          value: items.first,
+          icon: const Icon(Icons.arrow_forward_ios, size: 12),
+          elevation: 0,
+          style: AppTextStyles.bigText,
+          underline: Container(
+            height: 1,
+            color: AppColors.textFieldBorder,
+          ),
+          onChanged: (String? newValue) {},
+          items: items.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  } */
 }
 
 /* class _DropdownBarState extends State<DropdownBar> {

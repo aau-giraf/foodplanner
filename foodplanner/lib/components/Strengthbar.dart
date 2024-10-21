@@ -8,13 +8,13 @@ class StrengthBar extends StatelessWidget {
   final dynamic color;
 
   const StrengthBar({
-    Key? key,
+    super.key,
     required this.hintText,
     required this.controller,
     this.obscureText = false,
     this.onChanged,
     this.color = const Color(0xffF3F8F2), // default color
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class StrengthBar extends StatelessWidget {
 class PasswordStrengthBar extends StatelessWidget {
   final double strength;
 
-  const PasswordStrengthBar({Key? key, required this.strength}) : super(key: key);
+  const PasswordStrengthBar({super.key, required this.strength});
 
   @override
   Widget build(BuildContext context) {
@@ -68,29 +68,41 @@ class PasswordStrengthBar extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 300), // Padding around the entire bar
+      padding: const EdgeInsets.symmetric(
+          horizontal: 300), // Padding around the entire bar
       child: Row(
         children: [
           const SizedBox(width: 20),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: strength > 0 ? 15 : 5), // Adjust padding based on strength
+              padding: EdgeInsets.symmetric(
+                  vertical: strength > 0
+                      ? 15
+                      : 5), // Adjust padding based on strength
               child: Container(
-                width: MediaQuery.of(context).size.width / 3, // Set width to 1/3 of the screen
-                height: strength > 0 ? 15 : 0, // Set height to 15 only if strength > 0
+                width: MediaQuery.of(context).size.width /
+                    3, // Set width to 1/3 of the screen
+                height: strength > 0
+                    ? 15
+                    : 0, // Set height to 15 only if strength > 0
                 decoration: BoxDecoration(
                   color: const Color(0xFFEBE9E9), // Background color of the bar
                   borderRadius: BorderRadius.circular(10), // Rounded corners
                   border: strength > 0
-                      ? Border.all(color: Colors.black) 
-                      : Border.all(color: Colors.transparent), 
+                      ? Border.all(color: Colors.black)
+                      : Border.all(color: Colors.transparent),
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10), // Ensure corners stay rounded
+                  borderRadius:
+                      BorderRadius.circular(10), // Ensure corners stay rounded
                   child: LinearProgressIndicator(
-                    value: strength > 0 ? strength : 0, // Show progress only if strength > 0
-                    backgroundColor: Colors.transparent, // Keep the background transparent
-                    valueColor: AlwaysStoppedAnimation<Color>(getColor()), // Progress bar color
+                    value: strength > 0
+                        ? strength
+                        : 0, // Show progress only if strength > 0
+                    backgroundColor:
+                        Colors.transparent, // Keep the background transparent
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        getColor()), // Progress bar color
                   ),
                 ),
               ),
