@@ -10,24 +10,28 @@ import 'package:go_router/go_router.dart';
 
 /// This class is used for selecting which ingredients should be added to the meal.
 class AddIngredientPage extends StatelessWidget {
-  final Meal meal; // The meal which the ingredients should be added to.
+  final int mealID; // The identifier of the meal which the ingredient should be added to.
 
   const AddIngredientPage({
     super.key,
-    required this.meal,
+    required this.mealID,
   });
 
   static const String routeName = '/add_ingredient_page';
 
   @override
   Widget build(BuildContext context) {
-    List<Ingredient> ingredients = <Ingredient>[ // This list contains all the available ingredients.
-      Ingredient(name: 'Knækbrød'),       /// TEST ///
-      Ingredient(name: 'ost:brie'),       /// TEST ///
-      Ingredient(name: 'ost:mozeralla'),  /// TEST ///
-      Ingredient(name: 'æble'),           /// TEST ///
-      Ingredient(name: 'banan'),          /// TEST ///
-    ];
+    final meal = fetchMeal(mealID);
+    final List<Ingredient> ingredients = [];
+    // final List<Ingredient> ingredients = fetchIngredients() ;
+
+    // List<Ingredient> ingredients = <Ingredient>[ // This list contains all the available ingredients.
+    //   Ingredient(name: 'Knækbrød'),       /// TEST ///
+    //   Ingredient(name: 'ost:brie'),       /// TEST ///
+    //   Ingredient(name: 'ost:mozeralla'),  /// TEST ///
+    //   Ingredient(name: 'æble'),           /// TEST ///
+    //   Ingredient(name: 'banan'),          /// TEST ///
+    // ];
     PackedIngredient new_ingredient = PackedIngredient();
 
     return Scaffold(

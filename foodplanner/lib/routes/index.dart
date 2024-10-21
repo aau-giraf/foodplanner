@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/add_meal_page.dart';
@@ -37,10 +36,14 @@ final router = GoRouter(
       path: '/forgot-password',
       builder: (context, state) => ForgotPasswordPage(),
     ),
-    // GoRoute(
-    //   path: AddIngredientPage.routeName,
-    //   builder: (context, state) => AddIngredientPage(meal: meal),
-    // ),
+    GoRoute(
+      path: AddIngredientPage.routeName,
+      builder: (context, state) {
+        final mealID = state.pathParameters['meal'] as int;
+        if(mealID != null) return AddIngredientPage(mealID: mealID);
+        return UnauthorizedPage();
+      },
+    ),
     GoRoute(
       path: AddMealPage.routeName,
       builder: (context, state) => AddMealPage(),
@@ -49,10 +52,14 @@ final router = GoRouter(
       path: CameraPage.routeName,
       builder: (context, state) => CameraPage(),
     ),
-    // GoRoute(
-    //   path: EditMealPage.routeName,
-    //   builder: (context, state) => EditMealPage(meal: meal),
-    // ),
+    GoRoute(
+      path: EditMealPage.routeName,
+      builder: (context, state) {
+        final mealID = state.pathParameters['meal'] as int;
+        if(mealID != null) return EditMealPage(mealID: mealID);
+        return UnauthorizedPage();
+      },
+    ),
     GoRoute(
       path: MealListPage.routeName,
       builder: (context, state) => MealListPage(),

@@ -24,6 +24,10 @@ class Meal {
     this.ingredients = const <PackedIngredient>[],
   });
 
+  List<PackedIngredient> get getPackedIngredients {
+    return this.ingredients;
+  }
+
   factory Meal.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {

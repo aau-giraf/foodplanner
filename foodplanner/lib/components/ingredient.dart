@@ -43,6 +43,22 @@ Future<Ingredient> fetchIngredient(int id) async {
   }
 }
 
+Future<List<Ingredient>> fetchIngredients(int userID) async {
+  final response =
+      await http.get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get/$userID'));
+
+  if (response.statusCode == 200) {
+    List<Ingredient> ingredients = <Ingredient>[];
+    List<String> encodedIngredients = response.body.split('},{');
+    encodedIngredients.forEach((encodedIngredient) {
+      ingredients.add(Ingredient.fromJson(jsonDecode(encodedIngredient) as Map<String, dynamic>));
+    });
+    return ingredients;
+  } else {
+    throw Exception('Kunne ikke hente ingredienser');
+  }
+}
+
 Future<http.Response> createIngredient(String name, /*User user, */ Image image) async {
   final response = await http.post(
     Uri.parse('http://127.0.0.1:80/api/Ingredients/Create'),
