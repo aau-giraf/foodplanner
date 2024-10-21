@@ -23,17 +23,17 @@ class ChildLandingPageMadpakke extends StatelessWidget {
           children: [
             const Text(
               'Welcome' + ' ' + 'Child',
-              style: TextStyle(fontSize: 14),
+              style: TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: size.height * 0.02),
             Container(
               width: size.width * 0.9, // 90% of the screen width
-              height: size.height * 0.7, // 70% of the screen height
-              padding: const EdgeInsets.all(20),
+              height: size.height * 0.4+size.width *0.6, // 70% of the screen height
+              padding: const EdgeInsets.all(40),
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 243, 243, 243), // image box background color
                 border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(40),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
@@ -50,21 +50,21 @@ class ChildLandingPageMadpakke extends StatelessWidget {
                     'Madpakke i dag d. $currentDate',
                     style: AppTextStyles.standard,
                   ),
-                  const SizedBox(height: 15),
+                  SizedBox(height: size.height * 0.02),
                   const Text(
                     'Madpakke text',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: size.height * 0.02),
                   Container(
-                    width: double.infinity,
-                    height: size.height * 0.4, // 40% of the screen height
+                    width: size.width * 0.6,
+                    height: size.width * 0.6, // 40% of the screen height
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(20),
                       child: Image.network(
                        'https://cdn-icons-png.flaticon.com/512/739/739249.png',
                         fit: BoxFit.cover,
@@ -80,11 +80,11 @@ class ChildLandingPageMadpakke extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: size.height * 0.05),
                   Center(
                     child: SizedBox(
-                      width: 250, // Set the desired width
-                      height: 40, // Set the desired height
+                      width: size.width * 0.6, // Set the desired width
+                      height: 50, // Set the desired height
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.push(
