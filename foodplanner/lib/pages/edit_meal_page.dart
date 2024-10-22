@@ -22,11 +22,6 @@ class EditMealPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final meal = fetchMeal(mealID);
-    // final List<Ingredient> ingredients = <Ingredient>[];
-    // meal.getPackedIngredients.forEach((packedIngredient),
-    //   ingredients.add(fetchIngredient(packedIngredient.ingredientRef)),
-    // );
     // List<Ingredient> ingredients = <Ingredient>[ // The list containing the ingredients of the meal.
     //   Ingredient(name: "Knækbrød"),   /// TEST ///
     //   Ingredient(name: "Æble"),       /// TEST ///

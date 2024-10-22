@@ -5,14 +5,18 @@ import 'package:http/http.dart' as http;
 
 class PackedIngredient {
   final Meal mealRef;
-  final Ingredient ingredientRef;
+  Ingredient ingredientRef;
   final int id;
 
-  const PackedIngredient({
+  PackedIngredient({
     this.mealRef = const Meal(),
     this.ingredientRef = const Ingredient(),
     this.id = 0,
   });
+
+  void set setIngredientRef(Ingredient _ingredientRef) {
+    ingredientRef = _ingredientRef;
+  }
 
   factory PackedIngredient.fromJson(Map<String, dynamic> json) {
     return switch (json) {
@@ -31,7 +35,7 @@ class PackedIngredient {
   }
 }
 
-Future<Ingredient> fetchIngredient(int id) async {
+Future<Ingredient> fetchPackedIngredient(int id) async {
   final response =
       await http.get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get/$id'));
 
@@ -42,7 +46,7 @@ Future<Ingredient> fetchIngredient(int id) async {
   }
 }
 
-Future<http.Response> createIngredient(Meal mealRef, Ingredient ingredientRef, int id) async {
+Future<http.Response> createPackedIngredient(Meal mealRef, Ingredient ingredientRef, int id) async {
   final response = await http.post(
     Uri.parse('http://127.0.0.1:80/api/Ingredients/Create'),
     headers: <String, String>{
@@ -58,7 +62,7 @@ Future<http.Response> createIngredient(Meal mealRef, Ingredient ingredientRef, i
   return response;
 }
 
-Future<http.Response> deleteIngredient(int id) async {
+Future<http.Response> deletePackedIngredient(int id) async {
   final response = await http.delete(
     Uri.parse('http://127.0.0.1:80/api/Ingredients/Delete/$id'),
     headers: <String, String>{
