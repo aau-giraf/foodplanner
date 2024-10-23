@@ -28,7 +28,7 @@ class ChildLandingPageMadpakke extends StatelessWidget {
             SizedBox(height: size.height * 0.02),
             Container(
               width: size.width * 0.9, // 90% of the screen width
-              height: size.height * 0.4+size.width *0.6, // 70% of the screen height
+              height: size.height * 0.1+size.width *0.6+190, // 70% of the screen height
               padding: const EdgeInsets.all(40),
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 243, 243, 243), // image box background color
