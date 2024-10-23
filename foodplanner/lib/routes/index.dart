@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/pages/admin_page.dart';
+import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/parent_page.dart';
 import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/student_page.dart';
@@ -9,6 +10,7 @@ import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:foodplanner/pages/landing_page_parent.dart';
 import '../auth/auth_provider.dart';
 import '../main.dart';
 import '../pages/signup.dart';
@@ -72,6 +74,11 @@ GoRoute(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return authProvider.hasRole(ROLES.parent) ? const ParentPage() : const UnauthorizedPage();
       },
+      routes: [
+        GoRoute(
+          path: MADPAKKE,
+          builder:(context, state) => ParentLandingPageMadpakke(),)
+      ]
     ),
   ],
 );

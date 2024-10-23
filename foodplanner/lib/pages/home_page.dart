@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'landing_page_children_madpakke.dart';
 
@@ -40,7 +41,16 @@ class HomePage extends StatelessWidget {
                 );
               },
               child: const Text('Go to Child Landing Page'),
-            ),           
+            ),      
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ParentLandingPageMadpakke()),
+                );
+              },
+              child: const Text('Go to Parent Landing Page')),     
           ],
         ),
       ),
