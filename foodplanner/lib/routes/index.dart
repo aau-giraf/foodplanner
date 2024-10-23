@@ -1,4 +1,5 @@
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/add_meal_page.dart';
 import 'package:foodplanner/pages/admin_page.dart';
@@ -46,7 +47,11 @@ final router = GoRouter(
     ),
     GoRoute(
       path: AddMealPage.routeName,
-      builder: (context, state) => AddMealPage(),
+      builder: (context, state) {
+        final meal = state.pathParameters['meal'] as Meal;
+        if(meal != null) return AddMealPage(meal: meal);
+        return UnauthorizedPage();
+      },
     ),
     GoRoute(
       path: CameraPage.routeName,
