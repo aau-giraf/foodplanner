@@ -10,7 +10,7 @@ class AddMealPage extends StatefulWidget {
 
   const AddMealPage({
     super.key,
-    required this.meal,
+    this.meal = const Meal(),
   });
 
   static const String routeName = '/add_meal_page';
@@ -35,10 +35,13 @@ class _AddMealPageState extends State<AddMealPage> {
     super.initState();
     _pages.addAll([
       MealFormPage(
-        onAddIngredients: () => _changePageIndex(1),
-        onCamera: () => _changePageIndex(2),
+        onAddIngredients: () {_changePageIndex(1);},
+        onCamera: () {_changePageIndex(2);},
       ),
-      AddIngredientPage(mealID: widget.meal.id),
+      AddIngredientPage(
+        meal: widget.meal,
+        onCamera: () {_changePageIndex(2);},
+      ),
       CameraPage(),
     ]);
   }
@@ -46,8 +49,7 @@ class _AddMealPageState extends State<AddMealPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[
-          currentPageIndex],
+      body: _pages[currentPageIndex],
     );
   }
 }

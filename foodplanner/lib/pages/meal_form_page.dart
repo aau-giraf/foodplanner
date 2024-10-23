@@ -14,6 +14,9 @@ import 'package:foodplanner/config/colors.dart';
 
 /// This class is used to create the meal page where the user can create an individual meal for their children.
 class MealFormPage extends StatefulWidget {
+  final VoidCallback onAddIngredients;
+  final VoidCallback onCamera;
+  
   const MealFormPage({
     super.key,
     required this.onAddIngredients,
@@ -21,9 +24,6 @@ class MealFormPage extends StatefulWidget {
   });
 
   static const String routeName = '/meal_form_page';
-
-  final VoidCallback onAddIngredients;
-  final VoidCallback onCamera;
 
   @override
   _MealFormPageState createState() => _MealFormPageState();
@@ -105,7 +105,7 @@ class _MealFormPageState extends State<MealFormPage> {
             CustomElevatedButton(
               onTab: () {
                 // context.go(ADD_INGREDIENT_PAGE);
-                widget.onAddIngredients;
+                widget.onAddIngredients();
               },
               widget: Icon(Icons.add, color: AppColors.textSecondary),
               backgroundColor: AppColors.secondary,
@@ -125,7 +125,7 @@ class _MealFormPageState extends State<MealFormPage> {
                         isDefaultAction: true,
                         onPressed: () { // Leads the user to the camera page.
                           // context.go(CAMERA_PAGE); 
-                          widget.onCamera;
+                          widget.onCamera();
                         },
                         child: const Text("Ja"),
                       ),

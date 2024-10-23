@@ -10,11 +10,13 @@ import 'package:go_router/go_router.dart';
 
 /// This class is used for selecting which ingredients should be added to the meal.
 class AddIngredientPage extends StatefulWidget {
-  final int mealID; // The identifier of the meal which the ingredient should be added to.
+  final Meal meal; // The identifier of the meal which the ingredient should be added to.
+  final VoidCallback onCamera;
 
   const AddIngredientPage({
     super.key,
-    required this.mealID,
+    required this.meal,
+    required this.onCamera,
   });
   
   static const String routeName = '/add_ingredient_page';
@@ -42,9 +44,6 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final List<Ingredient> ingredients = [];
-    // final List<Ingredient> ingredients = fetchIngredients();
-    final int mealID = widget.mealID;
 
     List<Ingredient> ingredients = <Ingredient>[ // This list contains all the available ingredients.
       Ingredient(name: 'Knækbrød'),       /// TEST ///
@@ -68,37 +67,25 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
         ),
       ),
 
+      body: _buildAddIngredientPage(context, widget.meal, ingredients)
+
       // !!! Chat GPT !!!
       // Use FutureBuilder to handle the asynchronous fetchMeal
-      body: FutureBuilder<Meal>(
-        future: fetchMeal(mealID), // Fetch the meal asynchronously
-        builder: (BuildContext context, AsyncSnapshot<Meal> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator()); // Show a loader while waiting
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}')); // Show error if any
-          } else if (snapshot.hasData) {
-            final Meal meal = snapshot.data!;
-            return FutureBuilder<List<Ingredient>>(
-              future: fetchIngredients(), // use JWT token
-              builder: (BuildContext context, AsyncSnapshot<List<Ingredient>> ingredientsSnapshot) {
-                if (ingredientsSnapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator()); // Show loader while fetching ingredients
-                } else if (ingredientsSnapshot.hasError) {
-                  return Center(child: Text('Error: ${ingredientsSnapshot.error}')); // Show error if fetching ingredients fails
-                } else if (ingredientsSnapshot.hasData) {
-                  final ingredients = ingredientsSnapshot.data!;
-                  return _buildAddIngredientPage(context, meal, ingredients); // Build the page with ingredients
-                } else {
-                  return const Center(child: Text('No ingredients found.'));
-                }
-              },
-            );
-          } else {
-            return const Center(child: Text('No meal found.'));
-          }
-        },
-      ),
+      // body: FutureBuilder<List<Ingredient>>(
+      //   future: fetchIngredients(), // use JWT token
+      //   builder: (BuildContext context, AsyncSnapshot<List<Ingredient>> ingredientsSnapshot) {
+      //     if (ingredientsSnapshot.connectionState == ConnectionState.waiting) {
+      //       return const Center(child: CircularProgressIndicator()); // Show loader while fetching ingredients
+      //     } else if (ingredientsSnapshot.hasError) {
+      //       return Center(child: Text('Error: ${ingredientsSnapshot.error}')); // Show error if fetching ingredients fails
+      //     } else if (ingredientsSnapshot.hasData) {
+      //       final ingredients = ingredientsSnapshot.data!;
+      //       return _buildAddIngredientPage(context, widget.meal, ingredients); // Build the page with ingredients
+      //     } else {
+      //       return const Center(child: Text('No ingredients found.'));
+      //     }
+      //   },
+      // ),
     );
   }
 
@@ -149,7 +136,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                           CupertinoDialogAction(
                             isDefaultAction: true,
                             onPressed: () { // Leads the user to the camera page.
-                              context.go(CAMERA_PAGE); 
+                              widget.onCamera();
                             },
                             child: const Text("OK"),
                           ),

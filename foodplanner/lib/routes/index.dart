@@ -1,9 +1,7 @@
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/meal.dart';
-import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/add_meal_page.dart';
 import 'package:foodplanner/pages/admin_page.dart';
-import 'package:foodplanner/pages/cameraPage.dart';
 import 'package:foodplanner/pages/edit_meal_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
@@ -38,24 +36,8 @@ final router = GoRouter(
       builder: (context, state) => ForgotPasswordPage(),
     ),
     GoRoute(
-      path: AddIngredientPage.routeName,
-      builder: (context, state) {
-        final mealID = state.pathParameters['meal'] as int;
-        if(mealID != null) return AddIngredientPage(mealID: mealID);
-        return UnauthorizedPage();
-      },
-    ),
-    GoRoute(
       path: AddMealPage.routeName,
-      builder: (context, state) {
-        final meal = state.pathParameters['meal'] as Meal;
-        if(meal != null) return AddMealPage(meal: meal);
-        return UnauthorizedPage();
-      },
-    ),
-    GoRoute(
-      path: CameraPage.routeName,
-      builder: (context, state) => CameraPage(),
+      builder: (context, state) => AddMealPage(),
     ),
     GoRoute(
       path: EditMealPage.routeName,
