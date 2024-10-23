@@ -1,10 +1,7 @@
-import 'dart:collection';
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/packed_ingredient.dart';
-import 'package:foodplanner/components/user.dart';
 import 'package:http/http.dart' as http;
 
 class Meal {

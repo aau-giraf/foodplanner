@@ -5,8 +5,6 @@ import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/components/packed_ingredient.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/routes/paths.dart';
-import 'package:go_router/go_router.dart';
 
 /// This class is used for selecting which ingredients should be added to the meal.
 class AddIngredientPage extends StatefulWidget {

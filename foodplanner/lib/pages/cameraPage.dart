@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:gal/gal.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/config/colors.dart';
 
 /// This class is used to set up the in-app camera, to allow users to use their device's cameras.
