@@ -252,10 +252,10 @@ class _SignupChildState extends State<CreateChildPage> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         items: classes
-                            .map((Class _class) => DropdownMenuItem<String>(
-                                  value: _class.classId.toString(),
+                            .map((Class class_) => DropdownMenuItem<String>(
+                                  value: class_.classId.toString(),
                                   child: Text(
-                                    _class.className,
+                                    class_.className,
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
@@ -272,11 +272,11 @@ class _SignupChildState extends State<CreateChildPage> {
                           });
                         },
                         selectedItemBuilder: (BuildContext context) {
-                          return classes.map((Class _class) {
+                          return classes.map((Class class_) {
                             return Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                _class.className,
+                                class_.className,
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
