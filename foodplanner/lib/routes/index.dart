@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:foodplanner/pages/landing_page_parent.dart';
 import '../auth/auth_provider.dart';
 import '../main.dart';
-import '../pages/signup.dart';
+import '../pages/signup_page.dart';
 import '../pages/login_page.dart'; 
 import '../pages/unauthorized_page.dart';
 import '../pages/home_page.dart'; // Import HomePage

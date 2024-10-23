@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
               'HOME PAGE HOME PAGE',
               style: TextStyle(fontSize: 20),
             ),
-         const SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -55,13 +55,14 @@ class HomePage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const ParentLandingPageMadpakke()),
                 );
               },
-              child: const Text('Go to Parent Landing Page')),     
+              child: const Text('Go to Parent Landing Page'),
             ),           
             // Used for development purposes
             ElevatedButton(
               onPressed: () {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                authProvider.setRole(ROLES.admin);},
+                authProvider.setRole(ROLES.admin);
+              },
               child: const Text('Set role to admin'),
             ),
             ElevatedButton(
@@ -75,7 +76,6 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Go to Admin Page'),
             ),
-
             // ElevatedButton(
             // onPressed: () async {
             //   final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -94,9 +94,6 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Logout'),
             ),
-
-
-
             ElevatedButton(
               onPressed: () async {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -105,8 +102,6 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Retrieve Token'),
             ),
-
-           
           ],
         ),
       ),
