@@ -1,21 +1,17 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
-import 'package:foodplanner/components/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'forgot_password_page.dart';
+import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'signup_page.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
   static final AuthService authService = AuthService(apiUrl: ApiConfig.baseUrl);
- 
 
   @override
   LoginPageState createState() => LoginPageState();
@@ -44,25 +40,37 @@ class LoginPageState extends State<LoginPage> {
   }
 
   void handleErrors(Map<String, dynamic> error) {
-    updateErrorState('Email', error['Email'] != null ? error['Email'][0] : '');
-    updateErrorState(
-        'Password', error['Password'] != null ? error['Password'][0] : '');
+    if (error['Message'] != null) {
+      updateErrorState('Email', ' ');
+      updateErrorState('Password', error['Message'][0]);
+    } else {
+      updateErrorState(
+          'Email', error['Email'] != null ? error['Email'][0] : '');
+      updateErrorState(
+          'Password', error['Password'] != null ? error['Password'][0] : '');
+    }
   }
 
   void signUserIn(BuildContext context) async {
-    
     try {
-      final response =
-          await loginUser(usernameController.text, passwordController.text);
-          await LoginPage.authService.fetchAuthData(usernameController.text, passwordController.text);
+      /* final response =
+          await loginUser(usernameController.text, passwordController.text); */
+      final error = await LoginPage.authService
+          .fetchAuthData(usernameController.text, passwordController.text);
+      print(error);
+      if (error != null) {
+        handleErrors(error);
+      } else {
+        context.go('/');
+      }
 
-      if (response.statusCode == 200) {
+      /* if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
-        User user = User.fromJson(body);
+        UserLogin user = UserLogin.fromJsonLogin(body);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                'Du er nu logget ind. ${user.firstName}, ${user.lastName}'),
+                'Du er nu logget ind. Din rolle er: ${user.role} og din token er: ${user.jwt}'),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 5),
           ),
@@ -70,7 +78,7 @@ class LoginPageState extends State<LoginPage> {
       } else {
         var error = jsonDecode(response.body);
         handleErrors(error);
-      }
+      } */
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -84,8 +92,6 @@ class LoginPageState extends State<LoginPage> {
 
   void loginInpage() {}
 
-  
-
   void directSignUpPage(BuildContext context) {
     Navigator.push(
       context,
@@ -98,16 +104,141 @@ class LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          'Egebakkeskolen\nFoodplanner',
+          style: AppTextStyles.title,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          children: [
+            const SizedBox(height: 35),
+            Image(
+              image: AssetImage('assets/images/logo.png'),
+              height: 160,
+            ),
+            const SizedBox(height: 35),
+            Column(
+              children: [
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  color: AppColors.background,
+                  surfaceTintColor: AppColors.background,
+                  elevation: 3,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 15),
+                      Text(
+                        'Log ind',
+                        style: AppTextStyles.headline3.copyWith(fontSize: 22),
+                      ),
+                      const SizedBox(height: 30),
+                      Text(
+                        'Brugernavn',
+                        style: AppTextStyles.headline4.copyWith(fontSize: 18),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: CustomTextField(
+                            hintText: "Brugernavn",
+                            controller: usernameController,
+                            errorText: emailError),
+                      ),
+                      const SizedBox(height: 50),
+                      Text(
+                        'Adgangskode',
+                        style: AppTextStyles.headline4.copyWith(fontSize: 18),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: CustomTextField(
+                            hintText: "Adgangskode",
+                            obscureText: true,
+                            controller: passwordController,
+                            errorText: passwordError),
+                      ),
+                      const SizedBox(height: 25),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Flexible(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ForgotPasswordPage()),
+                                  );
+                                },
+                                child: Text(
+                                  "Glemt adgangskode?",
+                                  style: AppTextStyles.standard.copyWith(
+                                    color: AppColors.secondary,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: AppColors.secondary,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 25),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: CustomButton(
+                        onTab: () => directSignUpPage(context),
+                        text: 'Opret',
+                        backgroundColor: AppColors.secondary,
+                      ),
+                    ),
+                    SizedBox(width: 15),
+                    Expanded(
+                      child: CustomButton(
+                        text: "Login",
+                        onTab: () => signUserIn(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /* @override
+  Widget build(BuildContext context) {
+    return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
           child: Center(
         child: Column(
           children: [
-            const SizedBox(height: 100),
-            const SFIcon(
-              SFIcons.sf_lock_shield_fill,
-              fontSize: 100,
-              fontWeight: FontWeight.w400,
+            const SizedBox(height: 300),
+            Image(
+              image: AssetImage('assert/images/logo.png'),
+              width: 300,
+              height: 300,
             ),
             const SizedBox(height: 50),
             const Text(
@@ -153,7 +284,9 @@ class LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 25),
             CustomButton(
-                onTab: () => signUserIn(context)), // Wrap in anonymous function
+              text: "Login",
+              onTab: () => signUserIn(context),
+            ), // Wrap in anonymous function
             const SizedBox(height: 10),
             const SizedBox(height: 10),
             Padding(
@@ -189,11 +322,11 @@ class LoginPageState extends State<LoginPage> {
             CustomButton(
               onTab: () => directSignUpPage(context),
               text: 'Opret bruger',
-              mainColor: AppColors.secondary,
+              backgroundColor: AppColors.secondary,
             ),
           ],
         ),
       )),
     );
-  }
+  }*/
 }
