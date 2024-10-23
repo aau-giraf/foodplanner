@@ -38,10 +38,14 @@ dependencies:
     flutter_sficon: ^1.1.2
     webview_flutter: ^2.0.10
     http: ^1.2.2
+    intl: ^0.19.0
+    openapi_generator_annotations: ^5.0.2
 
 dev_dependencies:
     flutter_test:
         sdk: flutter
+    openapi_generator: ^5.0.2
+    build_runner: ^2.4.13
 
     # The "flutter_lints" package below contains a set of recommended lints to
     # encourage good coding practices. The lint set provided by the package is
