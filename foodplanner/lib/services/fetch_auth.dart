@@ -8,23 +8,32 @@ class AuthService {
 
   AuthService({required this.apiUrl});
 
-  Future<void> fetchAuthData(AuthProvider authProvider) async {
+  Future<void> fetchAuthData(String Email, String Password ) async {
     try {
-      final response = await http.get(Uri.parse('$apiUrl/auth/status'));
+      final response = await http.post(Uri.parse('$apiUrl/api/Users/Login'), 
+      headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'email': Email,
+      'password': Password,
+    }),);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final bool isLoggedIn = data['isLoggedIn'];
+        final String jwt = data['jwt'];
+        final bool roleApproved = data['roleApproved'];
         final String role = data['role'];
 
-        if (isLoggedIn) {
-          authProvider.login(roleFromString(role));
-        } else {
-          authProvider.logout();
-        }
+        ROLES authRole = roleFromString(role.toLowerCase());
+
+        AuthProvider().login(authRole, jwt, roleApproved);
+        
+        
       } else {
         throw Exception('Failed to load auth data');
       }
+      // sabrina carpenter <3
     } catch (e) {
       print('Error fetching auth data: $e');
     }
