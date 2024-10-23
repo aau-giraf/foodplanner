@@ -2,29 +2,25 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/components/dropdownBar.dart';
+import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/components/user.dart';
+import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/config/text_styles.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
   @override
-  SignupPageState createState() => SignupPageState();
+  State<SignupPage> createState() => _SignupState();
 }
 
-class SignupPageState extends State<SignupPage> {
-  // Text editing controllers
+class _SignupState extends State<SignupPage> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  final emailController = TextEditingController();
-
-  // Dropdownbar
-  String? selectedDropdownValue;
-  final List<String> dropdownItems = ['Forældre', 'Lærer'];
-  final double fieldWidth = 300.0; // Example width, adjust as needed
 
   // Text error messages
   String firstNameError = '';
@@ -36,8 +32,51 @@ class SignupPageState extends State<SignupPage> {
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
   final RegExp emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-  final RegExp passwordRegExp =
-      RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
+  final RegExp passwordRegExp = RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
+
+  Set<String> role = {'Parent'};
+
+  List<ButtonSegment<String>> segments = [
+    ButtonSegment(
+      value: 'Parent',
+      label: Text('Forældre'),
+      icon: SFIcon(SFIcons.sf_figure_and_child_holdinghands),
+    ),
+    ButtonSegment(
+      value: 'Teacher',
+      label: Text('Lærer'),
+      icon: SFIcon(SFIcons.sf_graduationcap_fill),
+    ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    firstNameController.addListener(_updateButtonState);
+    lastNameController.addListener(_updateButtonState);
+    emailController.addListener(_updateButtonState);
+    passwordController.addListener(_updateButtonState);
+    confirmPasswordController.addListener(_updateButtonState);
+  }
+
+  @override
+  void dispose() {
+    firstNameController.removeListener(_updateButtonState);
+    lastNameController.removeListener(_updateButtonState);
+    emailController.removeListener(_updateButtonState);
+    passwordController.removeListener(_updateButtonState);
+    confirmPasswordController.removeListener(_updateButtonState);
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _updateButtonState() {
+    setState(() {});
+  }
 
   void updateErrorState(String field, String error) {
     setState(() {
@@ -68,6 +107,12 @@ class SignupPageState extends State<SignupPage> {
         'Password', error['Password'] != null ? error['Password'][0] : '');
   }
 
+  void roleChange(Set<String> value) {
+    setState(() {
+      role = value;
+    });
+  }
+
   //Function to validate form inputs
   void validateInputs(BuildContext context) {
     String firstName = firstNameController.text.trim();
@@ -75,7 +120,6 @@ class SignupPageState extends State<SignupPage> {
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String email = emailController.text.trim();
-    String role = selectedDropdownValue ?? '';
 
     //Step 1: Check om alle felter er udfyldt
     if (firstName.isEmpty ||
@@ -129,16 +173,29 @@ class SignupPageState extends State<SignupPage> {
     }
 
     //Step 4: Password Validation
-    if (!passwordRegExp.hasMatch(password)) {
-      setState(() {
-        passwordError =
-            'Adgangskoden skal være mellem 8 og 30 tegn og indeholde mindst et stort bogstav, et lille bogstav og et tal';
-      });
+    bool hasUpperCase = password.contains(RegExp(r'[A-ZÆØÅ]'));
+    bool hasLowerCase = password.contains(RegExp(r'[a-zæøå]'));
+    bool hasDigit = password.contains(RegExp(r'\d'));
+    bool hasMinLength = password.length >= 8;
+    bool hasMaxLength = password.length <= 30;
+
+    setState(() {
+      passwordError = '';
+      if (!hasUpperCase) {
+        passwordError = 'Adgangskoden skal indeholde mindst et stort bogstav.';
+      } else if (!hasLowerCase) {
+        passwordError = 'Adgangskoden skal indeholde mindst et lille bogstav.';
+      } else if (!hasDigit) {
+        passwordError = 'Adgangskoden skal indeholde mindst et tal.';
+      } else if (!hasMinLength) {
+        passwordError = 'Adgangskoden skal være mindst 8 tegn lang.';
+      } else if (!hasMaxLength) {
+        passwordError = 'Adgangskoden skal være højst 30 tegn lang.';
+      }
+    });
+
+    if (passwordError.isNotEmpty) {
       return;
-    } else {
-      setState(() {
-        passwordError = '';
-      });
     }
 
     //Step 5: Confirm Password Validation
@@ -166,10 +223,12 @@ class SignupPageState extends State<SignupPage> {
       String email,
       String password,
       String confirmPassword,
-      String role) async {
+      Set<String> role) async {
     try {
       final response =
-          await createUser(firstName, lastName, email, password, role);
+          await createUser(firstName, lastName, email, password, role.first);
+
+      if (!context.mounted) return;
 
       if (response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -184,6 +243,7 @@ class SignupPageState extends State<SignupPage> {
         handleErrors(error);
       }
     } catch (e) {
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Fejl ved oprettelse af bruger: $e'),
@@ -194,108 +254,135 @@ class SignupPageState extends State<SignupPage> {
     }
   }
 
-  void showButtonPressDialog(BuildContext context, String provider) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$provider Button Pressed!'),
-        backgroundColor: Colors.black26,
-        duration: const Duration(milliseconds: 400),
-      ),
-    );
+  bool showButton() {
+    return firstNameController.text.isNotEmpty &&
+        lastNameController.text.isNotEmpty &&
+        emailController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty &&
+        confirmPasswordController.text.isNotEmpty;
   }
-
-  late Future<User?> futureUser = Future.value(null);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEBE9E9),
-      body: SafeArea(
-          child: Center(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Egebakkeskolen\nFoodplanner',
+          style: AppTextStyles.title,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           children: [
-            const SizedBox(height: 100),
-            const SFIcon(
-              SFIcons.sf_person_fill_badge_plus,
-              fontSize: 100,
-              fontWeight: FontWeight.w400,
-            ),
-            const SizedBox(height: 50),
-            const Text(
-              'Tilmeld dig herunder',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+            SizedBox(height: 10),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              color: AppColors.background,
+              surfaceTintColor: AppColors.background,
+              elevation: 3,
+              child: Column(
+                children: [
+                  SizedBox(height: 10),
+                  Text('Opret mig', style: AppTextStyles.title),
+                  SizedBox(height: 10),
+                  Text(
+                    'Fornavn',
+                    style: AppTextStyles.bigText
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomTextField(
+                        controller: firstNameController,
+                        errorText: firstNameError,
+                        hintText: "Fornavn"),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    'Efternavn',
+                    style: AppTextStyles.bigText
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomTextField(
+                        controller: lastNameController,
+                        errorText: lastNameError,
+                        hintText: "Efternavn"),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    'Email',
+                    style: AppTextStyles.bigText
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomTextField(
+                        controller: emailController,
+                        errorText: emailError,
+                        hintText: "Email"),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    'Adgangskode',
+                    style: AppTextStyles.bigText
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomTextField(
+                          controller: passwordController,
+                          errorText: passwordError,
+                          hintText: "Adgangskode",
+                          obscureText: true)),
+                  SizedBox(height: 15),
+                  Text(
+                    'Bekræft adgangskode',
+                    style: AppTextStyles.bigText
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomTextField(
+                      controller: confirmPasswordController,
+                      errorText: confirmPasswordError,
+                      hintText: "Adgangskode",
+                      obscureText: true,
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    'Jeg er',
+                    style: AppTextStyles.bigText
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomSegmentButton(
+                      buttonSegments: segments,
+                      selected: role,
+                      onTab: roleChange,
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                ],
               ),
             ),
-            const SizedBox(height: 25),
-            CustomTextField(
-                hintText: "Fornavn",
-                controller: firstNameController,
-                errorText: firstNameError),
-            const SizedBox(height: 10),
-            CustomTextField(
-                hintText: "Efternavn",
-                controller: lastNameController,
-                errorText: lastNameError),
-            const SizedBox(height: 10),
-            CustomTextField(
-                hintText: "Email",
-                controller: emailController,
-                errorText: emailError),
-            const SizedBox(height: 10),
-            CustomTextField(
-                hintText: "Adgangskode",
-                obscureText: true,
-                controller: passwordController,
-                errorText: passwordError),
-            const SizedBox(height: 10),
-            CustomTextField(
-                hintText: "Gentag Adgangskode",
-                obscureText: true,
-                controller: confirmPasswordController,
-                errorText: confirmPasswordError),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 150),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: DropdownBar(
-                  width: fieldWidth, // Pass the width parameter
-                  items: dropdownItems,
-                  selectedValue: selectedDropdownValue,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedDropdownValue = newValue;
-                    });
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 150),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 150),
-              child: Divider(
-                color: Colors.black,
-                thickness: 1,
-              ),
-            ),
-            const SizedBox(height: 25),
+            SizedBox(height: 10),
             CustomButton(
-              onTab: () => validateInputs(context),
-              text: 'Tilmeld dig',
-              mainColor: Colors.blue,
+              text: 'Opret mig',
+              onTab: showButton() ? () => validateInputs(context) : null,
             ),
           ],
         ),
-      )),
+      ),
     );
   }
 }

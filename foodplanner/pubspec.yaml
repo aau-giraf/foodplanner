@@ -28,26 +28,23 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+    flutter:
+        sdk: flutter
+    go_router: ^14.3.0
 
-  flutter:
-    sdk: flutter
-  go_router: ^14.3.0
+    validators: ^3.0.0
 
-  validators: ^3.0.0
+    # The following adds the Cupertino Icons font to your application.
+    # Use with the CupertinoIcons class for iOS style icons.
+    cupertino_icons: ^1.0.8
+    provider: ^6.1.2
+    http: ^1.2.2
+    flutter_sficon: ^1.1.2
+    flutter_secure_storage: ^9.2.2
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
-  provider: ^6.1.2
-  http: ^1.2.2
-  flutter_sficon: ^1.1.2
-  flutter_secure_storage: ^9.2.2
-
-   
 flutter_sficon: ^1.1.2
 webview_flutter: ^2.0.10
 http: ^1.2.2
-
 
 dev_dependencies:
     flutter_test:
@@ -73,8 +70,8 @@ flutter:
     uses-material-design: true
 
     # To add assets to your application, add an assets section, like this:
-assets:
-    - lib/images/
+    assets:
+        - assets/images/logo.png
     #   - images/a_dot_ham.jpeg
 
     # An image asset can refer to one or more resolution-specific "variants", see
