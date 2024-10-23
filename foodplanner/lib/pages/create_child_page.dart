@@ -1,18 +1,13 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/child.dart';
-import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/models/class.dart';
-import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
 class CreateChildPage extends StatefulWidget {
