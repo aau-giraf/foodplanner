@@ -1,5 +1,4 @@
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/pages/add_meal_page.dart';
 import 'package:foodplanner/pages/admin_page.dart';
 import 'package:foodplanner/pages/edit_meal_page.dart';

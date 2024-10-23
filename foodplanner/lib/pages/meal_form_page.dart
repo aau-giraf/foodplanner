@@ -4,11 +4,8 @@ import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/add_ingredient_page.dart';
-import 'package:foodplanner/pages/homePage.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:go_router/go_router.dart';
-import '/pages/cameraPage.dart';
 
 import 'package:foodplanner/config/colors.dart';
 
@@ -50,16 +47,6 @@ class _MealFormPageState extends State<MealFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          // Button for taking the user back to the home page
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
-          },
-        ),
         title: const Text("Opret madpakke"),
         centerTitle: true,
         backgroundColor: AppColors.background,
