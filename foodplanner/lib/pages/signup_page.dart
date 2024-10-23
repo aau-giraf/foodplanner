@@ -4,14 +4,17 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/components/text_field.dart';
-import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/login_page.dart';
+import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
+
+  static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
   @override
   State<SignupPage> createState() => _SignupState();
@@ -215,8 +218,8 @@ class _SignupState extends State<SignupPage> {
       String confirmPassword,
       Set<String> role) async {
     try {
-      final response =
-          await createUser(firstName, lastName, email, password, role.first);
+      final response = await SignupPage.userService
+          .createUser(firstName, lastName, email, password, role.first);
 
       if (!context.mounted) return;
 
