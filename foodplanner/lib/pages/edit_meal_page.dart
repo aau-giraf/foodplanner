@@ -6,6 +6,8 @@ import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/cameraPage.dart';
 import 'package:foodplanner/pages/edit_meal_form_page.dart';
 import 'package:foodplanner/services/fetch_user_data.dart';
+import 'package:foodplanner/services/ingredient_services.dart';
+import 'package:foodplanner/services/meal_services.dart';
 
 /// This class is used to create the page for editing an already existing meal.
 class EditMealPage extends StatefulWidget {

@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
-import 'package:foodplanner/components/packed_ingredient.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/services/packed_ingredient_services.dart';
 
 /// This class is used for selecting which ingredients should be added to the meal.
 class AddIngredientPage extends StatefulWidget {

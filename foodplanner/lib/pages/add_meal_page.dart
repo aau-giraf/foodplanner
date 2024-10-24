@@ -6,6 +6,7 @@ import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/cameraPage.dart';
 import 'package:foodplanner/services/fetch_user_data.dart';
 import 'package:foodplanner/pages/meal_form_page.dart';
+import 'package:foodplanner/services/ingredient_services.dart';
 
 class AddMealPage extends StatefulWidget {
   final Meal meal;

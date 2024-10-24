@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
-import 'package:foodplanner/components/packed_ingredient.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/routes/paths.dart';
+import 'package:foodplanner/services/meal_services.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:foodplanner/config/colors.dart';
