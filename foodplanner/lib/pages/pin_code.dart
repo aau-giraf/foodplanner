@@ -92,15 +92,12 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       await authProvider.loadFromStorage();
 
-      var error = await PinCode.pinService.postPin(authProvider.userId!, pin);
+      var error = await PinCode.pinService.checkPin(authProvider.userId!, pin);
       await Future.delayed(Duration(milliseconds: 300));
       print(error);
       if (error == null) {
-        print("im here");
-        //context.go('/');
         Navigator.of(context).pop();
       } else {
-        print("Error: $error");
         setState(() {
           pin = [];
           handleErrors(error);
@@ -126,6 +123,28 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
 
       if (createPinCode.join() == confirmPinCode.join()) {
         print("Pins match");
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        await authProvider.loadFromStorage();
+
+        var error = await PinCode.pinService
+            .checkPin(authProvider.userId!, confirmPinCode);
+        if (error == null) {
+          Navigator.of(context).pop();
+        } else {
+          setState(() {
+            createPinCode = [];
+            confirmPinCode = [];
+            handleErrors(error);
+          });
+        }
+      } else {
+        setState(() {
+          createPinCode = [];
+          confirmPinCode = [];
+          handleErrors({
+            "Message": ["Pinkoderne matcher ikke"],
+          });
+        });
       }
     }
   }
