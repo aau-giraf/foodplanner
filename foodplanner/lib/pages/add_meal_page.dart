@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/cameraPage.dart';
+import 'package:foodplanner/services/fetch_user_data.dart';
 import 'package:foodplanner/pages/meal_form_page.dart';
 
 class AddMealPage extends StatefulWidget {
@@ -34,7 +36,8 @@ class _AddMealPageState extends State<AddMealPage> {
   @override
   void initState() {
     super.initState();
-    fetchIngredientsByUserID().then((ingredients) {
+    final auth = AuthProvider();
+    fetchIngredientsByUserID(FetchUserData.decodeUserIDFromJWT(auth.jwtToken!)).then((ingredients) {
       this.ingredients = ingredients;
     });
     _pages.addAll([

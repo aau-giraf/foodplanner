@@ -40,6 +40,7 @@ dependencies:
     flutter_sficon: ^1.1.2
     webview_flutter: ^2.0.10
     http: ^1.2.2
+    jwt_decoder: ^2.0.1
     
     flutter:
         sdk: flutter
