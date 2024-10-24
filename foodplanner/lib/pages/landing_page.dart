@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/pages/pin_code.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/routes/paths.dart';
@@ -20,7 +21,27 @@ class LandingPageState extends State<LandingPage> {
       isLocked = !isLocked;
     });
     if (!isLocked) {
-      context.go('/pin_code');
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => PinCode(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 1.0);
+            const end = Offset(0.0, 0.0);
+            const curve = Curves.ease;
+
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var offsetAnimation = animation.drive(tween);
+
+            return SlideTransition(
+              position: offsetAnimation,
+              child: child,
+            );
+          },
+        ),
+      );
+      //context.go('/pin_code');
     }
   }
 
