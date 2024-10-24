@@ -9,11 +9,13 @@ import 'package:foodplanner/config/text_styles.dart';
 /// This class is used for selecting which ingredients should be added to the meal.
 class AddIngredientPage extends StatefulWidget {
   final Meal meal; // The identifier of the meal which the ingredient should be added to.
+  final List<Ingredient> ingredients;
   final VoidCallback onCamera;
 
   const AddIngredientPage({
     super.key,
     required this.meal,
+    required this.ingredients,
     required this.onCamera,
   });
   
@@ -25,14 +27,6 @@ class AddIngredientPage extends StatefulWidget {
 
 class _AddIngredientPageState extends State<AddIngredientPage> {
   TextEditingController _searchBarController = TextEditingController();
-  
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   _searchBarController.addListener();
-  // }
-
 
   @override
   void dispose() {
@@ -42,14 +36,6 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    List<Ingredient> ingredients = <Ingredient>[ // This list contains all the available ingredients.
-      Ingredient(name: 'Knækbrød'),       /// TEST ///
-      Ingredient(name: 'ost:brie'),       /// TEST ///
-      Ingredient(name: 'ost:mozeralla'),  /// TEST ///
-      Ingredient(name: 'æble'),           /// TEST ///
-      Ingredient(name: 'banan'),          /// TEST ///
-    ];
     
     return Scaffold(
       appBar: AppBar(
@@ -65,25 +51,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
         ),
       ),
 
-      body: _buildAddIngredientPage(context, widget.meal, ingredients)
-
-      // !!! Chat GPT !!!
-      // Use FutureBuilder to handle the asynchronous fetchMeal
-      // body: FutureBuilder<List<Ingredient>>(
-      //   future: fetchIngredients(), // use JWT token
-      //   builder: (BuildContext context, AsyncSnapshot<List<Ingredient>> ingredientsSnapshot) {
-      //     if (ingredientsSnapshot.connectionState == ConnectionState.waiting) {
-      //       return const Center(child: CircularProgressIndicator()); // Show loader while fetching ingredients
-      //     } else if (ingredientsSnapshot.hasError) {
-      //       return Center(child: Text('Error: ${ingredientsSnapshot.error}')); // Show error if fetching ingredients fails
-      //     } else if (ingredientsSnapshot.hasData) {
-      //       final ingredients = ingredientsSnapshot.data!;
-      //       return _buildAddIngredientPage(context, widget.meal, ingredients); // Build the page with ingredients
-      //     } else {
-      //       return const Center(child: Text('No ingredients found.'));
-      //     }
-      //   },
-      // ),
+      body: _buildAddIngredientPage(context, widget.meal, widget.ingredients)
     );
   }
 

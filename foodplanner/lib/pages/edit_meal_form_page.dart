@@ -3,7 +3,6 @@ import 'package:foodplanner/components/edit_meal_ingredient_list_element.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
-import 'package:foodplanner/components/packed_ingredient.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +10,7 @@ import 'package:go_router/go_router.dart';
 /// This class is used to create the page for editing an already existing meal.
 class EditMealFormPage extends StatelessWidget {
   final Meal meal; // The identifier of the meal which is being edited.
+  final List<Ingredient> ingredients;
 
   final VoidCallback onAddIngredients;
   final VoidCallback onCamera;
@@ -18,6 +18,7 @@ class EditMealFormPage extends StatelessWidget {
   const EditMealFormPage({
     super.key,
     required this.meal,
+    required this.ingredients,
     required this.onAddIngredients,
     required this.onCamera,
   });
@@ -46,35 +47,8 @@ class EditMealFormPage extends StatelessWidget {
         ),
       ),
 
-      // !!! Chat GPT !!!
-      // Use FutureBuilder to handle the asynchronous fetchMeal
-      body: FutureBuilder<List<Ingredient>>(
-        future: _fetchIngredients(meal.getPackedIngredients),
-        builder: (BuildContext context, AsyncSnapshot<List<Ingredient>> ingredientsSnapshot) {
-          if (ingredientsSnapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator()); // Show loader while fetching ingredients
-          } else if (ingredientsSnapshot.hasError) {
-            return Center(child: Text('Error: ${ingredientsSnapshot.error}')); // Show error if fetching ingredients fails
-          } else if (ingredientsSnapshot.hasData) {
-            final ingredients = ingredientsSnapshot.data!;
-            return _buildEditMealPage(context, ingredients); // Build the page with ingredients
-          } else {
-            return const Center(child: Text('No ingredients found.'));
-          }
-        },
-      ), 
+      body: _buildEditMealPage(context, ingredients)
     );
-  }
-
-  // !!! Chat GPT !!!
-  // Helper method to fetch ingredients asynchronously
-  Future<List<Ingredient>> _fetchIngredients(List<PackedIngredient> packedIngredients) async {
-    List<Ingredient> ingredients = [];
-    for (var packedIngredient in packedIngredients) {
-      final ingredient = await fetchIngredient(packedIngredient.ingredientRef as int);
-      ingredients.add(ingredient); // Await each fetchIngredient and add to the list
-    }
-    return ingredients;
   }
   
   // Helper method to build the Edit Meal Page after ingredients are fetched

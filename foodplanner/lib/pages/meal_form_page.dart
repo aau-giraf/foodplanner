@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/components/packed_ingredient.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:go_router/go_router.dart';
@@ -11,11 +12,15 @@ import 'package:foodplanner/config/colors.dart';
 
 /// This class is used to create the meal page where the user can create an individual meal for their children.
 class MealFormPage extends StatefulWidget {
+  final Meal meal;
+  final List<Ingredient> ingredients;
   final VoidCallback onAddIngredients;
   final VoidCallback onCamera;
   
   const MealFormPage({
     super.key,
+    required this.meal,
+    required this.ingredients,
     required this.onAddIngredients,
     required this.onCamera,
   });
@@ -29,22 +34,27 @@ class MealFormPage extends StatefulWidget {
 
 
 class _MealFormPageState extends State<MealFormPage> {
-  final Meal meal = Meal();
   final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
   Image? _selectedImage;
-  final List<Ingredient> _selectedIngredients = [];
 
   // Method for deleting the controllers when they are done being used.
   @override
   void dispose() {
     _titleController.dispose();
-    _descriptionController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // final List<Ingredient> selectedIngredients = [];
+    // selectedIngredients.addAll(
+    //   widget.ingredients.where((ingredient) {
+    //     return widget.meal.getPackedIngredients.map(
+    //       (packedIngredient) => packedIngredient.ingredientRef.id).contains(ingredient.id);
+    //     }
+    //   ),
+    // );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Opret madpakke"),
@@ -119,7 +129,12 @@ class _MealFormPageState extends State<MealFormPage> {
                       CupertinoDialogAction(
                         isDestructiveAction: true,
                         onPressed: () {
-                          createMeal;
+                          createMeal(
+                            _titleController.text,
+                            null,
+                            DateTime.now(),
+                            widget.meal.getPackedIngredients,
+                          );
                           context.go(MEAL_LIST_PAGE);
                         },
                         child: const Text('Nej'),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/cameraPage.dart';
@@ -20,6 +21,8 @@ class EditMealPage extends StatefulWidget {
 }
 
 class _EditMealPageState extends State<EditMealPage> {
+  List<Ingredient> ingredients = [];
+  Meal meal = Meal();
   int currentPageIndex = 0;
 
   void _changePageIndex(int index) {
@@ -35,19 +38,25 @@ class _EditMealPageState extends State<EditMealPage> {
     super.initState();
 
     fetchMeal(widget.mealID).then((meal) {
-      _pages.addAll([
-        EditMealFormPage(
-          meal: meal,
-          onAddIngredients: () {_changePageIndex(1);},
-          onCamera: () {_changePageIndex(2);},
-        ),
-        AddIngredientPage(
-          meal: meal,
-          onCamera: () {_changePageIndex(2);},
-        ),
-        CameraPage(),
-      ]);
+      this.meal = meal;
     });
+    fetchIngredientsByUserID().then((ingredients) {
+      this.ingredients = ingredients;
+    });
+    _pages.addAll([
+      EditMealFormPage(
+        meal: meal,
+        ingredients: ingredients,
+        onAddIngredients: () {_changePageIndex(1);},
+        onCamera: () {_changePageIndex(2);},
+      ),
+      AddIngredientPage(
+        meal: meal,
+        ingredients: ingredients,
+        onCamera: () {_changePageIndex(2);},
+      ),
+      CameraPage(),
+    ]);
   }
 
   @override

@@ -59,14 +59,13 @@ Future<Meal> fetchMeal(int id) async {
   }
 }
 
-Future<http.Response> createMeal(final int id, /*final User user,*/ final String title, final Image? image, final DateTime? date, final List<PackedIngredient> ingredients) async {
+Future<http.Response> createMeal(/*final User user,*/ final String title, final Image? image, final DateTime? date, final List<PackedIngredient> ingredients) async {
   final response = await http.post(
     Uri.parse('http://127.0.0.1:80/api/Meals/Create'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
     body: jsonEncode({
-        'id': id,
         // 'user': user,
         'title': title,
         'image': image.toString(),

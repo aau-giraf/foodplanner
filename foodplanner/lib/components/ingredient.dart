@@ -1,14 +1,18 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/packed_ingredient.dart';
 import 'package:http/http.dart' as http;
 
 class Ingredient {
+  final int id;
   final String name;
   // final User user;
   final Image? image;
   
 
   const Ingredient({
+    this.id = 0,
     this.name = '',
     // this.user,
     this.image,
@@ -42,7 +46,18 @@ Future<Ingredient> fetchIngredient(int id) async {
   }
 }
 
-Future<List<Ingredient>> fetchIngredients(int userID) async {
+// !!! Chat GPT !!!
+  // Helper method to fetch ingredients asynchronously
+  Future<List<Ingredient>> fetchIngredientsByPackedList(List<PackedIngredient> packedIngredients) async {
+    List<Ingredient> ingredients = [];
+    for (var packedIngredient in packedIngredients) {
+      final ingredient = await fetchIngredient(packedIngredient.ingredientRef as int);
+      ingredients.add(ingredient); // Await each fetchIngredient and add to the list
+    }
+    return ingredients;
+  }
+
+Future<List<Ingredient>> fetchIngredientsByUserID(int userID) async {
   final response =
       await http.get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get/$userID'));
 
@@ -59,10 +74,13 @@ Future<List<Ingredient>> fetchIngredients(int userID) async {
 }
 
 Future<http.Response> createIngredient(String name, /*User user, */ Image image) async {
+  final auth = AuthProvider();
+
   final response = await http.post(
     Uri.parse('http://127.0.0.1:80/api/Ingredients/Create'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer: ${auth.retrieveToken}',
     },
     body: jsonEncode(<String, String>{
       'name': name,
