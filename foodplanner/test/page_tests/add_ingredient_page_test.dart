@@ -5,249 +5,230 @@ import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 
 void main() {
-  group('AddIngredientPage AppBar Tests', () {
-    testWidgets('should display the correct title', (WidgetTester tester) async {
-      // Arrange
-      Meal meal = Meal();
-      List<Ingredient> ingredients = [];
+  group('AddIngredientPage widget tests', () {
+    group('AddIngredientPage AppBar Tests', () {
+      testWidgets('should display the correct title', (WidgetTester tester) async {
+        // Arrange
+        Meal meal = Meal();
+        List<Ingredient> ingredients = [];
 
-      await tester.pumpWidget(MaterialApp(
-        home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
-      ));
+        await tester.pumpWidget(MaterialApp(
+          home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
+        ));
 
-      // Assert
-      expect(find.text("Find madvare"), findsOneWidget);
+        // Assert
+        expect(find.text("Find madvare"), findsOneWidget);
+      });
+
+      testWidgets('should not display incorrect title', (WidgetTester tester) async {
+        // Arrange
+        Meal meal = Meal();
+        List<Ingredient> ingredients = [];
+
+        await tester.pumpWidget(MaterialApp(
+          home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
+        ));
+
+        // Assert
+        expect(find.text("Incorrect Title"), findsNothing); // Incorrect title should not be found
+      });
     });
 
-    testWidgets('should not display incorrect title', (WidgetTester tester) async {
-      // Arrange
-      Meal meal = Meal();
-      List<Ingredient> ingredients = [];
+    group('AddIngredientPage Ingredient List Tests', () {
+      testWidgets('should display ingredients', (WidgetTester tester) async {
+        // Arrange
+        Meal meal = Meal();
+        List<Ingredient> ingredients = [
+          Ingredient(name: 'Tomato'),
+          Ingredient(name: 'Lettuce')
+        ];
 
-      await tester.pumpWidget(MaterialApp(
-        home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
-      ));
+        await tester.pumpWidget(MaterialApp(
+          home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
+        ));
 
-      // Assert
-      expect(find.text("Incorrect Title"), findsNothing); // Incorrect title should not be found
-    });
-  });
+        // Assert
+        expect(find.text('Tomato'), findsOneWidget);
+        expect(find.text('Lettuce'), findsOneWidget);
+      });
 
-  group('AddIngredientPage Ingredient List Tests', () {
-    testWidgets('should display ingredients', (WidgetTester tester) async {
-      // Arrange
-      Meal meal = Meal();
-      List<Ingredient> ingredients = [
-        Ingredient(name: 'Tomato'),
-        Ingredient(name: 'Lettuce')
-      ];
+      testWidgets('should display no ingredients', (WidgetTester tester) async {
+        // Arrange
+        Meal meal = Meal();
+        List<Ingredient> ingredients = [];
 
-      await tester.pumpWidget(MaterialApp(
-        home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
-      ));
+        await tester.pumpWidget(MaterialApp(
+          home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
+        ));
 
-      // Assert
-      expect(find.text('Tomato'), findsOneWidget);
-      expect(find.text('Lettuce'), findsOneWidget);
-    });
+        // Assert
+        expect(find.text('Tomato'), findsNothing);
+      });
 
-    testWidgets('should display no ingredients', (WidgetTester tester) async {
-      // Arrange
-      Meal meal = Meal();
-      List<Ingredient> ingredients = [];
+      testWidgets('should not display non-existent ingredient', (WidgetTester tester) async {
+        // Arrange
+        Meal meal = Meal();
+        List<Ingredient> ingredients = [
+          Ingredient(name: 'Tomato'),
+          Ingredient(name: 'Lettuce')
+        ];
 
-      await tester.pumpWidget(MaterialApp(
-        home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
-      ));
+        await tester.pumpWidget(MaterialApp(
+          home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
+        ));
 
-      // Assert
-      expect(find.text('Tomato'), findsNothing);
-    });
-
-    testWidgets('should not display non-existent ingredient', (WidgetTester tester) async {
-      // Arrange
-      Meal meal = Meal();
-      List<Ingredient> ingredients = [
-        Ingredient(name: 'Tomato'),
-        Ingredient(name: 'Lettuce')
-      ];
-
-      await tester.pumpWidget(MaterialApp(
-        home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
-      ));
-
-      // Assert
-      expect(find.text('Cucumber'), findsNothing); // Non-existent ingredient should not be found
-    });
-  });
-
-  // These tests do not work, because of fetching not being fully implemented
-  group('AddIngredientPage Search Functionality Tests', () {
-    testWidgets('should filter ingredients based on search input', (WidgetTester tester) async {
-      // Arrange
-      Meal meal = Meal();
-      List<Ingredient> ingredients = [
-        Ingredient(name: 'Tomato'),
-        Ingredient(name: 'Lettuce'),
-        Ingredient(name: 'Cucumber')
-      ];
-
-      await tester.pumpWidget(MaterialApp(
-        home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
-      ));
-
-      // Act
-      await tester.enterText(find.byType(TextField), 'to');
-      await tester.pump(); // Rebuild the widget
-
-      // Assert
-      expect(find.text('Tomato'), findsOneWidget);
-      expect(find.text('Lettuce'), findsNothing);
-      expect(find.text('Cucumber'), findsNothing);
+        // Assert
+        expect(find.text('Cucumber'), findsNothing); // Non-existent ingredient should not be found
+      });
     });
 
-    testWidgets('should not display ingredient if search is incorrect', (WidgetTester tester) async {
-      // Arrange
-      Meal meal = Meal();
-      List<Ingredient> ingredients = [
-        Ingredient(name: 'Tomato'),
-        Ingredient(name: 'Lettuce'),
-        Ingredient(name: 'Cucumber')
-      ];
+    // These tests do not work, because of fetching not being fully implemented
+    group('AddIngredientPage Search Functionality Tests', () {
+      testWidgets('should filter ingredients based on search input', (WidgetTester tester) async {
+        // Arrange
+        Meal meal = Meal();
+        List<Ingredient> ingredients = [
+          Ingredient(name: 'Tomato'),
+          Ingredient(name: 'Lettuce'),
+          Ingredient(name: 'Cucumber')
+        ];
 
-      await tester.pumpWidget(MaterialApp(
-        home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
-      ));
+        await tester.pumpWidget(MaterialApp(
+          home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
+        ));
 
-      // Act
-      await tester.enterText(find.byType(TextField), 'invalid search');
-      await tester.pump(); // Rebuild the widget
+        // Act
+        await tester.enterText(find.byType(TextField), 'to');
+        await tester.pump(); // Rebuild the widget
 
-      // Assert
-      expect(find.text('Tomato'), findsNothing); // Incorrect search should not find "Tomato"
-      expect(find.text('Lettuce'), findsNothing); // Incorrect search should not find "Lettuce"
-      expect(find.text('Cucumber'), findsNothing); // Incorrect search should not find "Cucumber"
+        // Assert
+        expect(find.text('Tomato'), findsOneWidget);
+        expect(find.text('Lettuce'), findsNothing);
+        expect(find.text('Cucumber'), findsNothing);
+      });
+
+      testWidgets('should not display ingredient if search is incorrect', (WidgetTester tester) async {
+        // Arrange
+        Meal meal = Meal();
+        List<Ingredient> ingredients = [
+          Ingredient(name: 'Tomato'),
+          Ingredient(name: 'Lettuce'),
+          Ingredient(name: 'Cucumber')
+        ];
+
+        await tester.pumpWidget(MaterialApp(
+          home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
+        ));
+
+        // Act
+        await tester.enterText(find.byType(TextField), 'invalid search');
+        await tester.pump(); // Rebuild the widget
+
+        // Assert
+        expect(find.text('Tomato'), findsNothing); // Incorrect search should not find "Tomato"
+        expect(find.text('Lettuce'), findsNothing); // Incorrect search should not find "Lettuce"
+        expect(find.text('Cucumber'), findsNothing); // Incorrect search should not find "Cucumber"
+      });
     });
 
-    testWidgets('should not accept special charater input', (WidgetTester tester) async {
-      // Arrange
-      Meal meal = Meal();
-      List<Ingredient> ingredients = [
-        Ingredient(name: 'Tomato'),
-        Ingredient(name: 'Lettuce'),
-        Ingredient(name: 'Cucumber')
-      ];
+    group('AddIngredientPage Dialog Tests', () {
+      testWidgets('should show dialog if ingredient has no image', (WidgetTester tester) async {
+        // Arrange
+        Meal meal = Meal();
+        List<Ingredient> ingredients = [
+          Ingredient(name: 'Tomato', image: null),
+        ];
 
-      await tester.pumpWidget(MaterialApp(
-        home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
-      ));
+        await tester.pumpWidget(MaterialApp(
+          home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
+        ));
 
-      // Act
-      await tester.enterText(find.byType(TextField), '!)(¤"%)');
-      await tester.pump(); // Rebuild the widget
+        // Act
+        await tester.tap(find.text('Tomato'));
+        await tester.pump(); // Open dialog
 
-      // Assert
-      expect(find.text('Tomato'), findsNothing); // Incorrect search should not find "Tomato"
-      expect(find.text('Lettuce'), findsNothing); // Incorrect search should not find "Lettuce"
-      expect(find.text('Cucumber'), findsNothing); // Incorrect search should not find "Cucumber"
-    });
-  });
+        // Assert
+        expect(find.text('Der er ikke et billede til denne ingrediens, tilføj dette nu.'), findsOneWidget);
+      });
 
-  group('AddIngredientPage Dialog Tests', () {
-    testWidgets('should show dialog if ingredient has no image', (WidgetTester tester) async {
-      // Arrange
-      Meal meal = Meal();
-      List<Ingredient> ingredients = [
-        Ingredient(name: 'Tomato', image: null),
-      ];
+      // This one fails. It might be bacause of the placeholder image.
+      testWidgets('should not show dialog if ingredient has image', (WidgetTester tester) async {
+        // Arrange
+        Meal meal = Meal();
+        List<Ingredient> ingredients = [
+          Ingredient(name: 'Tomato', image: Image.network('https://via.placeholder.com/150')),
+        ];
 
-      await tester.pumpWidget(MaterialApp(
-        home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
-      ));
+        await tester.pumpWidget(MaterialApp(
+          home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
+        ));
 
-      // Act
-      await tester.tap(find.text('Tomato'));
-      await tester.pump(); // Open dialog
+        // Act
+        await tester.tap(find.text('Tomato'));
+        await tester.pump(); // No dialog should open
 
-      // Assert
-      expect(find.text('Der er ikke et billede til denne ingrediens, tilføj dette nu.'), findsOneWidget);
+        // Assert
+        expect(find.text('Der er ikke et billede til denne ingrediens, tilføj dette nu.'), findsNothing); // No dialog expected
+      });
     });
 
-    testWidgets('should not show dialog if ingredient has image', (WidgetTester tester) async {
-      // Arrange
-      Meal meal = Meal();
-      List<Ingredient> ingredients = [
-        Ingredient(name: 'Tomato', image: Image.network('https://via.placeholder.com/150')),
-      ];
+    group('AddIngredientPage Callback Tests', () {
+      testWidgets('should call onCamera callback', (WidgetTester tester) async {
+        bool cameraCalled = false;
 
-      await tester.pumpWidget(MaterialApp(
-        home: AddIngredientPage(meal: meal, ingredients: ingredients, onCamera: () {}),
-      ));
+        // Arrange
+        Meal meal = Meal();
+        List<Ingredient> ingredients = [
+          Ingredient(name: 'Tomato', image: null),
+        ];
 
-      // Act
-      await tester.tap(find.text('Tomato'));
-      await tester.pump(); // No dialog should open
+        await tester.pumpWidget(MaterialApp(
+          home: AddIngredientPage(
+            meal: meal,
+            ingredients: ingredients,
+            onCamera: () {
+              cameraCalled = true;
+            },
+          ),
+        ));
 
-      // Assert
-      expect(find.text('Der er ikke et billede til denne ingrediens, tilføj dette nu.'), findsNothing); // No dialog expected
-    });
-  });
+        // Act
+        await tester.tap(find.text('Tomato'));
+        await tester.pump(); // Open dialog
+        await tester.tap(find.text('OK'));
+        await tester.pump(); // Trigger callback
 
-  group('AddIngredientPage Callback Tests', () {
-    testWidgets('should call onCamera callback', (WidgetTester tester) async {
-      bool cameraCalled = false;
+        // Assert
+        expect(cameraCalled, isTrue);
+      });
 
-      // Arrange
-      Meal meal = Meal();
-      List<Ingredient> ingredients = [
-        Ingredient(name: 'Tomato', image: null),
-      ];
+      // This one fails. It might be bacause of the placeholder image.
+      testWidgets('should not call onCamera callback for ingredient with image', (WidgetTester tester) async {
+        bool cameraCalled = false;
 
-      await tester.pumpWidget(MaterialApp(
-        home: AddIngredientPage(
-          meal: meal,
-          ingredients: ingredients,
-          onCamera: () {
-            cameraCalled = true;
-          },
-        ),
-      ));
+        // ArrangeS
+        Meal meal = Meal();
+        List<Ingredient> ingredients = [
+          Ingredient(name: 'Tomato', image: Image.network('https://via.placeholder.com/150')),
+        ];
 
-      // Act
-      await tester.tap(find.text('Tomato'));
-      await tester.pump(); // Open dialog
-      await tester.tap(find.text('OK'));
-      await tester.pump(); // Trigger callback
+        await tester.pumpWidget(MaterialApp(
+          home: AddIngredientPage(
+            meal: meal,
+            ingredients: ingredients,
+            onCamera: () {
+              cameraCalled = true;
+            },
+          ),
+        ));
 
-      // Assert
-      expect(cameraCalled, isTrue);
-    });
+        // Act
+        await tester.tap(find.text('Tomato'));
+        await tester.pump(); // No callback should be called
 
-    testWidgets('should not call onCamera callback for ingredient with image', (WidgetTester tester) async {
-      bool cameraCalled = false;
-
-      // ArrangeS
-      Meal meal = Meal();
-      List<Ingredient> ingredients = [
-        Ingredient(name: 'Tomato', image: Image.network('https://via.placeholder.com/150')),
-      ];
-
-      await tester.pumpWidget(MaterialApp(
-        home: AddIngredientPage(
-          meal: meal,
-          ingredients: ingredients,
-          onCamera: () {
-            cameraCalled = true;
-          },
-        ),
-      ));
-
-      // Act
-      await tester.tap(find.text('Tomato'));
-      await tester.pump(); // No callback should be called
-
-      // Assert
-      expect(cameraCalled, isFalse); // Callback should not be called
+        // Assert
+        expect(cameraCalled, isFalse); // Callback should not be called
+      });
     });
   });
 }

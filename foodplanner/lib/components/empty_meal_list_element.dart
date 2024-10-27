@@ -54,18 +54,6 @@ class EmptyMealListElement extends StatelessWidget {
             ),
           ),
         ),
-
-
-        SizedBox(height: 40),
-
-        // The button for creating a new meal
-        CustomElevatedButton(
-          onTab: () { // Leads to the "add_meal_page"
-            context.go(ADD_MEAL_PAGE); 
-          }, 
-          widget: Icon(Icons.add, color: AppColors.textSecondary),
-          width: MediaQuery.sizeOf(context).width/2,
-        ),
       ],
     );
   }

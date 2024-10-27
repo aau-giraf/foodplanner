@@ -6,10 +6,8 @@ import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/cameraPage.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
-import 'package:mockito/mockito.dart';
 
 // Can't be tested properly, since Meal can't be fetched.
-
 void main() {
   group('EditMealPage Widget Tests', () {
     late Meal meal;

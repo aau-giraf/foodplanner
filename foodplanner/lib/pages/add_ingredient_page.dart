@@ -28,6 +28,13 @@ class AddIngredientPage extends StatefulWidget {
 
 class _AddIngredientPageState extends State<AddIngredientPage> {
   TextEditingController _searchBarController = TextEditingController();
+  List<Ingredient> sortedIngredients = [];
+
+  @override
+  void initState() {
+    super.initState();
+    sortedIngredients = widget.ingredients;
+  }
 
   @override
   void dispose() {
@@ -52,12 +59,12 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
         ),
       ),
 
-      body: _buildAddIngredientPage(context, widget.meal, widget.ingredients)
+      body: _buildAddIngredientPage(context, widget.meal, sortedIngredients)
     );
   }
 
   Widget _buildAddIngredientPage(BuildContext context, Meal meal, List<Ingredient> ingredients) {
-    List<Ingredient> sortedIngredients = ingredients;
+    // List<Ingredient> sortedIngredients = ingredients;
     int maxTextLength = 20;
 
     return Column(
@@ -83,7 +90,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
             ),
             onChanged: (text) {
               setState(() {
-                sortedIngredients = ingredients.where((ingredient) {
+                sortedIngredients = widget.ingredients.where((ingredient) {
                   return ingredient.name.toLowerCase().contains(text.toLowerCase());
                 }).toList();
               });

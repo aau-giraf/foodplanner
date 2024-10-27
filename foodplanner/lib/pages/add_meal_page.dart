@@ -38,7 +38,7 @@ class _AddMealPageState extends State<AddMealPage> {
   void initState() {
     super.initState();
     final auth = AuthProvider();
-    fetchIngredientsByUserID(FetchUserData.decodeUserIDFromJWT(auth.jwtToken!)).then((ingredients) {
+    fetchIngredientsByUserID(FetchUserData.decodeUserIDFromJWT(auth.jwtToken!)).then((ingredients) { // Currently gives null value.
       this.ingredients = ingredients;
     });
     _pages.addAll([

@@ -1,11 +1,9 @@
-import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mockito/mockito.dart';
-import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/pages/cameraPage.dart';
 
 // Mock classes

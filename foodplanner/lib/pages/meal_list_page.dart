@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/empty_meal_list_element.dart';
+import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/meal_list_element.dart';
 import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/routes/paths.dart';
+import 'package:go_router/go_router.dart';
 
 /// This class is used for creating the page, where the user can see all their meals.
 class MealListPage extends StatelessWidget {
@@ -30,15 +34,15 @@ class MealListPage extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-
+      
       // Meal elements are added to the page.
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Expanded (
-              child: meals.isEmpty 
-              ? EmptyMealListElement() 
+            Expanded(
+              child: meals.isEmpty
+              ? EmptyMealListElement()
               : ListView.separated( // Shows the empty list element if there exists no meals. Otherwise, it will show all meals for the user.
                   itemCount: meals.length,
                   itemBuilder: (context, index) { // Runs for the amount of elements that exists in the meals list.
@@ -47,11 +51,22 @@ class MealListPage extends StatelessWidget {
                   separatorBuilder: (BuildContext context, int index) { // Creates spacing between the elements.
                     return const SizedBox(height: 10);
                   },
-              ),
+                ),
             ),
-          ]
-        )
-      )
+            
+            const SizedBox(height: 40), // Added spacing
+            
+            // The button for creating a new meal
+            CustomElevatedButton(
+              onTab: () { // Leads to the "add_meal_page"
+                context.go(ADD_MEAL_PAGE);
+              },
+              widget: Icon(Icons.add, color: AppColors.textSecondary),
+              width: MediaQuery.sizeOf(context).width / 2,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
