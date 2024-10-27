@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/icon_button.dart';
-import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/month_picker.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/routes/paths.dart';
-import 'package:go_router/go_router.dart';
 
 /// This class is used to create the element for when no meals are found.
 class EmptyMealListElement extends StatelessWidget {
