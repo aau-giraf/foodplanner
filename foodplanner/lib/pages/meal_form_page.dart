@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
@@ -13,7 +14,7 @@ import 'package:foodplanner/config/colors.dart';
 /// This class is used to create the meal page where the user can create an individual meal for their children.
 class MealFormPage extends StatefulWidget {
   final Meal meal;
-  final List<Ingredient> ingredients;
+  final List<Ingredient>? ingredients;
   final VoidCallback onAddIngredients;
   final VoidCallback onCamera;
   
@@ -46,6 +47,7 @@ class _MealFormPageState extends State<MealFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    int maxTextLength = 20;
     // final List<Ingredient> selectedIngredients = [];
     // selectedIngredients.addAll(
     //   widget.ingredients.where((ingredient) {
@@ -82,7 +84,12 @@ class _MealFormPageState extends State<MealFormPage> {
               padding: const EdgeInsets.only(left: 50.0, right: 50.0),
               child: TextField(
                 controller: _titleController,
+                maxLength: maxTextLength,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z ]")),
+                ], // Only alphanumeric characters can be entered
                 decoration: InputDecoration(
+                  counterText: '',
                   hintText: 'Skriv her...',
                   hintStyle: TextStyle(
                     color: AppColors.textFieldHint,

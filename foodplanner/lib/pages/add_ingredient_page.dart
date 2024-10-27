@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/config/colors.dart';
@@ -57,6 +58,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
 
   Widget _buildAddIngredientPage(BuildContext context, Meal meal, List<Ingredient> ingredients) {
     List<Ingredient> sortedIngredients = ingredients;
+    int maxTextLength = 20;
 
     return Column(
       children: [
@@ -65,7 +67,12 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
           padding: EdgeInsets.only(top: 5, right: 16, left: 16),
           child: TextField(
             controller: _searchBarController,
+            maxLength: maxTextLength,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z ]")),
+            ], // Only alphanumeric characters can be entered
             decoration: InputDecoration(
+              counterText: '',
               border: InputBorder.none,
               hintText: 'Skriv her...',
               hintStyle: TextStyle(
@@ -93,7 +100,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
             itemBuilder: (BuildContext context, int index) {
               return TextButton(
                 onPressed: () {
-                  if(sortedIngredients[index].image == null) { // Chekcs if the ingredient has an image.
+                  if(sortedIngredients[index].image == null) { // Checks if the ingredient has an image.
                     showCupertinoDialog( // If not, it opens a pop-up window.
                       context: context, 
                       builder: (BuildContext context) => CupertinoAlertDialog(

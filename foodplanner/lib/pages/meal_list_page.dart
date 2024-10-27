@@ -37,14 +37,16 @@ class MealListPage extends StatelessWidget {
         child: Column(
           children: [
             Expanded (
-              child: meals.isEmpty ? EmptyMealListElement() : ListView.separated( // Shows the empty list element if there exists no meals. Otherwise, it will show all meals for the user.
-                itemCount: meals.length,
-                itemBuilder: (context, index) { // Runs for the amount of elements that exists in the meals list.
-                  return MealListElement(meal: meals[index]);
-                },
-                separatorBuilder: (BuildContext context, int index) { // Creates spacing between the elements.
-                  return const SizedBox(height: 10);
-                },
+              child: meals.isEmpty 
+              ? EmptyMealListElement() 
+              : ListView.separated( // Shows the empty list element if there exists no meals. Otherwise, it will show all meals for the user.
+                  itemCount: meals.length,
+                  itemBuilder: (context, index) { // Runs for the amount of elements that exists in the meals list.
+                    return MealListElement(meal: meals[index]);
+                  },
+                  separatorBuilder: (BuildContext context, int index) { // Creates spacing between the elements.
+                    return const SizedBox(height: 10);
+                  },
               ),
             ),
           ]
