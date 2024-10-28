@@ -3,7 +3,7 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/ingredient.dart';
 import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
-import 'package:foodplanner/pages/cameraPage.dart';
+import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/pages/edit_meal_form_page.dart';
 import 'package:foodplanner/services/fetch_user_data.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
@@ -35,38 +35,48 @@ class _EditMealPageState extends State<EditMealPage> {
     });
   }
 
-  final List<Widget> _pages = [];
+  List<Widget> _pages = [];
 
   @override
   void initState() {
     super.initState();
+    _initializePage();
+  }
 
-    fetchMeal(widget.mealID).then((meal) {
-      this.meal = meal;
-    });
+  Future<void> _initializePage() async {
+    meal = await fetchMeal(widget.mealID);
     final auth = AuthProvider();
-    fetchIngredientsByUserID(FetchUserData.decodeUserIDFromJWT(auth.jwtToken!)).then((ingredients) {
-      this.ingredients = ingredients;
+    ingredients = await fetchIngredientsByUserID(FetchUserData.decodeUserIDFromJWT(auth.jwtToken!));
+
+    setState(() {
+      _pages = [
+        EditMealFormPage(
+          meal: meal,
+          ingredients: ingredients,
+          onAddIngredients: () {
+            _changePageIndex(1);
+          },
+          onCamera: () {
+            _changePageIndex(2);
+          },
+        ),
+        AddIngredientPage(
+          meal: meal,
+          ingredients: ingredients,
+          onCamera: () {
+            _changePageIndex(2);
+          },
+        ),
+        CameraPage(),
+      ];
     });
-    
-    _pages.addAll([
-      EditMealFormPage(
-        meal: meal,
-        ingredients: ingredients,
-        onAddIngredients: () {_changePageIndex(1);},
-        onCamera: () {_changePageIndex(2);},
-      ),
-      AddIngredientPage(
-        meal: meal,
-        ingredients: ingredients,
-        onCamera: () {_changePageIndex(2);},
-      ),
-      CameraPage(),
-    ]);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_pages.isEmpty) {
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
     return Scaffold(
       body: _pages[currentPageIndex],
     );

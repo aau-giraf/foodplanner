@@ -1,7 +1,5 @@
 // ignore_for_file: curly_braces_in_flow_control_structures
 
-import 'package:flutter/material.dart';
-
 /// This class is used to allow DatePicker to display the month in words and in danish format.
 class MonthPicker {
   static String pick(int? monthIndex) {

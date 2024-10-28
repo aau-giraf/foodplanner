@@ -12,7 +12,14 @@ import 'package:foodplanner/config/colors.dart';
 ///
 /// StatefulWidget is a widget that has mutable state. This allows the class to update.
 class CameraPage extends StatefulWidget {
-  const CameraPage({super.key});
+  final CameraController? controller;
+  final ImagePicker? imagePicker;
+
+  const CameraPage({
+    super.key,
+    this.controller,
+    this.imagePicker,
+  });
 
   static const String routeName = '/camera_page';
 
@@ -23,9 +30,9 @@ class CameraPage extends StatefulWidget {
 // The state object which builds child widgets.
 // Binding observer notifies object of changes in the environment.
 class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
-  List<CameraDescription> cameras =
-      []; // List for containing the available cameras of the device.
+  List<CameraDescription> cameras = []; // List for containing the available cameras of the device.
   CameraController? cameraController;
+  ImagePicker? imagePicker;
 
   File? _selectedImage;
 
@@ -51,7 +58,12 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    _SetupCameraController();
+    if (widget.controller != null) {
+      cameraController = widget.controller;
+      imagePicker = widget.imagePicker ?? ImagePicker();
+    } else {
+      _SetupCameraController();
+    }
   }
 
   /// The method which contains all the UI widgets, and forms them into the front end.
@@ -125,12 +137,8 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
                 backgroundColor: AppColors.background,
                 onPressed: () async {
                   // Awaits for the button to be pressed.
-                  XFile picture = await cameraController!
-                      .takePicture(); // Makes the device take a picture.
-                  Gal.putImage(
-                    // Saves the new picture in the device's gallery app.
-                    picture.path,
-                  );
+                  XFile picture = await cameraController!.takePicture(); // Makes the device take a picture.
+                  Gal.putImage(picture.path);// Saves the new picture in the device's gallery app.
                 },
                 child: const Icon(
                   Icons.camera,
@@ -227,7 +235,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   /// The method which allows the user to select an image from the gallery app.
   Future _pickImageFromGallery() async {
     final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+        await imagePicker!.pickImage(source: ImageSource.gallery);
     if (returnedImage != null) {
       // Check if an image was actually selected
       setState(() {

@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 /// This class is used to create the page for editing an already existing meal.
 class EditMealFormPage extends StatelessWidget {
   final Meal meal; // The identifier of the meal which is being edited.
-  final List<Ingredient> ingredients;
+  final List<Ingredient>? ingredients;
 
   final VoidCallback onAddIngredients;
   final VoidCallback onCamera;
@@ -47,7 +47,7 @@ class EditMealFormPage extends StatelessWidget {
         ),
       ),
 
-      body: _buildEditMealPage(context, ingredients)
+      body: _buildEditMealPage(context, ingredients ?? [])
     );
   }
   
