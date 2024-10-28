@@ -5,7 +5,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'landing_page_children_se_madpakke.dart'; // Correct import
 
 class ChildLandingPageMadpakke extends StatelessWidget {
-  const ChildLandingPageMadpakke({super.key});
+  const ChildLandingPageMadpakke({super.key, required Map<String, String> student});
 
   @override
   Widget build(BuildContext context) {
