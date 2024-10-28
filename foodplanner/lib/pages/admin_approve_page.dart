@@ -5,8 +5,10 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/user.dart';
 
 class AdminApprovePage extends StatefulWidget {
+  const AdminApprovePage({super.key});
+
   @override
-  _AdminApprovePageState createState() => _AdminApprovePageState();
+  State<AdminApprovePage> createState() => _AdminApprovePageState();
 }
 
 class _AdminApprovePageState extends State<AdminApprovePage> {
@@ -76,7 +78,7 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
                               children: _users.map((user) {
                                 return ApproveBox(
                                   name: user.firstName,
-                                  LastName: user.lastName,
+                                  lastName: user.lastName,
                                   role: user.role,
                                   onApprove: () async {
                                     await updateApproveUsers(user.id);

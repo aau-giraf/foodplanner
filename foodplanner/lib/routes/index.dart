@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/pages/admin_page.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
@@ -13,11 +12,9 @@ import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../auth/auth_provider.dart';
-import '../main.dart';
 import '../pages/login_page.dart';
 import '../pages/unauthorized_page.dart';
-import '../pages/home_page.dart'; // Import HomePage
+// Import HomePage
 
 final router = GoRouter(
   routes: [
