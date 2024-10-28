@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/routes/paths.dart';

@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
-import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -55,8 +53,6 @@ class LoginPageState extends State<LoginPage> {
 
   void signUserIn(BuildContext context) async {
     try {
-      /* final response =
-          await loginUser(usernameController.text, passwordController.text); */
       final error = await LoginPage.authService
           .fetchAuthData(usernameController.text, passwordController.text);
       print(error);
@@ -65,22 +61,6 @@ class LoginPageState extends State<LoginPage> {
       } else {
         context.go('/');
       }
-
-      /* if (response.statusCode == 200) {
-        var body = jsonDecode(response.body);
-        UserLogin user = UserLogin.fromJsonLogin(body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-                'Du er nu logget ind. Din rolle er: ${user.role} og din token er: ${user.jwt}'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 5),
-          ),
-        );
-      } else {
-        var error = jsonDecode(response.body);
-        handleErrors(error);
-      } */
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

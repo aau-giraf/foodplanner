@@ -11,8 +11,7 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:go_router/go_router.dart';
 
 class CreateChildPage extends StatefulWidget {
-  final int id;
-  const CreateChildPage({super.key, required this.id});
+  const CreateChildPage({super.key});
 
   @override
   State<CreateChildPage> createState() => _SignupChildState();
@@ -129,12 +128,8 @@ class _SignupChildState extends State<CreateChildPage> {
     String lastName,
     int classId,
   ) async {
-    final parentId = widget.id;
-
-    print('Creating child, classId: $classId, parentId: $parentId');
     try {
-      final response =
-          await createChild(firstName, lastName, parentId, classId);
+      final response = await createChild(firstName, lastName, classId);
 
       if (!context.mounted) return;
 

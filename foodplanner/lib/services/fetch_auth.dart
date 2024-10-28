@@ -22,16 +22,13 @@ class AuthService {
           'password': Password,
         }),
       );
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final String jwt = data['jwt'];
         final bool roleApproved = data['roleApproved'];
         final String role = data['role'];
-        final int userId = data['id'];
-
         ROLES authRole = roleFromString(role.toLowerCase());
-        await AuthProvider().login(authRole, jwt, roleApproved, userId);
+        await AuthProvider().login(authRole, jwt, roleApproved);
       } else {
         var error = jsonDecode(response.body);
         return error;

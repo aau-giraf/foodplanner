@@ -34,11 +34,8 @@ final router = GoRouter(
       builder: (context, state) => SignupPage(),
     ),
     GoRoute(
-      path: '/signup/create-child/:id',
-      builder: (context, state) {
-        final id = int.parse(state.pathParameters['id']!);
-        return CreateChildPage(id: id);
-      },
+      path: '/signup/create-child',
+      builder: (context, state) => CreateChildPage(),
     ),
     GoRoute(
       path: '/unauthorized',

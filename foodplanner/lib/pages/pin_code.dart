@@ -2,19 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/landing_page.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/pin_code.dart';
-import 'package:provider/provider.dart';
-import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/routes/paths.dart';
-import 'package:go_router/go_router.dart';
 
 class PinCode extends StatefulWidget {
-  //final int id;
   const PinCode({
     super.key,
-    /* required this.id */
   });
   static final PinService pinService = PinService(apiUrl: ApiConfig.baseUrl);
 
@@ -35,6 +28,16 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    PinCode.pinService.hasPin().then((hasPin) {
+      if (hasPin == true || hasPin == false) {
+        setState(() {
+          hasPinCode = hasPin;
+        });
+      } else {
+        print("Error: $hasPin");
+      }
+    });
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -89,10 +92,7 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
     if (pin.length == 4) {
       print("Pin: ${pin.join()}");
 
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      await authProvider.loadFromStorage();
-
-      var error = await PinCode.pinService.checkPin(authProvider.userId!, pin);
+      var error = await PinCode.pinService.checkPin(pin);
       await Future.delayed(Duration(milliseconds: 300));
       print(error);
       if (error == null) {
@@ -123,11 +123,8 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
 
       if (createPinCode.join() == confirmPinCode.join()) {
         print("Pins match");
-        final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        await authProvider.loadFromStorage();
 
-        var error = await PinCode.pinService
-            .checkPin(authProvider.userId!, confirmPinCode);
+        var error = await PinCode.pinService.updatePin(confirmPinCode);
         if (error == null) {
           Navigator.of(context).pop();
         } else {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:http/http.dart' as http;
 
 class Child {
@@ -38,28 +39,18 @@ class Child {
   }
 }
 
-Future<Child> fetchChild() async {
-  final response =
-      await http.get(Uri.parse('http://127.0.0.1:80/api/Childrens/Get/1'));
-
-  if (response.statusCode == 200) {
-    return Child.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
-  } else {
-    throw Exception('Kunne ikke hente Barn');
-  }
-}
-
 Future<http.Response> createChild(
-    String firstName, String lastName, int parentId, int classId) async {
+    String firstName, String lastName, int classId) async {
+  final jwtToken = await AuthProvider().retrieveToken();
   final response = await http.post(
     Uri.parse('http://127.0.0.1:8080/api/Childrens/Create'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $jwtToken',
     },
     body: jsonEncode(<String, String>{
       'firstName': firstName,
       'lastName': lastName,
-      'parentId': parentId.toString(),
       'classId': classId.toString(),
     }),
   );

@@ -242,9 +242,7 @@ class _SignupState extends State<SignupPage> {
             ),
           );
         } else {
-          print('User logged in $response');
-          final userId = response.body;
-          context.go('/signup/create-child/$userId');
+          context.go('/signup/create-child');
         }
       } else {
         var error = jsonDecode(response.body);
