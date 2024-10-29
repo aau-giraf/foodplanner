@@ -3,6 +3,8 @@ targets:
     builders:
       mockito:
         generate_for:
-          - test/camera_page_test.dart
+          - test/packed_ingredient_test.dart
+          - test/ingredient_test.dart
+          - test/meal_test.dart
         options:
           auto_mocks: true

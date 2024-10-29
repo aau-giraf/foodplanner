@@ -8,6 +8,7 @@ import 'package:foodplanner/pages/edit_meal_form_page.dart';
 import 'package:mockito/mockito.dart';
 import 'package:go_router/go_router.dart';
 
+// Mock callback class
 class MockCallback extends Mock {
   void call();
 }
@@ -19,14 +20,16 @@ void main() {
     late MockCallback mockOnAddIngredients;
     late MockCallback mockOnCamera;
 
+    // Initial setup before tests
     setUp(() {
       meal = Meal();
-      ingredients = [Ingredient(name: "Knækbrød"), Ingredient(name: "Æble")];
+      ingredients = [Ingredient(name: "Knækbrød", userRef: 1), Ingredient(name: "Æble", userRef: 1)];
       mockOnAddIngredients = MockCallback();
       mockOnCamera = MockCallback();
     });
 
     testWidgets('should display AppBar with title', (WidgetTester tester) async {
+      // Arrange
       await tester.pumpWidget(
         MaterialApp(
           home: EditMealFormPage(
@@ -37,11 +40,13 @@ void main() {
           ),
         ),
       );
-
+      
+      // Assert
       expect(find.text('Rediger madpakke'), findsOneWidget);
     });
 
     testWidgets('should display list of ingredients', (WidgetTester tester) async {
+      // Arrange
       await tester.pumpWidget(
         MaterialApp(
           home: EditMealFormPage(
@@ -53,11 +58,13 @@ void main() {
         ),
       );
 
+      // Assert
       expect(find.text('Knækbrød'), findsOneWidget);
       expect(find.text('Æble'), findsOneWidget);
     });
 
     testWidgets('should call onAddIngredients when add button is tapped', (WidgetTester tester) async {
+      // Arrange
       await tester.pumpWidget(
         MaterialApp(
           home: EditMealFormPage(
@@ -68,16 +75,22 @@ void main() {
           ),
         ),
       );
+
+      // Act
       await tester.tap(find.byIcon(Icons.add));
+      await tester.pumpAndSettle();
+
+      // Assert
       verify(mockOnAddIngredients()).called(1);
     });
 
     testWidgets('should save changes and pop when save button is tapped', (WidgetTester tester) async {
       final meal = Meal();
-      final ingredients = [Ingredient(name: "Knækbrød"), Ingredient(name: "Æble")];
+      final ingredients = [Ingredient(name: "Knækbrød", userRef: 1), Ingredient(name: "Æble", userRef: 1)];
       final mockOnAddIngredients = MockCallback();
       final mockOnCamera = MockCallback();
 
+      // Router for testing the page shifting.
       final router = GoRouter(
         initialLocation: '/add',
         routes: [
@@ -101,6 +114,7 @@ void main() {
         ],
       );
 
+      // Arrange
       await tester.pumpWidget(
         MaterialApp.router(
           routerDelegate: router.routerDelegate,
@@ -112,23 +126,24 @@ void main() {
       // Ensure the `AddIngredientPage` is displayed first
       expect(find.text('Find madvare'), findsOneWidget);
 
-      // Navigate to the `EditMealFormPage`
+      // Act: Navigate to the `EditMealFormPage`
       router.push('/edit');
       await tester.pumpAndSettle();
 
-      // Ensure the `EditMealFormPage` is displayed
+      // Assert: Ensure the `EditMealFormPage` is displayed
       expect(find.text('Rediger madpakke'), findsOneWidget);
 
-      // Tap the save button and ensure navigation happens
+      // Act: Tap the save button and ensure navigation happens
       await tester.tap(find.text('Gem ændringer'));
       await tester.pumpAndSettle();
-      
-      // Verify that the `EditMealFormPage` is popped from the stack
+
+      // Assert: Verify that the `EditMealFormPage` is popped from the stack
       expect(find.text('Rediger madpakke'), findsNothing);
       expect(find.text('Find madvare'), findsOneWidget); // Ensure it returns to the `AddIngredientPage`
     });
 
     testWidgets('should handle empty ingredient list gracefully', (WidgetTester tester) async {
+      // Arrange
       await tester.pumpWidget(
         MaterialApp(
           home: EditMealFormPage(
@@ -140,10 +155,12 @@ void main() {
         ),
       );
 
+      // Assert
       expect(find.byType(EditMealIngredientListElement), findsNothing);
     });
 
     testWidgets('should handle null ingredients gracefully', (WidgetTester tester) async {
+      // Arrrange
       await tester.pumpWidget(
         MaterialApp(
           home: EditMealFormPage(
@@ -155,14 +172,16 @@ void main() {
         ),
       );
 
+      // Assert
       expect(find.byType(EditMealIngredientListElement), findsNothing);
     });
 
     testWidgets('should handle extremely long ingredient names gracefully', (WidgetTester tester) async {
+      // Arrange
       ingredients = [
-        Ingredient(name: "A" * 500), // Very long ingredient name
+        Ingredient(name: "A" * 500, userRef: 1), // Very long ingredient name
       ];
-
+      
       await tester.pumpWidget(
         MaterialApp(
           home: EditMealFormPage(
@@ -174,12 +193,14 @@ void main() {
         ),
       );
 
+      // Assert
       expect(find.text("A" * 500), findsOneWidget);
     });
 
     testWidgets('should handle special characters in ingredient names', (WidgetTester tester) async {
+      // Arrange
       ingredients = [
-        Ingredient(name: "!@#\$%^&*()_+-=[]{}|;:'\",.<>?/"),
+        Ingredient(name: "!@#\$%^&*()_+-=[]{}|;:'\",.<>?/", userRef: 1),
       ];
 
       await tester.pumpWidget(
@@ -193,6 +214,7 @@ void main() {
         ),
       );
 
+      // Assert
       expect(find.text("!@#\$%^&*()_+-=[]{}|;:'\",.<>?/"), findsOneWidget);
     });
   });

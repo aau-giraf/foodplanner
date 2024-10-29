@@ -39,8 +39,8 @@ void main() {
         // Arrange
         Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(name: 'Tomato'),
-          Ingredient(name: 'Lettuce')
+          Ingredient(userRef: 1, name: 'Tomato'),
+          Ingredient(userRef: 1, name: 'Lettuce')
         ];
 
         await tester.pumpWidget(MaterialApp(
@@ -69,8 +69,8 @@ void main() {
         // Arrange
         Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(name: 'Tomato'),
-          Ingredient(name: 'Lettuce')
+          Ingredient(userRef: 1, name: 'Tomato'),
+          Ingredient(userRef: 1, name: 'Lettuce')
         ];
 
         await tester.pumpWidget(MaterialApp(
@@ -88,9 +88,9 @@ void main() {
         // Arrange
         Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(name: 'Tomato'),
-          Ingredient(name: 'Lettuce'),
-          Ingredient(name: 'Cucumber')
+          Ingredient(userRef: 1, name: 'Tomato'),
+          Ingredient(userRef: 1, name: 'Lettuce'),
+          Ingredient(userRef: 1, name: 'Cucumber')
         ];
 
         await tester.pumpWidget(MaterialApp(
@@ -111,9 +111,9 @@ void main() {
         // Arrange
         Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(name: 'Tomato'),
-          Ingredient(name: 'Lettuce'),
-          Ingredient(name: 'Cucumber')
+          Ingredient(userRef: 1, name: 'Tomato'),
+          Ingredient(userRef: 1, name: 'Lettuce'),
+          Ingredient(userRef: 1, name: 'Cucumber')
         ];
 
         await tester.pumpWidget(MaterialApp(
@@ -136,7 +136,7 @@ void main() {
         // Arrange
         Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(name: 'Tomato', image: null),
+          Ingredient(userRef: 1, name: 'Tomato', imageUrl: null),
         ];
 
         await tester.pumpWidget(MaterialApp(
@@ -156,7 +156,7 @@ void main() {
         // Arrange
         Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(name: 'Tomato', image: Image.network('https://via.placeholder.com/150')),
+          Ingredient(userRef: 1, name: 'Tomato', imageUrl: 'https://via.placeholder.com/150'),
         ];
 
         await tester.pumpWidget(MaterialApp(
@@ -179,7 +179,7 @@ void main() {
         // Arrange
         Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(name: 'Tomato', image: null),
+          Ingredient(userRef: 1, name: 'Tomato', imageUrl: null),
         ];
 
         await tester.pumpWidget(MaterialApp(
@@ -206,10 +206,10 @@ void main() {
       testWidgets('should not call onCamera callback for ingredient with image', (WidgetTester tester) async {
         bool cameraCalled = false;
 
-        // ArrangeS
+        // Arrange
         Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(name: 'Tomato', image: Image.network('https://via.placeholder.com/150')),
+          Ingredient(userRef: 1, name: 'Tomato', imageUrl: 'https://via.placeholder.com/150'),
         ];
 
         await tester.pumpWidget(MaterialApp(

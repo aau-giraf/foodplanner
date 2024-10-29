@@ -1,41 +1,58 @@
 import 'dart:convert';
 import 'package:foodplanner/components/ingredient.dart';
-import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/components/packed_ingredient.dart';
 import 'package:http/http.dart' as http;
 
-Future<Ingredient> fetchPackedIngredient(int id) async {
-  final response =
-      await http.get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get/$id'));
 
+// Fetches a PackedIngredient by its ID from the server.
+// Takes an HTTP client and the packed ingredient ID as parameters.
+// Returns a PackedIngredient object if the request is successful, or throws an exception if the request fails.
+Future<PackedIngredient> fetchPackedIngredient(http.Client client, int id) async {
+  // Sending a GET request to the API endpoint to retrieve a packed ingredient by the specified ID.
+  final response =
+      await client.get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get/$id'));
+
+  // Check if the server returned a successful response (status code 200).
   if (response.statusCode == 200) {
-    return Ingredient.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    // If successful, decode the JSON response and create a PackedIngredient object from it.
+    return PackedIngredient.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
   } else {
+    // If the response is not successful, throw error message.
     throw Exception('Kunne ikke hente ingrediens');
   }
 }
 
-Future<http.Response> createPackedIngredient(Meal mealRef, Ingredient ingredientRef, int id) async {
-  final response = await http.post(
-    Uri.parse('http://127.0.0.1:80/api/Ingredients/Create'),
+// Creates a new PackedIngredient on the server.
+// Takes an HTTP client, a reference to a meal, a reference to an ingredient,
+// and the packed ingredient ID as parameters.
+// Returns the server's response after attempting to create the packed 
+Future<http.Response> createPackedIngredient(http.Client client, int mealRef, Ingredient ingredientRef, int id) async {
+  // Sending a POST request to the API endpoint to create a new packed ingredient.
+  final response = await client.post(
+    Uri.parse('http://127.0.0.1:80/api/Ingredients/Create'), // Specify the API endpoint for creating packed ingredients.
     headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
+      'Content-Type': 'application/json; charset=UTF-8', // Specify that the content is JSON.
     },
+    // Encode the packed ingredient data as JSON for the request body.
     body: jsonEncode({
-      'mealRef': mealRef,
-      'ingredientRef': ingredientRef,
-      'id': id,
+      'mealRef': mealRef, // Reference ID for the meal the ingredient is associated with.
+      'ingredientRef': ingredientRef.id, // ID of the ingredient being packed.
+      'id': id, // ID for the packed ingredient.
     }),
   );
-
-  return response;
+  return response;   // Return the response from the server.
 }
 
-Future<http.Response> deletePackedIngredient(int id) async {
-  final response = await http.delete(
-    Uri.parse('http://127.0.0.1:80/api/Ingredients/Delete/$id'),
+// Deletes a PackedIngredient from the server by its ID.
+// Takes an HTTP client and the packed ingredient ID as parameters.
+// Returns the server's response after attempting to delete the packed ingredient.
+Future<http.Response> deletePackedIngredient(http.Client client, int id) async {
+  // Sending a DELETE request to the API endpoint to remove a packed ingredient by ID.
+  final response = await client.delete(
+    Uri.parse('http://127.0.0.1:80/api/Ingredients/Delete/$id'), // Specify the API endpoint for deleting packed ingredients.
     headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
+      'Content-Type': 'application/json; charset=UTF-8',  // Specify that the content is JSON.
     },
   );
-  return response;
+  return response;   // Return the response from the server.
 }

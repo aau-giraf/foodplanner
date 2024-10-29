@@ -19,15 +19,17 @@ void main() {
     late MockCallback mockOnAddIngredients;
     late MockCallback mockOnCamera;
 
+    // Initial setup before tests
     setUp(() {
       meal = Meal();
-      ingredients = [Ingredient(name: "Knækbrød"), Ingredient(name: "Æble")];
+      ingredients = [Ingredient(name: "Knækbrød", userRef: 1), Ingredient(name: "Æble", userRef: 1)];
       mockOnAddIngredients = MockCallback();
       mockOnCamera = MockCallback();
     });
 
     group('Initialization Tests', () {
       testWidgets('should initialize with default values', (WidgetTester tester) async {
+        // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
             meal: meal,
@@ -37,9 +39,11 @@ void main() {
           ),
         ));
 
+        // Assert
         // Check that there are two instances of "Opret madpakke"
         expect(find.text('Opret madpakke'), findsNWidgets(2));
 
+        // Act
         // Check that one of them is the AppBar title
         final appBarFinder = find.descendant(
           of: find.byType(AppBar),
@@ -47,11 +51,13 @@ void main() {
         );
         expect(appBarFinder, findsOneWidget);
 
+        // Assert
         // Check for the TextField
         expect(find.byType(TextField), findsOneWidget);
       });
 
       testWidgets('should handle null ingredients gracefully', (WidgetTester tester) async {
+        // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
             meal: meal,
@@ -60,12 +66,15 @@ void main() {
             onCamera: mockOnCamera,
           ),
         ));
+
+        // Assert
         expect(find.text('Tilføj ingredienser'), findsOneWidget);
       });
     });
 
     group('Title TextField Tests', () {
       testWidgets('should enter text in the title field', (WidgetTester tester) async {
+        // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
             meal: meal,
@@ -74,11 +83,16 @@ void main() {
             onCamera: mockOnCamera,
           ),
         ));
+
+        // Act
         await tester.enterText(find.byType(TextField), 'My Meal Title');
+
+        // Assert
         expect(find.text('My Meal Title'), findsOneWidget);
       });
 
       testWidgets('should handle null or empty text', (WidgetTester tester) async {
+        // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
             meal: meal,
@@ -87,13 +101,18 @@ void main() {
             onCamera: mockOnCamera,
           ),
         ));
+
+        // Act
         await tester.enterText(find.byType(TextField), '');
+
+        // Assert
         expect(find.text('Skriv her...'), findsOneWidget);
       });
     });
 
     group('Add Ingredient Button Tests', () {
       testWidgets('should call onAddIngredients when button is tapped', (WidgetTester tester) async {
+        // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
             meal: meal,
@@ -102,11 +121,16 @@ void main() {
             onCamera: mockOnCamera,
           ),
         ));
+
+        // Act
         await tester.tap(find.byIcon(Icons.add));
+
+        // Assert
         verify(mockOnAddIngredients()).called(1);
       });
 
       testWidgets('should handle unexpected interaction', (WidgetTester tester) async {
+        // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
             meal: meal,
@@ -115,13 +139,18 @@ void main() {
             onCamera: mockOnCamera,
           ),
         ));
+
+        // Act
         await tester.tap(find.byIcon(Icons.add));
+
+        // Assert
         verify(mockOnAddIngredients()).called(1);
       });
     });
 
     group('Create Meal Button Tests', () {
       testWidgets('should show dialog when create meal button is tapped', (WidgetTester tester) async {
+        // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
             meal: meal,
@@ -130,13 +159,18 @@ void main() {
             onCamera: mockOnCamera,
           ),
         ));
+
+        // Act
         final createMealButton = find.widgetWithText(CustomElevatedButton, 'Opret madpakke');
         await tester.tap(createMealButton);
         await tester.pumpAndSettle();
+
+        // Assert
         expect(find.byType(CupertinoAlertDialog), findsOneWidget);
       });
 
       testWidgets('should handle null input for meal title', (WidgetTester tester) async {
+        // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
             meal: meal,
@@ -145,13 +179,18 @@ void main() {
             onCamera: mockOnCamera,
           ),
         ));
+
+        // Act
         final createMealButton = find.widgetWithText(CustomElevatedButton, 'Opret madpakke');
         await tester.tap(createMealButton);
         await tester.pumpAndSettle();
+
+        // Assert
         expect(find.byType(CupertinoAlertDialog), findsOneWidget);
       });
 
       testWidgets('should handle unexpected input for meal title', (WidgetTester tester) async {
+        // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
             meal: meal,
@@ -160,10 +199,14 @@ void main() {
             onCamera: mockOnCamera,
           ),
         ));
+
+        // Act
         await tester.enterText(find.byType(TextField), 'Unexpected Title 123');
         final createMealButton = find.widgetWithText(CustomElevatedButton, 'Opret madpakke');
         await tester.tap(createMealButton);
         await tester.pumpAndSettle();
+
+        // Assert
         expect(find.byType(CupertinoAlertDialog), findsOneWidget);
       });
     });

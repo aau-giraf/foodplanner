@@ -11,20 +11,25 @@ void main() {
   group('MealListPage Widget Tests', () {
     late List<Meal> meals;
 
+    // Initial setup before tests
     setUp(() {
       meals = <Meal>[];
     });
 
     group('Initialization Tests', () {
       testWidgets('should display empty meal list when no meals are present', (WidgetTester tester) async {
+        // Arrange
         await tester.pumpWidget(MaterialApp(home: MealListPage()));
         await tester.pumpAndSettle();
         
+        // Act
         // Check the AppBar title
         final appBarFinder = find.descendant(
           of: find.byType(AppBar),
           matching: find.text('Velkommen, .'),
         );
+
+        // Assert
         expect(appBarFinder, findsOneWidget);
         
         // Check for the EmptyMealListElement
@@ -63,22 +68,31 @@ void main() {
 
     group('EmptyMealListElement Tests', () {
       testWidgets('should display EmptyMealListElement when no meals are present', (WidgetTester tester) async {
+        // Arrange
         await tester.pumpWidget(MaterialApp(home: MealListPage()));
+
+        // Act
         await tester.pumpAndSettle();
 
+        // Assert
         expect(find.byType(EmptyMealListElement), findsOneWidget);
       });
 
       testWidgets('should display date and empty meal message correctly', (WidgetTester tester) async {
+        // Arrange
         await tester.pumpWidget(MaterialApp(home: EmptyMealListElement()));
+
+        // Act
         await tester.pumpAndSettle();
 
+        // Assert
         expect(find.text('Ingen madpakke at vise'), findsOneWidget);
         expect(find.textContaining('Madpakke i dag d. '), findsOneWidget);
       });
 
-      // Cant make this work. I think the problem comes from the button being in EmptyMealListElement.dart
       testWidgets('should navigate to add meal page when button is tapped', (WidgetTester tester) async {
+        // Arrange
+        // GoRouter for testing page shifting.
         final GoRouter goRouter = GoRouter(
           initialLocation: MealListPage.routeName,
           routes: [
@@ -99,15 +113,19 @@ void main() {
           routeInformationProvider: goRouter.routeInformationProvider,
         ));
 
+        // Act
         await tester.pumpAndSettle();
 
+        // Assert
         // Ensure that the default page is MealListPage
         expect(find.byType(MealListPage), findsOneWidget);
 
+        // Act
         // Tap the add button at the bottom
         await tester.tap(find.byIcon(Icons.add));
         await tester.pumpAndSettle();
 
+        // Assert
         // Verify navigation to AddMealPage
         expect(find.byType(AddMealPage), findsOneWidget);
 

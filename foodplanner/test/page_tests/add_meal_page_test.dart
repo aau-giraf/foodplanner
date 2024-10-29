@@ -14,9 +14,8 @@ import 'package:provider/provider.dart';
 class MockAuthProvider extends Mock implements AuthProvider {}
 
 class MockFetchUserData extends Mock implements FetchUserData {
-  @override
   Future<List<Ingredient>> fetchIngredientsByUserID(int userID) async {
-    return [Ingredient(name: 'Test Ingredient')];
+    return [Ingredient(userRef: 1, name: 'Test Ingredient')];
   }
 }
 
@@ -34,7 +33,7 @@ void main() {
       
       // Update the mock to match the correct method signature
       when(mockFetchUserData.fetchIngredientsByUserID(1))
-          .thenAnswer((_) async => [Ingredient(name: 'Test Ingredient')]);
+          .thenAnswer((_) async => [Ingredient(userRef: 1, name: 'Test Ingredient')]);
     });
 
     group('MealFormPage Tests', () {
