@@ -12,7 +12,7 @@ import 'package:http/http.dart';
 class AddIngredientPage extends StatefulWidget {
   final Meal meal; // The identifier of the meal which the ingredient should be added to.
   final List<Ingredient> ingredients; // List of available ingredients for selection.
-  final ValueChanged onIngredientsUpdated; // Callback to the method which modifies the list of existing ingredients
+  final ValueChanged<List<Ingredient>> onIngredientsUpdated; // Callback to the method which modifies the list of existing ingredients
   final VoidCallback onCamera; // Callback to change the shown page through "add_meal_page.dart"
   final Client client;
 

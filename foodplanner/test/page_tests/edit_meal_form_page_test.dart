@@ -7,6 +7,7 @@ import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/edit_meal_form_page.dart';
 import 'package:mockito/mockito.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart';
 
 // Mock callback class
 class MockCallback extends Mock {
@@ -19,6 +20,8 @@ void main() {
     late List<Ingredient> ingredients;
     late MockCallback mockOnAddIngredients;
     late MockCallback mockOnCamera;
+    late Client mockClient;
+    late ValueChanged<List<Ingredient>> mockOnIngredientsUpdated;
 
     // Initial setup before tests
     setUp(() {
@@ -26,6 +29,8 @@ void main() {
       ingredients = [Ingredient(name: "Knækbrød", userRef: 1), Ingredient(name: "Æble", userRef: 1)];
       mockOnAddIngredients = MockCallback();
       mockOnCamera = MockCallback();
+      mockClient = Client();
+      mockOnIngredientsUpdated = (List<Ingredient> updatedIngredients) {};
     });
 
     testWidgets('should display AppBar with title', (WidgetTester tester) async {
@@ -37,6 +42,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ),
       );
@@ -54,6 +60,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ),
       );
@@ -72,6 +79,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ),
       );
@@ -99,7 +107,9 @@ void main() {
             builder: (context, state) => AddIngredientPage(
               meal: meal,
               ingredients: ingredients,
+              onIngredientsUpdated: mockOnIngredientsUpdated,
               onCamera: mockOnCamera,
+              client: mockClient,
             ),
           ),
           GoRoute(
@@ -109,6 +119,7 @@ void main() {
               ingredients: ingredients,
               onAddIngredients: mockOnAddIngredients,
               onCamera: mockOnCamera,
+              client: mockClient,
             ),
           ),
         ],
@@ -151,6 +162,7 @@ void main() {
             ingredients: [],
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ),
       );
@@ -168,6 +180,7 @@ void main() {
             ingredients: null,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ),
       );
@@ -189,6 +202,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ),
       );
@@ -210,6 +224,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ),
       );

@@ -6,6 +6,7 @@ import 'package:foodplanner/components/meal.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mockito/mockito.dart';
+import 'package:http/http.dart';
 
 // Mock VoidCallback
 class MockCallback extends Mock {
@@ -18,6 +19,7 @@ void main() {
     late List<Ingredient> ingredients;
     late MockCallback mockOnAddIngredients;
     late MockCallback mockOnCamera;
+    late Client mockClient;
 
     // Initial setup before tests
     setUp(() {
@@ -25,6 +27,7 @@ void main() {
       ingredients = [Ingredient(name: "Knækbrød", userRef: 1), Ingredient(name: "Æble", userRef: 1)];
       mockOnAddIngredients = MockCallback();
       mockOnCamera = MockCallback();
+      mockClient = Client();
     });
 
     group('Initialization Tests', () {
@@ -36,6 +39,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ));
 
@@ -64,6 +68,7 @@ void main() {
             ingredients: null,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ));
 
@@ -81,6 +86,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ));
 
@@ -99,6 +105,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ));
 
@@ -119,6 +126,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ));
 
@@ -137,6 +145,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ));
 
@@ -157,6 +166,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ));
 
@@ -177,6 +187,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ));
 
@@ -197,6 +208,7 @@ void main() {
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
+            client: mockClient,
           ),
         ));
 

@@ -6,6 +6,8 @@ import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
+import 'package:http/http.dart';
+
 import 'camera_page_test.mocks.dart';
 
 @GenerateMocks([CameraController, ImagePicker])
@@ -86,7 +88,12 @@ void main() {
       // Testing if the camera initializes and shows the preview correctly.
       testWidgets('should initialize camera and show preview', (WidgetTester tester) async {
         // Arrange
-        await tester.pumpWidget(MaterialApp(home: CameraPage(controller: mockCameraController)));
+        await tester.pumpWidget(MaterialApp(
+          home: CameraPage(
+            controller: mockCameraController,
+            client: Client(),
+          )
+        ));
 
         // Act
         await tester.pump();
@@ -101,7 +108,12 @@ void main() {
         when(mockCameraController.value).thenReturn(CameraValue.uninitialized(cameras.first));
         
         // Act
-        await tester.pumpWidget(MaterialApp(home: CameraPage(controller: mockCameraController)));
+        await tester.pumpWidget(MaterialApp(
+          home: CameraPage(
+            controller: mockCameraController,
+            client: Client(),
+          )
+        ));
         await tester.pump();
 
         // Assert
@@ -111,7 +123,12 @@ void main() {
       // Testing the behavior when the camera controller is null.
       testWidgets('should handle null camera controller gracefully', (WidgetTester tester) async {
         // Arrange
-        await tester.pumpWidget(MaterialApp(home: CameraPage(controller: null)));
+        await tester.pumpWidget(MaterialApp(
+          home: CameraPage(
+            controller: null,
+            client: Client(),
+          )
+        ));
 
         // Act
         await tester.pump();
@@ -125,7 +142,12 @@ void main() {
       // Testing the behavior when the camera button is pressed.
       testWidgets('should take a picture when camera button is pressed', (WidgetTester tester) async {
         // Arrange
-        await tester.pumpWidget(MaterialApp(home: CameraPage(controller: mockCameraController)));
+        await tester.pumpWidget(MaterialApp(
+          home: CameraPage(
+            controller: mockCameraController,
+            client: Client(),
+          )
+        ));
         await tester.pump();
         
         // Act
@@ -139,7 +161,14 @@ void main() {
       // Testing the behavior when the gallery button is pressed.
       testWidgets('should open gallery when gallery button is pressed', (WidgetTester tester) async {
         // Arrange
-        await tester.pumpWidget(MaterialApp(home: CameraPage(controller: mockCameraController, imagePicker: mockImagePicker)));
+        await tester.pumpWidget(MaterialApp(
+          home: CameraPage(
+            controller: mockCameraController, 
+            imagePicker: mockImagePicker,
+            client: Client(),
+          )
+        ));
+
         await tester.pump();
 
         // Act
