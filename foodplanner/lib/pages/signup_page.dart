@@ -4,14 +4,17 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/components/text_field.dart';
-import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/login_page.dart';
+import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
+
+  static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
   @override
   State<SignupPage> createState() => _SignupState();
@@ -34,8 +37,7 @@ class _SignupState extends State<SignupPage> {
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
   final RegExp emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-  final RegExp passwordRegExp =
-      RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
+  final RegExp passwordRegExp = RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
 
   Set<String> role = {'Parent'};
 
@@ -176,16 +178,29 @@ class _SignupState extends State<SignupPage> {
     }
 
     //Step 4: Password Validation
-    if (!passwordRegExp.hasMatch(password)) {
-      setState(() {
-        passwordError =
-            'Skal være mellem 8-30 tegn, indeholde et stort bogstav og et tal';
-      });
+    bool hasUpperCase = password.contains(RegExp(r'[A-ZÆØÅ]'));
+    bool hasLowerCase = password.contains(RegExp(r'[a-zæøå]'));
+    bool hasDigit = password.contains(RegExp(r'\d'));
+    bool hasMinLength = password.length >= 8;
+    bool hasMaxLength = password.length <= 30;
+
+    setState(() {
+      passwordError = '';
+      if (!hasUpperCase) {
+        passwordError = 'Adgangskoden skal indeholde mindst et stort bogstav.';
+      } else if (!hasLowerCase) {
+        passwordError = 'Adgangskoden skal indeholde mindst et lille bogstav.';
+      } else if (!hasDigit) {
+        passwordError = 'Adgangskoden skal indeholde mindst et tal.';
+      } else if (!hasMinLength) {
+        passwordError = 'Adgangskoden skal være mindst 8 tegn lang.';
+      } else if (!hasMaxLength) {
+        passwordError = 'Adgangskoden skal være højst 30 tegn lang.';
+      }
+    });
+
+    if (passwordError.isNotEmpty) {
       return;
-    } else {
-      setState(() {
-        passwordError = '';
-      });
     }
 
     //Step 5: Confirm Password Validation
@@ -215,8 +230,8 @@ class _SignupState extends State<SignupPage> {
       String confirmPassword,
       Set<String> role) async {
     try {
-      final response =
-          await createUser(firstName, lastName, email, password, role.first);
+      final response = await SignupPage.userService
+          .createUser(firstName, lastName, email, password, role.first);
 
       if (!context.mounted) return;
 

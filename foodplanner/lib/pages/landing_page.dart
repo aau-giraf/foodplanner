@@ -67,12 +67,7 @@ class LandingPageState extends State<LandingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconButton(
-                  onPressed: handleLock,
-                  icon: SFIcon(
-                    isLocked ? SFIcons.sf_lock_fill : SFIcons.sf_lock_open_fill,
-                  )),
-              const SizedBox(height: 50),
+              CircularProgressIndicator(),
               ElevatedButton(
                 onPressed: () async {
                   final authProvider =
@@ -80,7 +75,6 @@ class LandingPageState extends State<LandingPage> {
                   await authProvider
                       .logout(); // Just call it; don't try to store a result
                   print('Logged out'); // For debugging purposes
-                  context.go(LOGIN_PAGE);
                 },
                 child: const Text('Logout'),
               ),

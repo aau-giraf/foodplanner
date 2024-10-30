@@ -1,8 +1,3 @@
-import 'dart:convert';
-
-import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:http/http.dart' as http;
-
 class Child {
   final int id;
   final String firstName;
@@ -37,23 +32,4 @@ class Child {
       _ => throw const FormatException('Barn kunne ikke findes.'),
     };
   }
-}
-
-Future<http.Response> createChild(
-    String firstName, String lastName, int classId) async {
-  final jwtToken = await AuthProvider().retrieveToken();
-  final response = await http.post(
-    Uri.parse('http://127.0.0.1:8080/api/Childrens/Create'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'Bearer $jwtToken',
-    },
-    body: jsonEncode(<String, String>{
-      'firstName': firstName,
-      'lastName': lastName,
-      'classId': classId.toString(),
-    }),
-  );
-
-  return response;
 }

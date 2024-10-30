@@ -36,11 +36,11 @@ class _NavBarState extends State<NavBar> {
           destinations: [
             NavigationDestination(
               selectedIcon: SFIcon(
-                SFIcons.sf_shippingbox_fill,
+                SFIcons.sf_message_fill,
                 color: Colors.white,
               ),
-              icon: SFIcon(SFIcons.sf_shippingbox),
-              label: 'Ekstra',
+              icon: SFIcon(SFIcons.sf_message),
+              label: 'Feedback',
             ),
             NavigationDestination(
               selectedIcon: SFIcon(

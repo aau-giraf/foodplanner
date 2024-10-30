@@ -3,15 +3,21 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/components/text_field.dart';
-import 'package:foodplanner/models/class.dart';
+import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/school_class_service.dart';
 import 'package:go_router/go_router.dart';
 
 class CreateChildPage extends StatefulWidget {
   const CreateChildPage({super.key});
+  static final SchoolClassService schoolClassService =
+      SchoolClassService(apiUrl: ApiConfig.baseUrl);
+  static final ChildService childService =
+      ChildService(apiUrl: ApiConfig.baseUrl);
 
   @override
   State<CreateChildPage> createState() => _SignupChildState();
@@ -28,8 +34,9 @@ class _SignupChildState extends State<CreateChildPage> {
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
 
-  Future<List<Class>> classesFuture = fetchAllClasses();
-  List<Class> classes = [];
+  Future<List<SchoolClass>> classesFuture =
+      CreateChildPage.schoolClassService.fetchAllClasses();
+  List<SchoolClass> classes = [];
 
   @override
   void initState() {
@@ -129,7 +136,8 @@ class _SignupChildState extends State<CreateChildPage> {
     int classId,
   ) async {
     try {
-      final response = await createChild(firstName, lastName, classId);
+      final response = await CreateChildPage.childService
+          .createChild(firstName, lastName, classId);
 
       if (!context.mounted) return;
 
@@ -242,10 +250,11 @@ class _SignupChildState extends State<CreateChildPage> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         items: classes
-                            .map((Class class_) => DropdownMenuItem<String>(
-                                  value: class_.classId.toString(),
+                            .map((SchoolClass schoolClass) =>
+                                DropdownMenuItem<String>(
+                                  value: schoolClass.classId.toString(),
                                   child: Text(
-                                    class_.className,
+                                    schoolClass.className,
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
@@ -262,11 +271,11 @@ class _SignupChildState extends State<CreateChildPage> {
                           });
                         },
                         selectedItemBuilder: (BuildContext context) {
-                          return classes.map((Class class_) {
+                          return classes.map((SchoolClass schoolClass) {
                             return Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                class_.className,
+                                schoolClass.className,
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,

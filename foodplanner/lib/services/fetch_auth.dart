@@ -26,7 +26,7 @@ class AuthService {
         final bool roleApproved = data['roleApproved'];
         final String role = data['role'];
         ROLES authRole = roleFromString(role.toLowerCase());
-        await AuthProvider().login(authRole, jwt, roleApproved);
+        AuthProvider().login(authRole, jwt, roleApproved);
       } else {
         var error = jsonDecode(response.body);
         return error;

@@ -3,10 +3,12 @@ import 'package:foodplanner/components/approve_box.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/user.dart';
+import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/services/user_service.dart';
 
 class AdminApprovePage extends StatefulWidget {
   const AdminApprovePage({super.key});
-
+  static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   @override
   State<AdminApprovePage> createState() => _AdminApprovePageState();
 }
@@ -22,7 +24,7 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
 
   // Function to load users asynchronously
   Future<void> _loadUsers() async {
-    final users = await fetchApproveUsers();
+    final users = await AdminApprovePage.userService.fetchApproveUsers();
     setState(() {
       _users = users;
     });
@@ -81,12 +83,14 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
                                   lastName: user.lastName,
                                   role: user.role,
                                   onApprove: () async {
-                                    await updateApproveUsers(user.id);
+                                    await AdminApprovePage.userService
+                                        .updateApproveUsers(user.id);
                                     _removeUser(user
                                         .id); // Remove the user from the list
                                   },
                                   onDeny: () async {
-                                    await unapproveUsers(user.id);
+                                    await AdminApprovePage.userService
+                                        .unapproveUsers(user.id);
                                     _removeUser(user
                                         .id); // Remove the user from the list
                                   },

@@ -36,7 +36,7 @@ class UnauthorizedPage extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'Din bruger afventer godkendelse\n fra administrator',
+                  'Din bruger afventer godkendelse\n fra adminsitrator',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bigText.copyWith(
                     fontWeight: FontWeight.bold,
