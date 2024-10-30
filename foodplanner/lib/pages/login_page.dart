@@ -1,14 +1,13 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
-import 'package:foodplanner/components/user.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'signup_page.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -41,34 +40,26 @@ class LoginPageState extends State<LoginPage> {
   }
 
   void handleErrors(Map<String, dynamic> error) {
-    updateErrorState('Email', error['Email'] != null ? error['Email'][0] : '');
-    updateErrorState(
-        'Password', error['Password'] != null ? error['Password'][0] : '');
+    if (error['Message'] != null) {
+      updateErrorState('Email', ' ');
+      updateErrorState('Password', error['Message'][0]);
+    } else {
+      updateErrorState(
+          'Email', error['Email'] != null ? error['Email'][0] : '');
+      updateErrorState(
+          'Password', error['Password'] != null ? error['Password'][0] : '');
+    }
   }
 
   void signUserIn(BuildContext context) async {
     try {
-      final response =
-          await loginUser(usernameController.text, passwordController.text);
-      await LoginPage.authService
+      final error = await LoginPage.authService
           .fetchAuthData(usernameController.text, passwordController.text);
-
-      if (response.statusCode == 200) {
-        var body = jsonDecode(response.body);
-        UserLogin user = UserLogin.fromJsonLogin(body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Du er nu logget ind'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 5),
-          ),
-        );
-      } else {
-        var error = jsonDecode(response.body);
+      print(error);
+      if (error != null) {
         handleErrors(error);
-        setState(() {
-          emailError = 'Brugernavn eller adgangskode er forkert';
-        });
+      } else {
+        context.go('/');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

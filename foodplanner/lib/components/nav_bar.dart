@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/pages/additional_lunch_box.dart';
+import 'package:foodplanner/pages/landing_page.dart';
 import 'package:foodplanner/pages/lunch_box.dart';
 import 'package:foodplanner/pages/profile.dart';
 import 'package:foodplanner/pages/settings.dart';
@@ -14,7 +15,7 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> {
-  int currentPageIndex = 0;
+  int currentPageIndex = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +72,7 @@ class _NavBarState extends State<NavBar> {
       ),
       body: [
         AdditionalLunchBox(),
-        LunchBox(),
+        LandingPage(),
         Profile(),
         Settings()
       ][currentPageIndex],
