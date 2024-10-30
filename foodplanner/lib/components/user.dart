@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:http/http.dart' as http;
+import 'package:openapi_generator_annotations/openapi_generator_annotations.dart';
 import '../services/api_config.dart';
 
 class User {
@@ -122,24 +124,36 @@ Future<List<User>> unapproveUsers(int id) async {
   }
 }
 
-Future<http.Response> createUser(String firstName, String lastName,
-    String email, String password, String role) async {
-  final response = await http.post(
-    Uri.parse('${ApiConfig.baseUrl}/api/Users/Create'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'first_name': firstName,
-      'last_name': lastName,
-      'email': email,
-      'password': password,
-      'role': role
-    }),
+Future<http.Response?> createUser(
+  String firstName,
+  String lastName,
+  String email,
+  String password,
+  String role,
+) async {
+
+  final userCreateDTO = UserCreateDTO(
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    password: password,
+    role: role,
   );
 
-  return response;
+  try {
+    final response = await UsersApi().apiUsersCreatePostWithHttpInfo(
+      userCreateDTO: userCreateDTO,
+    );
+    return response;
+  } on ApiException catch (e) {
+    print("API Exception: ${e.message}");
+    return null;
+  } catch (e) {
+    print("Error: $e");
+    return null;
+  }
 }
+
 
 Future<http.Response> loginUser(String email, String password) async {
   final response = await http.post(

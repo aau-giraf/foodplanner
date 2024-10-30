@@ -21,7 +21,7 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => NavBar(),
+      builder: (context, state) => LoginPage(),
     ),
     GoRoute(
       path: '/login',
