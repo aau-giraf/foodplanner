@@ -4,7 +4,6 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'signup_page.dart';
 import 'package:foodplanner/services/fetch_auth.dart';

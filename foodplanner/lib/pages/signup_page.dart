@@ -37,7 +37,8 @@ class _SignupState extends State<SignupPage> {
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
   final RegExp emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-  final RegExp passwordRegExp = RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
+  final RegExp passwordRegExp =
+      RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
 
   Set<String> role = {'Parent'};
 
@@ -257,7 +258,11 @@ class _SignupState extends State<SignupPage> {
             ),
           );
         } else {
-          context.go('/signup/create-child');
+          if (role.first == 'Parent') {
+            context.go('/signup/create-child');
+          } else {
+            context.go('/');
+          }
         }
       } else {
         var error = jsonDecode(response.body);

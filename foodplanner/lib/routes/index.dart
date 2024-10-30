@@ -20,7 +20,7 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => LandingPage(),
+      builder: (context, state) => NavBar(),
     ),
     GoRoute(
       path: '/login',
