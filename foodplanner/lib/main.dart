@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
-import 'pages/login_page.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:provider/provider.dart';
+import '../routes/index.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AuthProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -10,9 +17,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      routerConfig: router,
     );
   }
 }
