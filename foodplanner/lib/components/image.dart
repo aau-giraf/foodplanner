@@ -6,13 +6,6 @@ class FoodImage extends StatelessWidget {
 
   FoodImage({required this.foodImageId});
 
-  // A method to create an instance from JSON
-  factory FoodImage.fromJson(Map<String, dynamic> json) {
-    return FoodImage(
-      foodImageId: json['foodImageId'],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String?>(
