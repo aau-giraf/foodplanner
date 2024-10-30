@@ -1,9 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/routes/user_roles.dart';  
-import '../test/secure_storage_test.mocks.dart';  // Generated mock file from the command: flutter pub run build_runner build
+import 'package:foodplanner/routes/user_roles.dart';
+import '../test/secure_storage_test.mocks.dart'; // Generated mock file from the command: flutter pub run build_runner build
 
 void main() {
   late AuthProvider authProvider;
@@ -11,7 +10,8 @@ void main() {
 
   setUp(() {
     mockSecureStorage = MockFlutterSecureStorage();
-    authProvider = AuthProvider(secureStorage: mockSecureStorage);  // Inject the mock
+    authProvider =
+        AuthProvider(secureStorage: mockSecureStorage); // Inject the mock
   });
 
   group('AuthProvider', () {
@@ -30,13 +30,15 @@ void main() {
       expect(authProvider.jwtToken, token);
 
       // We verify that the method is called once and once only, and that the values are in the proper fields matching their keys
-      verify(mockSecureStorage.write(key: 'isLoggedIn', value: isLoggedIn.toString())).called(1);
-      verify(mockSecureStorage.write(key: 'userRole', value: role.toString())).called(1);
+      verify(mockSecureStorage.write(
+              key: 'isLoggedIn', value: isLoggedIn.toString()))
+          .called(1);
+      verify(mockSecureStorage.write(key: 'userRole', value: role.toString()))
+          .called(1);
       verify(mockSecureStorage.write(key: 'jwtToken', value: token)).called(1);
     });
 
     test('logout clears values and deletes from secure storage', () async {
-
       //add fake data from login here
       // Act
       await authProvider.logout();
@@ -55,7 +57,8 @@ void main() {
     test('retrieveToken returns the token from secure storage', () async {
       // Arrange
       final token = 'fake_jwt_token';
-      when(mockSecureStorage.read(key: 'jwtToken')).thenAnswer((_) async => token);
+      when(mockSecureStorage.read(key: 'jwtToken'))
+          .thenAnswer((_) async => token);
 
       // Act
       final retrievedToken = await authProvider.retrieveToken();
@@ -67,8 +70,10 @@ void main() {
 
     test('loadFromStorage loads data correctly from secure storage', () async {
       // Arrange
-      when(mockSecureStorage.read(key: 'isLoggedIn')).thenAnswer((_) async => 'true');
-      when(mockSecureStorage.read(key: 'userRole')).thenAnswer((_) async => ROLES.admin.toString());
+      when(mockSecureStorage.read(key: 'isLoggedIn'))
+          .thenAnswer((_) async => 'true');
+      when(mockSecureStorage.read(key: 'userRole'))
+          .thenAnswer((_) async => ROLES.admin.toString());
 
       // Act
       await authProvider.loadFromStorage();
@@ -79,6 +84,5 @@ void main() {
       verify(mockSecureStorage.read(key: 'isLoggedIn')).called(1);
       verify(mockSecureStorage.read(key: 'userRole')).called(1);
     });
-
   });
 }
