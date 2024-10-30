@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:foodplanner/components/ingredient.dart';
-import 'package:foodplanner/components/packed_ingredient.dart';
+import 'package:foodplanner/models/ingredient.dart';
+import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';

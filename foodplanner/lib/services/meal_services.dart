@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:foodplanner/components/meal.dart';
-import 'package:foodplanner/components/packed_ingredient.dart';
+import 'package:foodplanner/models/meal.dart';
+import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:http/http.dart' as http;
 
 // Fetches a meal by its ID from the server.

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/components/empty_meal_list_element.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/meal_list_element.dart';
-import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:go_router/go_router.dart';

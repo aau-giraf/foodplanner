@@ -1,4 +1,4 @@
-import 'package:foodplanner/components/ingredient.dart';
+import 'package:foodplanner/models/ingredient.dart';
 
 // Class representing a PackedIngredient
 class PackedIngredient {

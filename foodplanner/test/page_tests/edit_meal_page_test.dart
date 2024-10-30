@@ -4,8 +4,8 @@ import 'package:foodplanner/pages/edit_meal_page.dart';
 import 'package:foodplanner/pages/edit_meal_form_page.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
-import 'package:foodplanner/components/ingredient.dart';
-import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/models/ingredient.dart';
+import 'package:foodplanner/models/meal.dart';
 
 // Can't be tested properly, since Meal can't be fetched.
 void main() {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:foodplanner/components/ingredient.dart';
+import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/components/user.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
 import 'package:http/http.dart' as http;
@@ -66,7 +66,7 @@ void main() {
               http.Response('[{"id": ${ingredient.id}, "userRef": ${ingredient.userRef}, "name": "${ingredient.name}", "imageUrl": "${ingredient.imageUrl}"},{"id": ${ingredient1.id}, "userRef": ${ingredient1.userRef}, "name": "${ingredient1.name}", "imageUrl": "${ingredient1.imageUrl}"},{"id": ${ingredient2.id}, "userRef": ${ingredient2.userRef}, "name": "${ingredient2.name}", "imageUrl": "${ingredient2.imageUrl}"}]', 200));
               
 
-        expect(await fetchIngredientsByUserID(client, user.id), isA<List<Ingredient>>());
+        expect(await fetchIngredientsByUserID(client), isA<List<Ingredient>>());
       });
       test('throw an exception when encountering an error', () async {
         final client = MyMockClient();
@@ -76,7 +76,7 @@ void main() {
                 .get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get/${user.id}')))
             .thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(fetchIngredientsByUserID(client, 0), throwsException);
+        expect(fetchIngredientsByUserID(client), throwsException);
       });
     });
     group('createIngredient tests', () {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:foodplanner/components/edit_meal_ingredient_list_element.dart';
-import 'package:foodplanner/components/ingredient.dart';
-import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/models/ingredient.dart';
+import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/edit_meal_form_page.dart';
 import 'package:mockito/mockito.dart';

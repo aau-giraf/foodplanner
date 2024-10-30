@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/components/ingredient.dart';
-import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/models/ingredient.dart';
+import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/services/fetch_user_data.dart';
 import 'package:foodplanner/pages/meal_form_page.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
 import 'package:go_router/go_router.dart';
@@ -53,7 +52,7 @@ class _AddMealPageState extends State<AddMealPage> {
       return;
     }
 
-    fetchIngredientsByUserID(_client!, FetchUserData.decodeUserIDFromJWT(auth.jwtToken!)).then((fetchedIngredients) {
+    fetchIngredientsByUserID(_client!).then((fetchedIngredients) {
       setState(() {
         ingredients = fetchedIngredients; // Assign the fetched ingredients to the state variable.
         _initializePages(); // Initialize pages after fetching ingredients.

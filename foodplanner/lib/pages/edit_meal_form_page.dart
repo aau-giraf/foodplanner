@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/edit_meal_ingredient_list_element.dart';
 import 'package:foodplanner/components/icon_button.dart';
-import 'package:foodplanner/components/ingredient.dart';
-import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/models/ingredient.dart';
+import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:go_router/go_router.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:foodplanner/components/ingredient.dart';
+import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
 /// This class is used for creating the individual elements for the ingredients.

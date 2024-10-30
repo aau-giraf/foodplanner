@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:foodplanner/components/ingredient.dart';
-import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/models/ingredient.dart';
+import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';

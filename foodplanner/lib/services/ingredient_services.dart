@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/components/ingredient.dart';
+import 'package:foodplanner/models/ingredient.dart';
 import 'package:http/http.dart' as http;
 
 /// Fetch a specific ingredient by its ID from the API.
@@ -20,27 +20,33 @@ Future<Ingredient> fetchIngredient(http.Client client, int id) async {
 }
 
 // Fetch all ingredients for a specific user by their user ID.
-Future<List<Ingredient>> fetchIngredientsByUserID(http.Client client, int userID) async {
+Future<List<Ingredient>> fetchIngredientsByUserID(http.Client client) async {
+  final jwtToken = await AuthProvider().retrieveToken();
   // Make a GET request to the API to retrieve ingredients by user ID.
   final response =
-      await client.get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get/$userID'));
-
+      await client.get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $jwtToken',
+        },
+      );
   // Check if the request was successful (status code 200).
   if (response.statusCode == 200) {
-    List<Ingredient> ingredients = <Ingredient>[]; // Create an empty list to hold the ingredients.
-    // Split the response body into individual ingredient strings.
-    List<String> encodedIngredients = response.body.split('},{');
+    // Decode the response body directly into a list.
+    List<dynamic> jsonResponse = jsonDecode(response.body);
+    
+    // Map the JSON list to a List<Ingredient>
+    List<Ingredient> ingredients = jsonResponse.map((ingredientJson) {
+      return Ingredient.fromJson(ingredientJson as Map<String, dynamic>);
+    }).toList();
 
-    // Iterate over the encoded ingredients and convert them to Ingredient objects.
-    encodedIngredients.forEach((encodedIngredient) {
-      ingredients.add(Ingredient.fromJson(jsonDecode(encodedIngredient) as Map<String, dynamic>)); // Decode and add each ingredient to the list.
-    });
-    return ingredients; // Return the list of ingredients.
+    return ingredients;
   } else {
     // If the request failed, throw an exception with an error message.
     throw Exception('Kunne ikke hente ingredienser'); // "Could not fetch ingredients"
   }
 }
+
 
 // Create a new ingredient via a POST request to the API.
 Future<http.Response> createIngredient(http.Client client, String name, int userRef,  String? imageUrl) async {

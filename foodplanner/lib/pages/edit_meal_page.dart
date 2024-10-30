@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/components/ingredient.dart';
-import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/models/ingredient.dart';
+import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/pages/edit_meal_form_page.dart';
-import 'package:foodplanner/services/fetch_user_data.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:http/http.dart' as http;
@@ -51,9 +49,8 @@ class _EditMealPageState extends State<EditMealPage> {
   // Asynchronously initializes the page with meal data and user ingredients.
   Future<void> _initializePage() async {
     meal = await fetchMeal(_client!, widget.mealID); // Fetch the meal details using the mealID.
-    final auth = AuthProvider(); // Create an instance of AuthProvider to get user authentication.
     // Fetch user's ingredients by decoding the JWT token.
-    ingredients = await fetchIngredientsByUserID(_client!, FetchUserData.decodeUserIDFromJWT(auth.jwtToken!));
+    ingredients = await fetchIngredientsByUserID(_client!);
 
     setState(() { // Update the state of the widget.
       _pages = [ // Assign the fetched meal and ingredients to the list of pages.

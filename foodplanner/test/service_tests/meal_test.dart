@@ -1,9 +1,9 @@
   import 'dart:convert';
 
   import 'package:flutter_test/flutter_test.dart';
-  import 'package:foodplanner/components/ingredient.dart';
-  import 'package:foodplanner/components/meal.dart';
-  import 'package:foodplanner/components/packed_ingredient.dart';
+  import 'package:foodplanner/models/ingredient.dart';
+  import 'package:foodplanner/models/meal.dart';
+  import 'package:foodplanner/models/packed_ingredient.dart';
   import 'package:foodplanner/services/meal_services.dart';
   import 'package:http/http.dart' as http;
   import 'package:mockito/annotations.dart';

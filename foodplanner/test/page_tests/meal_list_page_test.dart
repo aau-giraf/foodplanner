@@ -4,7 +4,7 @@ import 'package:foodplanner/pages/add_meal_page.dart';
 import 'package:foodplanner/pages/meal_form_page.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/components/empty_meal_list_element.dart';
-import 'package:foodplanner/components/meal.dart';
+import 'package:foodplanner/models/meal.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
