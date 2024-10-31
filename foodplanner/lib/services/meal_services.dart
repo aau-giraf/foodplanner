@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:http/http.dart' as http;
@@ -7,10 +8,15 @@ import 'package:http/http.dart' as http;
 // Takes an HTTP client and the meal ID as parameters.
 /// Returns a Meal object if successful, or throws an exception if not.
 Future<Meal> fetchMeal(http.Client client, int id) async {
+  final jwtToken = await AuthProvider().retrieveToken();
   // Making a GET request to the API to fetch meal details by ID.
   final response =
-      await client.get(Uri.parse('http://127.0.0.1:80/api/Meals/Get/$id'));
-
+      await client.get(Uri.parse('http://127.0.0.1:80/api/Meals/Get/$id'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $jwtToken',
+        },
+      );
   // Checking if the server returned a successful response.
   if (response.statusCode == 200) {
     // If successful, parse the response and return a Meal object.
@@ -25,11 +31,13 @@ Future<Meal> fetchMeal(http.Client client, int id) async {
 // Takes an HTTP client, meal title, optional image URL, optional date, and a list of ingredients.
 // Returns the server's response.
 Future<http.Response> createMeal(http.Client client, /*final User user,*/ final String title, final String? imageUrl, final DateTime? date, final List<PackedIngredient> ingredients) async {
+  final jwtToken = await AuthProvider().retrieveToken();
   // Sending a POST request to the API endpoint to create a new meal.
   final response = await client.post(
     Uri.parse('http://127.0.0.1:80/api/Meals/Create'), // Specify the API endpoint for meal creation.
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8', // Specify that the content is JSON.
+      'Authorization': 'Bearer $jwtToken'
     },
     // Encode the meal data as JSON for the request body.
     body: jsonEncode({
@@ -47,11 +55,13 @@ Future<http.Response> createMeal(http.Client client, /*final User user,*/ final 
 // Takes an HTTP client and the meal ID as parameters.
 // Returns the server's response after attempting to delete the meal.
 Future<http.Response> deleteMeal(http.Client client, int id) async {
+  final jwtToken = await AuthProvider().retrieveToken();
   // Sending a DELETE request to the API endpoint to remove a meal by ID.
   final response = await client.delete(
     Uri.parse('http://127.0.0.1:80/api/Meals/Delete/$id'),  // Specify the API endpoint for meal deletion.
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8', // Specify that the content is JSON.
+      'Authorization': 'Bearer $jwtToken'
     },
   );
   return response; // Return the response from the server.
