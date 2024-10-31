@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ../foodplanner
 flutter clean
 flutter pub get
 flutter build linux
