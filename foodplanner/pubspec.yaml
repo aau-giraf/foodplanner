@@ -51,19 +51,19 @@ dependencies:
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.
     provider: ^6.1.2
+    dropdown_button2: ^2.3.9
     flutter_secure_storage: ^9.2.2
-
-   
-flutter_sficon: ^1.1.2
-webview_flutter: ^2.0.10
-http: ^1.2.2
-
+    intl: ^0.19.0
+    openapi_generator_annotations: ^5.0.2
+    global_configuration: ^2.0.0
+    local_auth: ^2.3.0
 
 dev_dependencies:
     flutter_test:
         sdk: flutter
-    mockito: ^5.4.4
+    openapi_generator: ^5.0.2
     build_runner: ^2.4.13
+    mockito: ^5.4.4
 
     # The "flutter_lints" package below contains a set of recommended lints to
     # encourage good coding practices. The lint set provided by the package is
@@ -83,8 +83,8 @@ flutter:
     uses-material-design: true
 
     # To add assets to your application, add an assets section, like this:
-assets:
-    - lib/images/
+    assets:
+        - assets/images/logo.png
     #   - images/a_dot_ham.jpeg
 
     # An image asset can refer to one or more resolution-specific "variants", see
