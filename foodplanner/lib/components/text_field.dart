@@ -50,11 +50,11 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
         ),
-        errorText.isNotEmpty
+        errorText.isNotEmpty && errorText != ' '
             ? Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Align(
-                  alignment: Alignment.centerLeft,
+                  alignment: Alignment.center,
                   child: Text(errorText, style: AppTextStyles.errorText),
                 ),
               )
