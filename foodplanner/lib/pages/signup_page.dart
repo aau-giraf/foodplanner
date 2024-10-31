@@ -230,7 +230,7 @@ class _SignupState extends State<SignupPage> {
 
       if (!context.mounted) return;
 
-      if (response.statusCode == 201) {
+      if (response != null && response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Bruger oprettet!'),
@@ -238,7 +238,7 @@ class _SignupState extends State<SignupPage> {
             duration: Duration(seconds: 5),
           ),
         );
-      } else {
+      } else if (response != null) {
         var error = jsonDecode(response.body);
         handleErrors(error);
       }

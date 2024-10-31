@@ -140,32 +140,23 @@ Future<http.Response?> createUser(
     role: role,
   );
 
-  try {
-    final response = await UsersApi().apiUsersCreatePostWithHttpInfo(
-      userCreateDTO: userCreateDTO,
-    );
-    return response;
-  } on ApiException catch (e) {
-    print("API Exception: ${e.message}");
-    return null;
-  } catch (e) {
-    print("Error: $e");
-    return null;
-  }
+  return await UsersApi().apiUsersCreatePostWithHttpInfo(
+    userCreateDTO: userCreateDTO,
+  );
 }
 
 
-Future<http.Response> loginUser(String email, String password) async {
-  final response = await http.post(
-    Uri.parse('${ApiConfig.baseUrl}/api/Users/Login'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'email': email,
-      'password': password,
-    }),
+Future<http.Response?> loginUser(
+  String email,
+  String password,
+) async {
+
+  final login = Login(
+    email: email,
+    password: password,
   );
 
-  return response;
+  return await UsersApi().apiUsersLoginPostWithHttpInfo(
+    login: login,
+  );
 }

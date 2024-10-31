@@ -53,7 +53,7 @@ class LoginPageState extends State<LoginPage> {
       await LoginPage.authService
           .fetchAuthData(usernameController.text, passwordController.text);
 
-      if (response.statusCode == 200) {
+      if (response != null && response.statusCode == 200) {
         var body = jsonDecode(response.body);
         UserLogin user = UserLogin.fromJsonLogin(body);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -63,7 +63,7 @@ class LoginPageState extends State<LoginPage> {
             duration: Duration(seconds: 5),
           ),
         );
-      } else {
+      } else if (response != null) {
         var error = jsonDecode(response.body);
         handleErrors(error);
         setState(() {
