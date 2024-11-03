@@ -2,13 +2,14 @@ import 'dart:convert';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:http/http.dart' as http;
+import 'package:foodplanner/services/api_config.dart';
 
 /// Fetch a specific ingredient by its ID from the API.
 Future<Ingredient> fetchIngredient(http.Client client, int id) async {
   final jwtToken = await AuthProvider().retrieveToken();
     // Make a GET request to the API to retrieve an ingredient by ID.
   final response =
-      await client.get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get/$id'),
+      await client.get(Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Get/$id'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwtToken',
@@ -30,7 +31,7 @@ Future<List<Ingredient>> fetchIngredientsByUserID(http.Client client) async {
   final jwtToken = await AuthProvider().retrieveToken();
   // Make a GET request to the API to retrieve ingredients by user ID.
   final response =
-      await client.get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get'),
+      await client.get(Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Get'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwtToken',
@@ -60,7 +61,7 @@ Future<http.Response> createIngredient(http.Client client, String name, int user
 
   // Make a POST request to the API to create a new ingredient.
   final response = await client.post(
-    Uri.parse('http://127.0.0.1:80/api/Ingredients/Create'),
+    Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Create'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8', // Specify the content type as JSON.
       'Authorization': 'Bearer $jwtToken', // Include the authorization token for authentication.
@@ -80,7 +81,7 @@ Future<http.Response> deleteIngredient(http.Client client, int id) async {
   final jwtToken = await AuthProvider().retrieveToken();
   // Make a DELETE request to the API to remove the ingredient by ID.
   final response = await client.delete(
-    Uri.parse('http://127.0.0.1:80/api/Ingredients/Delete/$id'),
+    Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Delete/$id'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',  // Specify the content type as JSON.
       'Authorization': 'Bearer $jwtToken',
