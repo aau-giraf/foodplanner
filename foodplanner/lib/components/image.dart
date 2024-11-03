@@ -24,15 +24,16 @@ class FoodImage extends StatelessWidget {
   }
 
   Future<String?> loadImageAndToken() async {
-    String? jwtToken;
-
-    jwtToken = await AuthProvider().retrieveToken();
+    String? jwtToken = await AuthProvider().retrieveToken();
 
     var apiClient = ApiClient();
     apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
 
-    ImagesApi().apiImagesGetPresignedImageLinkGet(foodImageId: foodImageId);
+    var imagesApi = ImagesApi(apiClient);
+
+    await imagesApi.apiImagesGetPresignedImageLinkGet(foodImageId: foodImageId);
 
     return jwtToken;
-  }
+}
+
 }
