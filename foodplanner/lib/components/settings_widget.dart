@@ -24,6 +24,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
+        color: AppColors.background,
+        surfaceTintColor: AppColors.background,
         child: Row(
           children: [
             Padding(
