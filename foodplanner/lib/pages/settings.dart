@@ -46,6 +46,7 @@ class Settings extends StatelessWidget {
               leftIcon: SFIcons.sf_graduationcap_fill,
               title: 'John Hansen',
               cta: ctaButtons(),
+              type: 'items',
             ),
           ),
         ],

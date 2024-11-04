@@ -7,11 +7,13 @@ class SettingsWidget extends StatefulWidget {
   final IconData leftIcon;
   final String title;
   final dynamic cta;
+  final String type;
   const SettingsWidget({
     super.key,
     required this.leftIcon,
     required this.title,
     required this.cta,
+    required this.type,
   });
 
   @override
@@ -19,8 +21,7 @@ class SettingsWidget extends StatefulWidget {
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
-  @override
-  Widget build(BuildContext context) {
+  Widget item() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
@@ -64,5 +65,14 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.type == 'items') {
+      return item();
+    } else {
+      return Container();
+    }
   }
 }
