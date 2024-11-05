@@ -54,8 +54,7 @@ final router = GoRouter(
       path: EditMealPage.routeName,
       builder: (context, state) {
         final mealID = state.pathParameters['meal'] as int;
-        if(mealID != null) return EditMealPage(mealID: mealID);
-        return UnauthorizedPage();
+        return EditMealPage(mealID: mealID);
       },
     ),
     GoRoute(
