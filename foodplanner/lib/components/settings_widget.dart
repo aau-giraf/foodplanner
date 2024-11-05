@@ -41,7 +41,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                   child: Center(
                     child: SFIcon(
                       widget.leftIcon,
-                      fontSize: 24,
+                      fontSize: 30,
                       color: AppColors.textSecondary,
                     ),
                   ),
