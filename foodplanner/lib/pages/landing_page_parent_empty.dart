@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/dateTimePicker.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:intl/intl.dart';
 import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/components/dateTimePicker.dart'; // Correct import
 
 class ParentLandingPageMadpakkeEmpty extends StatelessWidget {
   const ParentLandingPageMadpakkeEmpty({super.key});
@@ -27,10 +29,13 @@ class ParentLandingPageMadpakkeEmpty extends StatelessWidget {
             SizedBox(height: size.height * 0.02),
             Container(
               width: size.width * 0.9, // 90% of the screen width
-              height: size.height * 0.1 + size.width * 0.6 + 190, // 70% of the screen height
+              height: size.height * 0.1 +
+                  size.width * 0.6 +
+                  190, // 70% of the screen height
               padding: const EdgeInsets.all(40),
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 243, 243, 243), // image box background color
+                color: const Color.fromARGB(
+                    255, 243, 243, 243), // image box background color
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(40),
                 boxShadow: [
@@ -45,6 +50,7 @@ class ParentLandingPageMadpakkeEmpty extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  DateTimePickerWidget(),
                   Text(
                     'Madpakke i dag d. $currentDate',
                     style: AppTextStyles.standard,
