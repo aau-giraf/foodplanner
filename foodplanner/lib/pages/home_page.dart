@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/pages/landing_page_parent_controller.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
@@ -26,7 +28,7 @@ class HomePage extends StatelessWidget {
               'HOME PAGE HOME PAGE',
               style: TextStyle(fontSize: 20),
             ),
-         const SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -45,12 +47,23 @@ class HomePage extends StatelessWidget {
                 );
               },
               child: const Text('Go to Child Landing Page'),
+            ),      
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LandingPageParentController()),
+                );
+              },
+              child: const Text('Go to Parent Landing Page'),
             ),           
             // Used for development purposes
             ElevatedButton(
               onPressed: () {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                authProvider.setRole(ROLES.admin);},
+                authProvider.setRole(ROLES.admin);
+              },
               child: const Text('Set role to admin'),
             ),
             ElevatedButton(
@@ -64,7 +77,6 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Go to Admin Page'),
             ),
-
             // ElevatedButton(
             // onPressed: () async {
             //   final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -83,9 +95,6 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Logout'),
             ),
-
-
-
             ElevatedButton(
               onPressed: () async {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -94,8 +103,6 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Retrieve Token'),
             ),
-
-           
           ],
         ),
       ),
