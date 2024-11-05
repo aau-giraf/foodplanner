@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/dateTimePicker.dart';
+import 'package:foodplanner/components/mealBox.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:intl/intl.dart';
-import 'package:foodplanner/config/colors.dart';
-import 'landing_page_children_se_madpakke.dart'; // Correct import
+import 'package:intl/intl.dart'; // Import the reusable widget
 
 class ChildLandingPageMadpakke extends StatelessWidget {
   const ChildLandingPageMadpakke({super.key});
@@ -28,7 +28,7 @@ class ChildLandingPageMadpakke extends StatelessWidget {
             SizedBox(height: size.height * 0.02),
             Container(
               width: size.width * 0.9, // 90% of the screen width
-              height: size.height * 0.1+size.width *0.6+190, // 70% of the screen height
+              height: size.height * 0.1 + size.width * 0.6 + 190, // 70% of the screen height
               padding: const EdgeInsets.all(40),
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 243, 243, 243), // image box background color
@@ -46,61 +46,14 @@ class ChildLandingPageMadpakke extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    'Madpakke i dag d. $currentDate',
-                    style: AppTextStyles.standard,
-                  ),
+                  DateTimePickerWidget(),
                   SizedBox(height: size.height * 0.02),
                   const Text(
                     'Madpakke text',
-                    style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: size.height * 0.02),
-                  Container(
-                    width: size.width * 0.6,
-                    height: size.width * 0.6, // 40% of the screen height
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.network(
-                       'https://cdn-icons-png.flaticon.com/512/739/739249.png',
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Center(child: Text('Image not available'));
-                        },
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return const Center(child: CircularProgressIndicator());
-                        },
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.05),
-                  Center(
-                    child: SizedBox(
-                      width: size.width * 0.6, // Set the desired width
-                      height: 50, // Set the desired height
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ChildLandingPageSeMadpakke()),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shadowColor: Colors.black, // Set the shadow color to black
-                          elevation: 5, // Set the elevation to create a shadow effect
-                        ),
-                        child: const Text('Se madpakke', style: AppTextStyles.buttonText),
-                      ),
-                    ),
-                  ),
+                  ReusableMealBox(size: size), // Use the reusable widget
                 ],
               ),
             ),
