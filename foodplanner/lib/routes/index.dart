@@ -3,6 +3,7 @@ import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/pages/admin_page.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
+import 'package:foodplanner/pages/home_page.dart';
 import 'package:foodplanner/pages/landing_page.dart';
 import 'package:foodplanner/pages/parent_page.dart';
 import 'package:foodplanner/pages/signup_page.dart';
@@ -43,6 +44,8 @@ final router = GoRouter(
       path: '/forgot-password',
       builder: (context, state) => ForgotPasswordPage(),
     ),
+
+    GoRoute(path: '/home', builder: (context, state) => HomePage()),
 
     //no need for wildcard handling as flutter already does it
 
