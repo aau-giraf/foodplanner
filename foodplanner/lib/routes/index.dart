@@ -70,6 +70,10 @@ final router = GoRouter(
       builder: (context, state) => CreateMealPage(),
     ),  
 
+    GoRoute(path: '/home',
+      builder: (context, state) => HomePage(),
+    ),
+
     //no need for wildcard handling as flutter already does it
 
     GoRoute(

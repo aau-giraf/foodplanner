@@ -45,7 +45,7 @@ class ReusableMealBox extends StatelessWidget {
           
           isMadpakkeEmpty
               ? Mealboxempty(size: size)
-              : Mealboxcontent(size: size, imageUrl: imageUrl, caption: caption),
+              : Mealboxcontent(size: size, caption: caption),
           
         
           

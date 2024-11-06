@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/landing_page_children_se_madpakke.dart'; // Update with the correct import
@@ -6,13 +7,11 @@ import 'package:foodplanner/components/dateTimePicker.dart';
 
 class Mealboxcontent extends StatelessWidget {
   final Size size;
-  final String imageUrl;
   final String caption;
 
   const Mealboxcontent({
   Key? key, 
   required this.size, 
-  this.imageUrl = 'https://cdn-icons-png.flaticon.com/512/739/739249.png', 
   this.caption = 'Madpakke Text'}) : 
   super(key: key);
 
@@ -38,19 +37,20 @@ class Mealboxcontent extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  imageUrl, 
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Center(child: Text('Image not available'));
-                  },
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                ),
+                child: FoodImage(foodImageId: 1),
+                // child: Image.network(
+                //   imageUrl, 
+                //   fit: BoxFit.cover,
+                //   width: double.infinity,
+                //   height: double.infinity,
+                //   errorBuilder: (context, error, stackTrace) {
+                //     return const Center(child: Text('Image not available'));
+                //   },
+                //   loadingBuilder: (context, child, loadingProgress) {
+                //     if (loadingProgress == null) return child;
+                //     return const Center(child: CircularProgressIndicator());
+                //   },
+                
               ),
             ),
             SizedBox(height: size.height * 0.05),

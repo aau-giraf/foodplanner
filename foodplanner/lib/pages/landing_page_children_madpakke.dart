@@ -7,6 +7,7 @@ import 'package:foodplanner/components/mealBoxContent.dart';
 import 'package:foodplanner/components/mealBoxEmpty.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/feedbackChatPage.dart';
+import 'package:foodplanner/components/footer.dart'; // Import the footer widget
 import 'package:intl/intl.dart'; // Import the reusable widget
 
 class ChildLandingPageMadpakke extends StatelessWidget {
@@ -21,34 +22,39 @@ class ChildLandingPageMadpakke extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Text(
-              // TODO read user title and display based on who is logged in 
-              'Welcome' + ' ' + 'Child',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: size.height * 0.02),
-            ReusableMealBox(size: size), // Use the reusable widget
-            SizedBox(height: size.height * 0.02),
+      body: Column(
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Text(
+                  // TODO read user title and display based on who is logged in 
+                  'Welcome' + ' ' + 'Child',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(height: size.height * 0.02),
+                //ReusableMealBox(size: size), // Use the reusable widget
+                SizedBox(height: size.height * 0.02),
 
-            isMadpakkeEmpty
-                ? AddMealButton(size: size)
-                : CustomButton(
-              onTab: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => FeedbackChatPage()),
-                );
-              }, 
-              text: 'Se Feedback',
-              fontSize: 16,
-              width: size.width * 0.6,
+                isMadpakkeEmpty
+                    ? AddMealButton(size: size)
+                    : CustomButton(
+                  onTab: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FeedbackChatPage()),
+                    );
+                  }, 
+                  text: 'Se Feedback',
+                  //fontSize: 16,
+                  customWidth: size.width * 0.6,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          FooterBar(), // Add the footer widget here
+        ],
       ),
     );
   }
