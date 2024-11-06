@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
-enum SettingsType { items, header }
+enum SettingsType { items, header, inlineItems }
 
 class SettingsWidget extends StatefulWidget {
   final IconData leftIcon;
@@ -11,6 +12,7 @@ class SettingsWidget extends StatefulWidget {
   final String subTitle;
   final dynamic cta;
   final SettingsType type;
+  final bool divider;
   const SettingsWidget({
     super.key,
     required this.leftIcon,
@@ -18,6 +20,7 @@ class SettingsWidget extends StatefulWidget {
     this.subTitle = '',
     this.cta,
     required this.type,
+    this.divider = true,
   });
 
   @override
@@ -63,6 +66,52 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             SizedBox(width: 10),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget inlineItem() {
+    return SizedBox(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(8.0), // Add rounded corners
+                  child: Container(
+                    color: AppColors.primary,
+                    width: 50,
+                    height: 50,
+                    child: Center(
+                      child: SFIcon(
+                        widget.leftIcon,
+                        fontSize: 24,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Text(
+                  widget.title,
+                  style: AppTextStyles.bigText,
+                ),
+                Spacer(),
+                widget.cta ?? Container(),
+              ],
+            ),
+          ),
+          widget.divider
+              ? Divider(
+                  color: Colors.black,
+                  thickness: 0.25,
+                  indent: 70,
+                )
+              : Container(),
+        ],
       ),
     );
   }
@@ -125,6 +174,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       return item();
     } else if (widget.type == SettingsType.header) {
       return header();
+    } else if (widget.type == SettingsType.inlineItems) {
+      return inlineItem();
     } else {
       return Container();
     }

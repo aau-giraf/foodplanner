@@ -1,33 +1,142 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/pages/student_page.dart';
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({super.key});
 
+  @override
+  State<Settings> createState() => _SettingsPage();
+}
+
+class _SettingsPage extends State<Settings> {
+  Set<String> selectedSegment = {'daily'};
+  bool notifcations = true;
+  bool biometricLogin = true;
+
+  List<ButtonSegment<String>> segments = [
+    ButtonSegment(
+      value: 'daily',
+      label: Text(
+        'Dagligt',
+        style: AppTextStyles.standardWithoutColor
+            .copyWith(fontWeight: FontWeight.bold),
+      ),
+    ),
+    ButtonSegment(
+      value: 'weekly',
+      label: Text(
+        'Ugentligt',
+        style: AppTextStyles.standardWithoutColor
+            .copyWith(fontWeight: FontWeight.bold),
+      ),
+    ),
+  ];
+
+  List<Map<String, dynamic>> get generalSettings => [
+        {
+          'title': "Vis madpakke",
+          'icon': SFIcons.sf_fork_knife,
+          'cta': CustomSegmentButton(
+            buttonSegments: segments,
+            onTab: segmentChange,
+            selected: selectedSegment,
+          ),
+        },
+        {
+          'title': "Notifikationer",
+          'icon': SFIcons.sf_bell_badge_fill,
+          'cta': Switch(
+            value: notifcations,
+            onChanged: notificationChange,
+            trackColor: trackColor,
+            overlayColor: overlayColor,
+            thumbColor: WidgetStatePropertyAll<Color>(
+              Colors.white,
+            ),
+          ),
+        },
+        {
+          'title': "Biometrisk login",
+          'icon': SFIcons.sf_faceid,
+          'cta': Switch(
+            value: biometricLogin,
+            onChanged: biometricChange,
+            trackColor: trackColor,
+            overlayColor: overlayColor,
+            thumbColor: WidgetStatePropertyAll<Color>(
+              Colors.white,
+            ),
+          ),
+          'divider': false,
+        },
+      ];
+
+  final WidgetStateProperty<Color?> trackColor =
+      WidgetStateProperty.resolveWith<Color?>(
+    (Set<WidgetState> states) {
+      // Track color when the switch is selected.
+      if (states.contains(WidgetState.selected)) {
+        return AppColors.primary;
+      }
+      // Otherwise return null to set default track color
+      // for remaining states such as when the switch is
+      // hovered, focused, or disabled.
+      return Colors.grey.shade400;
+    },
+  );
+
+  final WidgetStateProperty<Color?> overlayColor =
+      WidgetStateProperty.resolveWith<Color?>(
+    (Set<WidgetState> states) {
+      // Material color when switch is selected.
+      if (states.contains(WidgetState.selected)) {
+        return AppColors.primary.withOpacity(0.54);
+      }
+      // Material color when switch is disabled.
+      if (states.contains(WidgetState.disabled)) {
+        return Colors.grey.shade400;
+      }
+      // Otherwise return null to set default material color
+      // for remaining states such as when the switch is
+      // hovered, or focused.
+      return null;
+    },
+  );
+
+  void segmentChange(Set<String> value) {
+    setState(() {
+      selectedSegment = value;
+    });
+  }
+
+  void notificationChange(bool value) {
+    setState(() {
+      notifcations = value;
+    });
+  }
+
+  void biometricChange(bool value) {
+    setState(() {
+      biometricLogin = value;
+    });
+  }
+
   Widget ctaButtons() {
-    return Row(
-      children: [
-        IconButton(
-          padding: EdgeInsets.zero,
-          icon: SFIcon(
-            SFIcons.sf_checkmark_square_fill,
-            color: AppColors.primary,
-            fontSize: 36,
-          ),
-          onPressed: () {},
-        ),
-        IconButton(
-          padding: EdgeInsets.zero,
-          icon: SFIcon(
-            SFIcons.sf_xmark_square_fill,
-            color: AppColors.errorText,
-            fontSize: 36,
-          ),
-          onPressed: () {},
-        ),
-      ],
+    return Switch(
+      value: notifcations,
+      onChanged: (bool value) {
+        setState(
+          () {
+            notifcations = value;
+          },
+        );
+      },
     );
   }
 
@@ -35,25 +144,46 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Indstillinger'),
+        title: const Text(
+          'Indstillinger',
+          style: AppTextStyles.headline2,
+        ),
         backgroundColor: Colors.white,
       ),
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          SettingsWidget(
-            leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
-            title: 'Godkend profiler',
-            subTitle:
-                'Administrer nye profil anmodninger.\nHer kan du godkende eller slette nye brugere.',
-            type: SettingsType.header,
-          ),
-          SettingsWidget(
-            leftIcon: SFIcons.sf_00_circle,
-            title: "Hey med dig",
-            type: SettingsType.items,
-            cta: ctaButtons(),
-          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Card(
+              color: AppColors.background,
+              surfaceTintColor: AppColors.background,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Generelt",
+                        style: AppTextStyles.bigText.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      ...generalSettings.map((setting) {
+                        return SettingsWidget(
+                          leftIcon: setting['icon'],
+                          title: setting['title'],
+                          type: SettingsType.inlineItems,
+                          cta: setting['cta'],
+                          divider: setting['divider'] ?? true,
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
