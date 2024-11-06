@@ -32,7 +32,6 @@ class AuthService {
         return error;
         //throw Exception('Failed to load auth data');
       }
-      // sabrina carpenter <3
     } catch (e) {
       print('Error fetching auth data: $e');
     }

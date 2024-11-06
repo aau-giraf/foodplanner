@@ -24,7 +24,7 @@ class SettingsHeader extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.background,
           borderRadius: BorderRadius.circular(12),
-        ), // mmmm sabrina carpenter mmmmmm
+        ), 
         child: Row(
           children: [
             Expanded(

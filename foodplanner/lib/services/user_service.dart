@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:http/http.dart' as http;
 
@@ -7,8 +8,12 @@ class UserService {
 
   UserService({required this.apiUrl});
 
-  Future<User> fetchUser() async {
-    final response = await http.get(Uri.parse('$apiUrl/api/Users/Get/1'));
+  Future<User> fetchUser(int id) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.get(Uri.parse('$apiUrl/api/Admin/Get/${id}'),
+    headers: <String, String>{
+      'Authorization': 'Bearer $jwtToken',
+    });
 
     if (response.statusCode == 200) {
       return User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);

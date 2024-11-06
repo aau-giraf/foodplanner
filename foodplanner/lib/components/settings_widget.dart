@@ -8,12 +8,16 @@ class SettingsWidget extends StatefulWidget {
   final String title;
   final dynamic cta;
   final String type;
+  final bool showIcon;
+  final bool isEditable;
   const SettingsWidget({
     super.key,
     required this.leftIcon,
     required this.title,
     required this.cta,
     required this.type,
+    this.showIcon = true, // Default value is true, starts off being visible
+    this.isEditable = false, // Default value is false, starts off being not editable
   });
 
   @override
@@ -29,6 +33,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         surfaceTintColor: AppColors.background,
         child: Row(
           children: [
+            if (widget.showIcon)
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
@@ -49,7 +54,13 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               ),
             ),
             Expanded(
-              child: Text(
+              child: widget.isEditable
+                  ? TextField(
+                      decoration: InputDecoration(
+                        hintText: widget.title,
+                      ),
+                    )
+              : Text(
                 widget.title,
                 style: AppTextStyles.bigText,
                 softWrap: true, // Allow text to wrap

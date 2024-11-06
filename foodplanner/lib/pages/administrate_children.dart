@@ -9,6 +9,7 @@ import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/settings_header.dart';
+import 'package:foodplanner/pages/child_profile.dart';
 
 class AdministrateChildren extends StatefulWidget {
   const AdministrateChildren({super.key});
@@ -54,7 +55,7 @@ class AdministrateChildrenState extends State<AdministrateChildren> with SingleT
       return schoolClass.className;
     }
 
-  Widget ctaButtons() {
+  Widget ctaButtons(Child child) {
     return Row(
       children: [
         IconButton(
@@ -64,7 +65,13 @@ class AdministrateChildrenState extends State<AdministrateChildren> with SingleT
             color: AppColors.textPrimary,
             fontSize: 28,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(context, 
+              MaterialPageRoute(
+                builder: (context) => ChildProfile(child: child),
+                ),
+            );
+          },
         ),
       ],
     );
@@ -133,7 +140,7 @@ class AdministrateChildrenState extends State<AdministrateChildren> with SingleT
                 return SettingsWidget(
                   leftIcon: SFIcons.sf_figure_child,
                   title: '${child.firstName} ${child.lastName} - ${getClassName(child.classId)}',
-                  cta: ctaButtons(),
+                  cta: ctaButtons(child),
                   type: 'items',
                 );
               },
