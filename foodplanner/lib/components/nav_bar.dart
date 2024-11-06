@@ -19,14 +19,14 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.white,
       bottomNavigationBar: ClipRRect(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
         ),
         child: NavigationBar(
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.background,
           onDestinationSelected: (int index) {
             setState(() {
               currentPageIndex = index;
