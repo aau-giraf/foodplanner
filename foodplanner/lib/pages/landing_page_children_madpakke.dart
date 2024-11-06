@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/dateTimePicker.dart';
 import 'package:foodplanner/components/mealBox.dart';
+import 'package:foodplanner/components/mealBoxContent.dart';
+import 'package:foodplanner/components/mealBoxEmpty.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:intl/intl.dart'; // Import the reusable widget
 
@@ -9,9 +11,6 @@ class ChildLandingPageMadpakke extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get the current date   
-    String currentDate = DateFormat('dd. MMMM').format(DateTime.now());
-
     // Get the size of the screen
     final size = MediaQuery.of(context).size;
 
@@ -22,6 +21,7 @@ class ChildLandingPageMadpakke extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Text(
+              // TODO read user title and display based on who is logged in 
               'Welcome' + ' ' + 'Child',
               style: TextStyle(fontSize: 16),
             ),
