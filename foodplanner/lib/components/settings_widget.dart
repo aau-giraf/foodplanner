@@ -3,16 +3,20 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
+enum SettingsType { items, header }
+
 class SettingsWidget extends StatefulWidget {
   final IconData leftIcon;
   final String title;
+  final String subTitle;
   final dynamic cta;
-  final String type;
+  final SettingsType type;
   const SettingsWidget({
     super.key,
     required this.leftIcon,
     required this.title,
-    required this.cta,
+    this.subTitle = '',
+    this.cta,
     required this.type,
   });
 
@@ -55,13 +59,61 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 softWrap: true, // Allow text to wrap
               ),
             ),
-            widget.cta,
+            widget.cta ?? Container(),
             SizedBox(width: 10),
-            /* IconButton(
-              icon: SFIcon(SFIcons.sf_chevron_forward),
-              onPressed: () {},
-            ), */
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget header() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: SizedBox(
+        width: double.infinity, // Make the Card fill the whole width
+        child: Card(
+          color: AppColors.background,
+          surfaceTintColor: AppColors.background,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(8.0), // Add rounded corners
+                  child: Container(
+                    color: AppColors.primary,
+                    width: 60,
+                    height: 60,
+                    child: Center(
+                      child: SFIcon(
+                        widget.leftIcon,
+                        fontSize: 36,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  widget.title,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.bigText.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  softWrap: true, // Allow text to wrap
+                ),
+                SizedBox(height: 10),
+                Text(
+                  widget.subTitle,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.standard,
+                  softWrap: true, // Allow text to wrap
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -69,8 +121,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.type == 'items') {
+    if (widget.type == SettingsType.items) {
       return item();
+    } else if (widget.type == SettingsType.header) {
+      return header();
     } else {
       return Container();
     }
