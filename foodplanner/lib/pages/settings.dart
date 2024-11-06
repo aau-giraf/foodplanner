@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/student_page.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -77,6 +75,42 @@ class _SettingsPage extends State<Settings> {
         },
       ];
 
+  List<Map<String, dynamic>> get adminSettings => [
+        {
+          'title': "Godkend profiler",
+          'icon': SFIcons.sf_person_crop_circle_badge_checkmark,
+          'cta': IconButton(
+            icon: SFIcon(SFIcons.sf_chevron_forward),
+            onPressed: () {},
+          )
+        },
+        {
+          'title': "Deaktiver profiler",
+          'icon': SFIcons.sf_person_crop_circle_badge_minus,
+          'cta': IconButton(
+            icon: SFIcon(SFIcons.sf_chevron_forward),
+            onPressed: () {},
+          )
+        },
+        {
+          'title': "Administrer børn",
+          'icon': SFIcons.sf_figure_and_child_holdinghands,
+          'cta': IconButton(
+            icon: SFIcon(SFIcons.sf_chevron_forward),
+            onPressed: () {},
+          )
+        },
+        {
+          'title': "Administrer klasser",
+          'icon': SFIcons.sf_figure_2,
+          'cta': IconButton(
+            icon: SFIcon(SFIcons.sf_chevron_forward),
+            onPressed: () {},
+          ),
+          'divider': false,
+        },
+      ];
+
   final WidgetStateProperty<Color?> trackColor =
       WidgetStateProperty.resolveWith<Color?>(
     (Set<WidgetState> states) {
@@ -127,19 +161,6 @@ class _SettingsPage extends State<Settings> {
     });
   }
 
-  Widget ctaButtons() {
-    return Switch(
-      value: notifcations,
-      onChanged: (bool value) {
-        setState(
-          () {
-            notifcations = value;
-          },
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,33 +176,71 @@ class _SettingsPage extends State<Settings> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Card(
-              color: AppColors.background,
-              surfaceTintColor: AppColors.background,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Generelt",
-                        style: AppTextStyles.bigText.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+            child: Column(
+              children: [
+                Card(
+                  elevation: 2,
+                  color: AppColors.background,
+                  surfaceTintColor: AppColors.background,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Generelt",
+                            style: AppTextStyles.bigText.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          ...generalSettings.map((setting) {
+                            return SettingsWidget(
+                              leftIcon: setting['icon'],
+                              title: setting['title'],
+                              type: SettingsType.inlineItems,
+                              cta: setting['cta'],
+                              divider: setting['divider'] ?? true,
+                            );
+                          }),
+                        ],
                       ),
-                      ...generalSettings.map((setting) {
-                        return SettingsWidget(
-                          leftIcon: setting['icon'],
-                          title: setting['title'],
-                          type: SettingsType.inlineItems,
-                          cta: setting['cta'],
-                          divider: setting['divider'] ?? true,
-                        );
-                      }),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                SizedBox(height: 10),
+                Card(
+                  elevation: 2,
+                  color: AppColors.background,
+                  surfaceTintColor: AppColors.background,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Admin",
+                            style: AppTextStyles.bigText.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          ...adminSettings.map((setting) {
+                            return SettingsWidget(
+                              leftIcon: setting['icon'],
+                              title: setting['title'],
+                              type: SettingsType.inlineItems,
+                              cta: setting['cta'],
+                              divider: setting['divider'] ?? true,
+                              clickable: true,
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           )
         ],
