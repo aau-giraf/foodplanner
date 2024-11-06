@@ -34,14 +34,13 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
 
 
   void createTemporaryDatabase() {
-   // schoolClasses = TeacherLandingPage.childrenService.fetchChildrenData();
-    /*[
+    schoolClasses = [
       {'id': '1', 'name': 'Class A'},
       {'id': '2', 'name': 'Class B'},
       {'id': '3', 'name': 'Class C'},
       {'id': '4', 'name': 'Class D'},
       {'id': '5', 'name': 'Class E'},
-    ];*/
+    ];
 
     students = [
       {'id': '1', 'name': 'Alice', 'classId': '1'},
