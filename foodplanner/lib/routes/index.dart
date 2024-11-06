@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/pages/admin_page.dart';
+import 'package:foodplanner/pages/createMealPage.dart';
+import 'package:foodplanner/pages/feedbackChatPage.dart';
 import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/parent_page.dart';
@@ -47,6 +49,14 @@ final router = GoRouter(
       path: '/children_se_madpakke',
       builder: (context, state) => ChildLandingPageMadpakke(),
     ),
+
+    GoRoute(path: '/feedback',
+      builder: (context, state) => FeedbackChatPage(),
+    ),
+
+    GoRoute(path: '/create-meal',
+      builder: (context, state) => CreateMealPage(),
+    ),  
 
 
     //no need for wildcard handling as flutter already does it 

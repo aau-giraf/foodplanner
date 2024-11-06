@@ -6,6 +6,7 @@ import 'package:foodplanner/components/mealBox.dart';
 import 'package:foodplanner/components/mealBoxContent.dart';
 import 'package:foodplanner/components/mealBoxEmpty.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/pages/feedbackChatPage.dart';
 import 'package:intl/intl.dart'; // Import the reusable widget
 
 class ChildLandingPageMadpakke extends StatelessWidget {
@@ -16,18 +17,7 @@ class ChildLandingPageMadpakke extends StatelessWidget {
     // Get the size of the screen
     final size = MediaQuery.of(context).size;
 
-    final bool isMadpakkeEmpty = true; // Later we want to check with a fetch whether there is a box or not
-
-
-    // Placeholder function for the feedback button
-    void _navigateToFeedback() {
-      // For now, just print a message or show a snackbar
-      print('Feedback button pressed');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Feedback page not implemented yet')),
-      );
-    }
-
+    final bool isMadpakkeEmpty = false; // Later we want to check with a fetch whether there is a box or not
 
     return Scaffold(
       appBar: AppBar(),
@@ -47,13 +37,16 @@ class ChildLandingPageMadpakke extends StatelessWidget {
             isMadpakkeEmpty
                 ? AddMealButton(size: size)
                 : CustomButton(
-              onTab: _navigateToFeedback, // Use the placeholder function
+              onTab: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FeedbackChatPage()),
+                );
+              }, 
               text: 'Se Feedback',
               fontSize: 16,
               width: size.width * 0.6,
             ),
-            
-            
           ],
         ),
       ),

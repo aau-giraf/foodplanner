@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/pages/createMealPage.dart';
 
 class AddMealButton extends StatelessWidget {
   final Size size;
@@ -14,7 +15,10 @@ class AddMealButton extends StatelessWidget {
         height: 50, 
         child: ElevatedButton(
           onPressed: () {
-            //here we navigate to the page where we can add a meal  
+            Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CreateMealPage()),
+                ); 
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
