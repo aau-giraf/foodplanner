@@ -9,8 +9,15 @@ import 'package:foodplanner/components/dateTimePicker.dart';
 class ReusableMealBox extends StatelessWidget {
   final Size size;
   final isMadpakkeEmpty = false;//later we want to check with a fetch whether there is a box or not
+  final String imageUrl;
+  final String caption;
 
-  const ReusableMealBox({Key? key, required this.size}) : super(key: key);
+  const ReusableMealBox({
+  Key? key, 
+  required this.size}) :
+  caption = 'Madpakke Tekst',
+  imageUrl = 'https://cdn-icons-png.flaticon.com/512/739/739249.png', // when we fetch we change here so the result is displayed (the picture from minio)
+  super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +29,7 @@ class ReusableMealBox extends StatelessWidget {
         color: const Color.fromARGB(255, 243, 243, 243), // image box background color
         border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(40),
-        boxShadow: [
+        boxShadow: [ // love sabrina carpenter
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             spreadRadius: 5,
@@ -38,7 +45,7 @@ class ReusableMealBox extends StatelessWidget {
           
           isMadpakkeEmpty
               ? Mealboxempty(size: size)
-              : Mealboxcontent(size: size),
+              : Mealboxcontent(size: size, imageUrl: imageUrl, caption: caption),
           
         
           

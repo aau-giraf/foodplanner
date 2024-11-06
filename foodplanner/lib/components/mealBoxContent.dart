@@ -6,8 +6,15 @@ import 'package:foodplanner/components/dateTimePicker.dart';
 
 class Mealboxcontent extends StatelessWidget {
   final Size size;
+  final String imageUrl;
+  final String caption;
 
-  const Mealboxcontent({Key? key, required this.size}) : super(key: key);
+  const Mealboxcontent({
+  Key? key, 
+  required this.size, 
+  this.imageUrl = 'https://cdn-icons-png.flaticon.com/512/739/739249.png', 
+  this.caption = 'Madpakke Text'}) : 
+  super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +22,8 @@ class Mealboxcontent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(height: size.height * 0.02),
-        const Text(
-          'Madpakke text',
+        Text(
+          caption,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: size.height * 0.02),
@@ -32,7 +39,7 @@ class Mealboxcontent extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.network(
-                  'https://cdn-icons-png.flaticon.com/512/739/739249.png',
+                  imageUrl, 
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,
