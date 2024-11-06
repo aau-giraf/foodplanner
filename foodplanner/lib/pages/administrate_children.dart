@@ -3,11 +3,56 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/schoolClass.dart';
+import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/settings_header.dart';
 
-class AdministrateChildren extends StatelessWidget {
+class AdministrateChildren extends StatefulWidget {
   const AdministrateChildren({super.key});
+
+  static final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
+  static final SchoolClassService schoolClassService = SchoolClassService(apiUrl: ApiConfig.baseUrl);
+
+  @override
+  AdministrateChildrenState createState() => AdministrateChildrenState();
+}
+
+class AdministrateChildrenState extends State<AdministrateChildren> with SingleTickerProviderStateMixin{
+  List<Child> children = [];
+  List<SchoolClass> schoolClasses = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    AdministrateChildren.schoolClassService.fetchAllClasses().then((result) {
+      setState(() {
+        schoolClasses = result;
+      });
+    }).catchError((error) {
+      throw(error);
+    });
+
+    AdministrateChildren.childService.fetchChild().then((result) {
+      setState(() {
+        children = result;
+      });
+    }).catchError((error) {
+      throw(error);
+    });
+    
+    
+
+  }
+
+  String getClassName(int classId){
+      final schoolClass = schoolClasses.firstWhere((schoolClass) => schoolClass.classId == classId, orElse: () => SchoolClass(classId: 0, className: 'Unknown'));
+      return schoolClass.className;
+    }
 
   Widget ctaButtons() {
     return Row(
@@ -42,6 +87,7 @@ class AdministrateChildren extends StatelessWidget {
         ),
         backgroundColor: Colors.white,
         elevation: 0,
+        scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
       body: Column(
@@ -51,22 +97,49 @@ class AdministrateChildren extends StatelessWidget {
             title: 'Administrer Børn',
             subtitle: 'Her kan du se og redigere børnenes profiler, skifte deres klasser med mere. ',
           ),
-          Center(
-            child: SettingsWidget(
-              leftIcon: SFIcons.sf_figure_child,
-              title: 'John Hansen',
-              cta: ctaButtons(),
-              type: 'items',
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  SFIcon(
+                    SFIcons.sf_magnifyingglass,
+                    color: AppColors.textPrimary,
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Søg efter børn',
+                        border: InputBorder.none,
+                      ),
+                      style: AppTextStyles.bigText,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          Center(
-            child: SettingsWidget(
-              leftIcon: SFIcons.sf_figure_child,
-              title: 'John Hansen',
-              cta: ctaButtons(),
-              type: 'items',
+          Expanded(
+            child: ListView.builder(
+              itemCount: children.length,
+              itemBuilder: (context, index) {
+                final child = children[index];
+                return SettingsWidget(
+                  leftIcon: SFIcons.sf_figure_child,
+                  title: '${child.firstName} ${child.lastName} - ${getClassName(child.classId)}',
+                  cta: ctaButtons(),
+                  type: 'items',
+                );
+              },
             ),
-          ),
+          )
+
         ],
       ),
     );

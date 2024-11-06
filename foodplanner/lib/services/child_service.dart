@@ -8,13 +8,22 @@ class ChildService {
 
   ChildService({required this.apiUrl});
 
-  Future<Child> fetchChild() async {
-    final response = await http.get(Uri.parse('$apiUrl/api/Childrens/Get/1'));
+  Future<List<Child>> fetchChild() async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.get(Uri.parse('$apiUrl/api/Admin/GetAllChildren'),
+    headers: <String, String>{
+      'Authorization': 'Bearer $jwtToken',
+    }
+    );
 
     if (response.statusCode == 200) {
-      return Child.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+      List<dynamic> jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      var responseList = jsonResponse.map((child) => Child.fromJson(child as Map<String, dynamic>)).toList();
+      return responseList;
+    } else if (response.statusCode == 403){
+      throw Exception('Du er ikke autherized til denne funktion');
     } else {
-      throw Exception('Kunne ikke hente Barn');
+      throw Exception('Børn kunne ikke hentes');
     }
   }
 
