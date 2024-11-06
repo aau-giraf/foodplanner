@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'landing_page_children_madpakke.dart';
+import '../services/fetch_children.dart';
+import 'package:foodplanner/services/api_config.dart';
 
 class TeacherLandingPage extends StatefulWidget {
   const TeacherLandingPage({super.key});
+
+
+  static final ChildrenService childrenService = ChildrenService(apiUrl: ApiConfig.baseUrl);
 
   @override
   State<TeacherLandingPage> createState() => _LandingPageTeacherState();
@@ -20,17 +25,23 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
   void initState() {
     super.initState();
     createTemporaryDatabase();
+
+
     filteredStudents = students; // Initialize filteredStudents with all students
   }
 
+
+
+
   void createTemporaryDatabase() {
-    schoolClasses = [
+   // schoolClasses = TeacherLandingPage.childrenService.fetchChildrenData();
+    /*[
       {'id': '1', 'name': 'Class A'},
       {'id': '2', 'name': 'Class B'},
       {'id': '3', 'name': 'Class C'},
       {'id': '4', 'name': 'Class D'},
       {'id': '5', 'name': 'Class E'},
-    ];
+    ];*/
 
     students = [
       {'id': '1', 'name': 'Alice', 'classId': '1'},

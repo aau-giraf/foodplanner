@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/pages/admin_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
+import 'package:foodplanner/pages/landing_page_teacher.dart';
 import 'package:foodplanner/pages/parent_page.dart';
 import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/student_page.dart';
@@ -36,14 +37,13 @@ final router = GoRouter(
     ),
 
 
-    //no need for wildcard handling as flutter already does it 
-   
+      //no need for wildcard handling as flutter already does it 
     
     GoRoute(
       path: TEACHER_ROOT,
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        return authProvider.hasRole(ROLES.teacher) ? const TeacherPage() : const UnauthorizedPage();
+        return authProvider.hasRole(ROLES.teacher) ? const TeacherLandingPage() : const UnauthorizedPage();
       },
     ),
     GoRoute(
