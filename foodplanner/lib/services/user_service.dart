@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:foodplanner/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:foodplanner/auth/auth_provider.dart';
 
 class UserService {
   final String apiUrl;
@@ -18,16 +19,21 @@ class UserService {
   }
 
   Future<List<User>> fetchApproveUsers() async {
-    final response =
-        await http.get(Uri.parse('$apiUrl/api/Users/RoleRequests'));
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.get(
+      Uri.parse('$apiUrl/api/Admin/GetNotApproved'),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
 
     if (response.statusCode == 200) {
-      final List<dynamic> usersJson = jsonDecode(response.body);
-      return usersJson
-          .map((json) => User.fromJson(json as Map<String, dynamic>))
+      return (jsonDecode(response.body) as List)
+          .map<User>((json) => User.fromJson(json))
           .toList();
     } else {
-      throw Exception('Kunne ikke hente approve 0 brugere');
+      throw Exception('Failed to load users');
     }
   }
 

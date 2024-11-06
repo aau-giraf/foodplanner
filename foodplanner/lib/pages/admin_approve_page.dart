@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/approve_box.dart';
+import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/user.dart';
@@ -15,6 +15,7 @@ class AdminApprovePage extends StatefulWidget {
 
 class _AdminApprovePageState extends State<AdminApprovePage> {
   List<User> _users = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -42,67 +43,24 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.background,
-        title: const Text(
-          'Godkend nye brugere',
-          style: AppTextStyles.title,
-          textAlign: TextAlign.center,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'Indstillinger',
+              style:
+                  AppTextStyles.standard.copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.left,
+            ),
+          ],
         ),
-        centerTitle: true,
+        centerTitle: false,
       ),
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5.0),
-          child: Center(
-            child: Container(
-              padding: EdgeInsets.all(32.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Godkend eller afvis brugere som gerne vil tilgå din platform',
-                    style: AppTextStyles.standard,
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16.0),
-
-                  // Expanded widget for the list of users
-                  Expanded(
-                    child: _users.isEmpty
-                        ? Center(
-                            child: Text('Ingen nye bugere til godkendelse.'),
-                          )
-                        : SingleChildScrollView(
-                            child: Column(
-                              children: _users.map((user) {
-                                return ApproveBox(
-                                  name: user.firstName,
-                                  lastName: user.lastName,
-                                  role: user.role,
-                                  onApprove: () async {
-                                    await AdminApprovePage.userService
-                                        .updateApproveUsers(user.id);
-                                    _removeUser(user
-                                        .id); // Remove the user from the list
-                                  },
-                                  onDeny: () async {
-                                    await AdminApprovePage.userService
-                                        .unapproveUsers(user.id);
-                                    _removeUser(user
-                                        .id); // Remove the user from the list
-                                  },
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+      body: Center(
+        child: Text(
+          'Content goes here',
+          style: AppTextStyles.standard,
         ),
       ),
     );

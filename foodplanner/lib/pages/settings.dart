@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/pages/admin_approve_page.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
 
-  Widget ctaButtons() {
+  Widget ctaButtons(BuildContext context) {
     return Row(
       children: [
         IconButton(
@@ -27,6 +28,20 @@ class Settings extends StatelessWidget {
           ),
           onPressed: () {},
         ),
+        IconButton(
+          padding: EdgeInsets.zero,
+          icon: Icon(
+            Icons.arrow_forward,
+            color: AppColors.primary,
+            size: 36,
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AdminApprovePage()),
+            );
+          },
+        ),
       ],
     );
   }
@@ -35,21 +50,10 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Indstillinger'),
-        backgroundColor: Colors.white,
+        title: Text('Settings'),
       ),
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Center(
-            child: SettingsWidget(
-              leftIcon: SFIcons.sf_graduationcap_fill,
-              title: 'John Hansen',
-              cta: ctaButtons(),
-              type: 'items',
-            ),
-          ),
-        ],
+      body: Center(
+        child: ctaButtons(context),
       ),
     );
   }
