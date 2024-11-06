@@ -11,7 +11,7 @@ class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
 
   @override
-  _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
@@ -66,7 +66,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             CustomButton(
               onTab: validateEmail,
               text: 'Send email',
-              mainColor: AppColors.secondary,
+              backgroundColor: AppColors.secondary,
             ),
             if (errorMessage != null)
               Padding(
@@ -85,7 +85,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 );
               },
               text: 'Tilbage til login',
-              mainColor: AppColors.secondary,
+              backgroundColor: AppColors.secondary,
             ),
           ],
         ),

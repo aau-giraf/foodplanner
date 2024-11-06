@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   final String title = 'Home Page';
 
@@ -68,11 +68,12 @@ class HomePage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                final authProvider =
+                    Provider.of<AuthProvider>(context, listen: false);
                 if (authProvider.hasRole(ROLES.admin)) {
-                  context.go(ADMIN_ROOT); 
+                  context.go(ADMIN_ROOT);
                 } else {
-                  context.go('/unauthorized'); 
+                  context.go('/unauthorized');
                 }
               },
               child: const Text('Go to Admin Page'),
@@ -80,7 +81,7 @@ class HomePage extends StatelessWidget {
             // ElevatedButton(
             // onPressed: () async {
             //   final authProvider = Provider.of<AuthProvider>(context, listen: false);
-            //   await authProvider.login(ROLES.admin, AuthProvider().jwtToken, AuthProvider().isLoggedIn); // token has to come from backend :) so when stokholm fix his shit we can fix ours 
+            //   await authProvider.login(ROLES.admin, AuthProvider().jwtToken, AuthProvider().isLoggedIn); // token has to come from backend :) so when stokholm fix his shit we can fix ours
             //   print('Logged in: ${authProvider.isLoggedIn}');
             //   print('User Role: ${authProvider.userRole}');
             //   print('JWT Token: ${authProvider.jwtToken}');
@@ -89,15 +90,18 @@ class HomePage extends StatelessWidget {
             // ),
             ElevatedButton(
               onPressed: () async {
-                final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                await authProvider.logout(); // Just call it; don't try to store a result
+                final authProvider =
+                    Provider.of<AuthProvider>(context, listen: false);
+                await authProvider
+                    .logout(); // Just call it; don't try to store a result
                 print('Logged out'); // For debugging purposes
               },
               child: const Text('Logout'),
             ),
             ElevatedButton(
               onPressed: () async {
-                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                final authProvider =
+                    Provider.of<AuthProvider>(context, listen: false);
                 final token = await authProvider.retrieveToken();
                 print('Retrieved JWT Token: $token');
               },
