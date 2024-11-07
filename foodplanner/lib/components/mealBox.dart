@@ -5,10 +5,11 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/landing_page_children_se_madpakke.dart'; // Update with the correct import
 import 'package:foodplanner/components/dateTimePicker.dart';
+import 'package:foodplanner/services/meal_notifier.dart';
+import 'package:provider/provider.dart';
 
 class ReusableMealBox extends StatelessWidget {
   final Size size;
-  final isMadpakkeEmpty = false;//later we want to check with a fetch whether there is a box or not
   final String imageUrl;
   final String caption;
 
@@ -21,9 +22,11 @@ class ReusableMealBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mealNotifier = Provider.of<MealNotifier>(context);
     return Container(
       width: size.width * 0.9, // 90% of the screen width
-      height: isMadpakkeEmpty ? size.height * 0.2 : size.height * 0.1 + size.width * 0.6 + 190, // "dynamic" height, if mealbox is empty its smaller
+      // if meal empty the grey box is smaller
+      height: mealNotifier.isMealEmpty ? size.height * 0.2 : size.height * 0.1 + size.width * 0.6 + 190, // "dynamic" height, if mealbox is empty its smaller
       padding: const EdgeInsets.all(40),
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 243, 243, 243), // image box background color
@@ -43,12 +46,10 @@ class ReusableMealBox extends StatelessWidget {
         children: [
           DateTimePickerWidget(),
           
-          isMadpakkeEmpty
+          //Added listener for checking if meal is empty or not
+          mealNotifier.isMealEmpty
               ? Mealboxempty(size: size)
               : Mealboxcontent(size: size, caption: caption),
-          
-        
-          
         ],
       ),
     );

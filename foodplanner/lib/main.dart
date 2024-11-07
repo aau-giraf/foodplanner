@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:provider/provider.dart';
 import '../routes/index.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
+    // For future, if you want to wrap app in another provider, add it to the list below
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => MealNotifier()),
+      ],
       child: const MyApp(),
     ),
   );
