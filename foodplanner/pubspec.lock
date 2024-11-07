@@ -574,7 +574,7 @@ packages:
     source: hosted
     version: "5.0.2"
   openapi_generator_cli:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: openapi_generator_cli
       sha256: "503e553d699508546ebae33235603271df20bb7b805296c7624afe5d5389101c"
