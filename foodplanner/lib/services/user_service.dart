@@ -37,30 +37,40 @@ class UserService {
     }
   }
 
-  Future<List<User>> updateApproveUsers(int id) async {
+  Future<bool> updateApproveUsers(int id) async {
+    final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
-      Uri.parse('$apiUrl/api/Users/ApproveRole/$id'),
-      // Add headers and body if needed
+      Uri.parse('$apiUrl/api/Admin/UpdateRoleApproved/$id'),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'id': id,
+        'role_approved': true,
+      }),
     );
-
     if (response.statusCode == 200) {
-      // Parse the response body and return the list of users
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((json) => User.fromJson(json)).toList();
+      return true;
     } else {
       throw Exception('Failed to update and approve users');
     }
   }
 
-  Future<List<User>> unapproveUsers(int id) async {
+  Future<bool> unapproveUsers(int id) async {
+    final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.delete(
-      Uri.parse('$apiUrl/api/Users/Delete/$id'),
+      Uri.parse('$apiUrl/api/Admin/Delete/$id'),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json',
+      },
     );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((json) => User.fromJson(json)).toList();
+    if (response.statusCode == 204) {
+      return true;
     } else {
+      print(
+          'Failed to unapprove users: ${response.statusCode} ${response.body}');
       throw Exception('Failed to unapprove users');
     }
   }

@@ -67,7 +67,15 @@ class Settings extends StatelessWidget {
             leftIcon: SFIcons.sf_00_circle,
             title: "Hey med dig",
             type: SettingsType.items,
-            cta: ctaButtons(),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AdminApprovePage()),
+              );
+            },
+            child: Text('Go to PageApprovePage'),
           ),
         ],
       ),
