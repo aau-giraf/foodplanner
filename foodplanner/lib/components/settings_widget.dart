@@ -6,7 +6,7 @@ import 'package:foodplanner/config/text_styles.dart';
 enum SettingsType { items, header, inlineItems }
 
 class SettingsWidget extends StatefulWidget {
-  final IconData leftIcon;
+  final IconData? leftIcon;
   final String title;
   final String subTitle;
   final dynamic cta;
@@ -16,7 +16,7 @@ class SettingsWidget extends StatefulWidget {
   final VoidCallback? ctaFunction;
   const SettingsWidget({
     super.key,
-    required this.leftIcon,
+    this.leftIcon,
     required this.title,
     this.subTitle = '',
     this.cta,
@@ -41,25 +41,30 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         surfaceTintColor: AppColors.background,
         child: Row(
           children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0), // Add rounded corners
-                child: Container(
-                  color: AppColors.primary,
-                  width: 50,
-                  height: 50,
-                  child: Center(
-                    child: SFIcon(
-                      widget.leftIcon,
-                      fontSize: 24,
-                      color: AppColors.textSecondary,
+            widget.leftIcon != null
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 15.0),
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.circular(8.0), // Add rounded corners
+                      child: Container(
+                        color: AppColors.primary,
+                        width: 50,
+                        height: 50,
+                        child: Center(
+                          child: SFIcon(
+                            widget.leftIcon ??
+                                SFIcons
+                                    .sf_00_circle, // random icon since it never reaches this anyways
+                            fontSize: 24,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-            ),
+                  )
+                : Container(),
             Expanded(
               child: Text(
                 widget.title,
@@ -94,21 +99,25 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Row(
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Container(
-                              color: AppColors.primary,
-                              width: 50,
-                              height: 50,
-                              child: Center(
-                                child: SFIcon(
-                                  widget.leftIcon,
-                                  fontSize: 24,
-                                  color: AppColors.textSecondary,
-                                ),
-                              ),
-                            ),
-                          ),
+                          widget.leftIcon != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Container(
+                                    color: AppColors.primary,
+                                    width: 50,
+                                    height: 50,
+                                    child: Center(
+                                      child: SFIcon(
+                                        widget.leftIcon ??
+                                            SFIcons
+                                                .sf_00_circle, // random icon since it never reaches this anyways
+                                        fontSize: 24,
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Container(),
                           SizedBox(width: 10),
                           Text(
                             widget.title,
@@ -149,22 +158,26 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             padding: const EdgeInsets.all(10.0),
             child: Column(
               children: [
-                ClipRRect(
-                  borderRadius:
-                      BorderRadius.circular(8.0), // Add rounded corners
-                  child: Container(
-                    color: AppColors.primary,
-                    width: 60,
-                    height: 60,
-                    child: Center(
-                      child: SFIcon(
-                        widget.leftIcon,
-                        fontSize: 36,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ),
-                ),
+                widget.leftIcon != null
+                    ? ClipRRect(
+                        borderRadius:
+                            BorderRadius.circular(8.0), // Add rounded corners
+                        child: Container(
+                          color: AppColors.primary,
+                          width: 60,
+                          height: 60,
+                          child: Center(
+                            child: SFIcon(
+                              widget.leftIcon ??
+                                  SFIcons
+                                      .sf_00_circle, // random icon since it never reaches this anyways
+                              fontSize: 36,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(),
                 SizedBox(height: 10),
                 Text(
                   widget.title,
