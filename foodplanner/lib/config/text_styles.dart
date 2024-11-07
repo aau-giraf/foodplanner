@@ -47,6 +47,7 @@ class AppTextStyles {
   static const TextStyle buttonText = TextStyle(
     fontSize: 26.0,
     fontWeight: FontWeight.bold,
+    color: Color.fromARGB(255, 255, 255, 255),
   );
 
   static const TextStyle buttonTextMedium = TextStyle(

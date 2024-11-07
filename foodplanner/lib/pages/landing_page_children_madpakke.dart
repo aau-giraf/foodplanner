@@ -1,111 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/addMealButton.dart';
+import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/dateTimePicker.dart';
+import 'package:foodplanner/components/mealBox.dart';
+import 'package:foodplanner/components/mealBoxContent.dart';
+import 'package:foodplanner/components/mealBoxEmpty.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/pages/feedbackChatPage.dart';
+import 'package:foodplanner/components/footer.dart'; // Import the footer widget
+import 'package:foodplanner/pages/pin_code.dart';
 import 'package:intl/intl.dart';
-import 'package:foodplanner/config/colors.dart';
-import 'landing_page_children_se_madpakke.dart'; // Correct import
+import 'package:provider/provider.dart'; // Import the reusable widget
 
 class ChildLandingPageMadpakke extends StatelessWidget {
   const ChildLandingPageMadpakke({super.key, required Map<String, String> student});
 
   @override
   Widget build(BuildContext context) {
-    // Get the current date   
-    String currentDate = DateFormat('dd. MMMM').format(DateTime.now());
-
     // Get the size of the screen
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Text(
-              'Welcome' + ' ' + 'Child',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: size.height * 0.02),
-            Container(
-              width: size.width * 0.9, // 90% of the screen width
-              height: size.height * 0.1+size.width *0.6+190, // 70% of the screen height
-              padding: const EdgeInsets.all(40),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 243, 243, 243), // image box background color
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(40),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
+      body: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox(
+              width: size.width * 0.9,  // Adjust width percentage as needed
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    'Madpakke i dag d. $currentDate',
-                    style: AppTextStyles.standard,
-                  ),
-                  SizedBox(height: size.height * 0.02),
-                  const Text(
-                    'Madpakke text',
-                    style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,),
-                  ),
-                  SizedBox(height: size.height * 0.02),
-                  Container(
-                    width: size.width * 0.6,
-                    height: size.width * 0.6, // 40% of the screen height
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.network(
-                       'https://cdn-icons-png.flaticon.com/512/739/739249.png',
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Center(child: Text('Image not available'));
-                        },
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return const Center(child: CircularProgressIndicator());
-                        },
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.05),
-                  Center(
-                    child: SizedBox(
-                      width: size.width * 0.6, // Set the desired width
-                      height: 50, // Set the desired height
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ChildLandingPageSeMadpakke()),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shadowColor: Colors.black, // Set the shadow color to black
-                          elevation: 5, // Set the elevation to create a shadow effect
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Velkommen Barn',
+                          style: TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
                         ),
-                        child: const Text('Se madpakke', style: AppTextStyles.buttonText),
-                      ),
+                        SizedBox(height: size.height * 0.05),
+                        ReusableMealBox(size: size),
+                        SizedBox(height: size.height * 0.02),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+          Positioned(
+            top: -8,
+            right: 30,
+            child: IconButton(
+              icon: Icon(Icons.lock_outline, size: 40, color: Colors.black),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PinCode()),
+                );  
+                
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

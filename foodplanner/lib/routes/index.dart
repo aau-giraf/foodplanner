@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
-import 'package:foodplanner/pages/admin_page.dart';
+import 'package:foodplanner/pages/createMealPage.dart';
+import 'package:foodplanner/pages/feedbackChatPage.dart';
+import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
-import 'package:foodplanner/pages/landing_page.dart';
 import 'package:foodplanner/pages/landing_page_teacher.dart';
-import 'package:foodplanner/pages/parent_page.dart';
 import 'package:foodplanner/pages/signup_page.dart';
-import 'package:foodplanner/pages/student_page.dart';
-import 'package:foodplanner/pages/teacher_page.dart';
+import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../pages/login_page.dart';
+import '../pages/login_page.dart'; 
 import '../pages/unauthorized_page.dart';
+
 // Import HomePage
 
 final router = GoRouter(
@@ -47,7 +47,22 @@ final router = GoRouter(
       builder: (context, state) => ForgotPasswordPage(),
     ),
 
-    GoRoute(path: '/home', builder: (context, state) => HomePage()),
+    GoRoute(
+      path: '/children_se_madpakke',
+      builder: (context, state) => ChildLandingPageMadpakke(student: {},),
+    ),
+
+    GoRoute(path: '/feedback',
+      builder: (context, state) => FeedbackChatPage(),
+    ),
+
+    GoRoute(path: '/create-meal',
+      builder: (context, state) => CreateMealPage(),
+    ),  
+
+    GoRoute(path: '/home',
+      builder: (context, state) => HomePage(),
+    ),
 
     //no need for wildcard handling as flutter already does it
 
@@ -122,6 +137,11 @@ final router = GoRouter(
       },
     );
       },
+      routes: [
+        GoRoute(
+          path: MADPAKKE,
+          builder:(context, state) => ParentLandingPageMadpakke(),)
+      ]
     ),
   ],
 );
