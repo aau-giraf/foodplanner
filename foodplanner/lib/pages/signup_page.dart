@@ -248,9 +248,8 @@ class _SignupState extends State<SignupPage> {
           ),
         );
       try{
-        final rule =
+        final role =
             await LoginPage.authService.fetchAuthData(email, password);
-            print(rule);
             switch (role) {
             case ROLES.teacher:
               GoRouter.of(context).go(TEACHER_ROOT);
