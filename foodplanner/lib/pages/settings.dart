@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
@@ -39,7 +40,7 @@ class _SettingsPage extends State<Settings> {
               sliderColor: AppColors.primary,
               sliderOffset: 0,
               borderRadius: BorderRadius.all(Radius.circular(12)),
-              backgroundColor: Colors.grey.shade300),
+              backgroundColor: AppColors.lightSecondary),
         },
         {
           'title': "Notifikationer",
@@ -113,6 +114,7 @@ class _SettingsPage extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -122,12 +124,43 @@ class _SettingsPage extends State<Settings> {
         backgroundColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Card(
+                elevation: 2,
+                color: AppColors.background,
+                surfaceTintColor: AppColors.background,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Generelt",
+                          style: AppTextStyles.bigText.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        ...generalSettings.map((setting) {
+                          return SettingsWidget(
+                            leftIcon: setting['icon'],
+                            title: setting['title'],
+                            type: SettingsType.inlineItems,
+                            cta: setting['cta'],
+                            divider: setting['divider'] ?? true,
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              if (authProvider.hasRole(ROLES.admin))
                 Card(
                   elevation: 2,
                   color: AppColors.background,
@@ -138,66 +171,43 @@ class _SettingsPage extends State<Settings> {
                       child: Column(
                         children: [
                           Text(
-                            "Generelt",
+                            "Admin",
                             style: AppTextStyles.bigText.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           SizedBox(height: 10),
-                          ...generalSettings.map((setting) {
-                            return SettingsWidget(
-                              leftIcon: setting['icon'],
-                              title: setting['title'],
-                              type: SettingsType.inlineItems,
-                              cta: setting['cta'],
-                              divider: setting['divider'] ?? true,
-                            );
-                          }),
+                          ...adminSettings.map(
+                            (setting) {
+                              return SettingsWidget(
+                                leftIcon: setting['icon'],
+                                title: setting['title'],
+                                type: SettingsType.inlineItems,
+                                cta: setting['cta'],
+                                divider: setting['divider'] ?? true,
+                                clickable: true,
+                                ctaFunction: setting['ctaFunction'],
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
-                if (authProvider.hasRole(ROLES.admin))
-                  Card(
-                    elevation: 2,
-                    color: AppColors.background,
-                    surfaceTintColor: AppColors.background,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Column(
-                          children: [
-                            Text(
-                              "Admin",
-                              style: AppTextStyles.bigText.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            ...adminSettings.map(
-                              (setting) {
-                                return SettingsWidget(
-                                  leftIcon: setting['icon'],
-                                  title: setting['title'],
-                                  type: SettingsType.inlineItems,
-                                  cta: setting['cta'],
-                                  divider: setting['divider'] ?? true,
-                                  clickable: true,
-                                  ctaFunction: setting['ctaFunction'],
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          )
-        ],
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: CustomButton(
+                  onTab: null,
+                  text: "Slet konto",
+                  foregroundColor: AppColors.errorText,
+                  backgroundColor: AppColors.background,
+                  size: ButtonSize.medium,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
