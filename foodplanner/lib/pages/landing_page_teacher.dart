@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'landing_page_children_madpakke.dart';
-import '../services/fetch_children.dart';
+import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
 
 class TeacherLandingPage extends StatefulWidget {
   const TeacherLandingPage({super.key});
-
-
-  static final ChildrenService childrenService = ChildrenService(apiUrl: ApiConfig.baseUrl);
 
   @override
   State<TeacherLandingPage> createState() => _LandingPageTeacherState();
 }
 
 class _LandingPageTeacherState extends State<TeacherLandingPage> {
-  List<Map<String, String>> students = [];
-  List<Map<String, String>> filteredStudents = [];
+  List<Map<String, String?>> students = [];
+  List<Map<String, String?>> filteredStudents = [];
   List<Map<String, String>> schoolClasses = [];
   Set<String> selectedClassIds = {};
   Set<String> highlightedStudentIds = {};
@@ -24,57 +21,39 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
   @override
   void initState() {
     super.initState();
-    createTemporaryDatabase();
-
-
-    filteredStudents = students; // Initialize filteredStudents with all students
+    fetchChildrenData();
   }
 
+  Future<void> fetchChildrenData() async {
+    try {
+      final childrensApi = ChildrensApi(ApiClient(basePath: ApiConfig.baseUrl));
+      final List<ChildrenGetAllDTO>? data = await childrensApi.apiChildrensGetAllChildrenGet();
 
+      if (data != null) {
+        setState(() {
+          students = data.map((ChildrenGetAllDTO e) => {
+            'id': e.childId.toString(),
+            'name': '${e.firstName} ${e.lastName}',
+            'classId': e.classId.toString(),
+            'className': e.className,
+          }).toList();
+          filteredStudents = students;
 
-
-  void createTemporaryDatabase() {
-    schoolClasses = [
-      {'id': '1', 'name': 'Class A'},
-      {'id': '2', 'name': 'Class B'},
-      {'id': '3', 'name': 'Class C'},
-      {'id': '4', 'name': 'Class D'},
-      {'id': '5', 'name': 'Class E'},
-    ];
-
-    students = [
-      {'id': '1', 'name': 'Alice', 'classId': '1'},
-      {'id': '2', 'name': 'Bob', 'classId': '1'},
-      {'id': '3', 'name': 'Charlie', 'classId': '1'},
-      {'id': '4', 'name': 'David', 'classId': '1'},
-      {'id': '5', 'name': 'Eve', 'classId': '1'},
-      {'id': '6', 'name': 'Frank', 'classId': '2'},
-      {'id': '7', 'name': 'Grace', 'classId': '2'},
-      {'id': '8', 'name': 'Heidi', 'classId': '2'},
-      {'id': '9', 'name': 'Ivan', 'classId': '2'},
-      {'id': '10', 'name': 'Judy', 'classId': '2'},
-      {'id': '11', 'name': 'Frank', 'classId': '3'},
-      {'id': '12', 'name': 'Niaj', 'classId': '3'},
-      {'id': '13', 'name': 'Olivia', 'classId': '3'},
-      {'id': '14', 'name': 'Peggy', 'classId': '3'},
-      {'id': '15', 'name': 'Frank', 'classId': '3'},
-      {'id': '16', 'name': 'Trent', 'classId': '4'},
-      {'id': '17', 'name': 'Victor', 'classId': '4'},
-      {'id': '18', 'name': 'Frank', 'classId': '4'},
-      {'id': '19', 'name': 'Xander', 'classId': '4'},
-      {'id': '20', 'name': 'Yvonne', 'classId': '4'},
-      {'id': '21', 'name': 'Zara', 'classId': '5'},
-      {'id': '22', 'name': 'Quinn', 'classId': '5'},
-      {'id': '23', 'name': 'Rita', 'classId': '5'},
-      {'id': '24', 'name': 'Steve', 'classId': '5'},
-      {'id': '25', 'name': 'Uma', 'classId': '5'},
-    ];
-
-    // Sort school classes alphabetically in ascending order
-    schoolClasses.sort((a, b) => a['name']!.compareTo(b['name']!));
-
-    // Sort students alphabetically in ascending order
-    students.sort((a, b) => a['name']!.compareTo(b['name']!));
+          schoolClasses = students
+              .map((student) => {
+                    'id': student['classId']!,
+                    'name': student['className']!,
+                  })
+              .toSet()
+              .toList();
+          schoolClasses.sort((a, b) => a['name']!.compareTo(b['name']!));
+        });
+      } else {
+        throw Exception('Failed to load children data');
+      }
+    } catch (e) {
+      print('Error fetching children data: $e');
+    }
   }
 
   void toggleClassStudents(String classId) {
@@ -87,11 +66,14 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
     });
   }
 
-  void navigateToStudentDetails(Map<String, String> student) {
+  void navigateToStudentDetails(Map<String, String?> student) {
+    // Filter out null values from the student map
+    final filteredStudent = student.map((key, value) => MapEntry(key, value ?? ''));
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChildLandingPageMadpakke(student: student),
+        builder: (context) => ChildLandingPageMadpakke(student: filteredStudent),
       ),
     );
   }
