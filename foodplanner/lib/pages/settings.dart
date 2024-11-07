@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_advanced_segment/flutter_advanced_segment.dart';
+import 'package:foodplanner/routes/user_roles.dart';
+import 'package:provider/provider.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -109,6 +112,7 @@ class _SettingsPage extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -155,38 +159,41 @@ class _SettingsPage extends State<Settings> {
                   ),
                 ),
                 SizedBox(height: 10),
-                Card(
-                  elevation: 2,
-                  color: AppColors.background,
-                  surfaceTintColor: AppColors.background,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Column(
-                        children: [
-                          Text(
-                            "Admin",
-                            style: AppTextStyles.bigText.copyWith(
-                              fontWeight: FontWeight.bold,
+                if (authProvider.hasRole(ROLES.admin))
+                  Card(
+                    elevation: 2,
+                    color: AppColors.background,
+                    surfaceTintColor: AppColors.background,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Admin",
+                              style: AppTextStyles.bigText.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 10),
-                          ...adminSettings.map((setting) {
-                            return SettingsWidget(
-                              leftIcon: setting['icon'],
-                              title: setting['title'],
-                              type: SettingsType.inlineItems,
-                              cta: setting['cta'],
-                              divider: setting['divider'] ?? true,
-                              clickable: true,
-                              ctaFunction: setting['ctaFunction'],
-                            );
-                          }),
-                        ],
+                            SizedBox(height: 10),
+                            ...adminSettings.map(
+                              (setting) {
+                                return SettingsWidget(
+                                  leftIcon: setting['icon'],
+                                  title: setting['title'],
+                                  type: SettingsType.inlineItems,
+                                  cta: setting['cta'],
+                                  divider: setting['divider'] ?? true,
+                                  clickable: true,
+                                  ctaFunction: setting['ctaFunction'],
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           )
