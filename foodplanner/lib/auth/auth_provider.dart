@@ -46,8 +46,12 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool hasRole(ROLES role) {
-    loadFromStorage();
+  Future<bool> hasRole(ROLES role) async {
+    await loadFromStorage();
+
+    print('Checking role: $role');
+    print('User role: $_userRole');
+    print('Is approved: $_isApproved');
     return _isLoggedIn && _userRole == role;
   }
 
@@ -68,6 +72,7 @@ class AuthProvider with ChangeNotifier {
         ? ROLES.values.firstWhere((e) => e.toString() == userRole)
         : null;
     notifyListeners();
+    print("Loaded from storage: $_isApproved, $_isLoggedIn, $_userRole");
   }
 
   Future<String?> retrieveToken() async {
