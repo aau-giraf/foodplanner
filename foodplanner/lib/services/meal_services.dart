@@ -12,7 +12,7 @@ Future<Meal> fetchMeal(http.Client client, int id) async {
   final jwtToken = await AuthProvider().retrieveToken();
   // Making a GET request to the API to fetch meal details by ID.
   final response =
-      await client.get(Uri.parse('/api/Meals/Get/$id'),
+      await client.get(Uri.parse('${ApiConfig.baseUrl}/api/Meals/Get/$id'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwtToken',
