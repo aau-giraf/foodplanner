@@ -115,6 +115,9 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
           Navigator.pushNamed(context, '/parent_profile', arguments: parent);
         };
       }),
+      'ctaFunction': () {
+        Navigator.pushNamed(context, '/parent_page', arguments: parent);
+      }, 
       'value': '${parent.firstName} ${parent.lastName}',
       'divider': false,
     },
@@ -177,6 +180,7 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
                           type: SettingsType.inlineItems,
                           isEditable: item['isEditable'],
                           divider: item['divider'] ?? true,
+                          ctaFunction: item['ctaFunction'],
                         );
                       }),
                     ],
