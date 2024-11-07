@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/pages/admin_page.dart';
 import 'package:foodplanner/pages/createMealPage.dart';
 import 'package:foodplanner/pages/feedbackChatPage.dart';
+import 'package:foodplanner/pages/landing_page_children_se_madpakke.dart';
 import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
@@ -89,12 +91,12 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
             return FutureBuilder<bool>(
-          future: authProvider.hasRole(ROLES.teacher),
+          future: authProvider.hasRole(ROLES.student),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const TeacherLandingPage();
+              return const ChildLandingPageSeMadpakke(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
               return const UnauthorizedPage();
             }
@@ -107,12 +109,12 @@ final router = GoRouter(
       builder: (context, state) {
          final authProvider = Provider.of<AuthProvider>(context, listen: false);
             return FutureBuilder<bool>(
-          future: authProvider.hasRole(ROLES.teacher),
+          future: authProvider.hasRole(ROLES.admin),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const TeacherLandingPage();
+              return const AdminPage(); // another dummy page, I think Dressi is making a new one TODO
             } else {
               return const UnauthorizedPage();
             }
@@ -125,18 +127,19 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
             return FutureBuilder<bool>(
-          future: authProvider.hasRole(ROLES.teacher),
+          future: authProvider.hasRole(ROLES.parent),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const TeacherLandingPage();
+              return const ParentLandingPageMadpakke(); // This should be fine
             } else {
               return const UnauthorizedPage();
             }
       },
     );
       },
+      //whats this?
       routes: [
         GoRoute(
           path: MADPAKKE,
