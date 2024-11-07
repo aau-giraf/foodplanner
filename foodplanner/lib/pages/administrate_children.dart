@@ -81,20 +81,13 @@ class AdministrateChildrenState extends State<AdministrateChildren> with SingleT
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: SFIcon(
-            SFIcons.sf_chevron_left,
-            color: AppColors.textPrimary,
-          ),
-          onPressed: () {},
-        ),
+        backgroundColor: Colors.white,
         title: const Text(
           'Indstillinger',
           style: AppTextStyles.headline4,
+          textAlign: TextAlign.center,
+          
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
       body: Column(
@@ -141,7 +134,7 @@ class AdministrateChildrenState extends State<AdministrateChildren> with SingleT
                   leftIcon: SFIcons.sf_figure_child,
                   title: '${child.firstName} ${child.lastName} - ${getClassName(child.classId)}',
                   cta: ctaButtons(child),
-                  type: 'items',
+                  type: SettingsType.items,
                 );
               },
             ),

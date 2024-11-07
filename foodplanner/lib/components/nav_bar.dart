@@ -75,7 +75,7 @@ class _NavBarState extends State<NavBar> {
         AdditionalLunchBox(),
         LandingPage(),
         Profile(),
-        AdministrateChildren(),
+        Settings(),
       ][currentPageIndex],
     );
   }

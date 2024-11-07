@@ -12,6 +12,8 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/components/settings_header.dart';
 import 'package:foodplanner/components/nav_bar.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
+
 
 class ChildProfile extends StatefulWidget {
   final Child child;
@@ -31,8 +33,10 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
   User parent = User(id: 0, email: 'Unknown', firstName: 'Unknown', lastName: 'Unknown', role: 'Unknown');
   bool isEditingFirstName = false;
   bool isEditingLastName = false;
+  bool isEditingClass = false;
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
+  String? selectedClassId;
 
   @override
   void initState() {
@@ -40,6 +44,9 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
 
     firstNameController.text = widget.child.firstName;
     lastNameController.text = widget.child.lastName;
+    selectedClassId = widget.child.classId.toString();
+
+
 
     ChildProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
@@ -64,6 +71,31 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
       final schoolClass = schoolClasses.firstWhere((schoolClass) => schoolClass.classId == classId, orElse: () => SchoolClass(classId: 0, className: 'Unknown'));
       return schoolClass.className;
     }
+
+  List<Map<String, dynamic>> get childProfileItem => [
+    {
+      'title': 'Fornavn',
+      'showIcon': false,
+      'isEditable': isEditingFirstName,
+      'cta': ctaButtons(() {
+        setState(() {
+          isEditingFirstName = true;
+        });
+      }),
+      'value': widget.child.firstName,
+    },
+    {
+      'title': 'Efternavn',
+      'showIcon': false,
+      'isEditable': isEditingLastName,
+      'cta': ctaButtons(() {
+        setState(() {
+          isEditingLastName = true;
+        });
+      }),
+      'value': widget.child.lastName,
+    },
+  ];
 
 
   Widget ctaButtons(VoidCallback onPressed) {
@@ -99,12 +131,36 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
         children: [
           SettingsHeader(
             icon: SFIcons.sf_figure_and_child_holdinghands,
-            title: 'tHe ChIlD',
-            subtitle: 'Her kan du redigere enter child here profil og klasse. ',
+            title: '${widget.child.firstName}s',
+            subtitle: 'Her kan du redigere ${widget.child.firstName}s profil og klasse. ',
+          ),
+          Card(
+            elevation: 2,
+            color: AppColors.background,
+            surfaceTintColor: AppColors.background,
+            child: Center(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsects.symmetric(vertical: 10),
+                  child: col,
+                )
+              ),
+            ),
           ),
           Expanded(
             child: Column(
               children: [
+                
+                ...childProfileItem.map((item) {
+                  return SettingsWidget(
+                    leftIcon: SFIcons.sf_person,
+                    showIcon: item['showIcon'],
+                    title: '${item['title']} - ${item['value']}',
+                    cta: item['cta'],
+                    type: SettingsType.inlineItems,
+                    isEditable: item['isEditable'],
+                  );
+                }),
                 SettingsWidget(
                   leftIcon: SFIcons.sf_person,
                   title: 'Fornavn - ${widget.child.firstName}',
@@ -113,7 +169,7 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
                       isEditingFirstName = true;
                     });
                   }),
-                  type: 'items',
+                  type: SettingsType.items,
                   showIcon: false,
                   isEditable: isEditingFirstName,
                 ),
@@ -125,10 +181,11 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
                       isEditingFirstName = true;
                     });
                   }),
-                  type: 'items',
+                  type: SettingsType.items,
                   showIcon: false,
                   isEditable: isEditingLastName,
                 ),
+                
                 SettingsWidget(
                   leftIcon: SFIcons.sf_calendar,
                   title: 'Klasse - ${getClassName(widget.child.classId)}',
@@ -137,7 +194,7 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
                       isEditingFirstName = false;
                     });
                   }),
-                  type: 'items',
+                  type: SettingsType.items,
                   showIcon: false,
                 ),
                  SettingsWidget(
@@ -148,7 +205,7 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
                       isEditingFirstName = false;
                     });
                   }),
-                  type: 'items',
+                  type: SettingsType.items,
                   showIcon: false,
                 ),
               ],

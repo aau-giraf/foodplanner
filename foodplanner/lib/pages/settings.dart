@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/pages/administrate_children.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
@@ -97,7 +98,11 @@ class _SettingsPage extends State<Settings> {
           'icon': SFIcons.sf_figure_and_child_holdinghands,
           'cta': IconButton(
             icon: SFIcon(SFIcons.sf_chevron_forward),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, 
+                MaterialPageRoute(builder: (context) => AdministrateChildren())
+              );
+            },
           )
         },
         {
