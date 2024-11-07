@@ -5,6 +5,7 @@ import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/pages/administrate_children.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/pages/student_page.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -80,37 +81,55 @@ class _SettingsPage extends State<Settings> {
         {
           'title': "Godkend profiler",
           'icon': SFIcons.sf_person_crop_circle_badge_checkmark,
-          'cta': IconButton(
-            icon: SFIcon(SFIcons.sf_chevron_forward),
-            onPressed: () {},
+          'cta': Row(
+            children: [
+              (SFIcon(SFIcons.sf_chevron_forward)),
+              SizedBox(width: 10),
+            ],
           )
         },
         {
           'title': "Deaktiver profiler",
           'icon': SFIcons.sf_person_crop_circle_badge_minus,
-          'cta': IconButton(
-            icon: SFIcon(SFIcons.sf_chevron_forward),
-            onPressed: () {},
-          )
+          'cta': Row(
+            children: [
+              SFIcon(SFIcons.sf_chevron_forward),
+              SizedBox(
+                width: 10,
+              )
+            ],
+          ),
+          'ctaFunction': () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StudentPage()),
+            );
+          }
         },
         {
           'title': "Administrer børn",
           'icon': SFIcons.sf_figure_and_child_holdinghands,
-          'cta': IconButton(
-            icon: SFIcon(SFIcons.sf_chevron_forward),
-            onPressed: () {
-              Navigator.push(context, 
-                MaterialPageRoute(builder: (context) => AdministrateChildren())
-              );
-            },
-          )
+          'cta': Row(
+            children: [
+              SFIcon(SFIcons.sf_chevron_forward),
+              SizedBox(width: 10),
+            ],
+          ),
+          'ctaFunction': () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AdministrateChildren()),
+            );
+          }
         },
         {
           'title': "Administrer klasser",
           'icon': SFIcons.sf_figure_2,
-          'cta': IconButton(
-            icon: SFIcon(SFIcons.sf_chevron_forward),
-            onPressed: () {},
+          'cta': Row(
+            children: [
+              SFIcon(SFIcons.sf_chevron_forward),
+              SizedBox(width: 10),
+            ],
           ),
           'divider': false,
         },
@@ -238,6 +257,7 @@ class _SettingsPage extends State<Settings> {
                               cta: setting['cta'],
                               divider: setting['divider'] ?? true,
                               clickable: true,
+                              ctaFunction: setting['ctaFunction'],
                             );
                           }),
                         ],

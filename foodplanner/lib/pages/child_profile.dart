@@ -95,6 +95,29 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
       }),
       'value': widget.child.lastName,
     },
+    {
+      'title': 'Klasse',
+      'showIcon': false,
+      'isEditable': isEditingClass,
+      'cta': ctaButtons(() {
+        setState(() {
+          isEditingClass = true;
+        });
+      }),
+      'value': getClassName(widget.child.classId),
+    },
+    {
+      'title': 'Forældre',
+      'showIcon': false,
+      'isEditable': false,
+      'cta': ctaButtons(() {
+        onPressed: () {
+          Navigator.pushNamed(context, '/parent_profile', arguments: parent);
+        };
+      }),
+      'value': '${parent.firstName} ${parent.lastName}',
+      'divider': false,
+    },
   ];
 
 
@@ -141,8 +164,23 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
             child: Center(
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsects.symmetric(vertical: 10),
-                  child: col,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10),
+                      ...childProfileItem.map((item) {
+                        return SettingsWidget(
+                          leftIcon: SFIcons.sf_person,
+                          showIcon: item['showIcon'],
+                          title: '${item['title']} - ${item['value']}',
+                          cta: item['cta'],
+                          type: SettingsType.inlineItems,
+                          isEditable: item['isEditable'],
+                          divider: item['divider'] ?? true,
+                        );
+                      }),
+                    ],
+                  ),
                 )
               ),
             ),
@@ -151,7 +189,7 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
             child: Column(
               children: [
                 
-                ...childProfileItem.map((item) {
+                /* ...childProfileItem.map((item) {
                   return SettingsWidget(
                     leftIcon: SFIcons.sf_person,
                     showIcon: item['showIcon'],
@@ -160,8 +198,8 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
                     type: SettingsType.inlineItems,
                     isEditable: item['isEditable'],
                   );
-                }),
-                SettingsWidget(
+                }), */
+              /*   SettingsWidget(
                   leftIcon: SFIcons.sf_person,
                   title: 'Fornavn - ${widget.child.firstName}',
                   cta: ctaButtons(() {
@@ -207,7 +245,7 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
                   }),
                   type: SettingsType.items,
                   showIcon: false,
-                ),
+                ), */
               ],
             ),
           ),

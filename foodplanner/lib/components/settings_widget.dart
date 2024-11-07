@@ -13,6 +13,7 @@ class SettingsWidget extends StatefulWidget {
   final SettingsType type;
   final bool divider;
   final bool clickable;
+  final VoidCallback? ctaFunction;
   final bool showIcon;
   final bool isEditable;
   const SettingsWidget({
@@ -24,6 +25,7 @@ class SettingsWidget extends StatefulWidget {
     required this.type,
     this.divider = true,
     this.clickable = false,
+    this.ctaFunction,
     this.showIcon = true, // Default value is true, starts off being visible
     this.isEditable = false, // Default value is false, starts off being not editable
   });
@@ -91,11 +93,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           onEnter: (_) => setState(() => _isHovered = true),
           onExit: (_) => setState(() => _isHovered = false),
           child: InkWell(
-            onTap: widget.clickable
-                ? () {
-                    // Handle the tap event here
-                  }
-                : null,
+            onTap: widget.ctaFunction,
             child: Container(
               color: (_isHovered && widget.clickable)
                   ? Colors.grey[300]
