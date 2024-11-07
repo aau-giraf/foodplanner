@@ -3,6 +3,9 @@ import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/pages/feedbackChatPage.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
 import 'package:foodplanner/pages/login_page.dart';
+import 'package:foodplanner/pages/profile.dart';
+import 'package:foodplanner/pages/profilePage.dart';
+import 'package:foodplanner/pages/settingsPage.dart';
 
 
 class FooterBar extends StatefulWidget {
@@ -16,16 +19,35 @@ class _FooterBarState extends State<FooterBar> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+
     });
   
 
   Widget page;
     switch (index) {
       case 0:
-        page = FeedbackChatPage();
+        Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FeedbackChatPage()),
+                    );
         break;
       case 1:
-        page = ChildLandingPageMadpakke();
+      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ChildLandingPageMadpakke()),
+                    );
+        break;
+      case 2:
+      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProfilePage()),
+                    );
+        break;
+      case 3:
+      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsPage()),
+                    );
         break;
       default:
         page = LoginPage();
@@ -58,7 +80,8 @@ class _FooterBarState extends State<FooterBar> {
           label: 'Settings',
         ),
       ],
-      selectedItemColor: Colors.orange,  // Set color for the selected icon
+      //TODO when group10 is done we can implement colour change upon click
+      selectedItemColor: Colors.black,  // Set color for the selected icon
       unselectedItemColor: Colors.black,  // Set color for unselected icons
     );
   }

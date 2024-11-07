@@ -34,7 +34,7 @@ class ChildLandingPageMadpakke extends StatelessWidget {
                   style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: size.height * 0.02),
-                //ReusableMealBox(size: size), // Use the reusable widget
+                ReusableMealBox(size: size), // Use the reusable widget
                 SizedBox(height: size.height * 0.02),
 
                 isMadpakkeEmpty
