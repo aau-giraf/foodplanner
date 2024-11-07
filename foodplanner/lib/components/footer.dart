@@ -34,7 +34,7 @@ class _FooterBarState extends State<FooterBar> {
       case 1:
       Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChildLandingPageMadpakke()),
+                      MaterialPageRoute(builder: (context) => ChildLandingPageMadpakke(student: {},)),
                     );
         break;
       case 2:
