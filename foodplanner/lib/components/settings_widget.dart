@@ -3,7 +3,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
-enum SettingsType { items, header }
+enum SettingsType { items, header, inlineItems }
 
 class SettingsWidget extends StatefulWidget {
   final IconData leftIcon;
@@ -11,6 +11,9 @@ class SettingsWidget extends StatefulWidget {
   final String subTitle;
   final dynamic cta;
   final SettingsType type;
+  final bool divider;
+  final bool clickable;
+  final VoidCallback? ctaFunction;
   const SettingsWidget({
     super.key,
     required this.leftIcon,
@@ -18,6 +21,9 @@ class SettingsWidget extends StatefulWidget {
     this.subTitle = '',
     this.cta,
     required this.type,
+    this.divider = true,
+    this.clickable = false,
+    this.ctaFunction,
   });
 
   @override
@@ -25,10 +31,12 @@ class SettingsWidget extends StatefulWidget {
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
+  bool _isHovered = false;
   Widget item() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
+        elevation: 2,
         color: AppColors.background,
         surfaceTintColor: AppColors.background,
         child: Row(
@@ -67,12 +75,74 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     );
   }
 
+  Widget inlineItem() {
+    return Column(
+      children: [
+        MouseRegion(
+          onEnter: (_) => setState(() => _isHovered = true),
+          onExit: (_) => setState(() => _isHovered = false),
+          child: InkWell(
+            onTap: widget.ctaFunction,
+            child: Container(
+              color: (_isHovered && widget.clickable)
+                  ? Colors.grey[300]
+                  : Colors.transparent,
+              child: SizedBox(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Container(
+                              color: AppColors.primary,
+                              width: 50,
+                              height: 50,
+                              child: Center(
+                                child: SFIcon(
+                                  widget.leftIcon,
+                                  fontSize: 24,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            widget.title,
+                            style: AppTextStyles.bigText,
+                          ),
+                          Spacer(),
+                          widget.cta ?? Container(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        widget.divider
+            ? Divider(
+                color: Colors.black,
+                thickness: 0.25,
+                indent: 70,
+              )
+            : Container()
+      ],
+    );
+  }
+
   Widget header() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: SizedBox(
         width: double.infinity, // Make the Card fill the whole width
         child: Card(
+          elevation: 2,
           color: AppColors.background,
           surfaceTintColor: AppColors.background,
           child: Padding(
@@ -125,6 +195,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       return item();
     } else if (widget.type == SettingsType.header) {
       return header();
+    } else if (widget.type == SettingsType.inlineItems) {
+      return inlineItem();
     } else {
       return Container();
     }
