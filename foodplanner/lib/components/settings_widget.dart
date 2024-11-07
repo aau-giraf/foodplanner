@@ -13,6 +13,7 @@ class SettingsWidget extends StatefulWidget {
   final SettingsType type;
   final bool divider;
   final bool clickable;
+  final VoidCallback? ctaFunction;
   const SettingsWidget({
     super.key,
     required this.leftIcon,
@@ -22,6 +23,7 @@ class SettingsWidget extends StatefulWidget {
     required this.type,
     this.divider = true,
     this.clickable = false,
+    this.ctaFunction,
   });
 
   @override
@@ -80,11 +82,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           onEnter: (_) => setState(() => _isHovered = true),
           onExit: (_) => setState(() => _isHovered = false),
           child: InkWell(
-            onTap: widget.clickable
-                ? () {
-                    // Handle the tap event here
-                  }
-                : null,
+            onTap: widget.ctaFunction,
             child: Container(
               color: (_isHovered && widget.clickable)
                   ? Colors.grey[300]
