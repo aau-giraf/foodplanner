@@ -86,7 +86,13 @@ class _SettingsPage extends State<Settings> {
               (SFIcon(SFIcons.sf_chevron_forward)),
               SizedBox(width: 10),
             ],
-          )
+          ),
+          'ctaFunction': () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AdminApprovePage()),
+            );
+          }
         },
         {
           'title': "Deaktiver profiler",
