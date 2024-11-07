@@ -43,6 +43,8 @@ dependencies:
     dropdown_button2: ^2.3.9
     flutter_secure_storage: ^9.2.2
     local_auth: ^2.3.0
+    flutter_advanced_switch: ^3.1.0
+    flutter_advanced_segment: ^3.0.2
 
 flutter_sficon: ^1.1.2
 webview_flutter: ^2.0.10

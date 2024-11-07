@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/student_page.dart';
+import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
+import 'package:flutter_advanced_segment/flutter_advanced_segment.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -15,62 +15,47 @@ class Settings extends StatefulWidget {
 
 class _SettingsPage extends State<Settings> {
   Set<String> selectedSegment = {'daily'};
-  bool notifcations = true;
+  bool notifications = true;
   bool biometricLogin = true;
-
-  List<ButtonSegment<String>> segments = [
-    ButtonSegment(
-      value: 'daily',
-      label: Text(
-        'Dagligt',
-        style: AppTextStyles.standardWithoutColor
-            .copyWith(fontWeight: FontWeight.bold),
-      ),
-    ),
-    ButtonSegment(
-      value: 'weekly',
-      label: Text(
-        'Ugentligt',
-        style: AppTextStyles.standardWithoutColor
-            .copyWith(fontWeight: FontWeight.bold),
-      ),
-    ),
-  ];
+  final showLunchBoxController = ValueNotifier<String>('daily');
+  final notificationsController = ValueNotifier<bool>(true);
+  final biometricLoginController = ValueNotifier<bool>(true);
 
   List<Map<String, dynamic>> get generalSettings => [
         {
           'title': "Vis madpakke",
           'icon': SFIcons.sf_fork_knife,
-          'cta': CustomSegmentButton(
-            buttonSegments: segments,
-            onTab: segmentChange,
-            selected: selectedSegment,
-          ),
+          'cta': AdvancedSegment(
+              controller: showLunchBoxController,
+              segments: {'daily': 'Dagligt', 'weekly': "Ugentligt"},
+              activeStyle: AppTextStyles.standard.copyWith(
+                  fontWeight: FontWeight.bold, color: AppColors.textSecondary),
+              inactiveStyle: AppTextStyles.standardWithoutColor
+                  .copyWith(fontWeight: FontWeight.bold),
+              itemPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              sliderColor: AppColors.primary,
+              sliderOffset: 0,
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+              backgroundColor: Colors.grey.shade300),
         },
         {
           'title': "Notifikationer",
           'icon': SFIcons.sf_bell_badge_fill,
-          'cta': Switch(
-            value: notifcations,
-            onChanged: notificationChange,
-            trackColor: trackColor,
-            overlayColor: overlayColor,
-            thumbColor: WidgetStatePropertyAll<Color>(
-              Colors.white,
-            ),
-          ),
+          'cta': AdvancedSwitch(
+            controller: notificationsController,
+            activeColor: AppColors.primary,
+            width: 60,
+            initialValue: true,
+          )
         },
         {
           'title': "Biometrisk login",
           'icon': SFIcons.sf_faceid,
-          'cta': Switch(
-            value: biometricLogin,
-            onChanged: biometricChange,
-            trackColor: trackColor,
-            overlayColor: overlayColor,
-            thumbColor: WidgetStatePropertyAll<Color>(
-              Colors.white,
-            ),
+          'cta': AdvancedSwitch(
+            controller: biometricLoginController,
+            activeColor: AppColors.primary,
+            width: 60,
+            initialValue: true,
           ),
           'divider': false,
         },
@@ -98,12 +83,6 @@ class _SettingsPage extends State<Settings> {
               )
             ],
           ),
-          'ctaFunction': () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => StudentPage()),
-            );
-          }
         },
         {
           'title': "Administrer børn",
@@ -127,56 +106,6 @@ class _SettingsPage extends State<Settings> {
           'divider': false,
         },
       ];
-
-  final WidgetStateProperty<Color?> trackColor =
-      WidgetStateProperty.resolveWith<Color?>(
-    (Set<WidgetState> states) {
-      // Track color when the switch is selected.
-      if (states.contains(WidgetState.selected)) {
-        return AppColors.primary;
-      }
-      // Otherwise return null to set default track color
-      // for remaining states such as when the switch is
-      // hovered, focused, or disabled.
-      return Colors.grey.shade400;
-    },
-  );
-
-  final WidgetStateProperty<Color?> overlayColor =
-      WidgetStateProperty.resolveWith<Color?>(
-    (Set<WidgetState> states) {
-      // Material color when switch is selected.
-      if (states.contains(WidgetState.selected)) {
-        return AppColors.primary.withOpacity(0.54);
-      }
-      // Material color when switch is disabled.
-      if (states.contains(WidgetState.disabled)) {
-        return Colors.grey.shade400;
-      }
-      // Otherwise return null to set default material color
-      // for remaining states such as when the switch is
-      // hovered, or focused.
-      return null;
-    },
-  );
-
-  void segmentChange(Set<String> value) {
-    setState(() {
-      selectedSegment = value;
-    });
-  }
-
-  void notificationChange(bool value) {
-    setState(() {
-      notifcations = value;
-    });
-  }
-
-  void biometricChange(bool value) {
-    setState(() {
-      biometricLogin = value;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
