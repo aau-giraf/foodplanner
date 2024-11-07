@@ -12,6 +12,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/components/settings_header.dart';
 import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/components/text_field.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 
@@ -37,16 +38,25 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   String? selectedClassId;
+  String updatedFirstName = '';
+  String updatedLastName = '';
+
 
   @override
   void initState() {
     super.initState();
 
-    firstNameController.text = widget.child.firstName;
-    lastNameController.text = widget.child.lastName;
+    firstNameController.text = TextEditingController(text: widget.child.firstName).text;
+    lastNameController.text = TextEditingController(text: widget.child.lastName).text;
+    updatedLastName = widget.child.lastName;
     selectedClassId = widget.child.classId.toString();
 
-
+@override
+void dispose() {
+  firstNameController.dispose();
+  lastNameController.dispose();
+  super.dispose();
+}
 
     ChildProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
@@ -74,26 +84,96 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
 
   List<Map<String, dynamic>> get childProfileItem => [
     {
-      'title': 'Fornavn',
+      'title': 'Fornavn: ',
       'showIcon': false,
       'isEditable': isEditingFirstName,
-      'cta': ctaButtons(() {
-        setState(() {
-          isEditingFirstName = true;
-        });
-      }),
-      'value': widget.child.firstName,
+      'cta': Expanded(
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: isEditingFirstName
+              ? Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: CustomTextField(
+                  controller: firstNameController,
+                  errorText: '',
+                  hintText: 'Fornavn',
+                  obscureText: false,
+                  color: Colors.white,
+                ),
+              ): Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    widget.child.firstName,
+                    style: AppTextStyles.bigText,
+                    
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: SFIcon(
+                SFIcons.sf_pencil,
+                color: AppColors.textPrimary,
+                fontSize: 28,
+              ),
+              onPressed: () {
+                setState(() {
+                  isEditingFirstName = true;
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+      'showSpacer': false,
     },
     {
-      'title': 'Efternavn',
+      'title': 'Efternavn: ',
       'showIcon': false,
       'isEditable': isEditingLastName,
-      'cta': ctaButtons(() {
-        setState(() {
-          isEditingLastName = true;
-        });
-      }),
-      'value': widget.child.lastName,
+      'cta': Expanded(
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: isEditingLastName
+              ? Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: CustomTextField(
+                  controller: lastNameController,
+                  errorText: '',
+                  hintText: 'Efternavn',
+                  obscureText: false,
+                  color: Colors.white,
+                ),
+              ): Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    widget.child.lastName,
+                    style: AppTextStyles.bigText,
+                    
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              icon: SFIcon(
+                SFIcons.sf_pencil,
+                color: AppColors.textPrimary,
+                fontSize: 28,
+              ),
+              onPressed: () {
+                setState(() {
+                  isEditingLastName = true;
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+      'showSpacer': false,
     },
     {
       'title': 'Klasse',
@@ -115,9 +195,6 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
           Navigator.pushNamed(context, '/parent_profile', arguments: parent);
         };
       }),
-      'ctaFunction': () {
-        Navigator.pushNamed(context, '/parent_page', arguments: parent);
-      }, 
       'value': '${parent.firstName} ${parent.lastName}',
       'divider': false,
     },
@@ -160,98 +237,37 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
             title: '${widget.child.firstName}s',
             subtitle: 'Her kan du redigere ${widget.child.firstName}s profil og klasse. ',
           ),
-          Card(
-            elevation: 2,
-            color: AppColors.background,
-            surfaceTintColor: AppColors.background,
-            child: Center(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 10),
-                      ...childProfileItem.map((item) {
-                        return SettingsWidget(
-                          leftIcon: SFIcons.sf_person,
-                          showIcon: item['showIcon'],
-                          title: '${item['title']} - ${item['value']}',
-                          cta: item['cta'],
-                          type: SettingsType.inlineItems,
-                          isEditable: item['isEditable'],
-                          divider: item['divider'] ?? true,
-                          ctaFunction: item['ctaFunction'],
-                        );
-                      }),
-                    ],
-                  ),
-                )
-              ),
-            ),
-          ),
-          Expanded(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                
-                /* ...childProfileItem.map((item) {
-                  return SettingsWidget(
-                    leftIcon: SFIcons.sf_person,
-                    showIcon: item['showIcon'],
-                    title: '${item['title']} - ${item['value']}',
-                    cta: item['cta'],
-                    type: SettingsType.inlineItems,
-                    isEditable: item['isEditable'],
-                  );
-                }), */
-              /*   SettingsWidget(
-                  leftIcon: SFIcons.sf_person,
-                  title: 'Fornavn - ${widget.child.firstName}',
-                  cta: ctaButtons(() {
-                    setState(() {
-                      isEditingFirstName = true;
-                    });
-                  }),
-                  type: SettingsType.items,
-                  showIcon: false,
-                  isEditable: isEditingFirstName,
+              Card(
+                elevation: 2,
+                color: AppColors.background,
+                surfaceTintColor: AppColors.background,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 10),
+                        ...childProfileItem.map((item) {
+                          return SettingsWidget(
+                            showIcon: item['showIcon'],
+                            title: '${item['title']}',
+                            cta: item['cta'],
+                            type: SettingsType.inlineItems,
+                            isEditable: item['isEditable'],
+                            divider: item['divider'] ?? true,
+                            showSpacer: item['showSpacer'] ?? true,
+                          );
+                        }),
+                      ],
+                    ),
+                  )
                 ),
-                SettingsWidget(
-                  leftIcon: SFIcons.sf_person,
-                  title: 'Efternavn - ${widget.child.lastName}',
-                  cta: ctaButtons(() {
-                    setState(() {
-                      isEditingFirstName = true;
-                    });
-                  }),
-                  type: SettingsType.items,
-                  showIcon: false,
-                  isEditable: isEditingLastName,
-                ),
-                
-                SettingsWidget(
-                  leftIcon: SFIcons.sf_calendar,
-                  title: 'Klasse - ${getClassName(widget.child.classId)}',
-                  cta: ctaButtons(() {
-                    setState(() {
-                      isEditingFirstName = false;
-                    });
-                  }),
-                  type: SettingsType.items,
-                  showIcon: false,
-                ),
-                 SettingsWidget(
-                  leftIcon: SFIcons.sf_calendar,
-                  title: 'Forældre - ${parent.firstName} ${parent.lastName}',
-                  cta: ctaButtons(() {
-                    setState(() {
-                      isEditingFirstName = false;
-                    });
-                  }),
-                  type: SettingsType.items,
-                  showIcon: false,
-                ), */
-              ],
-            ),
+              )
+            ]), 
           ),
         ],
       ),

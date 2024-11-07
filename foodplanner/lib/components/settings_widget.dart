@@ -16,6 +16,7 @@ class SettingsWidget extends StatefulWidget {
   final VoidCallback? ctaFunction;
   final bool showIcon;
   final bool isEditable;
+  final bool showSpacer;
   const SettingsWidget({
     super.key,
     this.leftIcon,
@@ -28,11 +29,13 @@ class SettingsWidget extends StatefulWidget {
     this.ctaFunction,
     this.showIcon = true, // Default value is true, starts off being visible
     this.isEditable = false, // Default value is false, starts off being not editable
+    this.showSpacer = true,
   });
 
   @override
   State<SettingsWidget> createState() => _SettingsWidgetState();
 }
+
 
 class _SettingsWidgetState extends State<SettingsWidget> {
   bool _isHovered = false;
@@ -134,7 +137,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                             widget.title,
                             style: AppTextStyles.bigText,
                           ),
-                          Spacer(),
+                          widget.showSpacer ? Spacer() : Container(),
                           widget.cta ?? Container(),
                         ],
                       ),

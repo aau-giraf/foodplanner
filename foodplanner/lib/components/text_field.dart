@@ -15,7 +15,7 @@ class CustomTextField extends StatelessWidget {
       required this.errorText,
       required this.hintText,
       this.obscureText = false, // default value
-      this.color = AppColors.textFieldBackground // default color
+      this.color = AppColors.textFieldBackground, // default color
       });
 
   @override
