@@ -6,6 +6,7 @@ import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/popup_box.dart';
 
 class AdminApprovePage extends StatefulWidget {
   const AdminApprovePage({super.key});
@@ -141,7 +142,23 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
                                   fontSize: 36,
                                 ),
                                 onPressed: () {
-                                  _approveUser(user.id);
+                                  showIPhonePopupBox(
+                                    context: context,
+                                    title: 'Bekræft bruger',
+                                    message:
+                                        'Er du sikker på, at du vil godkende denne bruger?',
+                                    confirmText: 'Godkend',
+                                    cancelText: 'Anuller',
+                                    onConfirm: () {
+                                      _approveUser(user.id);
+                                      Navigator.of(context)
+                                          .pop(); // Close the popup
+                                    },
+                                    onCancel: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the popup
+                                    },
+                                  );
                                 },
                               ),
                               IconButton(
@@ -152,7 +169,23 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
                                   fontSize: 36,
                                 ),
                                 onPressed: () {
-                                  _removeUser(user.id);
+                                  showIPhonePopupBox(
+                                    context: context,
+                                    title: 'Fjern bruger',
+                                    message:
+                                        'Er du sikker på, at du vil fjerne denne bruger?',
+                                    confirmText: 'Fjern',
+                                    cancelText: 'Anuller',
+                                    onConfirm: () {
+                                      _removeUser(user.id);
+                                      Navigator.of(context)
+                                          .pop(); // Close the popup
+                                    },
+                                    onCancel: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the popup
+                                    },
+                                  );
                                 },
                               ),
                             ],
