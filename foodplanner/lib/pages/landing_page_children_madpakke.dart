@@ -8,6 +8,7 @@ import 'package:foodplanner/components/mealBoxEmpty.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/feedbackChatPage.dart';
 import 'package:foodplanner/components/footer.dart'; // Import the footer widget
+import 'package:foodplanner/pages/pin_code.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart'; // Import the reusable widget
 
@@ -21,31 +22,50 @@ class ChildLandingPageMadpakke extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(),
-      body: Align(
-        alignment: Alignment.topCenter,
-        child: SizedBox(
-          width: size.width * 0.9, // if other pages get skewed then you can do this OR its something to do with reusableMealBox.dart
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Velkommen Forældre',
-                      style: TextStyle(fontSize: 16),
-                      textAlign: TextAlign.center,
+      body: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox(
+              width: size.width * 0.9,  // Adjust width percentage as needed
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Velkommen Barn',
+                          style: TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: size.height * 0.05),
+                        ReusableMealBox(size: size),
+                        SizedBox(height: size.height * 0.02),
+                      ],
                     ),
-                    SizedBox(height: size.height * 0.02),
-                    ReusableMealBox(size: size),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          Positioned(
+            top: -8,
+            right: 30,
+            child: IconButton(
+              icon: Icon(Icons.lock_outline, size: 40, color: Colors.black),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PinCode()),
+                );  
+                
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

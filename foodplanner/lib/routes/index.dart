@@ -108,7 +108,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return authProvider.hasRole(ROLES.parent)
-            ? const ParentPage()
+            ? const ParentLandingPageMadpakke()
             : const UnauthorizedPage();
       },
       routes: [
