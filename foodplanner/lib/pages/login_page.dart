@@ -3,11 +3,13 @@ import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'signup_page.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:go_router/go_router.dart';
+import '../routes/user_roles.dart';
 //test push
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -53,24 +55,49 @@ class LoginPageState extends State<LoginPage> {
 
   void signUserIn(BuildContext context) async {
     try {
-      final error = await LoginPage.authService
+      final role = await LoginPage.authService
           .fetchAuthData(usernameController.text, passwordController.text);
-      print(error);
-      if (error != null) {
-        handleErrors(error);
-      } else {
-        context.go('/');
-      }
-    } catch (e) {
+      print(role);
+      print(role);
+      switch (role) {
+      case ROLES.teacher:
+        GoRouter.of(context).go(TEACHER_ROOT);
+        break;
+      case ROLES.student:
+        GoRouter.of(context).go(STUDENT_ROOT);
+        break;
+      case ROLES.admin:
+        GoRouter.of(context).go(ADMIN_ROOT);
+        break;
+      case ROLES.parent:
+        GoRouter.of(context).go(PARENT_ROOT);
+        break;
+      default:
+        GoRouter.of(context).go(LOGIN_PAGE);
+        break;
+    }
+  } catch (e) {
+    if (e is AuthException) {
+      handleErrors({'Message': [e.message]});
+    } else if (e is NetworkException) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Der opstod et problem ved login: $e'),
+          content: Text('Der opstod et problem ved login: ${e.message}'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Der opstod et ukendt problem ved login: $e'),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 5),
         ),
       );
     }
   }
+}
 
   void loginInpage() {}
 

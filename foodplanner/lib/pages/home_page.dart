@@ -30,10 +30,11 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
+                GoRouter.of(context).go('/login');
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => LoginPage()),
+                // );
               },
               child: const Text('Go to Login Page'),
             ),

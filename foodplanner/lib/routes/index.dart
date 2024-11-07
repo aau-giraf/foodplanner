@@ -5,6 +5,7 @@ import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
 import 'package:foodplanner/pages/landing_page.dart';
+import 'package:foodplanner/pages/landing_page_teacher.dart';
 import 'package:foodplanner/pages/parent_page.dart';
 import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/student_page.dart';
@@ -54,7 +55,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return authProvider.hasRole(ROLES.teacher)
-            ? const TeacherPage()
+            ? const TeacherLandingPage()
             : const UnauthorizedPage();
       },
     ),
