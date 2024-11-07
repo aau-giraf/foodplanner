@@ -39,6 +39,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
           }).toList();
           filteredStudents = students;
 
+
           schoolClasses = students
               .map((student) => {
                     'id': student['classId']!,
