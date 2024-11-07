@@ -4,7 +4,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/pages/additional_lunch_box.dart';
 import 'package:foodplanner/pages/landing_page.dart';
 import 'package:foodplanner/pages/profile.dart';
-import 'package:foodplanner/pages/settings.dart';
+import 'package:foodplanner/pages/settings/settings.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
