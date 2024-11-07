@@ -122,6 +122,7 @@ class _SettingsPage extends State<Settings> {
           style: AppTextStyles.headline2,
         ),
         backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
       body: Padding(
