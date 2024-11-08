@@ -98,7 +98,7 @@ import 'package:foodplanner/services/api_config.dart';
           //   200));
           // when(createMeal(client, meal.title, 'PLACEHOLDER', meal.date, meal.ingredients))
           //   .thenAnswer((_) async => http.Response('id: ${meal.id}, title: ${meal.title}, image_ref: ${meal.image_ref}, date: ${meal.date}, ingredients: [{id: ${meal.ingredients[1].id}, mealRef: , ingredient_ref: {id: ${meal.ingredients[1].ingredient_ref.id}, name: ${meal.ingredients[1].ingredient_ref.name}, image: ${meal.ingredients[1].ingredient_ref.image_ref}},{id: ${meal.ingredients[1].id}, mealRef: , ingredient_ref: {id: ${meal.ingredients[2].ingredient_ref.id}, name: ${meal.ingredients[2].ingredient_ref.name}, image_ref:  ${meal.ingredients[2].ingredient_ref.image_ref}}}]', 200));
-          final response = await createMeal(client, meal.title, 0, meal.date, meal.ingredients);
+          final response = await createMeal(client, meal.title, 0, meal.date);
 
           expect(response.statusCode, 200);
         });

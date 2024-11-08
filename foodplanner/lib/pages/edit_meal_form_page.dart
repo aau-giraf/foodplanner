@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/edit_meal_ingredient_list_element.dart';
+import 'package:foodplanner/components/edit_meal_element.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/meal.dart';
@@ -66,7 +66,7 @@ class EditMealFormPage extends StatelessWidget {
             child: ListView.separated( // Creates a scrollable list with separators.
               itemCount: ingredients.length, // Creates an element for each ingredient.
               itemBuilder: (BuildContext context, int index) { // Builds the list items for each ingredient.
-                return EditMealIngredientListElement(ingredient: ingredients[index], onCamera: onCamera,); // Render each ingredient element.
+                return EditMealElement(meal: meal, onCamera: onCamera,); // Render each ingredient element.
               },
               separatorBuilder: (BuildContext context, int index) { // Defines the separator between list items.
                 return SizedBox(height: 20,); // Space between elements.

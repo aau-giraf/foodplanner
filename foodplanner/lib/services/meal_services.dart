@@ -31,7 +31,7 @@ Future<Meal> fetchMeal(http.Client client, int id) async {
 // Creates a new meal on the server.
 // Takes an HTTP client, meal title, optional image URL, optional date, and a list of ingredients.
 // Returns the server's response.
-Future<http.Response> createMeal(http.Client client, final String title, final int? image_ref, final DateTime? date, final List<PackedIngredient> ingredients) async {
+Future<http.Response> createMeal(http.Client client, final String title, final int? image_ref, final DateTime? date) async {
   final jwtToken = await AuthProvider().retrieveToken();
   // Sending a POST request to the API endpoint to create a new meal.
   final response = await client.post(
@@ -45,7 +45,6 @@ Future<http.Response> createMeal(http.Client client, final String title, final i
         'title': title, // Meal title.
         'image_ref': image_ref, // Meal image URL (ensured to be a string).
         'date': date?.toIso8601String(), // Optional date for the meal.
-        'ingredients': ingredients.map((e) => e.toJson()).toList(), // List of PackedIngredient objects.
     }),
   );
   print('Statuscode: ${response.statusCode} body:${response.body}');

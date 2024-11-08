@@ -34,7 +34,7 @@ Future<PackedIngredient> fetchPackedIngredient(http.Client client, int id) async
 // Takes an HTTP client, a reference to a meal, a reference to an ingredient,
 // and the packed ingredient ID as parameters.
 // Returns the server's response after attempting to create the packed 
-Future<http.Response> createPackedIngredient(http.Client client, int meal_ref, Ingredient ingredient_ref, int id) async {
+Future<http.Response> createPackedIngredient(http.Client client, int meal_ref, Ingredient ingredient_ref) async {
   final jwtToken = await AuthProvider().retrieveToken();
   // Sending a POST request to the API endpoint to create a new packed ingredient.
   final response = await client.post(
@@ -47,7 +47,6 @@ Future<http.Response> createPackedIngredient(http.Client client, int meal_ref, I
     body: jsonEncode({
       'meal_ref': meal_ref, // Reference ID for the meal the ingredient is associated with.
       'ingredient_ref': ingredient_ref.id, // ID of the ingredient being packed.
-      'id': id, // ID for the packed ingredient.
     }),
   );
   return response;   // Return the response from the server.
