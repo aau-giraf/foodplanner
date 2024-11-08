@@ -3,7 +3,6 @@ import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/pages/admin_page.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
-import 'package:foodplanner/pages/landing_page.dart';
 import 'package:foodplanner/pages/parent_page.dart';
 import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/student_page.dart';
