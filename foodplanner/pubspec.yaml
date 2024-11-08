@@ -47,6 +47,9 @@ dependencies:
     openapi_generator_annotations: ^5.0.2
     global_configuration: ^2.0.0
     local_auth: ^2.3.0
+    flutter_advanced_switch: ^3.1.0
+    flutter_advanced_segment: ^3.0.2
+    openapi_generator_cli: ^6.0.0
 
 dev_dependencies:
     flutter_test:
