@@ -48,7 +48,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<bool> hasRole(ROLES role) async {
     await loadFromStorage();
-    return _isLoggedIn && _userRole == role;
+    return _isLoggedIn && _userRole == role && _isApproved == true;
   }
 
   Future<void> setRole(ROLES role) async {

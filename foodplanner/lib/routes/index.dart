@@ -96,7 +96,25 @@ final router = GoRouter(
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const ChildLandingPageSeMadpakke(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const ChildLandingPageMadpakke(student: {},); // im guessing this page, student_page is a dummy one it seems TODO
+            } else {
+              return const UnauthorizedPage();
+            }
+      },
+    );
+      },
+    ),
+    GoRoute(
+      path: STUDENT_ROOT,
+      builder: (context, state) {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+            return FutureBuilder<bool>(
+          future: authProvider.hasRole(ROLES.student),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator(); // Show loading while waiting
+            } else if (snapshot.hasData && snapshot.data == true) {
+              return const CreateChildPage(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
               return const UnauthorizedPage();
             }

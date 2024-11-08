@@ -100,11 +100,11 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
       print(error);
       if (error == null) {
         // TODO fix so its all GoRouter
-        //GoRouter.of(context).go(PARENT_ROOT);
-        Navigator.push(
+        GoRouter.of(context).go(PARENT_ROOT);
+        /*Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ParentLandingPageMadpakke()),
-        );
+        );*/
       } else {
         setState(() {
           pin = [];

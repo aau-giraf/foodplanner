@@ -251,20 +251,11 @@ class _SignupState extends State<SignupPage> {
         final role =
             await LoginPage.authService.fetchAuthData(email, password);
             switch (role) {
-            case ROLES.teacher:
-              GoRouter.of(context).go(TEACHER_ROOT);
-              break;
-            case ROLES.student:
-              GoRouter.of(context).go(STUDENT_ROOT);
-              break;
-            case ROLES.admin:
-              GoRouter.of(context).go(ADMIN_ROOT);
-              break;
             case ROLES.parent:
-              GoRouter.of(context).go(PARENT_ROOT);
+              GoRouter.of(context).go(STUDENT_CREATE);
               break;
             default:
-              GoRouter.of(context).go(LOGIN_PAGE);
+              GoRouter.of(context).go(UNAUTHORIZED);
               break;
           }
       } catch (e) {

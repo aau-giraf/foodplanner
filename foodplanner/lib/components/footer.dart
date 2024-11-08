@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/pages/feedbackChatPage.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
+import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/pages/profile.dart';
 import 'package:foodplanner/pages/profilePage.dart';
 import 'package:foodplanner/pages/settingsPage.dart';
+import 'package:foodplanner/routes/paths.dart';
+import 'package:go_router/go_router.dart';
 
 
 class FooterBar extends StatefulWidget {
@@ -32,10 +35,13 @@ class _FooterBarState extends State<FooterBar> {
                     );
         break;
       case 1:
+      /*
       Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChildLandingPageMadpakke(student: {},)),
+                      MaterialPageRoute(builder: (context) => ParentLandingPageMadpakke()),
                     );
+                    */
+                    GoRouter.of(context).go(PARENT_ROOT);
         break;
       case 2:
       Navigator.push(

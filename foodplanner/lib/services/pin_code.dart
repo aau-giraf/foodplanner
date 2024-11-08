@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:foodplanner/routes/user_roles.dart';
 import 'package:http/http.dart' as http;
 import '../auth/auth_provider.dart';
 
@@ -20,8 +21,18 @@ class PinService {
           'pinCode': pincode.join(),
         }),
       );
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          final String jwt = data['jwt'];
+          final bool roleApproved = data['roleApproved'];
+          String role = data['role'];
+          if (role == "Child"){
+          role = "Student";
+        }
 
-      if (response.statusCode == 200) {
+        ROLES authRole = roleFromString(role.toLowerCase());
+
+        await AuthProvider().login(authRole, jwt, roleApproved);
         return null;
       } else {
         var error = jsonDecode(response.body);
@@ -32,7 +43,20 @@ class PinService {
       print('Error checking pincode: $e');
     }
   }
-
+ ROLES roleFromString(String role) {
+    switch (role) {
+      case 'teacher':
+        return ROLES.teacher;
+      case 'student':
+        return ROLES.student;
+      case 'admin':
+        return ROLES.admin;
+      case 'parent':
+        return ROLES.parent;
+      default:
+        throw Exception('Unknown role: $role');
+    }
+  }
   Future<dynamic> updatePin(List<int> pincode) async {
     try {
       final jwtToken = await AuthProvider().retrieveToken();

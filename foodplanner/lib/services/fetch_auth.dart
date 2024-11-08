@@ -40,11 +40,14 @@ Future<ROLES> fetchAuthData(String email, String password) async {
       final data = jsonDecode(response.body);
       final String jwt = data['jwt'];
       final bool roleApproved = data['roleApproved'];
-      final String role = data['role'];
+      String role = data['role'];
+
+     if (role == "Child"){
+       role = "Student";
+     }
+
       ROLES authRole = roleFromString(role.toLowerCase());
-      print(authRole);
-      print(jwt);
-      print(roleApproved);
+
       await AuthProvider().login(authRole, jwt, roleApproved);
       return authRole;
     } else {
