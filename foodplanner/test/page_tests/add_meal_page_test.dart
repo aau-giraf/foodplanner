@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:foodplanner/models/ingredient.dart';
-import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/pages/meal_form_page.dart';
@@ -39,7 +37,6 @@ void main() {
     group('MealFormPage Tests', () {
       testWidgets('should display MealFormPage by default', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         await tester.pumpWidget(
           MultiProvider(
             providers: [
@@ -47,7 +44,7 @@ void main() {
               // Provider<FetchUserData>.value(value: mockFetchUserData),
             ],
             child: MaterialApp(
-              home: AddMealPage(meal: meal),
+              home: AddMealPage(),
             ),
           ),
         );
@@ -56,28 +53,8 @@ void main() {
         expect(find.byType(MealFormPage), findsOneWidget);
       });
 
-      testWidgets('should handle null Meal input', (WidgetTester tester) async {
-        // Arrange
-        Meal? meal;
-        await tester.pumpWidget(
-          MultiProvider(
-            providers: [
-              Provider<AuthProvider>.value(value: mockAuthProvider),
-              // Provider<FetchUserData>.value(value: mockFetchUserData),
-            ],
-            child: MaterialApp(
-              home: AddMealPage(meal: meal ?? Meal()), // Ensure the widget handles null gracefully
-            ),
-          ),
-        );
-
-        // Assert
-        expect(find.byType(MealFormPage), findsOneWidget); // Should default to MealFormPage
-      });
-
       testWidgets('should navigate to MealFormPage on back press', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         await tester.pumpWidget(
           MultiProvider(
             providers: [
@@ -85,7 +62,7 @@ void main() {
               // Provider<FetchUserData>.value(value: mockFetchUserData),
             ],
             child: MaterialApp(
-              home: AddMealPage(meal: meal),
+              home: AddMealPage(),
             ),
           ),
         );
@@ -102,7 +79,6 @@ void main() {
     group('AddIngredientPage Tests', () {
       testWidgets('should switch to AddIngredientPage on button press', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         await tester.pumpWidget(
           MultiProvider(
             providers: [
@@ -110,7 +86,7 @@ void main() {
               // Provider<FetchUserData>.value(value: mockFetchUserData),
             ],
             child: MaterialApp(
-              home: AddMealPage(meal: meal),
+              home: AddMealPage(),
             ),
           ),
         );
@@ -126,7 +102,6 @@ void main() {
 
       testWidgets('should handle empty ingredient list gracefully', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         await tester.pumpWidget(
           MultiProvider(
             providers: [
@@ -134,7 +109,7 @@ void main() {
               // Provider<FetchUserData>.value(value: mockFetchUserData),
             ],
             child: MaterialApp(
-              home: AddMealPage(meal: meal),
+              home: AddMealPage(),
             ),
           ),
         );
@@ -147,7 +122,6 @@ void main() {
       group('CameraPage Tests', () {
         testWidgets('should switch to CameraPage on button press', (WidgetTester tester) async {
           // Arrange
-          Meal meal = Meal();
           await tester.pumpWidget(
             MultiProvider(
               providers: [
@@ -155,7 +129,7 @@ void main() {
                 // Provider<FetchUserData>.value(value: mockFetchUserData),
               ],
               child: MaterialApp(
-                home: AddMealPage(meal: meal),
+                home: AddMealPage(),
               ),
             ),
           );

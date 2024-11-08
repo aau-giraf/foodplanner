@@ -31,12 +31,13 @@ Future<List<Ingredient>> fetchIngredientsByUserID(http.Client client) async {
   final jwtToken = await AuthProvider().retrieveToken();
   // Make a GET request to the API to retrieve ingredients by user ID.
   final response =
-      await client.get(Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Get'),
+      await http.get(Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/GetAllByUser'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwtToken',
         },
       );
+
   // Check if the request was successful (status code 200).
   if (response.statusCode == 200) {
     // Decode the response body directly into a list.
@@ -56,7 +57,7 @@ Future<List<Ingredient>> fetchIngredientsByUserID(http.Client client) async {
 
 
 // Create a new ingredient via a POST request to the API.
-Future<http.Response> createIngredient(http.Client client, String name, int userRef,  String? imageUrl) async {
+Future<http.Response> createIngredient(http.Client client, String name,  int? imageRef) async {
   final jwtToken = await AuthProvider().retrieveToken(); // Get the authorization token from authentication provider 
 
   // Make a POST request to the API to create a new ingredient.
@@ -68,8 +69,7 @@ Future<http.Response> createIngredient(http.Client client, String name, int user
     },
     body: jsonEncode(<String, String>{ // Encode the request body as JSON.
       'name': name, // Name of the ingredient.
-      'userRef': userRef.toString(),
-      'image': imageUrl as String, // Image URL of the ingredient (optional).
+      'image_ref': imageRef as String, // Image URL of the ingredient (optional).
     }),
   );
 

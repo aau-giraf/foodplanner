@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:foodplanner/models/ingredient.dart';
-import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,14 +9,13 @@ void main() {
     group('AddIngredientPage AppBar Tests', () {
       testWidgets('should display the correct title', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         List<Ingredient> ingredients = [];
         await tester.pumpWidget(MaterialApp(
           home: AddIngredientPage(
-            meal: meal,
             ingredients: ingredients,
             onIngredientsUpdated: (List<Ingredient> updatedIngredients) {},
             onCamera: () {},
+            onIngredientAdded: (addedIngredient) {},
             client: http.Client(),
           ),
         ));
@@ -27,14 +25,13 @@ void main() {
 
       testWidgets('should not display incorrect title', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         List<Ingredient> ingredients = [];
         await tester.pumpWidget(MaterialApp(
           home: AddIngredientPage(
-            meal: meal,
             ingredients: ingredients,
             onIngredientsUpdated: (List<Ingredient> updatedIngredients) {},
             onCamera: () {},
+            onIngredientAdded: (addedIngredient) {},
             client: http.Client(),
           ),
         ));
@@ -46,17 +43,16 @@ void main() {
     group('AddIngredientPage Ingredient List Tests', () {
       testWidgets('should display ingredients', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(userRef: 1, name: 'Tomato'),
-          Ingredient(userRef: 1, name: 'Lettuce')
+          Ingredient(name: 'Tomato'),
+          Ingredient(name: 'Lettuce')
         ];
         await tester.pumpWidget(MaterialApp(
           home: AddIngredientPage(
-            meal: meal,
             ingredients: ingredients,
             onIngredientsUpdated: (List<Ingredient> updatedIngredients) {},
             onCamera: () {},
+            onIngredientAdded: (addedIngredient) {},
             client: http.Client(),
           ),
         ));
@@ -67,14 +63,13 @@ void main() {
 
       testWidgets('should display no ingredients', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         List<Ingredient> ingredients = [];
         await tester.pumpWidget(MaterialApp(
           home: AddIngredientPage(
-            meal: meal,
             ingredients: ingredients,
             onIngredientsUpdated: (List<Ingredient> updatedIngredients) {},
             onCamera: () {},
+            onIngredientAdded: (addedIngredient) {},
             client: http.Client(),
           ),
         ));
@@ -84,17 +79,16 @@ void main() {
 
       testWidgets('should not display non-existent ingredient', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(userRef: 1, name: 'Tomato'),
-          Ingredient(userRef: 1, name: 'Lettuce')
+          Ingredient(name: 'Tomato'),
+          Ingredient(name: 'Lettuce')
         ];
         await tester.pumpWidget(MaterialApp(
           home: AddIngredientPage(
-            meal: meal,
             ingredients: ingredients,
             onIngredientsUpdated: (List<Ingredient> updatedIngredients) {},
             onCamera: () {},
+            onIngredientAdded: (addedIngredient) {},
             client: http.Client(),
           ),
         ));
@@ -106,18 +100,17 @@ void main() {
     group('AddIngredientPage Search Functionality Tests', () {
       testWidgets('should filter ingredients based on search input', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(userRef: 1, name: 'Tomato'),
-          Ingredient(userRef: 1, name: 'Lettuce'),
-          Ingredient(userRef: 1, name: 'Cucumber')
+          Ingredient( name: 'Tomato'),
+          Ingredient( name: 'Lettuce'),
+          Ingredient( name: 'Cucumber')
         ];
         await tester.pumpWidget(MaterialApp(
           home: AddIngredientPage(
-            meal: meal,
             ingredients: ingredients,
             onIngredientsUpdated: (List<Ingredient> updatedIngredients) {},
             onCamera: () {},
+            onIngredientAdded: (addedIngredient) {},
             client: http.Client(),
           ),
         ));
@@ -132,15 +125,14 @@ void main() {
 
       testWidgets('should not display ingredient if search is incorrect', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(userRef: 1, name: 'Tomato'),
-          Ingredient(userRef: 1, name: 'Lettuce'),
-          Ingredient(userRef: 1, name: 'Cucumber')
+          Ingredient( name: 'Tomato'),
+          Ingredient( name: 'Lettuce'),
+          Ingredient( name: 'Cucumber')
         ];
         await tester.pumpWidget(MaterialApp(
           home: AddIngredientPage(
-            meal: meal,
+            onIngredientAdded: (addedIngredient) {},
             ingredients: ingredients,
             onIngredientsUpdated: (List<Ingredient> updatedIngredients) {},
             onCamera: () {},
@@ -160,13 +152,12 @@ void main() {
     group('AddIngredientPage Dialog Tests', () {
       testWidgets('should show dialog if ingredient has no image', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(userRef: 1, name: 'Tomato', imageUrl: null),
+          Ingredient( name: 'Tomato', imageRef: null),
         ];
         await tester.pumpWidget(MaterialApp(
           home: AddIngredientPage(
-            meal: meal,
+            onIngredientAdded: (addedIngredient) {},
             ingredients: ingredients,
             onIngredientsUpdated: (List<Ingredient> updatedIngredients) {},
             onCamera: () {},
@@ -182,13 +173,12 @@ void main() {
 
       testWidgets('should not show dialog if ingredient has image', (WidgetTester tester) async {
         // Arrange
-        Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(userRef: 1, name: 'Tomato', imageUrl: 'https://via.placeholder.com/150'),
+          Ingredient( name: 'Tomato', imageRef: 0),
         ];
         await tester.pumpWidget(MaterialApp(
           home: AddIngredientPage(
-            meal: meal,
+            onIngredientAdded: (addedIngredient) {},
             ingredients: ingredients,
             onIngredientsUpdated: (List<Ingredient> updatedIngredients) {},
             onCamera: () {},
@@ -207,18 +197,17 @@ void main() {
       testWidgets('should call onCamera callback', (WidgetTester tester) async {
         bool cameraCalled = false;
         // Arrange
-        Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(userRef: 1, name: 'Tomato', imageUrl: null),
+          Ingredient( name: 'Tomato', imageRef: null),
         ];
         await tester.pumpWidget(MaterialApp(
           home: AddIngredientPage(
-            meal: meal,
             ingredients: ingredients,
             onIngredientsUpdated: (List<Ingredient> updatedIngredients) {},
             onCamera: () {
               cameraCalled = true;
             },
+            onIngredientAdded: (addedIngredient) {},
             client: http.Client(),
           ),
         ));
@@ -234,18 +223,17 @@ void main() {
       testWidgets('should not call onCamera callback for ingredient with image', (WidgetTester tester) async {
         bool cameraCalled = false;
         // Arrange
-        Meal meal = Meal();
         List<Ingredient> ingredients = [
-          Ingredient(userRef: 1, name: 'Tomato', imageUrl: 'https://via.placeholder.com/150'),
+          Ingredient( name: 'Tomato', imageRef: 0),
         ];
         await tester.pumpWidget(MaterialApp(
           home: AddIngredientPage(
-            meal: meal,
             ingredients: ingredients,
             onIngredientsUpdated: (List<Ingredient> updatedIngredients) {},
             onCamera: () {
               cameraCalled = true;
             },
+            onIngredientAdded: (addedIngredient) {},
             client: http.Client(),
           ),
         ));

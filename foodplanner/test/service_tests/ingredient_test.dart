@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/user.dart';
+import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
@@ -12,21 +13,18 @@ import 'ingredient_test.mocks.dart';
 void main() {
   final ingredient = Ingredient(
     id: 0,
-    userRef: 1,
     name: 'ingredient',
-    imageUrl: 'https://via.placeholder.com/150',
+    imageRef: 0,
   );
   final ingredient1 = Ingredient(
     id: 1,
-    userRef: 1,
     name: 'ingredient1',
-    imageUrl: 'https://via.placeholder.com/150',
+    imageRef: 1,
   );
   final ingredient2 = Ingredient(
     id: 2,
-    userRef: 1,
     name: 'ingredient2',
-    imageUrl: 'https://via.placeholder.com/150',
+    imageRef: 2,
   );
   group('Ingredient.fromJSON test',() {
 
@@ -37,9 +35,9 @@ void main() {
         final client = MyMockClient();
 
         when(client
-              .get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get/${ingredient.id}')))
+              .get(Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Get/${ingredient.id}')))
           .thenAnswer((_) async =>
-              http.Response('{"id": ${ingredient.id}, "userRef": ${ingredient.userRef}, "name": "${ingredient.name}", "imageUrl": "${ingredient.imageUrl}"}', 200));
+              http.Response('{"id": ${ingredient.id}, "name": "${ingredient.name}", "image_ref": ${ingredient.imageRef}}', 200));
 
         expect(await fetchIngredient(client, ingredient.id), isA<Ingredient>());
       });
@@ -47,7 +45,7 @@ void main() {
         final client = MyMockClient();
 
         when(client
-                .get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get/${ingredient.id}')))
+                .get(Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Get/${ingredient.id}')))
             .thenAnswer((_) async => http.Response('Not Found', 404));
 
         expect(fetchIngredient(client, 0), throwsException);
@@ -56,14 +54,14 @@ void main() {
     group('fetchIngredientsByUserID tests', () {
       test('return a list of ingredient instances on a successful fetch call', () async {
         final client = MyMockClient();
-        when(client.get(any)).thenAnswer((_) async => http.Response('{"id": ${ingredient.id}, "userRef": ${ingredient.userRef}, "name": "${ingredient.name}", "imageUrl": "${ingredient.imageUrl}"}', 200));
+        when(client.get(any)).thenAnswer((_) async => http.Response('{"id": ${ingredient.id}, "name": "${ingredient.name}", "image_ref": ${ingredient.imageRef}}', 200));
         final user = MockUser();
 
         when(user.id).thenReturn(1);
         when(client
-              .get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get/${user.id}')))
+              .get(Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Get/${user.id}')))
           .thenAnswer((_) async =>
-              http.Response('[{"id": ${ingredient.id}, "userRef": ${ingredient.userRef}, "name": "${ingredient.name}", "imageUrl": "${ingredient.imageUrl}"},{"id": ${ingredient1.id}, "userRef": ${ingredient1.userRef}, "name": "${ingredient1.name}", "imageUrl": "${ingredient1.imageUrl}"},{"id": ${ingredient2.id}, "userRef": ${ingredient2.userRef}, "name": "${ingredient2.name}", "imageUrl": "${ingredient2.imageUrl}"}]', 200));
+              http.Response('[{"id": ${ingredient.id}, "name": "${ingredient.name}", "image_ref": ${ingredient.imageRef}},{"id": ${ingredient1.id}, "name": "${ingredient1.name}", "image_ref": ${ingredient1.imageRef}},{"id": ${ingredient2.id}, "name": "${ingredient2.name}", "image_ref": ${ingredient2.imageRef}}]', 200));
               
 
         expect(await fetchIngredientsByUserID(client), isA<List<Ingredient>>());
@@ -73,7 +71,7 @@ void main() {
         final user = MockUser();
 
         when(client
-                .get(Uri.parse('http://127.0.0.1:80/api/Ingredients/Get/${user.id}')))
+                .get(Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Get/${user.id}')))
             .thenAnswer((_) async => http.Response('Not Found', 404));
 
         expect(fetchIngredientsByUserID(client), throwsException);
@@ -83,9 +81,9 @@ void main() {
       test('return with 200 response when a meal is added to the database', () async {
         final client = MyMockClient();
 
-        when(createIngredient(client, ingredient.name, ingredient.userRef, 'PLACEHOLDER'))
-          .thenAnswer((_) async => http.Response('{id: ${ingredient.id}, "userRef": ${ingredient.userRef}, name: "${ingredient.name}", imageUrl: "${ingredient.imageUrl}"}', 200));
-        final response = await createIngredient(client, ingredient.name, ingredient.userRef, 'PLACEHOLDER');
+        when(createIngredient(client, ingredient.name, ingredient.imageRef))
+          .thenAnswer((_) async => http.Response('{id: ${ingredient.id}, name: "${ingredient.name}", image_ref: ${ingredient.imageRef}}', 200));
+        final response = await createIngredient(client, ingredient.name, ingredient.imageRef);
 
         expect(response.statusCode, 200);
       });
@@ -95,7 +93,7 @@ void main() {
         final client = MyMockClient();
 
         when(deleteIngredient(client, ingredient.id))
-          .thenAnswer((_) async => http.Response('{id: ${ingredient.id}, name: "${ingredient.name}", imageUrl: "${ingredient.imageUrl}"}', 200));
+          .thenAnswer((_) async => http.Response('{id: ${ingredient.id}, name: "${ingredient.name}", image_ref: ${ingredient.imageRef}}', 200));
         final response = await deleteIngredient(client, ingredient.id);
 
         expect(response.statusCode, 200);

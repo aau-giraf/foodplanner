@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/models/ingredient.dart';
-import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:go_router/go_router.dart';
@@ -13,7 +13,7 @@ import 'package:http/http.dart';
 
 /// This class is used to create the meal page where the user can create an individual meal for their children.
 class MealFormPage extends StatefulWidget {
-  final Meal meal; // The meal being created or edited.
+  final List<PackedIngredient> packedIngredients; // The meal being created or edited.
   final List<Ingredient>? ingredients; // The list of ingredients available.
   final VoidCallback onAddIngredients; // Callback for adding ingredients.
   final VoidCallback onCamera; // Callback for opening the camera.
@@ -21,7 +21,7 @@ class MealFormPage extends StatefulWidget {
   
   const MealFormPage({
     super.key, // Key for the widget, maintaining state.
-    required this.meal, // Required parameter for the meal.
+    required this.packedIngredients, // Required parameter for the meal.
     required this.ingredients, // Required parameter for the ingredients.
     required this.onAddIngredients, // Callback for adding ingredients.
     required this.onCamera, // Callback for accessing the camera.
@@ -38,7 +38,7 @@ class MealFormPage extends StatefulWidget {
 
 class _MealFormPageState extends State<MealFormPage> {
   final TextEditingController _titleController = TextEditingController();  // Controller for the title text field.
-  Image? _selectedImage; // Variable to hold the selected image.
+  int? imageID; // Variable to hold the selected image.
 
   // Method for deleting the controllers when they are done being used.
   @override
@@ -113,7 +113,7 @@ class _MealFormPageState extends State<MealFormPage> {
                 widget.onAddIngredients(); // Calls the callback to add 
               },
               widget: Icon(Icons.add, color: AppColors.textSecondary), // Icon displayed on the button.
-              backgroundColor: AppColors.secondary, // Background color of the button.
+              backgroundColor: AppColors.tertiary, // Background color of the button.
               width: MediaQuery.sizeOf(context).width/2, // Width of the button is half of the screen width.
             ),
             Spacer(), // Flexible space to push the next button down.
@@ -139,9 +139,11 @@ class _MealFormPageState extends State<MealFormPage> {
                           createMeal( // Creates a meal using the inputted ingredients, without an image.
                             widget.client,
                             _titleController.text, // Title from the text input.
-                            null,  // No image provided.
+                            imageID,  // No image provided.
                             DateTime.now(),  // Current date and time for the meal.
-                            widget.meal.getPackedIngredients, // Retrieve packed ingredients for the meal.
+                            widget.packedIngredients
+                              .map((packedIngredient) => PackedIngredient(ingredientRef: packedIngredient.ingredientRef))
+                              .toList(),
                           );
                           context.go(MEAL_LIST_PAGE); // Leads the user to the meal list page.
                         },

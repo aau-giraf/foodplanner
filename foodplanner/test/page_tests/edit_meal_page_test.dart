@@ -16,7 +16,7 @@ void main() {
     // Initial setup before tests
     setUp(() {
       meal = Meal();
-      ingredients = [Ingredient(name: "Knækbrød", userRef: 1), Ingredient(name: "Æble", userRef: 1)];
+      ingredients = [Ingredient(name: "Knækbrød"), Ingredient(name: "Æble")];
     });
 
     testWidgets('should display EditMealFormPage by default', (WidgetTester tester) async {

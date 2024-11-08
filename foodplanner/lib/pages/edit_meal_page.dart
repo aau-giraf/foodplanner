@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/meal.dart';
+import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/pages/edit_meal_form_page.dart';
@@ -25,16 +26,24 @@ class EditMealPage extends StatefulWidget {
 }
 
 class _EditMealPageState extends State<EditMealPage> {
-  List<Ingredient> ingredients = [];  // List to store ingredients associated with the meal.
   Meal meal = Meal();  // Meal object being edited.
-  int currentPageIndex = 0; // Index to track the currently displayed page.
+  List<PackedIngredient> packedIngredients = []; // List to store all ingredients added to the meal.
+  List<Ingredient> ingredients = []; // List to store all the users ingredient presets.
+  List<int> pageStack = [0]; // Page stack to track the currently displayed page and the previous pages.
   Client? _client; // Client for the requests to the server
 
-  // Changes the current page index and updates the UI.
-  void _changePageIndex(int index) {
+  void _pushPage(int index) { // Push a new page onto the stack
     setState(() {
-      currentPageIndex = index; // Updates the current page index.
+      pageStack.add(index);
     });
+  }
+
+  void _popPage() { // Pop the top page from the stack to go back
+    if (pageStack.length > 1) {
+      setState(() {
+        pageStack.removeLast();
+      });
+    }
   }
 
   List<Widget> _pages = []; // List to hold the different pages for editing the meal.
@@ -59,24 +68,27 @@ class _EditMealPageState extends State<EditMealPage> {
           ingredients: ingredients, // Pass the ingredients to the EditMealFormPage.
           client: _client!,
           onAddIngredients: () {
-            _changePageIndex(1); // Changes the shown page to "add_ingredent_page.dart" when executed.
+            _pushPage(1); // Changes the shown page to "add_ingredent_page.dart" when executed.
           },
           onCamera: () {
-            _changePageIndex(2); // Changes the shown page to "camera_page.dart" when executed.
+            _pushPage(2); // Changes the shown page to "camera_page.dart" when executed.
           },
         ),
         AddIngredientPage(
-          meal: meal,  // Pass the meal object to the AddIngredientPage.
           ingredients: ingredients, // Pass the ingredients to the AddIngredientPage.
           client: _client!,
           onCamera: () {
-            _changePageIndex(2); // Changes the shown page to "camera_page.dart" when executed.
+            _pushPage(2); // Changes the shown page to "camera_page.dart" when executed.
           },
           onIngredientsUpdated: (newIngredients) { // Update ingredients when modified.
-          setState(() {
-            ingredients = newIngredients;
-          });
-        },
+            setState(() {
+              ingredients = newIngredients;
+            });
+          },
+          onIngredientAdded: (addedIngredient) {
+            packedIngredients.add(addedIngredient);
+            _popPage();
+          } // Go back to the previous page after adding new ingredient.
         ),
         CameraPage(client: _client!,), // Instantiates the CameraPage.
       ];
@@ -91,11 +103,10 @@ class _EditMealPageState extends State<EditMealPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_pages.isEmpty) { // Checks if the pages list is empty.
-      return Scaffold(body: Center(child: CircularProgressIndicator())); // If it is, it shows a loading circle.
-    }
     return Scaffold(
-      body: _pages[currentPageIndex], // Displays the currently selected page based on the currentPageIndex.
+      body: _pages.isNotEmpty
+        ? _pages[pageStack.last] // Show the page at the top of the stack
+        : Center(child: CircularProgressIndicator()), // Show loading spinner if _pages is empty
     );
   }
 }

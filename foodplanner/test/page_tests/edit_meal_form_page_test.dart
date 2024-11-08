@@ -18,7 +18,7 @@ void main() {
   group('EditMealFormPage Widget Tests', () {
     late Meal meal;
     late List<Ingredient> ingredients;
-    late MockCallback mockOnAddIngredients;
+    late MockValueSetter mockOnAddIngredients;
     late MockCallback mockOnCamera;
     late Client mockClient;
     late ValueChanged<List<Ingredient>> mockOnIngredientsUpdated;
@@ -26,8 +26,8 @@ void main() {
     // Initial setup before tests
     setUp(() {
       meal = Meal();
-      ingredients = [Ingredient(name: "Knækbrød", userRef: 1), Ingredient(name: "Æble", userRef: 1)];
-      mockOnAddIngredients = MockCallback();
+      ingredients = [Ingredient(name: "Knækbrød"), Ingredient(name: "Æble")];
+      mockOnAddIngredients = MockValueSetter();
       mockOnCamera = MockCallback();
       mockClient = Client();
       mockOnIngredientsUpdated = (List<Ingredient> updatedIngredients) {};
@@ -40,7 +40,7 @@ void main() {
           home: EditMealFormPage(
             meal: meal,
             ingredients: ingredients,
-            onAddIngredients: mockOnAddIngredients,
+            onAddIngredients: mockOnAddIngredients.valuesetter(1),
             onCamera: mockOnCamera,
             client: mockClient,
           ),
@@ -94,9 +94,10 @@ void main() {
 
     testWidgets('should save changes and pop when save button is tapped', (WidgetTester tester) async {
       final meal = Meal();
-      final ingredients = [Ingredient(name: "Knækbrød", userRef: 1), Ingredient(name: "Æble", userRef: 1)];
+      final ingredients = [Ingredient(name: "Knækbrød"), Ingredient(name: "Æble")];
       final mockOnAddIngredients = MockCallback();
       final mockOnCamera = MockCallback();
+      final mockOnIngredientAdded = MockCallback();
 
       // Router for testing the page shifting.
       final router = GoRouter(
@@ -105,10 +106,10 @@ void main() {
           GoRoute(
             path: '/add',
             builder: (context, state) => AddIngredientPage(
-              meal: meal,
               ingredients: ingredients,
               onIngredientsUpdated: mockOnIngredientsUpdated,
               onCamera: mockOnCamera,
+              onIngredientAdded: mockOnIngredientAdded,
               client: mockClient,
             ),
           ),
@@ -192,7 +193,7 @@ void main() {
     testWidgets('should handle extremely long ingredient names gracefully', (WidgetTester tester) async {
       // Arrange
       ingredients = [
-        Ingredient(name: "A" * 500, userRef: 1), // Very long ingredient name
+        Ingredient(name: "A" * 500), // Very long ingredient name
       ];
       
       await tester.pumpWidget(
@@ -214,7 +215,7 @@ void main() {
     testWidgets('should handle special characters in ingredient names', (WidgetTester tester) async {
       // Arrange
       ingredients = [
-        Ingredient(name: "!@#\$%^&*()_+-=[]{}|;:'\",.<>?/", userRef: 1),
+        Ingredient(name: "!@#\$%^&*()_+-=[]{}|;:'\",.<>?/"),
       ];
 
       await tester.pumpWidget(

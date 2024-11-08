@@ -24,7 +24,7 @@ void main() {
     // Initial setup before tests
     setUp(() {
       meal = Meal();
-      ingredients = [Ingredient(name: "Knækbrød", userRef: 1), Ingredient(name: "Æble", userRef: 1)];
+      ingredients = [Ingredient(name: "Knækbrød"), Ingredient(name: "Æble")];
       mockOnAddIngredients = MockCallback();
       mockOnCamera = MockCallback();
       mockClient = Client();
@@ -35,7 +35,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
-            meal: meal,
+            packedIngredients: meal.getPackedIngredients,
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
@@ -64,7 +64,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
-            meal: meal,
+            packedIngredients: meal.getPackedIngredients,
             ingredients: null,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
@@ -82,7 +82,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
-            meal: meal,
+            packedIngredients: meal.getPackedIngredients,
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
@@ -101,7 +101,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
-            meal: meal,
+            packedIngredients: meal.getPackedIngredients,
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
@@ -122,7 +122,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
-            meal: meal,
+            packedIngredients: meal.getPackedIngredients,
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
@@ -141,7 +141,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
-            meal: meal,
+            packedIngredients: meal.getPackedIngredients,
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
@@ -162,7 +162,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
-            meal: meal,
+            packedIngredients: meal.getPackedIngredients,
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
@@ -183,7 +183,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
-            meal: meal,
+            packedIngredients: meal.getPackedIngredients,
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,
@@ -204,7 +204,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: MealFormPage(
-            meal: meal,
+            packedIngredients: meal.getPackedIngredients,
             ingredients: ingredients,
             onAddIngredients: mockOnAddIngredients,
             onCamera: mockOnCamera,

@@ -2,26 +2,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:foodplanner/models/ingredient.dart';
-import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/services/packed_ingredient_services.dart';
+import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:http/http.dart';
 
 /// This class is used for selecting which ingredients should be added to the meal.
 class AddIngredientPage extends StatefulWidget {
-  final Meal meal; // The identifier of the meal which the ingredient should be added to.
   final List<Ingredient> ingredients; // List of available ingredients for selection.
   final ValueChanged<List<Ingredient>> onIngredientsUpdated; // Callback to the method which modifies the list of existing ingredients
   final VoidCallback onCamera; // Callback to change the shown page through "add_meal_page.dart"
+  final ValueSetter onIngredientAdded; // Callback to handle what to do once a new ingredient is added.
   final Client client;
 
   const AddIngredientPage({
     super.key,
-    required this.meal, // Required Meal object to pass.
     required this.ingredients, // Required list of Ingredient objects to pass.
     required this.onIngredientsUpdated, // Required callback to handle the ingredient list updating.
     required this.onCamera, // Required callback to handle camera navigation.
+    required this.onIngredientAdded, // Required callback to handle navigation after a new ingredient is added.
     required this.client,
   });
   
@@ -65,11 +64,11 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
         ),
       ),
       // The main body of the AddIngredientPage.
-      body: _buildAddIngredientPage(context, widget.meal, sortedIngredients)
+      body: _buildAddIngredientPage(context, sortedIngredients)
     );
   }
 
-  Widget _buildAddIngredientPage(BuildContext context, Meal meal, List<Ingredient> ingredients) {
+  Widget _buildAddIngredientPage(BuildContext context, List<Ingredient> ingredients) {
     // List<Ingredient> sortedIngredients = ingredients;
     int maxTextLength = 20; // The max number of characters that can be inputted into the textfield.
 
@@ -113,25 +112,29 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
             itemBuilder: (BuildContext context, int index) { // Builds each item in the list.
               return TextButton(  // A button for each ingredient.
                 onPressed: () {  // Action when the button is pressed.
-                  if(sortedIngredients[index].imageUrl == null) { // Checks if the ingredient has an image.
+                  if (sortedIngredients[index].imageRef == null) { // Checks if the ingredient has an image.
                     showCupertinoDialog( // If not, it opens a pop-up window.
-                      context: context, 
+                      context: context,
                       builder: (BuildContext context) => CupertinoAlertDialog( // Build the dialog.
                         title: Text('Der er ikke et billede til denne ingrediens, tilføj dette nu.'), // Title of the dialog.
                         actions: <CupertinoDialogAction>[ // Actions in the dialog.
                           CupertinoDialogAction(
                             isDefaultAction: true,
                             onPressed: () { // Leads the user to the camera page.
+                              // Navigate to camera page
                               widget.onCamera(); // Calls the passed callback to navigate to the camera page.
                             },
                             child: const Text("OK"), // Button text.
                           ),
                         ],
-                      )
+                      ),
                     );
-                  } else {
-                    createPackedIngredient(widget.client, meal.id, sortedIngredients[index], 0); // Handle adding the ingredient if an image exists.
                   }
+                  final newPacked = PackedIngredient(
+                    id: 0,
+                    ingredientRef: sortedIngredients[index],
+                  );
+                  widget.onIngredientAdded(newPacked);
                 },
                 style: TextButton.styleFrom( // Styling the button.
                   shape: RoundedRectangleBorder( // Shape of the button.

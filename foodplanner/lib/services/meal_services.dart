@@ -31,7 +31,7 @@ Future<Meal> fetchMeal(http.Client client, int id) async {
 // Creates a new meal on the server.
 // Takes an HTTP client, meal title, optional image URL, optional date, and a list of ingredients.
 // Returns the server's response.
-Future<http.Response> createMeal(http.Client client, /*final User user,*/ final String title, final String? imageUrl, final DateTime? date, final List<PackedIngredient> ingredients) async {
+Future<http.Response> createMeal(http.Client client, final String title, final int? image_ref, final DateTime? date, final List<PackedIngredient> ingredients) async {
   final jwtToken = await AuthProvider().retrieveToken();
   // Sending a POST request to the API endpoint to create a new meal.
   final response = await client.post(
@@ -42,13 +42,32 @@ Future<http.Response> createMeal(http.Client client, /*final User user,*/ final 
     },
     // Encode the meal data as JSON for the request body.
     body: jsonEncode({
-        // 'user': user,
         'title': title, // Meal title.
-        'image': imageUrl, // Meal image URL (ensured to be a string).
+        'image_ref': image_ref, // Meal image URL (ensured to be a string).
         'date': date?.toIso8601String(), // Optional date for the meal.
         'ingredients': ingredients.map((e) => e.toJson()).toList(), // List of PackedIngredient objects.
     }),
   );
+  print('Statuscode: ${response.statusCode} body:${response.body}');
+  return response;   // Return the response from the server.
+}
+
+// Updates a meal on the server.
+// Takes an HTTP client, and the changed meal as inputs.
+// Returns the server's response.
+Future<http.Response> updateMeal(http.Client client, final Meal meal) async {
+  final jwtToken = await AuthProvider().retrieveToken();
+  // Sending a POST request to the API endpoint to create a new meal.
+  final response = await client.put(
+    Uri.parse('${ApiConfig.baseUrl}/api/Meals/Update/${meal.id}'), // Specify the API endpoint for meal creation.
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8', // Specify that the content is JSON.
+      'Authorization': 'Bearer $jwtToken'
+    },
+    // Encode the meal data as JSON for the request body.
+    body: meal.toJson(),
+  );
+  print('Statuscode: ${response.statusCode} body:${response.body}');
   return response;   // Return the response from the server.
 }
 

@@ -5,6 +5,7 @@ import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/services/meal_services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart';
 
@@ -79,13 +80,14 @@ class EditMealFormPage extends StatelessWidget {
               onAddIngredients(); // Calls the callback to change to the "add_ingredient_page".
             },
             widget: Icon(Icons.add, color: AppColors.textSecondary),  // Icon displayed on the button.
-            backgroundColor: AppColors.secondary, // Background color of the button.
+            backgroundColor: AppColors.tertiary, // Background color of the button.
             width: MediaQuery.sizeOf(context).width/2, // Half the width of the screen for the button.
           ),
 
           // The button for saving the changes made to meal.
           CustomElevatedButton(
-            onTab: () { 
+            onTab: () {
+              updateMeal(client, meal);
               context.pop(); // Goes back to the previous page.
             },
             width: MediaQuery.sizeOf(context).width/2, // Half the width of the screen for saving button.
