@@ -10,6 +10,7 @@ import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_advanced_segment/flutter_advanced_segment.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:provider/provider.dart';
+import 'package:foodplanner/pages/student_page.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -82,7 +83,6 @@ class _SettingsPage extends State<Settings> {
               MaterialPageRoute(builder: (context) => AdminApprovePage()),
             );
           }
-          )
         },
         {
           'title': "Deaktiver profiler",
