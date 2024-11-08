@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -26,7 +27,10 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
 
   Future<void> fetchChildrenData() async {
     try {
-      final childrensApi = ChildrensApi(ApiClient(basePath: ApiConfig.baseUrl));
+      String? jwtToken = await AuthProvider().retrieveToken();
+      var apiClient = ApiClient(basePath: ApiConfig.baseUrl);
+      apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
+      final childrensApi = ChildrensApi(apiClient);
       final List<ChildrenGetAllDTO>? data = await childrensApi.apiChildrensGetAllChildrenGet();
 
       if (data != null) {
