@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/pages/admin_approve_page.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/settings_widget.dart';
@@ -74,6 +75,13 @@ class _SettingsPage extends State<Settings> {
               (SFIcon(SFIcons.sf_chevron_forward)),
               SizedBox(width: 10),
             ],
+          ),
+          'ctaFunction': () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AdminApprovePage()),
+            );
+          }
           )
         },
         {
@@ -87,6 +95,12 @@ class _SettingsPage extends State<Settings> {
               )
             ],
           ),
+          'ctaFunction': () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StudentPage()),
+            );
+          }
         },
         {
           'title': "Administrer børn",
@@ -110,7 +124,6 @@ class _SettingsPage extends State<Settings> {
           'divider': false,
         },
       ];
-
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
