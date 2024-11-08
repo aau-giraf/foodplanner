@@ -14,7 +14,7 @@ import 'package:foodplanner/components/settings_header.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-
+import 'package:foodplanner/pages/choose_parent.dart';
 
 class ChildProfile extends StatefulWidget {
   final Child child;
@@ -41,6 +41,8 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
   String updatedFirstName = '';
   String updatedLastName = '';
 
+        
+
 
   @override
   void initState() {
@@ -48,6 +50,7 @@ class ChildProfileState extends State<ChildProfile> with SingleTickerProviderSta
 
     firstNameController.text = TextEditingController(text: widget.child.firstName).text;
     lastNameController.text = TextEditingController(text: widget.child.lastName).text;
+    updatedFirstName = widget.child.firstName;
     updatedLastName = widget.child.lastName;
     selectedClassId = widget.child.classId.toString();
 
@@ -175,43 +178,97 @@ void dispose() {
       ),
       'showSpacer': false,
     },
-    {
+        {
       'title': 'Klasse',
       'showIcon': false,
       'isEditable': isEditingClass,
-      'cta': ctaButtons(() {
-        setState(() {
-          isEditingClass = true;
-        });
-      }),
+      'cta': Container(
+        height: 35,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10), // Set the desired border radius
+          color: Colors.transparent, // Ensure the container itself is transparent
+        ),
+        child: DropdownButton<String>(
+          items: schoolClasses.map((schoolClass) {
+            return DropdownMenuItem<String>(
+              value: schoolClass.classId.toString(),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), // Set the desired border radius
+                  color: selectedClassId == schoolClass.classId.toString() ? AppColors.primary : Colors.transparent,
+                ),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  schoolClass.className,
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+          value: selectedClassId,
+          onChanged: (String? value) {
+            setState(() {
+              selectedClassId = value;
+              print(selectedClassId);
+            });
+          },
+          selectedItemBuilder: (BuildContext context) {
+            return schoolClasses.map<Widget>((SchoolClass schoolClass) {
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                height: 35,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), // Set the desired border radius
+                  color: selectedClassId == schoolClass.classId.toString() ? AppColors.primary : Colors.transparent,
+                ),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  schoolClass.className,
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              );
+            }).toList();
+          },
+        ),
+      ),
       'value': getClassName(widget.child.classId),
     },
     {
       'title': 'Forældre',
       'showIcon': false,
       'isEditable': false,
-      'cta': ctaButtons(() {
-        onPressed: () {
-          Navigator.pushNamed(context, '/parent_profile', arguments: parent);
-        };
-      }),
-      'value': '${parent.firstName} ${parent.lastName}',
+      'cta': ctaButtons(() {}),
       'divider': false,
     },
   ];
 
-
   Widget ctaButtons(VoidCallback onPressed) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        Text(
+          '${parent.firstName} ${parent.lastName}',
+          style: AppTextStyles.bigText,
+        ),
         IconButton(
           padding: EdgeInsets.zero,
           icon: SFIcon(
-            SFIcons.sf_pencil,
+            SFIcons.sf_chevron_right,
             color: AppColors.textPrimary,
             fontSize: 28,
           ),
-          onPressed: onPressed,
+          onPressed: () {
+          Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChooseParent(child: widget.child)),
+          );}
         ),
       ],
     );

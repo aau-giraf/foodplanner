@@ -11,9 +11,9 @@ class UserService {
   Future<User> fetchUser(int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(Uri.parse('$apiUrl/api/Admin/Get/${id}'),
-    headers: <String, String>{
-      'Authorization': 'Bearer $jwtToken',
-    });
+        headers: <String, String>{
+          'Authorization': 'Bearer $jwtToken',
+        });
 
     if (response.statusCode == 200) {
       return User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
@@ -96,5 +96,23 @@ class UserService {
     );
 
     return response;
+  }
+
+  Future<List<User>> fetchAllParents() async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http
+        .get(Uri.parse('$apiUrl/api/Admin/GetAll'), headers: <String, String>{
+      'Authorization': 'Bearer $jwtToken',
+    });
+    if (response.statusCode == 200) {
+      print(response.body);
+      final List<dynamic> usersJson = jsonDecode(response.body);
+
+      return usersJson
+          .map((json) => User.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } else {
+      throw Exception('Kunne ikke hente forældre');
+    }
   }
 }
