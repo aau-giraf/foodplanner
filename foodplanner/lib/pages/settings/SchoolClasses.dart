@@ -26,6 +26,7 @@ class _SchoolClasses extends State<SchoolClasses> {
   final controller = TextEditingController();
 
   Map<int, bool> isEditing = {};
+  Map<int, TextEditingController> controllers = {};
 
   @override
   void initState() {
@@ -37,6 +38,8 @@ class _SchoolClasses extends State<SchoolClasses> {
       // Initialize the Map with classIds
       for (var schoolClass in classes) {
         isEditing[schoolClass.classId] = false;
+        controllers[schoolClass.classId] =
+            TextEditingController(text: schoolClass.className);
       }
     });
   }
@@ -47,8 +50,59 @@ class _SchoolClasses extends State<SchoolClasses> {
       setState(() {
         isEditing[classId] = editing;
       });
-      print(isEditing);
     }
+  }
+
+  void addClass() {
+    SchoolClasses.schoolClassService
+        .createClass(controller.text)
+        .then((schoolClass) {
+      setState(() {
+        schoolClasses.add(schoolClass);
+        isEditing[schoolClass.classId] = false;
+        controllers[schoolClass.classId] =
+            TextEditingController(text: schoolClass.className);
+        controller.clear();
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Klassen ${schoolClass.className} er blevet tilføjet'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.green,
+        ),
+      );
+    });
+  }
+
+  void updateClass(int classId) {
+    SchoolClasses.schoolClassService
+        .updateClass(classId, controllers[classId]!.text)
+        .then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Klassen er blevet opdateret'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.green,
+        ),
+      );
+    });
+  }
+
+  void deleteClass(int classId) {
+    SchoolClasses.schoolClassService.deleteClass(classId).then((_) {
+      setState(() {
+        schoolClasses
+            .removeWhere((schoolClass) => schoolClass.classId == classId);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Klassen er blevet slettet'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.green,
+        ),
+      );
+    });
   }
 
   Widget cta(int schoolClassId) {
@@ -57,6 +111,7 @@ class _SchoolClasses extends State<SchoolClasses> {
         if (isEditing[schoolClassId]!) ...[
           IconButton(
             onPressed: () {
+              updateClass(schoolClassId);
               setEditingState(schoolClassId, false);
             },
             icon: SFIcon(
@@ -79,7 +134,9 @@ class _SchoolClasses extends State<SchoolClasses> {
             padding: EdgeInsets.zero,
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              deleteClass(schoolClassId);
+            },
             icon: SFIcon(
               SFIcons.sf_x_square_fill,
               color: AppColors.errorText,
@@ -120,63 +177,68 @@ class _SchoolClasses extends State<SchoolClasses> {
         scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          SettingsWidget(
-            title: 'Adminstrer klasser',
-            type: SettingsType.header,
-            leftIcon: SFIcons.sf_figure_2,
-            subTitle: 'Tilføj, rediger og slet klasser',
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Card(
-              elevation: 2,
-              color: AppColors.background,
-              surfaceTintColor: AppColors.background,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                child: Row(
-                  children: [
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: CustomTextField(
-                        controller: controller,
-                        errorText: "",
-                        hintText: "Skriv klasse navn",
-                        type: TextFieldType.smallTextField,
-                        color: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SettingsWidget(
+              title: 'Adminstrer klasser',
+              type: SettingsType.header,
+              leftIcon: SFIcons.sf_figure_2,
+              subTitle: 'Tilføj, rediger og slet klasser',
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Card(
+                elevation: 2,
+                color: AppColors.background,
+                surfaceTintColor: AppColors.background,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: CustomTextField(
+                          controller: controller,
+                          errorText: "",
+                          hintText: "Skriv klasse navn",
+                          type: TextFieldType.smallTextField,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      "Tilføj klasse",
-                      style: AppTextStyles.mediumText.copyWith(
-                        color: Colors.blue.shade700,
-                        fontWeight: FontWeight.w600,
+                      SizedBox(width: 10),
+                      TextButton(
+                        onPressed: addClass,
+                        child: Text(
+                          "Tilføj klasse",
+                          style: AppTextStyles.mediumText.copyWith(
+                            color: Colors.blue.shade700,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          softWrap: true,
+                        ),
                       ),
-                      softWrap: true,
-                    ),
-                    SizedBox(width: 10),
-                  ],
+                      SizedBox(width: 10),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          ...schoolClasses.map(
-            (schoolClass) {
-              return SettingsWidget(
-                title: !isEditing[schoolClass.classId]!
-                    ? schoolClass.className
-                    : '',
-                type: SettingsType.items,
-                leftIcon: SFIcons.sf_figure_2,
-                cta: cta(schoolClass.classId),
-              );
-            },
-          ),
-        ],
+            ...schoolClasses.map(
+              (schoolClass) {
+                return SettingsWidget(
+                  title: controllers[schoolClass.classId]!.text,
+                  type: SettingsType.items,
+                  leftIcon: SFIcons.sf_figure_2,
+                  cta: cta(schoolClass.classId),
+                  isEditable: isEditing[schoolClass.classId]!,
+                  controller: controllers[schoolClass.classId],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

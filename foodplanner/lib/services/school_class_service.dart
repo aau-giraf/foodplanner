@@ -18,4 +18,49 @@ class SchoolClassService {
       throw Exception('Kunne ikke hente Klasser');
     }
   }
+
+  Future<SchoolClass> createClass(String className) async {
+    final response = await http.post(
+      Uri.parse('$apiUrl/api/Classrooms/Create'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'className': className,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      int schoolClassID = int.parse(response.body);
+      return SchoolClass(classId: schoolClassID, className: className);
+    } else {
+      throw Exception('Kunne ikke oprette klasse');
+    }
+  }
+
+  Future<void> updateClass(int classId, String className) async {
+    final response = await http.put(
+      Uri.parse('$apiUrl/api/Classrooms/Update/$classId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'className': className,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Kunne ikke opdatere klasse');
+    }
+  }
+
+  Future<void> deleteClass(int classId) async {
+    final response = await http.delete(
+      Uri.parse('$apiUrl/api/Classrooms/Delete/$classId'),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Kunne ikke slette klasse');
+    }
+  }
 }
