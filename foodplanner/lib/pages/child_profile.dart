@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
@@ -440,7 +441,30 @@ class ChildProfileState extends State<ChildProfile>
                   child: CustomButton(
                     text: 'Slet barn',
                     onTab: () => {
-                      print(widget.child.childId),
+                      showIPhonePopupBox(
+                        context: context,
+                        title: 'Slet klasse',
+                        message:
+                            'Er du sikker på, at du vil slette denne klasse?',
+                        confirmText: 'Ja',
+                        cancelText: 'Nej',
+                        onConfirm: () {
+                          ChildProfile.childService
+                              .deleteChild(widget.child.childId)
+                              .then((response) {
+                            if (response.statusCode == 204) {
+                              print('successfullydeleted');
+                              Navigator.pop(context);
+                            } else {
+                              throw Exception('Der skete en fejl');
+                            }
+                          });
+                          Navigator.of(context).pop(); // Close the popup
+                        },
+                        onCancel: () {
+                          Navigator.of(context).pop(); // Close the popup
+                        },
+                      ),
                     },
                     backgroundColor: Colors.red,
                   ),
