@@ -27,7 +27,7 @@ class FoodImage extends StatelessWidget {
     String? jwtToken = await AuthProvider().retrieveToken();
 
     var apiClient = ApiClient();
-    apiClient.addDefaultHeader('Image authorization', 'Bearer $jwtToken');
+    apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
 
     var imagesApi = ImagesApi(apiClient);
 
