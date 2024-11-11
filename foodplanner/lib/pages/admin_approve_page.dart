@@ -58,6 +58,12 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
     } catch (e) {
       print('Error approving user: $e');
     }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Brugeren er blevet godkendt'),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
 // Function to remove a user
@@ -75,6 +81,12 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
     } catch (e) {
       print('Error removing user: $e');
     }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Brugeren er blevet fjernet'),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   @override
