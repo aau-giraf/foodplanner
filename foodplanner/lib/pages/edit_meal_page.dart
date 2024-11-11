@@ -1,7 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/meal.dart';
-import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/pages/edit_meal_form_page.dart';
@@ -27,9 +28,9 @@ class EditMealPage extends StatefulWidget {
 
 class _EditMealPageState extends State<EditMealPage> {
   Meal meal = Meal();  // Meal object being edited.
-  List<PackedIngredient> packedIngredients = []; // List to store all ingredients added to the meal.
   List<Ingredient> ingredients = []; // List to store all the users ingredient presets.
   List<int> pageStack = [0]; // Page stack to track the currently displayed page and the previous pages.
+  File? image;
   Client? _client; // Client for the requests to the server
 
   void _pushPage(int index) { // Push a new page onto the stack
@@ -76,6 +77,7 @@ class _EditMealPageState extends State<EditMealPage> {
         ),
         AddIngredientPage(
           ingredients: ingredients, // Pass the ingredients to the AddIngredientPage.
+          image: image,
           client: _client!,
           onCamera: () {
             _pushPage(2); // Changes the shown page to "camera_page.dart" when executed.
@@ -86,11 +88,18 @@ class _EditMealPageState extends State<EditMealPage> {
             });
           },
           onIngredientAdded: (addedIngredient) {
-            packedIngredients.add(addedIngredient);
+            meal.ingredients.add(addedIngredient);
             _popPage();
           } // Go back to the previous page after adding new ingredient.
         ),
-        CameraPage(client: _client!,), // Instantiates the CameraPage.
+        CameraPage(
+          client: _client!,
+          onImagePicked: (image) {
+          setState(() {
+            if(image is File) this.image = image;
+          });
+        },
+        ), // Instantiates the CameraPage.
       ];
     });
   }
@@ -104,6 +113,24 @@ class _EditMealPageState extends State<EditMealPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: pageStack.length > 1 // Show back button if there's a previous page
+          ? IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: _popPage,
+            )
+          : null, // No back button on the first page
+        title: const Text("Rediger madpakke"), // Title of the AppBar.
+        centerTitle: true, // Center the title in the AppBar.
+        backgroundColor: AppColors.background, // Background color for the AppBar.
+        elevation: 1.0, // Shadow effect for the AppBar.
+        iconTheme: const IconThemeData(color: AppColors.textPrimary), // Icon color in the AppBar.
+        titleTextStyle: const TextStyle( // Text style for the title.
+          color: AppColors.textPrimary, // Color for the title text.
+          fontSize: 18, // Font size for the title.
+          fontWeight: FontWeight.bold, // Bold font weight for the title.
+        ),
+      ),
       body: _pages.isNotEmpty
         ? _pages[pageStack.last] // Show the page at the top of the stack
         : Center(child: CircularProgressIndicator()), // Show loading spinner if _pages is empty

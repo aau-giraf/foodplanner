@@ -42,8 +42,10 @@ Future<http.Response> createMeal(http.Client client, final String title, final i
     },
     // Encode the meal data as JSON for the request body.
     body: jsonEncode({
+        'id': 0,
         'title': title, // Meal title.
-        'image_ref': image_ref, // Meal image URL (ensured to be a string).
+        'image_ref': 1,//image_ref, // Meal image URL (ensured to be a string).
+        'user_ref' : 1,
         'date': date?.toIso8601String(), // Optional date for the meal.
     }),
   );

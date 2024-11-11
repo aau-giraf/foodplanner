@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gal/gal.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -15,12 +12,14 @@ import 'package:foodplanner/config/colors.dart';
 class CameraPage extends StatefulWidget {
   final CameraController? controller; // Optional controller for managing the camera.
   final ImagePicker? imagePicker; // Optional image picker for selecting images.
+  final ValueSetter onImagePicked;
   final Client client;
 
   const CameraPage({
     super.key, // Key for the widget, used for maintaining state.
     this.controller, // Assign provided camera controller, if any.
     this.imagePicker, // Assign provided image picker, if any.
+    required this.onImagePicked,
     required this.client,
   });
 
@@ -36,8 +35,6 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   List<CameraDescription> cameras = []; // List for containing the available cameras of the device.
   CameraController? cameraController; // Controller for managing the camera.
   ImagePicker? imagePicker; // ImagePicker instance for selecting images.
-
-  File? _selectedImage; // Variable to hold the selected image file.
 
   /// A method for checking whether the app becomes inactive.
   @override
@@ -112,7 +109,6 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
         children: <Widget>[
           _galleryControlWidget(context), // Button to access the image gallery.
           _cameraControlWidget(context), // Button to take a picture with the camera.
-          _navigateButton(context), // (Optional) button for navigation to another page.
         ],
       ),
     );
@@ -141,7 +137,8 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
                 onPressed: () async { // Asynchronous callback when button is pressed.
                   // Awaits for the button to be pressed.
                   XFile picture = await cameraController!.takePicture(); // Makes the device take a picture.
-                  Gal.putImage(picture.path);// Saves the new picture in the device's gallery app.
+                  // Gal.putImage(picture.path);// Saves the new picture in the device's gallery app.
+                  widget.onImagePicked(picture);
                 },
                 child: const Icon( // Icon displayed on the FloatingActionButton.
                   Icons.camera, // Camera icon for the button.
@@ -172,35 +169,6 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
                 Icons.collections, // Collections icon for gallery access.
                 color: AppColors.secondary, // Sets the color of the icon.
               ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  ///           !!! Old method which is no longer needed !!!
-  Widget _navigateButton(BuildContext context) {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            FloatingActionButton(
-              backgroundColor: AppColors.secondary,
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) =>
-                //           const AlternateMealpage()
-                //   ), // Naviger til den nye side
-                // );
-              },
-              child:
-                  const Icon(Icons.arrow_forward, color: AppColors.background),
             )
           ],
         ),
@@ -242,7 +210,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
     if (returnedImage != null) {  // Check if an image was actually selected.
       // Check if an image was actually selected
       setState(() { // Update the state with the newly selected image.
-        _selectedImage = File(returnedImage.path); // Store the selected image file.
+        widget.onImagePicked(returnedImage);
       });
     } else {
       // Handle the case when no image is selected (optional)

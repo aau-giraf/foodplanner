@@ -49,10 +49,10 @@ void main() {
       test('return with 200 response when a packed ingredient is added to the database', () async {
         final client = MyMockClient();
         
-        when(createPackedIngredient(client, packed.mealRef, packed.ingredientRef))
+        when(createPackedIngredient(client, packed.mealRef, packed.ingredientRef.id))
           .thenAnswer((_) async => http.Response('{"id": ${packed.id}, "meal_ref": ${packed.mealRef}, "ingredient_ref": {"id": ${packed.ingredientRef.id}, "name": ${packed.ingredientRef.name}, "image_ref": ${packed.ingredientRef.imageRef}}}', 200));
         
-        final response = await createPackedIngredient(client, packed.mealRef, packed.ingredientRef);
+        final response = await createPackedIngredient(client, packed.mealRef, packed.ingredientRef.id);
 
         expect(response.statusCode, 200);
       });

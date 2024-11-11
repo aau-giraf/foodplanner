@@ -1,28 +1,36 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
-import 'package:foodplanner/routes/paths.dart';
+import 'package:foodplanner/services/food_image_service.dart';
 import 'package:foodplanner/services/meal_services.dart';
-import 'package:go_router/go_router.dart';
+import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:foodplanner/config/colors.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart';
 
 /// This class is used to create the meal page where the user can create an individual meal for their children.
 class MealFormPage extends StatefulWidget {
-  final List<PackedIngredient> packedIngredients; // The meal being created or edited.
   final List<Ingredient>? ingredients; // The list of ingredients available.
+  final List<PackedIngredient> packedIngredients; // The meal being created or edited.
+  final TextEditingController mealTitleController;
+  final File? image;
   final VoidCallback onAddIngredients; // Callback for adding ingredients.
   final VoidCallback onCamera; // Callback for opening the camera.
   final Client client;
   
   const MealFormPage({
     super.key, // Key for the widget, maintaining state.
-    required this.packedIngredients, // Required parameter for the meal.
     required this.ingredients, // Required parameter for the ingredients.
+    required this.packedIngredients, // Required parameter for the meal.
+    required this.mealTitleController,
+    required this.image,
     required this.onAddIngredients, // Callback for adding ingredients.
     required this.onCamera, // Callback for accessing the camera.
     required this.client,
@@ -37,42 +45,43 @@ class MealFormPage extends StatefulWidget {
 
 
 class _MealFormPageState extends State<MealFormPage> {
-  final TextEditingController _titleController = TextEditingController();  // Controller for the title text field.
-  int? imageID; // Variable to hold the selected image.
-
   // Method for deleting the controllers when they are done being used.
   @override
   void dispose() {
-    _titleController.dispose(); // Dispose of the title controller to free up resources.
     super.dispose(); // Call the superclass dispose method.
+  }
+
+  void onCreateMeal() async {
+  int? imageId = widget.image != null ? 
+    (jsonDecode(
+      (await UploadFoodImage(
+        widget.client,
+        widget.image!
+      )).body
+    ) as Map<String, dynamic>)['id'] as int? :
+  null;
+  await createMeal( // Creates a meal using the inputted ingredients, without an image.
+    widget.client,
+    widget.mealTitleController.text, // Title from the text input.
+    imageId,
+    DateTime.now(),  // Current date and time for the meal.
+  ).then((response) {
+    final storedMeal = Meal.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    widget.packedIngredients.forEach((packedIngredient) async {
+      await createPackedIngredient(
+        widget.client,
+        storedMeal.id,
+        packedIngredient.ingredientRef.id,
+      );
+    });
+  });
   }
 
   @override
   Widget build(BuildContext context) {
     int maxTextLength = 20; // The max number of characters that can be inputted into the textfield.
-    // final List<Ingredient> selectedIngredients = [];
-    // selectedIngredients.addAll(
-    //   widget.ingredients.where((ingredient) {
-    //     return widget.meal.getPackedIngredients.map(
-    //       (packedIngredient) => packedIngredient.ingredientRef.id).contains(ingredient.id);
-    //     }
-    //   ),
-    // );
 
     return Scaffold( // Scaffold to set the layout structure for the page.
-      appBar: AppBar( // AppBar at the top of the page.
-        title: const Text("Opret madpakke"), // Title of the AppBar.
-        centerTitle: true, // Center the title in the AppBar.
-        backgroundColor: AppColors.background, // Background color for the AppBar.
-        elevation: 1.0, // Shadow effect for the AppBar.
-        iconTheme: const IconThemeData(color: AppColors.textPrimary), // Icon color in the AppBar.
-        titleTextStyle: const TextStyle( // Text style for the title.
-          color: AppColors.textPrimary, // Color for the title text.
-          fontSize: 18, // Font size for the title.
-          fontWeight: FontWeight.bold, // Bold font weight for the title.
-        ),
-      ),
-
       body: Padding( // Padding around the body content.
         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, right: 16.0, left: 16.0), // Specify padding values.
         child: Column( // Vertical layout for the content.
@@ -84,7 +93,7 @@ class _MealFormPageState extends State<MealFormPage> {
             Container(
               padding: const EdgeInsets.only(left: 50.0, right: 50.0),  // Padding for the text field container.
               child: TextField( // Text field for entering the meal title.
-                controller: _titleController, // Controller for managing the inputted text.
+                controller: widget.mealTitleController, // Controller for managing the inputted text.
                 maxLength: maxTextLength, // Maximum length of characters allowed.
                 inputFormatters: <TextInputFormatter>[ // Input formatters to restrict input.
                   FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z ]")),
@@ -128,24 +137,20 @@ class _MealFormPageState extends State<MealFormPage> {
                     actions: <CupertinoDialogAction>[ // Actions for the alert dialog.
                       CupertinoDialogAction(
                         isDefaultAction: true, // Highlight the default action.
-                        onPressed: () { // Leads the user to the camera page. 
+                        onPressed: () async { // Leads the user to the camera page. 
                           widget.onCamera(); // Calls the camera callback.
+                          onCreateMeal();
+                          Navigator.pop(context);
+                          context.pop();
                         },
                         child: const Text("Ja"), // Button text for "Yes".
                       ),
                       CupertinoDialogAction(
                         isDestructiveAction: true, // Mark as a destructive action.
-                        onPressed: () {
-                          createMeal( // Creates a meal using the inputted ingredients, without an image.
-                            widget.client,
-                            _titleController.text, // Title from the text input.
-                            imageID,  // No image provided.
-                            DateTime.now(),  // Current date and time for the meal.
-                            widget.packedIngredients
-                              .map((packedIngredient) => PackedIngredient(ingredientRef: packedIngredient.ingredientRef))
-                              .toList(),
-                          );
-                          context.go(MEAL_LIST_PAGE); // Leads the user to the meal list page.
+                        onPressed: () async {
+                          onCreateMeal();
+                          Navigator.pop(context);
+                          context.pop();
                         },
                         child: const Text('Nej'),  // Button text for "No".
                       ),

@@ -38,19 +38,6 @@ class EditMealFormPage extends StatelessWidget {
     // ];
 
     return Scaffold( // Scaffold provides the basic visual structure for the page.
-      appBar: AppBar( // AppBar at the top of the page.
-        title: const Text("Rediger madpakke"), // Title of the AppBar.
-        centerTitle: true, // Center the title.
-        backgroundColor: AppColors.background, // Background color for the AppBar.
-        elevation: 1.0, // Shadows beneath the AppBar.
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),  // Icon color in the AppBar.
-        titleTextStyle: const TextStyle( // Text style for the title.
-          color: AppColors.textPrimary,  // Color for the title text.
-          fontSize: 18, // Font size of the title.
-          fontWeight: FontWeight.bold, // Bold font weight for the title.
-        ),
-      ),
-
       body: _buildEditMealPage(context, ingredients ?? []) // Build the edit meal page with the ingredients.
     );
   }
@@ -61,19 +48,8 @@ class EditMealFormPage extends StatelessWidget {
       padding: EdgeInsets.only(top: 5, left: 16, right: 16, bottom: 12), // Define the padding in all directions.
       child: Column( // Vertical layout for the page.
         children: [
-          // The list of elements which are created for each of the ingredients.
-          Expanded( // Expanded widget to fill available space.
-            child: ListView.separated( // Creates a scrollable list with separators.
-              itemCount: ingredients.length, // Creates an element for each ingredient.
-              itemBuilder: (BuildContext context, int index) { // Builds the list items for each ingredient.
-                return EditMealElement(meal: meal, onCamera: onCamera,); // Render each ingredient element.
-              },
-              separatorBuilder: (BuildContext context, int index) { // Defines the separator between list items.
-                return SizedBox(height: 20,); // Space between elements.
-              },
-            ),
-          ),
-          
+          EditMealElement(meal: meal, onCamera: onCamera,),
+
           // The button for adding a new ingredient to the meal.
           CustomElevatedButton(
             onTab: () { // Leads to the "add_ingredient_page"
@@ -83,6 +59,7 @@ class EditMealFormPage extends StatelessWidget {
             backgroundColor: AppColors.tertiary, // Background color of the button.
             width: MediaQuery.sizeOf(context).width/2, // Half the width of the screen for the button.
           ),
+          Spacer(),
 
           // The button for saving the changes made to meal.
           CustomElevatedButton(

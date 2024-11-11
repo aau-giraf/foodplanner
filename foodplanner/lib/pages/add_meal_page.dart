@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
-import 'package:foodplanner/pages/meal_form_page.dart';
+import 'package:foodplanner/pages/add_meal_form_page.dart';
+import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
@@ -25,7 +29,10 @@ class AddMealPage extends StatefulWidget {
 
 class _AddMealPageState extends State<AddMealPage> {
   List<Ingredient> ingredients = []; // List to store all the users ingredient presets.
+  String mealTitle = '';
+  late TextEditingController mealTitleController;
   List<PackedIngredient> packedIngredients = []; // List to store all ingredients added to the meal.
+  File? image;
   List<int> pageStack = [0]; // Page stack to track the currently displayed page and the previous pages.
   Client? _client; // Client for the requests to the server
 
@@ -49,6 +56,7 @@ class _AddMealPageState extends State<AddMealPage> {
   void initState() { 
     super.initState(); // Call the superclass's initState method.
     _client = http.Client(); // Set the client for the system
+    mealTitleController = TextEditingController(text: mealTitle);
     final auth = AuthProvider(); // Create an instance of AuthProvider to access authentication data.
 
     // if (auth.jwtToken == null) { // If no user is found reroute to the login page.
@@ -67,14 +75,17 @@ class _AddMealPageState extends State<AddMealPage> {
   void _initializePages() {
     _pages.addAll([ // Adds all of the pages to the "_pages" list
       MealFormPage( // The MealFormPage is the first page to be displayed.
-        packedIngredients: packedIngredients, // Pass the meal to the MealFormPage.
         ingredients: ingredients, // Pass the ingredients to the MealFormPage.
+        packedIngredients: packedIngredients, // Pass the meal to the MealFormPage.
+        mealTitleController: mealTitleController,
+        image: image,
         client: _client!,
         onAddIngredients: () => _pushPage(1), // Changes the shown page to "add_ingredent_page.dart" when executed.
         onCamera: () => _pushPage(2), // Changes the shown page to "camera_page.dart" when executed.
       ),
       AddIngredientPage( // The AddIngredientPage is the second page.
         ingredients: ingredients, // Pass the ingredients to the AddIngredientPage.
+        image: image,
         client: _client!,
         onCamera: () => _pushPage(2), // Changes the shown page to "camera_page.dart" when executed.
         onIngredientsUpdated: (newIngredients) { // Update ingredients when modified.
@@ -83,23 +94,49 @@ class _AddMealPageState extends State<AddMealPage> {
           });
         },
         onIngredientAdded: (addedIngredient) {
-          packedIngredients.add(addedIngredient);
+          packedIngredients.add(addedIngredient as PackedIngredient);
           _popPage();
          } // Go back to the previous page after adding new ingredient.
       ),
-      CameraPage(client: _client!,), // The CameraPage is the third page.
+      CameraPage(
+        client: _client!,
+        onImagePicked: (image) {
+          setState(() {
+            if(image is File) this.image = image;
+          });
+        },
+      ), // The CameraPage is the third page.
     ]);
   }
 
   @override
   void dispose() {
     _client?.close(); // Close the client when the page is closed.
+    mealTitleController.dispose(); // Dispose of the title controller to free up resources.
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold( // Main structure of the page.
+      appBar: AppBar(
+        leading: pageStack.length > 1 // Show back button if there's a previous page
+          ? IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: _popPage,
+            )
+          : null, // No back button on the first page
+        title: const Text("Opret madpakke"), // Title of the AppBar.
+        centerTitle: true, // Center the title in the AppBar.
+        backgroundColor: AppColors.background, // Background color for the AppBar.
+        elevation: 1.0, // Shadow effect for the AppBar.
+        iconTheme: const IconThemeData(color: AppColors.textPrimary), // Icon color in the AppBar.
+        titleTextStyle: const TextStyle( // Text style for the title.
+          color: AppColors.textPrimary, // Color for the title text.
+          fontSize: 18, // Font size for the title.
+          fontWeight: FontWeight.bold, // Bold font weight for the title.
+        ),
+      ),
       body: _pages.isNotEmpty
         ? _pages[pageStack.last] // Show the page at the top of the stack
         : Center(child: CircularProgressIndicator()), // Show loading spinner if _pages is empty

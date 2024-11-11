@@ -51,9 +51,9 @@ final router = GoRouter(
       builder: (context, state) => AddMealPage(),
     ),
     GoRoute(
-      path: EditMealPage.routeName,
+      path: EditMealPage.routeName + '/:mealID',
       builder: (context, state) {
-        final mealID = state.pathParameters['meal'] as int;
+        final mealID = int.parse(state.pathParameters['mealID']!);
         return EditMealPage(mealID: mealID);
       },
     ),

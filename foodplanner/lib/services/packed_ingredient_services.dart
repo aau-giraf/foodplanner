@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:http/http.dart' as http;
 import 'package:foodplanner/services/api_config.dart';
@@ -13,7 +12,7 @@ Future<PackedIngredient> fetchPackedIngredient(http.Client client, int id) async
   final jwtToken = await AuthProvider().retrieveToken();
   // Sending a GET request to the API endpoint to retrieve a packed ingredient by the specified ID.
   final response =
-      await client.get(Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Get/$id'),
+      await client.get(Uri.parse('${ApiConfig.baseUrl}/api/PackedIngredient/Get/$id'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $jwtToken',
@@ -34,11 +33,11 @@ Future<PackedIngredient> fetchPackedIngredient(http.Client client, int id) async
 // Takes an HTTP client, a reference to a meal, a reference to an ingredient,
 // and the packed ingredient ID as parameters.
 // Returns the server's response after attempting to create the packed 
-Future<http.Response> createPackedIngredient(http.Client client, int meal_ref, Ingredient ingredient_ref) async {
+Future<http.Response> createPackedIngredient(http.Client client, int meal_ref, int ingredient_ref) async {
   final jwtToken = await AuthProvider().retrieveToken();
   // Sending a POST request to the API endpoint to create a new packed ingredient.
   final response = await client.post(
-    Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Create'), // Specify the API endpoint for creating packed ingredients.
+    Uri.parse('${ApiConfig.baseUrl}/api/PackedIngredient/Create'), // Specify the API endpoint for creating packed ingredients.
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8', // Specify that the content is JSON.
       'Authorization': 'Bearer $jwtToken',
@@ -46,7 +45,7 @@ Future<http.Response> createPackedIngredient(http.Client client, int meal_ref, I
     // Encode the packed ingredient data as JSON for the request body.
     body: jsonEncode({
       'meal_ref': meal_ref, // Reference ID for the meal the ingredient is associated with.
-      'ingredient_ref': ingredient_ref.id, // ID of the ingredient being packed.
+      'ingredient_ref': ingredient_ref, // ID of the ingredient being packed.
     }),
   );
   return response;   // Return the response from the server.
@@ -59,7 +58,7 @@ Future<http.Response> deletePackedIngredient(http.Client client, int id) async {
   final jwtToken = await AuthProvider().retrieveToken();
   // Sending a DELETE request to the API endpoint to remove a packed ingredient by ID.
   final response = await client.delete(
-    Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Delete/$id'), // Specify the API endpoint for deleting packed ingredients.
+    Uri.parse('${ApiConfig.baseUrl}/api/PackedIngredient/Delete/$id'), // Specify the API endpoint for deleting packed ingredients.
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',  // Specify that the content is JSON.
       'Authorization': 'Bearer $jwtToken',

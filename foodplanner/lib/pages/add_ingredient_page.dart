@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import 'package:http/http.dart';
 /// This class is used for selecting which ingredients should be added to the meal.
 class AddIngredientPage extends StatefulWidget {
   final List<Ingredient> ingredients; // List of available ingredients for selection.
+  final File? image;
   final ValueChanged<List<Ingredient>> onIngredientsUpdated; // Callback to the method which modifies the list of existing ingredients
   final VoidCallback onCamera; // Callback to change the shown page through "add_meal_page.dart"
   final ValueSetter onIngredientAdded; // Callback to handle what to do once a new ingredient is added.
@@ -18,6 +20,7 @@ class AddIngredientPage extends StatefulWidget {
   const AddIngredientPage({
     super.key,
     required this.ingredients, // Required list of Ingredient objects to pass.
+    required this.image,
     required this.onIngredientsUpdated, // Required callback to handle the ingredient list updating.
     required this.onCamera, // Required callback to handle camera navigation.
     required this.onIngredientAdded, // Required callback to handle navigation after a new ingredient is added.
@@ -51,18 +54,6 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
   Widget build(BuildContext context) {
     
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Find madvare"), // Title of the app bar.
-        centerTitle: true, // Center the title in the app bar.
-        backgroundColor: AppColors.background, // Background color of the app bar.
-        elevation: 1.0, // Shadow elevation of the app bar.
-        iconTheme: const IconThemeData(color: AppColors.textPrimary), // Icon color.
-        titleTextStyle: const TextStyle(
-          color: AppColors.textPrimary, // Text color.
-          fontSize: 18, // Font size of the title text.
-          fontWeight: FontWeight.bold, // Font weight for the title.
-        ),
-      ),
       // The main body of the AddIngredientPage.
       body: _buildAddIngredientPage(context, sortedIngredients)
     );
@@ -120,7 +111,8 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                         actions: <CupertinoDialogAction>[ // Actions in the dialog.
                           CupertinoDialogAction(
                             isDefaultAction: true,
-                            onPressed: () { // Leads the user to the camera page.
+                            onPressed: () async { // Leads the user to the camera page.
+                              Navigator.pop(context);
                               // Navigate to camera page
                               widget.onCamera(); // Calls the passed callback to navigate to the camera page.
                             },

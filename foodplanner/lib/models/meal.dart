@@ -26,7 +26,6 @@ class Meal {
   factory Meal.fromJson(Map<String, dynamic> json) {
     return Meal(
       id: json['id'] != null ? json['id'] as int : 0,
-      // user: json['user] != null ? json['user'] as User ? null,
       title: json['title'] != null ? json['title'] as String : '',
       imageRef: json['image_ref'] != null ? json['image_ref'] as int : null,
       date: json['date'] != null ? DateTime.parse(json['date'] as String) : null,
@@ -38,7 +37,6 @@ class Meal {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      // 'user': user,
       'title': title,
       'image_ref': imageRef,
       'date': date?.toIso8601String(),
