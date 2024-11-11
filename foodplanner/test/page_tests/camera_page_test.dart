@@ -90,6 +90,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: CameraPage(
+            onImagePicked: (_) {},
             controller: mockCameraController,
             client: Client(),
           )
@@ -110,6 +111,7 @@ void main() {
         // Act
         await tester.pumpWidget(MaterialApp(
           home: CameraPage(
+            onImagePicked: (_) {},
             controller: mockCameraController,
             client: Client(),
           )
@@ -125,6 +127,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: CameraPage(
+            onImagePicked: (_) {},
             controller: null,
             client: Client(),
           )
@@ -144,6 +147,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: CameraPage(
+            onImagePicked: (_) {},
             controller: mockCameraController,
             client: Client(),
           )
@@ -163,6 +167,7 @@ void main() {
         // Arrange
         await tester.pumpWidget(MaterialApp(
           home: CameraPage(
+            onImagePicked: (_) {},
             controller: mockCameraController, 
             imagePicker: mockImagePicker,
             client: Client(),

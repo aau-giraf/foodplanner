@@ -15,19 +15,21 @@ import 'package:http/http.dart';
 
 /// This is used to manage the page shifting between "meal_form_page.dart", "add_ingredient_page.dart", and "camera_page.dart".
 class AddMealPage extends StatefulWidget {
+  final Future<List<Ingredient>> Function(Client client, AuthProvider auth) fetchFunction;
 
   const AddMealPage({
     super.key, // Key for the widget, used for maintaining state.
+    this.fetchFunction = fetchIngredientsByUserID,
   });
 
   static const String routeName = '/add_meal_page'; // Route name for navigation.
 
   @override
-  State<AddMealPage> createState() => _AddMealPageState(); // Creates the state for this widget.
+  State<AddMealPage> createState() => AddMealPageState(); // Creates the state for this widget.
 
 }
 
-class _AddMealPageState extends State<AddMealPage> {
+class AddMealPageState extends State<AddMealPage> {
   List<Ingredient> ingredients = []; // List to store all the users ingredient presets.
   String mealTitle = '';
   late TextEditingController mealTitleController;
@@ -36,13 +38,13 @@ class _AddMealPageState extends State<AddMealPage> {
   List<int> pageStack = [0]; // Page stack to track the currently displayed page and the previous pages.
   Client? _client; // Client for the requests to the server
 
-  void _pushPage(int index) { // Push a new page onto the stack
+  void pushPage(int index) { // Push a new page onto the stack
     setState(() {
       pageStack.add(index);
     });
   }
 
-  void _popPage() { // Pop the top page from the stack to go back
+  void popPage() { // Pop the top page from the stack to go back
     if (pageStack.length > 1) {
       setState(() {
         pageStack.removeLast();
@@ -64,7 +66,7 @@ class _AddMealPageState extends State<AddMealPage> {
     //   return;
     // }
 
-    fetchIngredientsByUserID(_client!, auth).then((fetchedIngredients) {
+    widget.fetchFunction(_client!, auth).then((fetchedIngredients) {
       setState(() {
         ingredients = fetchedIngredients; // Assign the fetched ingredients to the state variable.
         _initializePages(); // Initialize pages after fetching ingredients.
@@ -80,14 +82,14 @@ class _AddMealPageState extends State<AddMealPage> {
         mealTitleController: mealTitleController,
         image: image,
         client: _client!,
-        onAddIngredients: () => _pushPage(1), // Changes the shown page to "add_ingredent_page.dart" when executed.
-        onCamera: () => _pushPage(2), // Changes the shown page to "camera_page.dart" when executed.
+        onAddIngredients: () => pushPage(1), // Changes the shown page to "add_ingredent_page.dart" when executed.
+        onCamera: () => pushPage(2), // Changes the shown page to "camera_page.dart" when executed.
       ),
       AddIngredientPage( // The AddIngredientPage is the second page.
         ingredients: ingredients, // Pass the ingredients to the AddIngredientPage.
         image: image,
         client: _client!,
-        onCamera: () => _pushPage(2), // Changes the shown page to "camera_page.dart" when executed.
+        onCamera: () => pushPage(2), // Changes the shown page to "camera_page.dart" when executed.
         onIngredientsUpdated: (newIngredients) { // Update ingredients when modified.
           setState(() {
             ingredients = newIngredients;
@@ -95,7 +97,7 @@ class _AddMealPageState extends State<AddMealPage> {
         },
         onIngredientAdded: (addedIngredient) {
           packedIngredients.add(addedIngredient as PackedIngredient);
-          _popPage();
+          popPage();
          } // Go back to the previous page after adding new ingredient.
       ),
       CameraPage(
@@ -123,7 +125,7 @@ class _AddMealPageState extends State<AddMealPage> {
         leading: pageStack.length > 1 // Show back button if there's a previous page
           ? IconButton(
               icon: Icon(Icons.arrow_back),
-              onPressed: _popPage,
+              onPressed: popPage,
             )
           : null, // No back button on the first page
         title: const Text("Opret madpakke"), // Title of the AppBar.

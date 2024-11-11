@@ -1,148 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/add_meal_page.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-// import 'package:foodplanner/services/fetch_user_data.dart';
-import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
+import 'package:mockito/annotations.dart';
+import 'package:http/http.dart' as http;
 
-class MockAuthProvider extends Mock implements AuthProvider {}
+import 'add_meal_page_test.mocks.dart';
 
-// class MockFetchUserData extends Mock implements FetchUserData {
-//   Future<List<Ingredient>> fetchIngredientsByUserID(int userID) async {
-//     return [Ingredient(userRef: 1, name: 'Test Ingredient')];
-//   }
-// }
-
-// Tests do not work because of missing fetch implementation
+@GenerateMocks([http.Client, AuthProvider])
 void main() {
-  group('AddMealPage Widget Tests', () {
-    late MockAuthProvider mockAuthProvider;
-    // late MockFetchUserData mockFetchUserData;
+  late MockClient mockClient;
+  late AuthProvider mockAuthProvider;
 
-    setUp(() {
-      mockAuthProvider = MockAuthProvider();
-      // mockFetchUserData = MockFetchUserData();
+  setUp(() {
+    mockClient = MockClient();
+    mockAuthProvider = MockAuthProvider();
+  });
 
-      when(mockAuthProvider.jwtToken).thenReturn('your.jwt.token.here');
-      
-      // Update the mock to match the correct method signature
-    //   when(mockFetchUserData.fetchIngredientsByUserID(1))
-    //       .thenAnswer((_) async => [Ingredient(userRef: 1, name: 'Test Ingredient')]);
-    // });
+  Future<List<Ingredient>> mockFetchIngredients(http.Client client, AuthProvider auth) async {
+    return [
+      Ingredient(id: 0, name: 'æble', imageRef: null),
+      Ingredient(id: 1, name: 'knækbrød', imageRef: 1),
+      Ingredient(id: 2, name: 'franskbrød', imageRef: 2),
+    ];
+  }
 
-    group('MealFormPage Tests', () {
-      testWidgets('should display MealFormPage by default', (WidgetTester tester) async {
-        // Arrange
-        await tester.pumpWidget(
-          MultiProvider(
-            providers: [
-              Provider<AuthProvider>.value(value: mockAuthProvider),
-              // Provider<FetchUserData>.value(value: mockFetchUserData),
-            ],
-            child: MaterialApp(
-              home: AddMealPage(),
-            ),
-          ),
-        );
+  AddMealPage createWidgetUnderTest(GlobalKey key) {
+    return AddMealPage(
+      key: key,
+      fetchFunction: mockFetchIngredients,
+    );
+  }
 
-        // Assert
-        expect(find.byType(MealFormPage), findsOneWidget);
-      });
+  group('AddMealPage Navigation Tests', () {
+    testWidgets('initializes at MealFormPage', (WidgetTester tester) async {
+      final GlobalKey<AddMealPageState> addMealPageKey = GlobalKey<AddMealPageState>();
 
-      testWidgets('should navigate to MealFormPage on back press', (WidgetTester tester) async {
-        // Arrange
-        await tester.pumpWidget(
-          MultiProvider(
-            providers: [
-              Provider<AuthProvider>.value(value: mockAuthProvider),
-              // Provider<FetchUserData>.value(value: mockFetchUserData),
-            ],
-            child: MaterialApp(
-              home: AddMealPage(),
-            ),
-          ),
-        );
+      await tester.pumpWidget(
+        MaterialApp(home: createWidgetUnderTest(addMealPageKey)),
+      );
+      await tester.pump();
 
-        // Act
-        await tester.tap(find.byType(BackButton)); // Simulate back button press
-        await tester.pump();
-
-        // Assert
-        expect(find.byType(MealFormPage), findsOneWidget); // Ensure it navigates back to MealFormPage
-      });
+      expect(find.byType(MealFormPage), findsOneWidget);
     });
 
-    group('AddIngredientPage Tests', () {
-      testWidgets('should switch to AddIngredientPage on button press', (WidgetTester tester) async {
-        // Arrange
-        await tester.pumpWidget(
-          MultiProvider(
-            providers: [
-              Provider<AuthProvider>.value(value: mockAuthProvider),
-              // Provider<FetchUserData>.value(value: mockFetchUserData),
-            ],
-            child: MaterialApp(
-              home: AddMealPage(),
-            ),
-          ),
-        );
+    testWidgets('navigates to AddIngredientPage', (WidgetTester tester) async {
+      final GlobalKey<AddMealPageState> addMealPageKey = GlobalKey<AddMealPageState>();
 
-        // Act
-        // Assuming the button that switches to AddIngredientPage is identified by some unique identifier
-        await tester.tap(find.byType(TextButton).first);
-        await tester.pump();
+      await tester.pumpWidget(
+        MaterialApp(home: createWidgetUnderTest(addMealPageKey)),
+      );
+      addMealPageKey.currentState!.pushPage(1);
+      await tester.pump();
 
-        // Assert
-        expect(find.byType(AddIngredientPage), findsOneWidget);
-      });
-
-      testWidgets('should handle empty ingredient list gracefully', (WidgetTester tester) async {
-        // Arrange
-        await tester.pumpWidget(
-          MultiProvider(
-            providers: [
-              Provider<AuthProvider>.value(value: mockAuthProvider),
-              // Provider<FetchUserData>.value(value: mockFetchUserData),
-            ],
-            child: MaterialApp(
-              home: AddMealPage(),
-            ),
-          ),
-        );
-
-        // Assert
-        expect(find.text('No ingredients found'), findsNothing); // Assuming there's no specific text for empty ingredient list
-      });
+      expect(find.byType(AddIngredientPage), findsOneWidget);
     });
 
-      group('CameraPage Tests', () {
-        testWidgets('should switch to CameraPage on button press', (WidgetTester tester) async {
-          // Arrange
-          await tester.pumpWidget(
-            MultiProvider(
-              providers: [
-                Provider<AuthProvider>.value(value: mockAuthProvider),
-                // Provider<FetchUserData>.value(value: mockFetchUserData),
-              ],
-              child: MaterialApp(
-                home: AddMealPage(),
-              ),
-            ),
-          );
+    testWidgets('navigates to CameraPage', (WidgetTester tester) async {
+      final GlobalKey<AddMealPageState> addMealPageKey = GlobalKey<AddMealPageState>();
 
-          // Act
-          // Assuming the button that switches to CameraPage is identified by some unique identifier
-          await tester.tap(find.byType(TextButton).last);
-          await tester.pump();
+      await tester.pumpWidget(
+        MaterialApp(home: createWidgetUnderTest(addMealPageKey)),
+      );
+      addMealPageKey.currentState!.pushPage(2);
+      await tester.pump();
 
-          // Assert
-          expect(find.byType(CameraPage), findsOneWidget);
-        });
-      });
+      expect(find.byType(CameraPage), findsOneWidget);
     });
   });
 }

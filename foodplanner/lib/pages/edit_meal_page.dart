@@ -15,32 +15,36 @@ import 'package:http/http.dart';
 /// This is used to manage the page shifting between "edit_meal_form_page.dart", "add_ingredient_page.dart", and "camera_page.dart".
 class EditMealPage extends StatefulWidget {
   final int mealID; // Meal ID needed for editing the specific meal.
+  final Future<List<Ingredient>> Function(Client client, AuthProvider auth) fetchIngredientsFunction;
+  final Future<Meal> Function(Client client, AuthProvider auth, int mealId) fetchMealFunction;
 
   const EditMealPage({
     super.key, // Key for the widget, used for maintaining state.
     required this.mealID, // Required meal ID parameter.
+    this.fetchIngredientsFunction = fetchIngredientsByUserID,
+    this.fetchMealFunction = fetchMeal,
   });
 
   static const String routeName = '/edit_meal_page'; // Route name for navigation to this page.
 
   @override
-  State<EditMealPage> createState() => _EditMealPageState(); // Creates the state object for this widget.
+  State<EditMealPage> createState() => EditMealPageState(); // Creates the state object for this widget.
 }
 
-class _EditMealPageState extends State<EditMealPage> {
+class EditMealPageState extends State<EditMealPage> {
   Meal meal = Meal();  // Meal object being edited.
   List<Ingredient> ingredients = []; // List to store all the users ingredient presets.
   List<int> pageStack = [0]; // Page stack to track the currently displayed page and the previous pages.
   File? image;
   Client? _client; // Client for the requests to the server
 
-  void _pushPage(int index) { // Push a new page onto the stack
+  void pushPage(int index) { // Push a new page onto the stack
     setState(() {
       pageStack.add(index);
     });
   }
 
-  void _popPage() { // Pop the top page from the stack to go back
+  void popPage() { // Pop the top page from the stack to go back
     if (pageStack.length > 1) {
       setState(() {
         pageStack.removeLast();
@@ -60,9 +64,9 @@ class _EditMealPageState extends State<EditMealPage> {
   // Asynchronously initializes the page with meal data and user ingredients.
   Future<void> _initializePage() async {
     final authProvier = AuthProvider();
-    meal = await fetchMeal(_client!, authProvier, widget.mealID); // Fetch the meal details using the mealID.
+    meal = await widget.fetchMealFunction(_client!, authProvier, widget.mealID); // Fetch the meal details using the mealID.
     // Fetch user's ingredients by decoding the JWT token.
-    ingredients = await fetchIngredientsByUserID(_client!, authProvier);
+    ingredients = await widget.fetchIngredientsFunction(_client!, authProvier);
 
     setState(() { // Update the state of the widget.
       _pages = [ // Assign the fetched meal and ingredients to the list of pages.
@@ -71,10 +75,10 @@ class _EditMealPageState extends State<EditMealPage> {
           ingredients: ingredients, // Pass the ingredients to the EditMealFormPage.
           client: _client!,
           onAddIngredients: () {
-            _pushPage(1); // Changes the shown page to "add_ingredent_page.dart" when executed.
+            pushPage(1); // Changes the shown page to "add_ingredent_page.dart" when executed.
           },
           onCamera: () {
-            _pushPage(2); // Changes the shown page to "camera_page.dart" when executed.
+            pushPage(2); // Changes the shown page to "camera_page.dart" when executed.
           },
         ),
         AddIngredientPage(
@@ -82,7 +86,7 @@ class _EditMealPageState extends State<EditMealPage> {
           image: image,
           client: _client!,
           onCamera: () {
-            _pushPage(2); // Changes the shown page to "camera_page.dart" when executed.
+            pushPage(2); // Changes the shown page to "camera_page.dart" when executed.
           },
           onIngredientsUpdated: (newIngredients) { // Update ingredients when modified.
             setState(() {
@@ -91,7 +95,7 @@ class _EditMealPageState extends State<EditMealPage> {
           },
           onIngredientAdded: (addedIngredient) {
             meal.ingredients.add(addedIngredient);
-            _popPage();
+            popPage();
           } // Go back to the previous page after adding new ingredient.
         ),
         CameraPage(
@@ -119,7 +123,7 @@ class _EditMealPageState extends State<EditMealPage> {
         leading: pageStack.length > 1 // Show back button if there's a previous page
           ? IconButton(
               icon: Icon(Icons.arrow_back),
-              onPressed: _popPage,
+              onPressed: popPage,
             )
           : null, // No back button on the first page
         title: const Text("Rediger madpakke"), // Title of the AppBar.

@@ -1,58 +1,93 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:foodplanner/pages/edit_meal_page.dart';
-import 'package:foodplanner/pages/edit_meal_form_page.dart';
-import 'package:foodplanner/pages/add_ingredient_page.dart';
-import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/meal.dart';
+import 'package:foodplanner/models/packed_ingredient.dart';
+import 'package:foodplanner/pages/add_ingredient_page.dart';
+import 'package:foodplanner/pages/camera_page.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/pages/edit_meal_form_page.dart';
+import 'package:foodplanner/pages/edit_meal_page.dart';
+import 'package:mockito/annotations.dart';
+import 'package:http/http.dart' as http;
 
-// Can't be tested properly, since Meal can't be fetched.
+import 'add_meal_page_test.mocks.dart';
+
+@GenerateMocks([http.Client, AuthProvider])
 void main() {
-  group('EditMealPage Widget Tests', () {
-    late Meal meal;
-    late List<Ingredient> ingredients;
+  final List<Ingredient> ingredients = [
+    Ingredient(id: 0, name: 'æble', imageRef: null),
+    Ingredient(id: 1, name: 'knækbrød', imageRef: 1),
+    Ingredient(id: 2, name: 'franskbrød', imageRef: 2),
+  ];
 
-    // Initial setup before tests
-    setUp(() {
-      meal = Meal();
-      ingredients = [Ingredient(name: "Knækbrød"), Ingredient(name: "Æble")];
-    });
+  late MockClient mockClient;
+  late AuthProvider mockAuthProvider;
 
-    testWidgets('should display EditMealFormPage by default', (WidgetTester tester) async {
-      // Arrange
-      await tester.pumpWidget(MaterialApp(home: EditMealPage(mealID: 1)));
+  setUp(() {
+    mockClient = MockClient();
+    mockAuthProvider = MockAuthProvider();
+  });
 
-      // Act
-      await tester.pumpAndSettle();  // Ensure async state changes are complete
+  Future<Meal> mockFetchMeal(http.Client client, AuthProvider auth, int mealId) async {
+    return Meal(
+      id: mealId,
+      title: 'meal1',
+      imageRef: 0,
+      date: DateTime.now(),
+      ingredients: [
+        PackedIngredient(id: 0, mealRef: mealId, ingredientRef: Ingredient(id: 1, name: 'knækbrød', imageRef: 1)),
+        PackedIngredient(id: 0, mealRef: mealId, ingredientRef: Ingredient(id: 2, name: 'franskbrød', imageRef: 2))
+      ]
+    );
+  }
 
-      // Assert
+  Future<List<Ingredient>> mockFetchIngredients(http.Client client, AuthProvider auth) async {
+    return ingredients;
+  }
+
+  EditMealPage createWidgetUnderTest(GlobalKey key) {
+    return EditMealPage(
+      key: key,
+      mealID: 0,
+      fetchMealFunction: mockFetchMeal,
+      fetchIngredientsFunction: mockFetchIngredients,
+    );
+  }
+
+  group('EditMealPage Navigation Tests', () {
+    testWidgets('initializes at EditMealFormPage', (WidgetTester tester) async {
+      final GlobalKey<EditMealPageState> addMealPageKey = GlobalKey<EditMealPageState>();
+
+      await tester.pumpWidget(
+        MaterialApp(home: createWidgetUnderTest(addMealPageKey)),
+      );
+      await tester.pump();
+
       expect(find.byType(EditMealFormPage), findsOneWidget);
     });
 
-    testWidgets('should navigate to AddIngredientPage when onAddIngredients is called', (WidgetTester tester) async {
-      // Arrange
-      await tester.pumpWidget(MaterialApp(home: EditMealPage(mealID: 1)));
-      await tester.pumpAndSettle();
+    testWidgets('navigates to AddIngredientPage', (WidgetTester tester) async {
+      final GlobalKey<EditMealPageState> addMealPageKey = GlobalKey<EditMealPageState>();
 
-      // Act
-      await tester.tap(find.byIcon(Icons.add)); // Simulate onAddIngredients callback
-      await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        MaterialApp(home: createWidgetUnderTest(addMealPageKey)),
+      );
+      addMealPageKey.currentState!.pushPage(1);
+      await tester.pump();
 
-      // Assert
       expect(find.byType(AddIngredientPage), findsOneWidget);
     });
 
-    testWidgets('should navigate to CameraPage when onCamera is called', (WidgetTester tester) async {
-      // Arrange
-      await tester.pumpWidget(MaterialApp(home: EditMealPage(mealID: 1)));
-      await tester.pumpAndSettle();
+    testWidgets('navigates to CameraPage', (WidgetTester tester) async {
+      final GlobalKey<EditMealPageState> addMealPageKey = GlobalKey<EditMealPageState>();
 
-      // Act
-      await tester.tap(find.byIcon(Icons.camera)); // Simulate onCamera callback
-      await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        MaterialApp(home: createWidgetUnderTest(addMealPageKey)),
+      );
+      addMealPageKey.currentState!.pushPage(2);
+      await tester.pump();
 
-      // Assert
       expect(find.byType(CameraPage), findsOneWidget);
     });
   });
