@@ -75,10 +75,19 @@ class _SchoolClasses extends State<SchoolClasses> {
     });
   }
 
-  void updateClass(int classId) {
-    SchoolClasses.schoolClassService
-        .updateClass(classId, controllers[classId]!.text)
-        .then((_) {
+  void updateClass(int classId) async {
+    var error = await SchoolClasses.schoolClassService
+        .updateClass(classId, controllers[classId]!.text);
+
+    if (error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error['Message'][0]),
+          duration: Duration(seconds: 2),
+          backgroundColor: AppColors.errorText,
+        ),
+      );
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Klassen er blevet opdateret'),
@@ -86,14 +95,12 @@ class _SchoolClasses extends State<SchoolClasses> {
           backgroundColor: Colors.green,
         ),
       );
-    });
+    }
   }
 
   void deleteClass(int classId) async {
     var error = await SchoolClasses.schoolClassService.deleteClass(classId);
     if (error != null) {
-      print("hejsa");
-      print(error);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(error['Message'][0]),

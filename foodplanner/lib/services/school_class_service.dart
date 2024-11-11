@@ -41,7 +41,7 @@ class SchoolClassService {
     }
   }
 
-  Future<void> updateClass(int classId, String className) async {
+  Future<dynamic> updateClass(int classId, String className) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
       Uri.parse('$apiUrl/api/Classrooms/Update/$classId'),
@@ -55,7 +55,7 @@ class SchoolClassService {
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Kunne ikke opdatere klasse');
+      return {'Message': 'Kunne ikke opdatere klasse'};
     }
   }
 
@@ -70,12 +70,8 @@ class SchoolClassService {
     );
 
     if (response.statusCode == 400) {
-      print("Error " + response.body);
-      final jsonResponse = jsonDecode(response.body);
-      print(jsonResponse);
-      return jsonResponse;
+      return jsonDecode(response.body);
     } else if (response.statusCode != 200) {
-      print("hejsa");
       return {'Message': 'Kunne ikke slette klasse'};
     }
   }
