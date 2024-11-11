@@ -96,7 +96,6 @@ class ChildProfileState extends State<ChildProfile>
 
   void fetchParent() {
     ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
-      print(result);
       setState(() {
         parent = result;
         selectedParent = result;
@@ -453,7 +452,6 @@ class ChildProfileState extends State<ChildProfile>
                               .deleteChild(widget.child.childId)
                               .then((response) {
                             if (response.statusCode == 204) {
-                              print('successfullydeleted');
                               Navigator.pop(context);
                             } else {
                               throw Exception('Der skete en fejl');
@@ -496,7 +494,6 @@ class ChildProfileState extends State<ChildProfile>
                               int.parse(selectedClassId!))
                           .then((response) {
                         if (response.statusCode == 204) {
-                          print('successfullyupdated');
                           Navigator.pop(context);
                         } else {
                           throw Exception('Der skete en fejl');

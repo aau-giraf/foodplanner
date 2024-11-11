@@ -15,9 +15,18 @@ class UserService {
         headers: <String, String>{
           'Authorization': 'Bearer $jwtToken',
         });
+
     if (response.statusCode == 200) {
-      final userJson = jsonDecode(response.body);
-      return User.fromJson(userJson as Map<String, dynamic>);
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      final filteredJson = {
+        'id': json['id'],
+        'first_name': json['firstName'],
+        'last_name': json['lastName'],
+        'email': json['email'],
+        'role': json['role'],
+        'archived': json['archived'],
+      };
+      return User.fromJson(filteredJson);
     } else {
       throw Exception('Kunne ikke hente bruger');
     }
