@@ -7,7 +7,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_advanced_segment/flutter_advanced_segment.dart';
-import 'package:foodplanner/pages/admin_approve_page.dart';
+import 'package:foodplanner/pages/settings/admin_approve_page.dart';
 import 'package:foodplanner/pages/settings/SchoolClasses.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:provider/provider.dart';

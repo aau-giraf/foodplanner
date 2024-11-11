@@ -1,6 +1,6 @@
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
-import 'package:foodplanner/pages/admin_approve_page.dart';
+import 'package:foodplanner/pages/settings/admin_approve_page.dart';
 import 'package:foodplanner/pages/admin_page.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
