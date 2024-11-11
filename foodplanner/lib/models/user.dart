@@ -13,14 +13,12 @@ class User {
     required this.role,
   });
 
-  //I LOVE SABRINA CARPENTER <3
-
   factory User.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
         'id': int id,
-        'first_name': String firstName,
-        'last_name': String lastName,
+        'firstName': String firstName,
+        'lastName': String lastName,
         'email': String email,
         'role': String role,
       } =>

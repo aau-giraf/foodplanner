@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:foodplanner/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:foodplanner/auth/auth_provider.dart';
 
 class UserService {
   final String apiUrl;
@@ -18,43 +19,58 @@ class UserService {
   }
 
   Future<List<User>> fetchApproveUsers() async {
-    final response =
-        await http.get(Uri.parse('$apiUrl/api/Users/RoleRequests'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> usersJson = jsonDecode(response.body);
-      return usersJson
-          .map((json) => User.fromJson(json as Map<String, dynamic>))
-          .toList();
-    } else {
-      throw Exception('Kunne ikke hente approve 0 brugere');
-    }
-  }
-
-  Future<List<User>> updateApproveUsers(int id) async {
-    final response = await http.put(
-      Uri.parse('$apiUrl/api/Users/ApproveRole/$id'),
-      // Add headers and body if needed
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.get(
+      Uri.parse('$apiUrl/api/Admin/GetNotApproved'),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
     );
 
     if (response.statusCode == 200) {
-      // Parse the response body and return the list of users
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((json) => User.fromJson(json)).toList();
+      return (jsonDecode(response.body) as List)
+          .map<User>((json) => User.fromJson(json))
+          .toList();
+    } else {
+      throw Exception('Failed to load users');
+    }
+  }
+
+  Future<bool> updateApproveUsers(int id) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.put(
+      Uri.parse('$apiUrl/api/Admin/UpdateRoleApproved/$id'),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'id': id,
+        'role_approved': true,
+      }),
+    );
+    if (response.statusCode == 200) {
+      return true;
     } else {
       throw Exception('Failed to update and approve users');
     }
   }
 
-  Future<List<User>> unapproveUsers(int id) async {
+  Future<bool> unapproveUsers(int id) async {
+    final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.delete(
-      Uri.parse('$apiUrl/api/Users/Delete/$id'),
+      Uri.parse('$apiUrl/api/Admin/Delete/$id'),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json',
+      },
     );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((json) => User.fromJson(json)).toList();
+    if (response.statusCode == 204) {
+      return true;
     } else {
+      print(
+          'Failed to unapprove users: ${response.statusCode} ${response.body}');
       throw Exception('Failed to unapprove users');
     }
   }

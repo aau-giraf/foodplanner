@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/approve_box.dart';
+import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
+import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/popup_box.dart';
 
 class AdminApprovePage extends StatefulWidget {
   const AdminApprovePage({super.key});
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
+
   @override
   State<AdminApprovePage> createState() => _AdminApprovePageState();
 }
 
 class _AdminApprovePageState extends State<AdminApprovePage> {
   List<User> _users = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -24,87 +28,175 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
 
   // Function to load users asynchronously
   Future<void> _loadUsers() async {
-    final users = await AdminApprovePage.userService.fetchApproveUsers();
-    setState(() {
-      _users = users;
-    });
+    try {
+      final users = await AdminApprovePage.userService.fetchApproveUsers();
+      setState(() {
+        _users = users;
+        _isLoading = false;
+      });
+      print('Users loaded: ${_users.length}');
+    } catch (e) {
+      print('Error loading users: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   // Function to remove a user after approval or denial
-  void _removeUser(int userId) {
-    setState(() {
-      _users.removeWhere((user) => user.id == userId);
-    });
+  void _approveUser(int userId) async {
+    try {
+      final bool success =
+          await AdminApprovePage.userService.updateApproveUsers(userId);
+      if (success) {
+        final List<User> updatedUsers =
+            await AdminApprovePage.userService.fetchApproveUsers();
+        setState(() {
+          _users = updatedUsers;
+        });
+      }
+    } catch (e) {
+      print('Error approving user: $e');
+    }
+  }
+
+// Function to remove a user
+  void _removeUser(int userId) async {
+    try {
+      final bool success =
+          await AdminApprovePage.userService.unapproveUsers(userId);
+      if (success) {
+        final List<User> updatedUsers =
+            await AdminApprovePage.userService.fetchApproveUsers();
+        setState(() {
+          _users = updatedUsers;
+        });
+      }
+    } catch (e) {
+      print('Error removing user: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.background,
-        title: const Text(
-          'Godkend nye brugere',
-          style: AppTextStyles.title,
-          textAlign: TextAlign.center,
+        backgroundColor: Colors.white,
+        title: Text(
+          'Indstillinger',
+          style: AppTextStyles.standard.copyWith(fontWeight: FontWeight.bold),
+          textAlign: TextAlign.left,
         ),
-        centerTitle: true,
+        centerTitle: false,
       ),
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 5.0),
-          child: Center(
-            child: Container(
-              padding: EdgeInsets.all(32.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Godkend eller afvis brugere som gerne vil tilgå din platform',
-                    style: AppTextStyles.standard,
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16.0),
-
-                  // Expanded widget for the list of users
-                  Expanded(
-                    child: _users.isEmpty
-                        ? Center(
-                            child: Text('Ingen nye bugere til godkendelse.'),
-                          )
-                        : SingleChildScrollView(
-                            child: Column(
-                              children: _users.map((user) {
-                                return ApproveBox(
-                                  name: user.firstName,
-                                  lastName: user.lastName,
-                                  role: user.role,
-                                  onApprove: () async {
-                                    await AdminApprovePage.userService
-                                        .updateApproveUsers(user.id);
-                                    _removeUser(user
-                                        .id); // Remove the user from the list
-                                  },
-                                  onDeny: () async {
-                                    await AdminApprovePage.userService
-                                        .unapproveUsers(user.id);
-                                    _removeUser(user
-                                        .id); // Remove the user from the list
-                                  },
-                                );
-                              }).toList(),
-                            ),
+      backgroundColor: Colors.white,
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                SettingsWidget(
+                  leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
+                  title: 'Godkend profiler',
+                  subTitle:
+                      'Administrer nye profil anmodninger.\nHer kan du godkende eller slette nye brugere.',
+                  type: SettingsType.header,
+                ),
+                SizedBox(height: 20),
+                Expanded(
+                  child: ShaderMask(
+                    shaderCallback: (Rect bounds) {
+                      return LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.transparent,
+                          Colors.black,
+                        ],
+                        stops: [
+                          0.0,
+                          0.95,
+                          1.0
+                        ], // Adjust the stops to create a slow-to-fast fade effect
+                      ).createShader(bounds);
+                    },
+                    blendMode: BlendMode.dstOut,
+                    child: ListView.builder(
+                      itemCount: _users.length,
+                      itemBuilder: (context, index) {
+                        final user = _users[index];
+                        return SettingsWidget(
+                          leftIcon: user.role == 'teacher'
+                              ? SFIcons.sf_graduationcap_fill
+                              : SFIcons.sf_figure_and_child_holdinghands,
+                          title: "${user.firstName} ${user.lastName}",
+                          subTitle: user.email,
+                          type: SettingsType.items,
+                          cta: Row(
+                            children: [
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                icon: SFIcon(
+                                  SFIcons.sf_checkmark_square_fill,
+                                  color: AppColors.primary,
+                                  fontSize: 36,
+                                ),
+                                onPressed: () {
+                                  showIPhonePopupBox(
+                                    context: context,
+                                    title: 'Bekræft bruger',
+                                    message:
+                                        'Er du sikker på, at du vil godkende denne bruger?',
+                                    confirmText: 'Godkend',
+                                    cancelText: 'Anuller',
+                                    onConfirm: () {
+                                      _approveUser(user.id);
+                                      Navigator.of(context)
+                                          .pop(); // Close the popup
+                                    },
+                                    onCancel: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the popup
+                                    },
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                icon: SFIcon(
+                                  SFIcons.sf_xmark_square_fill,
+                                  color: AppColors.errorText,
+                                  fontSize: 36,
+                                ),
+                                onPressed: () {
+                                  showIPhonePopupBox(
+                                    context: context,
+                                    title: 'Fjern bruger',
+                                    message:
+                                        'Er du sikker på, at du vil fjerne denne bruger?',
+                                    confirmText: 'Fjern',
+                                    cancelText: 'Anuller',
+                                    onConfirm: () {
+                                      _removeUser(user.id);
+                                      Navigator.of(context)
+                                          .pop(); // Close the popup
+                                    },
+                                    onCancel: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the popup
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
                           ),
+                        );
+                      },
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-        ),
-      ),
     );
   }
 }
