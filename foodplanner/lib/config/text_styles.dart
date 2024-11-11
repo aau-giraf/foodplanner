@@ -19,7 +19,7 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary, // You can use AppColors here if needed
   );
-  
+
   static const TextStyle headline3 = TextStyle(
     fontSize: 24.0,
     fontWeight: FontWeight.bold,
@@ -36,6 +36,22 @@ class AppTextStyles {
     fontSize: 12.0,
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
+  );
+
+  static const TextStyle standardWithoutColor = TextStyle(
+    fontSize: 12.0,
+    fontWeight: FontWeight.normal,
+  );
+
+  static const TextStyle mediumText = TextStyle(
+    fontSize: 14.0,
+    fontWeight: FontWeight.normal,
+    color: AppColors.textPrimary,
+  );
+
+  static const TextStyle mediumTextWithoutColor = TextStyle(
+    fontSize: 14.0,
+    fontWeight: FontWeight.normal,
   );
 
   static const TextStyle bigText = TextStyle(
