@@ -3,8 +3,8 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:foodplanner/services/api_config.dart';
 
-Future<http.Response> UploadFoodImage(http.Client client, File image) async {
-  final jwtToken = await AuthProvider().retrieveToken(); // Get the authorization token from authentication provider 
+Future<http.Response> UploadFoodImage(http.Client client, AuthProvider authProvider, File image) async {
+  final jwtToken = await authProvider.retrieveToken(); // Get the authorization token from authentication provider 
 
   // Make a POST request to the API to create a new ingredient.
   final response = await client.post(

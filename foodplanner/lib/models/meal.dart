@@ -29,7 +29,9 @@ class Meal {
       title: json['title'] != null ? json['title'] as String : '',
       imageRef: json['image_ref'] != null ? json['image_ref'] as int : null,
       date: json['date'] != null ? DateTime.parse(json['date'] as String) : null,
-      ingredients: (json['ingredients'] as List<dynamic>?)?.map((item) => PackedIngredient.fromJson(item as Map<String, dynamic>)).toList() ?? [],
+      ingredients: (json['ingredients'] as List)
+          .map((e) => PackedIngredient.fromJson(e))
+          .toList(),
     );
   }
 

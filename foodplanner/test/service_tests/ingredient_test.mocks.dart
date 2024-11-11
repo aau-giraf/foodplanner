@@ -7,7 +7,6 @@ import 'dart:async' as _i3;
 import 'dart:convert' as _i4;
 import 'dart:typed_data' as _i6;
 
-import 'package:foodplanner/models/user.dart' as _i7;
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i5;
@@ -280,55 +279,4 @@ class MyMockClient extends _i1.Mock implements _i2.Client {
         ),
         returnValueForMissingStub: null,
       );
-}
-
-/// A class which mocks [User].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockUser extends _i1.Mock implements _i7.User {
-  MockUser() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  int get id => (super.noSuchMethod(
-        Invocation.getter(#id),
-        returnValue: 0,
-      ) as int);
-
-  @override
-  String get firstName => (super.noSuchMethod(
-        Invocation.getter(#firstName),
-        returnValue: _i5.dummyValue<String>(
-          this,
-          Invocation.getter(#firstName),
-        ),
-      ) as String);
-
-  @override
-  String get lastName => (super.noSuchMethod(
-        Invocation.getter(#lastName),
-        returnValue: _i5.dummyValue<String>(
-          this,
-          Invocation.getter(#lastName),
-        ),
-      ) as String);
-
-  @override
-  String get email => (super.noSuchMethod(
-        Invocation.getter(#email),
-        returnValue: _i5.dummyValue<String>(
-          this,
-          Invocation.getter(#email),
-        ),
-      ) as String);
-
-  @override
-  String get role => (super.noSuchMethod(
-        Invocation.getter(#role),
-        returnValue: _i5.dummyValue<String>(
-          this,
-          Invocation.getter(#role),
-        ),
-      ) as String);
 }

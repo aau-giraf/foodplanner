@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/edit_meal_element.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/models/ingredient.dart';
@@ -64,7 +65,8 @@ class EditMealFormPage extends StatelessWidget {
           // The button for saving the changes made to meal.
           CustomElevatedButton(
             onTab: () {
-              updateMeal(client, meal);
+              final authProvider = AuthProvider();
+              updateMeal(client, authProvider, meal);
               context.pop(); // Goes back to the previous page.
             },
             width: MediaQuery.sizeOf(context).width/2, // Half the width of the screen for saving button.

@@ -64,7 +64,7 @@ class _AddMealPageState extends State<AddMealPage> {
     //   return;
     // }
 
-    fetchIngredientsByUserID(_client!).then((fetchedIngredients) {
+    fetchIngredientsByUserID(_client!, auth).then((fetchedIngredients) {
       setState(() {
         ingredients = fetchedIngredients; // Assign the fetched ingredients to the state variable.
         _initializePages(); // Initialize pages after fetching ingredients.

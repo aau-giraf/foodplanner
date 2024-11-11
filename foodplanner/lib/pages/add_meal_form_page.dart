@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/config/text_styles.dart';
@@ -52,16 +53,19 @@ class _MealFormPageState extends State<MealFormPage> {
   }
 
   void onCreateMeal() async {
+  final authProvider = AuthProvider();
   int? imageId = widget.image != null ? 
     (jsonDecode(
       (await UploadFoodImage(
         widget.client,
+        authProvider,
         widget.image!
       )).body
     ) as Map<String, dynamic>)['id'] as int? :
   null;
   await createMeal( // Creates a meal using the inputted ingredients, without an image.
     widget.client,
+    authProvider,
     widget.mealTitleController.text, // Title from the text input.
     imageId,
     DateTime.now(),  // Current date and time for the meal.
@@ -70,6 +74,7 @@ class _MealFormPageState extends State<MealFormPage> {
     widget.packedIngredients.forEach((packedIngredient) async {
       await createPackedIngredient(
         widget.client,
+        authProvider,
         storedMeal.id,
         packedIngredient.ingredientRef.id,
       );
