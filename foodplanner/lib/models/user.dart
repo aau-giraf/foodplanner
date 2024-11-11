@@ -3,14 +3,14 @@ class User {
   final String firstName;
   final String lastName;
   final String email;
-  final String role;
+  final String? role;
 
   const User({
     required this.id,
     required this.firstName,
     required this.lastName,
     required this.email,
-    required this.role,
+    this.role,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -20,7 +20,7 @@ class User {
         'first_name': String firstName,
         'last_name': String lastName,
         'email': String email,
-        'role': String role,
+        'role': String? role,
       } =>
         User(
           id: id,
@@ -29,6 +29,7 @@ class User {
           email: email,
           role: role,
         ),
+
       _ => throw const FormatException('Bruger kunne ikke findes.'),
     };
   }

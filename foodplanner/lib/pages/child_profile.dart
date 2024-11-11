@@ -15,58 +15,74 @@ import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:foodplanner/pages/choose_parent.dart';
+import 'package:foodplanner/components/button.dart';
 
 class ChildProfile extends StatefulWidget {
   final Child child;
-  const ChildProfile({super.key, required this.child});
+  final VoidCallback? onChildChanged;
+  const ChildProfile(
+      {super.key, required this.child, this.onChildChanged});
 
-  static final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
-  static final SchoolClassService schoolClassService = SchoolClassService(apiUrl: ApiConfig.baseUrl);
+  static final ChildService childService =
+      ChildService(apiUrl: ApiConfig.baseUrl);
+  static final SchoolClassService schoolClassService =
+      SchoolClassService(apiUrl: ApiConfig.baseUrl);
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-
 
   @override
   ChildProfileState createState() => ChildProfileState();
 }
 
-class ChildProfileState extends State<ChildProfile> with SingleTickerProviderStateMixin{
+class ChildProfileState extends State<ChildProfile>
+    with SingleTickerProviderStateMixin {
   List<SchoolClass> schoolClasses = [];
-  User parent = User(id: 0, email: 'Unknown', firstName: 'Unknown', lastName: 'Unknown', role: 'Unknown');
+  User parent = User(
+      id: 0,
+      email: 'Unknown',
+      firstName: 'Unknown',
+      lastName: 'Unknown',
+      role: 'Unknown');
   bool isEditingFirstName = false;
   bool isEditingLastName = false;
   bool isEditingClass = false;
+  bool hasChanges = false;
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   String? selectedClassId;
   String updatedFirstName = '';
   String updatedLastName = '';
 
-        
-
+  void onFieldChanged() {
+    setState(() {
+      hasChanges = true;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
 
-    firstNameController.text = TextEditingController(text: widget.child.firstName).text;
-    lastNameController.text = TextEditingController(text: widget.child.lastName).text;
+    firstNameController.text =
+        TextEditingController(text: widget.child.firstName).text;
+    lastNameController.text =
+        TextEditingController(text: widget.child.lastName).text;
     updatedFirstName = widget.child.firstName;
     updatedLastName = widget.child.lastName;
     selectedClassId = widget.child.classId.toString();
 
-@override
-void dispose() {
-  firstNameController.dispose();
-  lastNameController.dispose();
-  super.dispose();
-}
+    @override
+    void dispose() {
+      firstNameController.dispose();
+      lastNameController.dispose();
+      super.dispose();
+    }
 
     ChildProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
         schoolClasses = result;
       });
     }).catchError((error) {
-      throw(error);
+      throw (error);
     });
 
     ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
@@ -74,179 +90,201 @@ void dispose() {
         parent = result;
       });
     }).catchError((error) {
-      throw(error);
+      throw (error);
     });
-
   }
 
-
-  String getClassName(int classId){
-      final schoolClass = schoolClasses.firstWhere((schoolClass) => schoolClass.classId == classId, orElse: () => SchoolClass(classId: 0, className: 'Unknown'));
-      return schoolClass.className;
-    }
+  String getClassName(int classId) {
+    final schoolClass = schoolClasses.firstWhere(
+        (schoolClass) => schoolClass.classId == classId,
+        orElse: () => SchoolClass(classId: 0, className: 'Unknown'));
+    return schoolClass.className;
+  }
 
   List<Map<String, dynamic>> get childProfileItem => [
-    {
-      'title': 'Fornavn: ',
-      'showIcon': false,
-      'isEditable': isEditingFirstName,
-      'cta': Expanded(
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: isEditingFirstName
-              ? Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: CustomTextField(
-                  controller: firstNameController,
-                  errorText: '',
-                  hintText: 'Fornavn',
-                  obscureText: false,
-                  color: Colors.white,
-                ),
-              ): Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    widget.child.firstName,
-                    style: AppTextStyles.bigText,
-                    
-                  ),
-                ],
-              ),
-            ),
-            IconButton(
-              icon: SFIcon(
-                SFIcons.sf_pencil,
-                color: AppColors.textPrimary,
-                fontSize: 28,
-              ),
-              onPressed: () {
-                setState(() {
-                  isEditingFirstName = true;
-                });
-              },
-            ),
-          ],
-        ),
-      ),
-      'showSpacer': false,
-    },
-    {
-      'title': 'Efternavn: ',
-      'showIcon': false,
-      'isEditable': isEditingLastName,
-      'cta': Expanded(
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: isEditingLastName
-              ? Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: CustomTextField(
-                  controller: lastNameController,
-                  errorText: '',
-                  hintText: 'Efternavn',
-                  obscureText: false,
-                  color: Colors.white,
-                ),
-              ): Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    widget.child.lastName,
-                    style: AppTextStyles.bigText,
-                    
-                  ),
-                ],
-              ),
-            ),
-            IconButton(
-              icon: SFIcon(
-                SFIcons.sf_pencil,
-                color: AppColors.textPrimary,
-                fontSize: 28,
-              ),
-              onPressed: () {
-                setState(() {
-                  isEditingLastName = true;
-                });
-              },
-            ),
-          ],
-        ),
-      ),
-      'showSpacer': false,
-    },
         {
-      'title': 'Klasse',
-      'showIcon': false,
-      'isEditable': isEditingClass,
-      'cta': Container(
-        height: 35,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), // Set the desired border radius
-          color: Colors.transparent, // Ensure the container itself is transparent
-        ),
-        child: DropdownButton<String>(
-          items: schoolClasses.map((schoolClass) {
-            return DropdownMenuItem<String>(
-              value: schoolClass.classId.toString(),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                height: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10), // Set the desired border radius
-                  color: selectedClassId == schoolClass.classId.toString() ? AppColors.primary : Colors.transparent,
+          'title': 'Fornavn: ',
+          'showIcon': false,
+          'isEditable': isEditingFirstName,
+          'cta': Expanded(
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: isEditingFirstName
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: CustomTextField(
+                              controller: firstNameController,
+                              errorText: '',
+                              hintText: 'Fornavn',
+                              obscureText: false,
+                              color: Colors.transparent,
+                              onChanged: (value) {
+                                updatedFirstName = value;
+                                onFieldChanged();
+                              },
+                            ),
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              widget.child.firstName,
+                              style: AppTextStyles.bigText,
+                            ),
+                          ],
+                        ),
                 ),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  schoolClass.className,
-                  style: TextStyle(
-                    color: Colors.black,
+                IconButton(
+                  icon: SFIcon(
+                    SFIcons.sf_pencil,
+                    color: AppColors.textPrimary,
+                    fontSize: 28,
                   ),
+                  onPressed: () {
+                    setState(() {
+                      isEditingFirstName = true;
+                    });
+                  },
                 ),
-              ),
-            );
-          }).toList(),
-          value: selectedClassId,
-          onChanged: (String? value) {
-            setState(() {
-              selectedClassId = value;
-              print(selectedClassId);
-            });
-          },
-          selectedItemBuilder: (BuildContext context) {
-            return schoolClasses.map<Widget>((SchoolClass schoolClass) {
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                height: 35,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10), // Set the desired border radius
-                  color: selectedClassId == schoolClass.classId.toString() ? AppColors.primary : Colors.transparent,
+              ],
+            ),
+          ),
+          'showSpacer': false,
+        },
+        {
+          'title': 'Efternavn: ',
+          'showIcon': false,
+          'isEditable': isEditingLastName,
+          'cta': Expanded(
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: isEditingLastName
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: CustomTextField(
+                            controller: lastNameController,
+                            errorText: '',
+                            hintText: 'Efternavn',
+                            obscureText: false,
+                            color: Colors.white,
+                            onChanged: (value) {
+                              updatedLastName = value;
+                              onFieldChanged();
+                            },
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              widget.child.lastName,
+                              style: AppTextStyles.bigText,
+                            ),
+                          ],
+                        ),
                 ),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  schoolClass.className,
-                  style: TextStyle(
-                    color: Colors.black,
+                IconButton(
+                  icon: SFIcon(
+                    SFIcons.sf_pencil,
+                    color: AppColors.textPrimary,
+                    fontSize: 28,
                   ),
+                  onPressed: () {
+                    setState(() {
+                      isEditingLastName = true;
+                    });
+                  },
                 ),
-              );
-            }).toList();
-          },
-        ),
-      ),
-      'value': getClassName(widget.child.classId),
-    },
-    {
-      'title': 'Forældre',
-      'showIcon': false,
-      'isEditable': false,
-      'cta': ctaButtons(() {}),
-      'divider': false,
-    },
-  ];
+              ],
+            ),
+          ),
+          'showSpacer': false,
+        },
+        {
+          'title': 'Klasse',
+          'showIcon': false,
+          'isEditable': isEditingClass,
+          'cta': Container(
+            height: 35,
+            decoration: BoxDecoration(
+              borderRadius:
+                  BorderRadius.circular(10), // Set the desired border radius
+              color: Colors
+                  .transparent, // Ensure the container itself is transparent
+            ),
+            child: DropdownButton<String>(
+              items: schoolClasses.map((schoolClass) {
+                return DropdownMenuItem<String>(
+                  value: schoolClass.classId.toString(),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    height: 35,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                          10), // Set the desired border radius
+                      color: selectedClassId == schoolClass.classId.toString()
+                          ? AppColors.primary
+                          : Colors.transparent,
+                    ),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      schoolClass.className,
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+              value: selectedClassId,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedClassId = value;
+                  onFieldChanged();
+                });
+              },
+              selectedItemBuilder: (BuildContext context) {
+                return schoolClasses.map<Widget>((SchoolClass schoolClass) {
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    height: 35,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                          10), // Set the desired border radius
+                      color: selectedClassId == schoolClass.classId.toString()
+                          ? AppColors.primary
+                          : Colors.transparent,
+                    ),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      schoolClass.className,
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  );
+                }).toList();
+              },
+            ),
+          ),
+          'value': getClassName(widget.child.classId),
+        },
+        {
+          'title': 'Forældre',
+          'showIcon': false,
+          'isEditable': false,
+          'cta': ctaButtons(() {}),
+          'divider': false,
+        },
+      ];
 
   Widget ctaButtons(VoidCallback onPressed) {
     return Row(
@@ -257,19 +295,22 @@ void dispose() {
           style: AppTextStyles.bigText,
         ),
         IconButton(
-          padding: EdgeInsets.zero,
-          icon: SFIcon(
-            SFIcons.sf_chevron_right,
-            color: AppColors.textPrimary,
-            fontSize: 28,
-          ),
-          onPressed: () {
-          Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChooseParent(child: widget.child)),
-          );}
-        ),
+            padding: EdgeInsets.zero,
+            icon: SFIcon(
+              SFIcons.sf_chevron_right,
+              color: AppColors.textPrimary,
+              fontSize: 28,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ChooseParent(
+                          child: widget.child,
+                          onChildChanged: widget.onChildChanged,
+                        )),
+              );
+            }),
       ],
     );
   }
@@ -292,39 +333,89 @@ void dispose() {
           SettingsHeader(
             icon: SFIcons.sf_figure_and_child_holdinghands,
             title: '${widget.child.firstName}s',
-            subtitle: 'Her kan du redigere ${widget.child.firstName}s profil og klasse. ',
+            subtitle:
+                'Her kan du redigere ${widget.child.firstName}s profil og klasse. ',
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
+            child: Column(children: [
               Card(
                 elevation: 2,
                 color: AppColors.background,
                 surfaceTintColor: AppColors.background,
                 child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 10),
-                        ...childProfileItem.map((item) {
-                          return SettingsWidget(
-                            showIcon: item['showIcon'],
-                            title: '${item['title']}',
-                            cta: item['cta'],
-                            type: SettingsType.inlineItems,
-                            isEditable: item['isEditable'],
-                            divider: item['divider'] ?? true,
-                            showSpacer: item['showSpacer'] ?? true,
-                          );
-                        }),
-                      ],
-                    ),
-                  )
-                ),
+                    child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10),
+                      ...childProfileItem.map((item) {
+                        return SettingsWidget(
+                          showIcon: item['showIcon'],
+                          title: '${item['title']}',
+                          cta: item['cta'],
+                          type: SettingsType.inlineItems,
+                          isEditable: item['isEditable'],
+                          divider: item['divider'] ?? true,
+                          showSpacer: item['showSpacer'] ?? true,
+                        );
+                      }),
+                    ],
+                  ),
+                )),
               )
-            ]), 
+            ]),
+          ),
+          Spacer(),
+          Visibility(
+            visible: hasChanges,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  CustomButton(
+                    text: 'Gem ændringer',
+                    onTab: () => {
+                      ChildProfile.childService
+                          .updateChild(
+                              widget.child.childId,
+                              updatedFirstName.isNotEmpty
+                                  ? updatedFirstName
+                                  : widget.child.firstName,
+                              updatedLastName.isNotEmpty
+                                  ? updatedLastName
+                                  : widget.child.lastName,
+                              widget.child.parentId,
+                              int.parse(selectedClassId!))
+                          .then((response) {
+                        if (response.statusCode == 204) {
+                          print('successfullyupdated');
+                          Navigator.pop(context);
+                        } else {
+                          throw Exception('Der skete en fejl');
+                        }
+                      }),
+                    },
+                  ),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+                  CustomButton(
+                    text: 'Fortryd',
+                    onTab: () => {
+                      setState(() {
+                        isEditingFirstName = false;
+                        isEditingLastName = false;
+                        isEditingClass = false;
+                        hasChanges = false;
+                      }),
+                    },
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                  ),
+                  Padding(padding: EdgeInsets.only(bottom: 20)),
+                ],
+              ),
+            ),
           ),
         ],
       ),

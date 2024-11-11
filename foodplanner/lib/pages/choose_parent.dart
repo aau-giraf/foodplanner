@@ -13,8 +13,8 @@ import 'package:foodplanner/models/user.dart';
 
 class ChooseParent extends StatefulWidget {
   final Child child;
-
-  const ChooseParent({super.key, required this.child});
+  final VoidCallback? onChildChanged;
+  const ChooseParent({super.key, required this.child, this.onChildChanged});
 
   static final ChildService childService =
       ChildService(apiUrl: ApiConfig.baseUrl);
@@ -31,8 +31,31 @@ class ChooseParentState extends State<ChooseParent>
   @override
   void initState() {
     super.initState();
+    fetchParents();
+    /* ChooseParent.userService.fetchAllParents().then((result) {
+      setState(() {
+        parents = result;
+      });
+    }).catchError((error) {
+      throw (error);
+    }); */
+  }
 
+  /* Future<void> fetchParents() async {
+    try {
+      final fetchedParents = await ChooseParent.userService.fetchAllParents();
+      setState(() {
+        parents = fetchedParents;
+      });
+      print('Fetched parents: ${parents.length}'); // Debug print
+    } catch (error) {
+      print('Error fetching parents: $error');
+    }
+  } */
+
+  void fetchParents() {
     ChooseParent.userService.fetchAllParents().then((result) {
+      print(result.length);
       setState(() {
         parents = result;
       });
@@ -49,7 +72,10 @@ class ChooseParentState extends State<ChooseParent>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChildProfile(child: widget.child),
+                  builder: (context) => ChildProfile(
+                    child: widget.child,
+                    onChildChanged: widget.onChildChanged,
+                  ),
                 ),
               );
             },
