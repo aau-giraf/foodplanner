@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
@@ -14,8 +15,9 @@ class SettingsWidget extends StatefulWidget {
   final bool divider;
   final bool clickable;
   final VoidCallback? ctaFunction;
-  final bool showIcon;
   final bool isEditable;
+  final TextEditingController? controller;
+  final bool showIcon;
   final bool showSpacer;
   const SettingsWidget({
     super.key,
@@ -27,6 +29,7 @@ class SettingsWidget extends StatefulWidget {
     this.divider = true,
     this.clickable = false,
     this.ctaFunction,
+    this.controller,
     this.showIcon = true, // Default value is true, starts off being visible
     this.isEditable = false, // Default value is false, starts off being not editable
     this.showSpacer = true,
@@ -49,43 +52,41 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         child: Row(
           children: [
             if (widget.showIcon)
-            widget.leftIcon != null
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 15.0),
-                    child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(8.0), // Add rounded corners
-                      child: Container(
-                        color: AppColors.primary,
-                        width: 50,
-                        height: 50,
-                        child: Center(
-                          child: SFIcon(
-                            widget.leftIcon ??
-                                SFIcons
-                                    .sf_00_circle, // random icon since it never reaches this anyways
-                            fontSize: 30,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
+            if (widget.leftIcon != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 10.0, vertical: 15.0),
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(8.0), // Add rounded corners
+                  child: Container(
+                    color: AppColors.primary,
+                    width: 50,
+                    height: 50,
+                    child: Center(
+                      child: SFIcon(
+                        widget.leftIcon!,
+                        fontSize: 30,
+                        color: AppColors.textSecondary,
                       ),
                     ),
-                  )
-                : Container(),
-            Expanded(
-              child: widget.isEditable
-                  ? TextField(
-                      decoration: InputDecoration(
-                        hintText: widget.title,
-                      ),
-                    )
-              : Text(
-                widget.title,
-                style: AppTextStyles.bigText,
-                softWrap: true, // Allow text to wrap
+                  ),
+                ),
               ),
-            ),
+            Expanded(
+                child: widget.isEditable
+                    ? CustomTextField(
+                        controller: widget.controller!,
+                        errorText: "",
+                        hintText: widget.title,
+                        type: TextFieldType.smallTextField,
+                        color: Colors.white,
+                      )
+                    : Text(
+                        widget.title,
+                        style: AppTextStyles.bigText,
+                        softWrap: true, // Allow text to wrap
+                      )),
             widget.cta ?? Container(),
             SizedBox(width: 10),
           ],
@@ -113,25 +114,22 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Row(
                         children: [
-                          widget.leftIcon != null
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: Container(
-                                    color: AppColors.primary,
-                                    width: 50,
-                                    height: 50,
-                                    child: Center(
-                                      child: SFIcon(
-                                        widget.leftIcon ??
-                                            SFIcons
-                                                .sf_00_circle, // random icon since it never reaches this anyways
-                                        fontSize: 24,
-                                        color: AppColors.textSecondary,
-                                      ),
-                                    ),
+                          if (widget.leftIcon != null)
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Container(
+                                color: AppColors.primary,
+                                width: 50,
+                                height: 50,
+                                child: Center(
+                                  child: SFIcon(
+                                    widget.leftIcon!,
+                                    fontSize: 24,
+                                    color: AppColors.textSecondary,
                                   ),
-                                )
-                              : Container(),
+                                ),
+                              ),
+                            ),
                           SizedBox(width: 10),
                           Text(
                             widget.title,
@@ -172,26 +170,23 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             padding: const EdgeInsets.all(10.0),
             child: Column(
               children: [
-                widget.leftIcon != null
-                    ? ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(8.0), // Add rounded corners
-                        child: Container(
-                          color: AppColors.primary,
-                          width: 60,
-                          height: 60,
-                          child: Center(
-                            child: SFIcon(
-                              widget.leftIcon ??
-                                  SFIcons
-                                      .sf_00_circle, // random icon since it never reaches this anyways
-                              fontSize: 36,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
+                if (widget.leftIcon != null)
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(8.0), // Add rounded corners
+                    child: Container(
+                      color: AppColors.primary,
+                      width: 60,
+                      height: 60,
+                      child: Center(
+                        child: SFIcon(
+                          widget.leftIcon!,
+                          fontSize: 36,
+                          color: AppColors.textSecondary,
                         ),
-                      )
-                    : Container(),
+                      ),
+                    ),
+                  ),
                 SizedBox(height: 10),
                 Text(
                   widget.title,

@@ -48,7 +48,6 @@ class ChooseParentState extends State<ChooseParent>
       children: [
         TextButton(
             onPressed: () {
-              print("${parent}, her");
               Navigator.pop(context, parent.id);
             },
             child: Text(

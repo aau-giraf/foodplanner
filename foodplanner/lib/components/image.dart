@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 
 class FoodImage extends StatelessWidget {
   final int foodImageId;
@@ -9,8 +10,7 @@ class FoodImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String?>(
-        future: ImagesApi()
-            .apiImagesGetPresignedImageLinkGet(foodImageId: foodImageId),
+        future: loadImageAndToken(),
         builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
             return ClipRRect(
@@ -21,5 +21,18 @@ class FoodImage extends StatelessWidget {
             return Text("Image not found");
           }
         });
+  }
+
+  Future<String?> loadImageAndToken() async {
+    String? jwtToken = await AuthProvider().retrieveToken();
+
+    var apiClient = ApiClient();
+    apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
+
+    var imagesApi = ImagesApi(apiClient);
+
+    await imagesApi.apiImagesGetPresignedImageLinkGet(foodImageId: foodImageId);
+
+    return jwtToken;
   }
 }

@@ -20,8 +20,8 @@ class User {
     return switch (json) {
       {
         'id': int id,
-        'first_name': String firstName,
-        'last_name': String lastName,
+        'firstName': String firstName,
+        'lastName': String lastName,
         'email': String email,
         'role': String role,
         'archived': bool archived,
