@@ -37,6 +37,7 @@ class ChooseParentState extends State<ChooseParent>
     ChooseParent.userService.fetchAllParents().then((result) {
       setState(() {
         parents = result;
+        print(result);
       });
     }).catchError((error) {
       throw (error);

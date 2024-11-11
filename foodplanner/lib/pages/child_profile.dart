@@ -71,6 +71,7 @@ class ChildProfileState extends State<ChildProfile>
     updatedFirstName = widget.child.firstName;
     updatedLastName = widget.child.lastName;
     selectedClassId = widget.child.classId.toString();
+    fetchParent();
     selectedParent = parent;
     selectedParentId = widget.child.parentId;
 
@@ -82,7 +83,19 @@ class ChildProfileState extends State<ChildProfile>
       throw (error);
     });
 
+    /* ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
+      setState(() {
+        parent = result;
+        selectedParent = result;
+      });
+    }).catchError((error) {
+      throw (error);
+    }); */
+  }
+
+  void fetchParent() {
     ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
+      print(result);
       setState(() {
         parent = result;
         selectedParent = result;
@@ -352,7 +365,8 @@ class ChildProfileState extends State<ChildProfile>
                           onChildChanged: widget.onChildChanged,
                         )));
             if (selectedParentId != null) {
-              final selectedParent = await ChildProfile.userService.fetchUser(selectedParentId);
+              final selectedParent =
+                  await ChildProfile.userService.fetchUser(selectedParentId);
               setState(() {
                 this.selectedParentId = selectedParentId;
                 this.selectedParent = selectedParent;
@@ -448,8 +462,12 @@ class ChildProfileState extends State<ChildProfile>
                       ChildProfile.childService
                           .updateChild(
                               widget.child.childId,
-                              updatedFirstName.isNotEmpty ? updatedFirstName : widget.child.firstName,
-                              updatedLastName.isNotEmpty ? updatedLastName : widget.child.lastName,
+                              updatedFirstName.isNotEmpty
+                                  ? updatedFirstName
+                                  : widget.child.firstName,
+                              updatedLastName.isNotEmpty
+                                  ? updatedLastName
+                                  : widget.child.lastName,
                               selectedParentId ?? widget.child.parentId,
                               int.parse(selectedClassId!))
                           .then((response) {

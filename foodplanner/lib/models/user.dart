@@ -6,7 +6,6 @@ class User {
   final String role;
   final bool archived;
 
-
   const User({
     required this.id,
     required this.firstName,
@@ -20,8 +19,8 @@ class User {
     return switch (json) {
       {
         'id': int id,
-        'firstName': String firstName,
-        'lastName': String lastName,
+        'first_name': String firstName,
+        'last_name': String lastName,
         'email': String email,
         'role': String role,
         'archived': bool archived,
@@ -34,7 +33,6 @@ class User {
           role: role,
           archived: archived,
         ),
-
       _ => throw const FormatException('Bruger kunne ikke findes.'),
     };
   }

@@ -15,9 +15,9 @@ class UserService {
         headers: <String, String>{
           'Authorization': 'Bearer $jwtToken',
         });
-
     if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+      final userJson = jsonDecode(response.body);
+      return User.fromJson(userJson as Map<String, dynamic>);
     } else {
       throw Exception('Kunne ikke hente bruger');
     }
@@ -120,6 +120,7 @@ class UserService {
         .get(Uri.parse('$apiUrl/api/Admin/GetAll'), headers: <String, String>{
       'Authorization': 'Bearer $jwtToken',
     });
+    print("hej med dig ${response.body}");
     if (response.statusCode == 200) {
       print(response.body);
       final List<dynamic> usersJson = jsonDecode(response.body);
