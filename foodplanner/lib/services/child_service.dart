@@ -68,4 +68,16 @@ class ChildService {
 
     return response;
   }
+
+  Future<http.Response> deleteChild(int id) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.delete(
+      Uri.parse('$apiUrl/api/Childrens/Delete/$id'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $jwtToken',
+      },
+    );
+
+    return response;
+  }
 }

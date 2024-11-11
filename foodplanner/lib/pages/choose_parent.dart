@@ -15,7 +15,6 @@ class ChooseParent extends StatefulWidget {
   final Child child;
   final VoidCallback? onChildChanged;
   const ChooseParent({super.key, required this.child, this.onChildChanged});
-
   static final ChildService childService =
       ChildService(apiUrl: ApiConfig.baseUrl);
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
@@ -32,30 +31,10 @@ class ChooseParentState extends State<ChooseParent>
   void initState() {
     super.initState();
     fetchParents();
-    /* ChooseParent.userService.fetchAllParents().then((result) {
-      setState(() {
-        parents = result;
-      });
-    }).catchError((error) {
-      throw (error);
-    }); */
   }
-
-  /* Future<void> fetchParents() async {
-    try {
-      final fetchedParents = await ChooseParent.userService.fetchAllParents();
-      setState(() {
-        parents = fetchedParents;
-      });
-      print('Fetched parents: ${parents.length}'); // Debug print
-    } catch (error) {
-      print('Error fetching parents: $error');
-    }
-  } */
 
   void fetchParents() {
     ChooseParent.userService.fetchAllParents().then((result) {
-      print(result.length);
       setState(() {
         parents = result;
       });
@@ -69,15 +48,8 @@ class ChooseParentState extends State<ChooseParent>
       children: [
         TextButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChildProfile(
-                    child: widget.child,
-                    onChildChanged: widget.onChildChanged,
-                  ),
-                ),
-              );
+              print("${parent}, her");
+              Navigator.pop(context, parent.id);
             },
             child: Text(
               'Vælg',

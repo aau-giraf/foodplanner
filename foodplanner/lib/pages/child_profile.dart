@@ -20,8 +20,7 @@ import 'package:foodplanner/components/button.dart';
 class ChildProfile extends StatefulWidget {
   final Child child;
   final VoidCallback? onChildChanged;
-  const ChildProfile(
-      {super.key, required this.child, this.onChildChanged});
+  const ChildProfile({super.key, required this.child, this.onChildChanged});
 
   static final ChildService childService =
       ChildService(apiUrl: ApiConfig.baseUrl);
@@ -41,7 +40,8 @@ class ChildProfileState extends State<ChildProfile>
       email: 'Unknown',
       firstName: 'Unknown',
       lastName: 'Unknown',
-      role: 'Unknown');
+      role: 'Unknown',
+      archived: false);
   bool isEditingFirstName = false;
   bool isEditingLastName = false;
   bool isEditingClass = false;
@@ -51,6 +51,8 @@ class ChildProfileState extends State<ChildProfile>
   String? selectedClassId;
   String updatedFirstName = '';
   String updatedLastName = '';
+  int? selectedParentId;
+  User? selectedParent;
 
   void onFieldChanged() {
     setState(() {
@@ -69,13 +71,8 @@ class ChildProfileState extends State<ChildProfile>
     updatedFirstName = widget.child.firstName;
     updatedLastName = widget.child.lastName;
     selectedClassId = widget.child.classId.toString();
-
-    @override
-    void dispose() {
-      firstNameController.dispose();
-      lastNameController.dispose();
-      super.dispose();
-    }
+    selectedParent = parent;
+    selectedParentId = widget.child.parentId;
 
     ChildProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
@@ -88,10 +85,18 @@ class ChildProfileState extends State<ChildProfile>
     ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
       setState(() {
         parent = result;
+        selectedParent = result;
       });
     }).catchError((error) {
       throw (error);
     });
+  }
+
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    super.dispose();
   }
 
   String getClassName(int classId) {
@@ -220,59 +225,94 @@ class ChildProfileState extends State<ChildProfile>
               color: Colors
                   .transparent, // Ensure the container itself is transparent
             ),
-            child: DropdownButton<String>(
-              items: schoolClasses.map((schoolClass) {
-                return DropdownMenuItem<String>(
-                  value: schoolClass.classId.toString(),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    height: 35,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                          10), // Set the desired border radius
-                      color: selectedClassId == schoolClass.classId.toString()
-                          ? AppColors.primary
-                          : Colors.transparent,
-                    ),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      schoolClass.className,
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton2<String>(
+                isExpanded: true,
+                hint: Text(
+                  'Vælg klasse',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textSecondary,
                   ),
-                );
-              }).toList(),
-              value: selectedClassId,
-              onChanged: (String? value) {
-                setState(() {
-                  selectedClassId = value;
-                  onFieldChanged();
-                });
-              },
-              selectedItemBuilder: (BuildContext context) {
-                return schoolClasses.map<Widget>((SchoolClass schoolClass) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    height: 35,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                          10), // Set the desired border radius
-                      color: selectedClassId == schoolClass.classId.toString()
-                          ? AppColors.primary
-                          : Colors.transparent,
-                    ),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      schoolClass.className,
-                      style: TextStyle(
-                        color: Colors.black,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                items: schoolClasses
+                    .map((SchoolClass schoolClass) => DropdownMenuItem<String>(
+                          value: schoolClass.classId.toString(),
+                          child: Text(
+                            schoolClass.className,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ))
+                    .toList(),
+                value: selectedClassId,
+                onChanged: (String? value) {
+                  setState(() {
+                    selectedClassId = value;
+                    onFieldChanged();
+                  });
+                },
+                selectedItemBuilder: (BuildContext context) {
+                  return schoolClasses.map((SchoolClass schoolClass) {
+                    return Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        schoolClass.className,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  );
-                }).toList();
-              },
+                    );
+                  }).toList();
+                },
+                buttonStyleData: ButtonStyleData(
+                  height: 50,
+                  width: 200,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: AppColors.primary,
+                  ),
+                  elevation: 2,
+                ),
+                iconStyleData: const IconStyleData(
+                  icon: SFIcon(
+                    SFIcons.sf_chevron_forward,
+                  ),
+                  openMenuIcon: SFIcon(
+                    SFIcons.sf_chevron_down,
+                  ),
+                  iconSize: 16,
+                  iconEnabledColor: AppColors.textSecondary,
+                  iconDisabledColor: Colors.grey,
+                ),
+                dropdownStyleData: DropdownStyleData(
+                  maxHeight: 200,
+                  width: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: AppColors.background,
+                  ),
+                  scrollbarTheme: ScrollbarThemeData(
+                    radius: const Radius.circular(40),
+                    thickness: WidgetStatePropertyAll<double>(6),
+                    thumbVisibility: WidgetStatePropertyAll<bool>(true),
+                  ),
+                ),
+                menuItemStyleData: const MenuItemStyleData(
+                  height: 40,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                ),
+              ),
             ),
           ),
           'value': getClassName(widget.child.classId),
@@ -291,26 +331,36 @@ class ChildProfileState extends State<ChildProfile>
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          '${parent.firstName} ${parent.lastName}',
+          selectedParent != null
+              ? '${selectedParent!.firstName} ${selectedParent!.lastName}'
+              : '${parent.firstName} ${parent.lastName}',
           style: AppTextStyles.bigText,
         ),
         IconButton(
-            padding: EdgeInsets.zero,
-            icon: SFIcon(
-              SFIcons.sf_chevron_right,
-              color: AppColors.textPrimary,
-              fontSize: 28,
-            ),
-            onPressed: () {
-              Navigator.push(
+          padding: EdgeInsets.zero,
+          icon: SFIcon(
+            SFIcons.sf_chevron_right,
+            color: AppColors.textPrimary,
+            fontSize: 28,
+          ),
+          onPressed: () async {
+            final selectedParentId = await Navigator.push<int>(
                 context,
                 MaterialPageRoute(
                     builder: (context) => ChooseParent(
                           child: widget.child,
                           onChildChanged: widget.onChildChanged,
-                        )),
-              );
-            }),
+                        )));
+            if (selectedParentId != null) {
+              final selectedParent = await ChildProfile.userService.fetchUser(selectedParentId);
+              setState(() {
+                this.selectedParentId = selectedParentId;
+                this.selectedParent = selectedParent;
+                onFieldChanged();
+              });
+            }
+          },
+        ),
       ],
     );
   }
@@ -368,6 +418,24 @@ class ChildProfileState extends State<ChildProfile>
           ),
           Spacer(),
           Visibility(
+            visible: !hasChanges,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: CustomButton(
+                    text: 'Slet barn',
+                    onTab: () => {
+                      print(widget.child.childId),
+                    },
+                    backgroundColor: Colors.red,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.only(bottom: 20)),
+              ],
+            ),
+          ),
+          Visibility(
             visible: hasChanges,
             child: Container(
               width: double.infinity,
@@ -380,13 +448,9 @@ class ChildProfileState extends State<ChildProfile>
                       ChildProfile.childService
                           .updateChild(
                               widget.child.childId,
-                              updatedFirstName.isNotEmpty
-                                  ? updatedFirstName
-                                  : widget.child.firstName,
-                              updatedLastName.isNotEmpty
-                                  ? updatedLastName
-                                  : widget.child.lastName,
-                              widget.child.parentId,
+                              updatedFirstName.isNotEmpty ? updatedFirstName : widget.child.firstName,
+                              updatedLastName.isNotEmpty ? updatedLastName : widget.child.lastName,
+                              selectedParentId ?? widget.child.parentId,
                               int.parse(selectedClassId!))
                           .then((response) {
                         if (response.statusCode == 204) {
