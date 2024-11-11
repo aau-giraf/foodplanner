@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/pages/admin_approve_page.dart';
+import 'package:foodplanner/pages/deactivate_accounts.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/settings_widget.dart';
@@ -98,7 +99,7 @@ class _SettingsPage extends State<Settings> {
           'ctaFunction': () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => StudentPage()),
+              MaterialPageRoute(builder: (context) => DeactivateAccountsPage()),
             );
           }
         },

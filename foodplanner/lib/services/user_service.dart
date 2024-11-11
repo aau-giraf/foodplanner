@@ -108,4 +108,38 @@ class UserService {
 
     return response;
   }
+
+  Future<List<User>> fetchAllUsers() async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.get(
+      Uri.parse('$apiUrl/api/Admin/GetAll'),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return (jsonDecode(response.body) as List)
+          .map<User>((json) => User.fromJson(json))
+          .toList();
+    } else {
+      throw Exception('Failed to load users');
+    }
+  }
+
+  Future<dynamic> updateArchived(int id) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.put(
+      Uri.parse('$apiUrl/api/Admin/UpdateArchived/$id'),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      return {'Message': 'Kunne ikke opdatere brugeren'};
+    }
+  }
 }

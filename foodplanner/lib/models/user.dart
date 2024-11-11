@@ -4,23 +4,25 @@ class User {
   final String lastName;
   final String email;
   final String role;
+  final bool archived;
 
-  const User({
-    required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-    required this.role,
-  });
+  const User(
+      {required this.id,
+      required this.firstName,
+      required this.lastName,
+      required this.email,
+      required this.role,
+      required this.archived});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
         'id': int id,
-        'firstName': String firstName,
-        'lastName': String lastName,
+        'first_name': String firstName,
+        'last_name': String lastName,
         'email': String email,
         'role': String role,
+        'archived': bool archived,
       } =>
         User(
           id: id,
@@ -28,6 +30,7 @@ class User {
           lastName: lastName,
           email: email,
           role: role,
+          archived: archived,
         ),
       _ => throw const FormatException('Bruger kunne ikke findes.'),
     };
