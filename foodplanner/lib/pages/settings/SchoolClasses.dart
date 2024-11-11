@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
@@ -153,7 +154,21 @@ class _SchoolClasses extends State<SchoolClasses> {
           ),
           IconButton(
             onPressed: () {
-              deleteClass(schoolClassId);
+              //deleteClass(schoolClassId);
+              showIPhonePopupBox(
+                context: context,
+                title: 'Slet klasse',
+                message: 'Er du sikker på, at du vil slette denne klasse?',
+                confirmText: 'Ja',
+                cancelText: 'Nej',
+                onConfirm: () {
+                  deleteClass(schoolClassId);
+                  Navigator.of(context).pop(); // Close the popup
+                },
+                onCancel: () {
+                  Navigator.of(context).pop(); // Close the popup
+                },
+              );
             },
             icon: SFIcon(
               SFIcons.sf_x_square_fill,

@@ -81,13 +81,28 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text(
-          'Indstillinger',
-          style: AppTextStyles.standard.copyWith(fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Row(
+              children: [
+                SFIcon(SFIcons.sf_chevron_backward),
+                SizedBox(width: 10),
+                Text(
+                  'Indstillinger',
+                  style: AppTextStyles.headline4,
+                  textAlign: TextAlign.left,
+                ),
+              ],
+            ),
+          ),
         ),
-        centerTitle: false,
+        leadingWidth: 200,
+        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
       body: _isLoading
