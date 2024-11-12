@@ -92,7 +92,6 @@ void main() {
           home: CameraPage(
             onImagePicked: (_) {},
             controller: mockCameraController,
-            client: Client(),
           )
         ));
 
@@ -113,7 +112,6 @@ void main() {
           home: CameraPage(
             onImagePicked: (_) {},
             controller: mockCameraController,
-            client: Client(),
           )
         ));
         await tester.pump();
@@ -129,7 +127,6 @@ void main() {
           home: CameraPage(
             onImagePicked: (_) {},
             controller: null,
-            client: Client(),
           )
         ));
 
@@ -149,7 +146,6 @@ void main() {
           home: CameraPage(
             onImagePicked: (_) {},
             controller: mockCameraController,
-            client: Client(),
           )
         ));
         await tester.pump();
@@ -170,7 +166,6 @@ void main() {
             onImagePicked: (_) {},
             controller: mockCameraController, 
             imagePicker: mockImagePicker,
-            client: Client(),
           )
         ));
 

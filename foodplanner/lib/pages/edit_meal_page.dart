@@ -99,7 +99,6 @@ class EditMealPageState extends State<EditMealPage> {
           } // Go back to the previous page after adding new ingredient.
         ),
         CameraPage(
-          client: _client!,
           onImagePicked: (image) {
           setState(() {
             if(image is File) this.image = image;
