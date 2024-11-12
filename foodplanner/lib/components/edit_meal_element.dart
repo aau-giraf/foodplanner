@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:foodplanner/components/image.dart';
@@ -24,6 +27,9 @@ class _EditMealElement extends State<EditMealElement> {
   bool _isEditing = false; // Determines whether the the user can edit the TextField.
   int maxTextLength = 20; // The max number of characters that can be written in the TextField.
 
+  File? image;
+  Uint8List? webImageBytes;
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +41,7 @@ class _EditMealElement extends State<EditMealElement> {
     _editTitleController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,61 +63,137 @@ class _EditMealElement extends State<EditMealElement> {
       ),
       child: Padding(
         // Padding inside the container
-        padding: EdgeInsets.only(top: 5, left: 35, right: 35, bottom: 15),
+        // padding: EdgeInsets.only(top: 5, left: 16, right: 16, bottom: 15),
+        padding: EdgeInsets.all(16),
         child: Row(
           children: [
-            widget.meal.imageRef != null ? Column(
-              children: [
-                Spacer(), // Space at the top of the column
-                // The image displaying the ingredient.
-                FoodImage(foodImageId: widget.meal.imageRef!),
-                // The button for editing the image.
-                TextButton(
-                  onPressed: () {
-                    widget.onCamera(); // Page shifts to the camera page through the "edit_meal_page.dart"
-                  },
-                  child: Text("Redigér billede"), // Button text for editing 
-                ),
-                Spacer(), // Space at the bottom of the column
-              ],
-            ) : Spacer(),
-            Spacer(), // Space between image column and text column
-            Column(
-              children: [
-                Spacer(), // Space at the top of this column
-                // The text displaying the title of the ingredient.
-                _isEditing // Checks if _isEditing is true
-                  ? TextField( // If yes, 
-                    controller: _editTitleController, // The TextEditingController for the textfield.
-                    maxLength: maxTextLength, // Limits the max number of charaters that can be inputted in the TextField.
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z +-]")),
-                    ], // Only alphanumeric characters can be entered
-                    style: AppTextStyles.headline2, // Custom text style for the ingredient name.
-                  )
-                : SingleChildScrollView( 
-                  scrollDirection: Axis.horizontal,
-                  child: Text(
-                    widget.meal.title, // Name of the ingredient retrieved from the Ingredient object
-                    style: AppTextStyles.headline1,  // Custom text style for the ingredient name
-                    overflow: TextOverflow.ellipsis, // Ellipsis for overflowed text
+            widget.meal.imageRef != null 
+              ? AspectRatio(
+                aspectRatio: 1.0,
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  fit: BoxFit.cover,
+                )
+                // child: FoodImage(foodImageId: widget.meal.imageRef!),
+              )
+              : Container(),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Spacer(), // Space at the top of this column
+                  // The text displaying the title of the ingredient.
+                  _isEditing // Checks if _isEditing is true
+                    ? TextField( // If yes, 
+                      controller: _editTitleController, // The TextEditingController for the textfield.
+                      maxLength: maxTextLength, // Limits the max number of charaters that can be inputted in the TextField.
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z +-]")),
+                      ], // Only alphanumeric characters can be entered
+                      style: AppTextStyles.headline2, // Custom text style for the ingredient name.
+                    )
+                    : Text(
+                      widget.meal.title,
+                      style: AppTextStyles.headline1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  // : SingleChildScrollView( 
+                  //   scrollDirection: Axis.horizontal,
+                  //   child: Text(
+                  //     widget.meal.title, // Name of the ingredient retrieved from the Ingredient object
+                  //     style: AppTextStyles.headline1,  // Custom text style for the ingredient name
+                  //     overflow: TextOverflow.ellipsis, // Ellipsis for overflowed text
+                  //   ),
+                  // ),
+                  // The button for editing the title of the ingredient.
+                  TextButton(
+                    onPressed: () {
+                      setState(() { // Changes the state of the element when the button is clicked.
+                        _isEditing = !_isEditing; // Changes whether the TextField is editable to the opposite.
+                      });
+                    },
+                    child: Text("Redigér tekst"), // Button text for editing title
                   ),
-                ),
-                // The button for editing the title of the ingredient.
-                TextButton(
-                  onPressed: () {
-                    setState(() { // Changes the state of the element when the button is clicked.
-                      _isEditing = !_isEditing; // Changes whether the TextField is editable to the opposite.
-                    });
-                  },
-                  child: Text("Redigér tekst"), // Button text for editing title
-                ),
-                Spacer(), // Space at the bottom of this column
-              ],
+                  TextButton(
+                    onPressed: widget.onCamera, 
+                    child: Text("Redigér billede"),
+                  )
+                  // Spacer(), // Space at the bottom of this column
+                ],
+              ),
             ),
+            //     child: Column(
+            //     children: [
+            //       Spacer(), // Space at the top of the column
+            //       // The image displaying the ingredient.
+            //       // SizedBox(
+            //       //   height: 50,
+            //       //   width: 50,
+            //       //   child: FoodImage(foodImageId: widget.meal.imageRef!),
+            //       // ),
+            //       Expanded(
+            //         // child: SizedBox(
+            //         //   height: MediaQuery.sizeOf(context).height > MediaQuery.sizeOf(context).width
+            //         //     ? MediaQuery.sizeOf(context).width
+            //         //     : MediaQuery.sizeOf(context).height,
+            //         //   width: MediaQuery.sizeOf(context).height > MediaQuery.sizeOf(context).width
+            //         //     ? MediaQuery.sizeOf(context).width
+            //         //     : MediaQuery.sizeOf(context).height,
+            //         //   child: FoodImage(foodImageId: widget.meal.imageRef!),
+            //         // ),
+            //         child: FoodImage(foodImageId: widget.meal.imageRef!),
+            //       ),
+            //       // The button for editing the image.
+            //       TextButton(
+            //         onPressed: () {
+            //           widget.onCamera(); // Page shifts to the camera page through the "edit_meal_page.dart"
+            //         },
+            //         child: Text("Redigér billede"), // Button text for editing 
+            //       ),
+            //       // Spacer(), // Space at the bottom of the column
+            //     ],
+            //   ),
+            // ) : Spacer(),
+            // SizedBox(width: 16),
+            // Spacer(), // Space between image column and text column
+            // Column(
+            //   children: [
+            //     Spacer(), // Space at the top of this column
+            //     // The text displaying the title of the ingredient.
+            //     _isEditing // Checks if _isEditing is true
+            //       ? TextField( // If yes, 
+            //         controller: _editTitleController, // The TextEditingController for the textfield.
+            //         maxLength: maxTextLength, // Limits the max number of charaters that can be inputted in the TextField.
+            //         inputFormatters: <TextInputFormatter>[
+            //           FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z +-]")),
+            //         ], // Only alphanumeric characters can be entered
+            //         style: AppTextStyles.headline2, // Custom text style for the ingredient name.
+            //       )
+            //     : SingleChildScrollView( 
+            //       scrollDirection: Axis.horizontal,
+            //       child: Text(
+            //         widget.meal.title, // Name of the ingredient retrieved from the Ingredient object
+            //         style: AppTextStyles.headline1,  // Custom text style for the ingredient name
+            //         overflow: TextOverflow.ellipsis, // Ellipsis for overflowed text
+            //       ),
+            //     ),
+            //     // The button for editing the title of the ingredient.
+            //     TextButton(
+            //       onPressed: () {
+            //         setState(() { // Changes the state of the element when the button is clicked.
+            //           _isEditing = !_isEditing; // Changes whether the TextField is editable to the opposite.
+            //         });
+            //       },
+            //       child: Text("Redigér tekst"), // Button text for editing title
+            //     ),
+            //     Spacer(), // Space at the bottom of this column
+            //   ],
+            // ),
           ],
         ),
       ),
     );
   }
 }
+
