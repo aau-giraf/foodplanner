@@ -3,17 +3,18 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:foodplanner/services/api_config.dart';
 
+/// This method is used to send the inputted image to the back-end.
 Future<http.Response> UploadFoodImage(http.Client client, AuthProvider authProvider, File image) async {
   final jwtToken = await authProvider.retrieveToken(); // Get the authorization token from authentication provider 
 
   // Make a POST request to the API to create a new ingredient.
   final response = await client.post(
-    Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Create'),
+    Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/Create'), // Specify the API endpoint for ingredient creation.
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8', // Specify the content type as JSON.
       'Authorization': 'Bearer $jwtToken', // Include the authorization token for authentication.
     },
-    body: image
+    body: image // The inputted image.
   );
 
   return response; // Return the response from the API call.
