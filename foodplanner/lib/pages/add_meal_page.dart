@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
@@ -37,6 +38,7 @@ class AddMealPageState extends State<AddMealPage> {
   File? image;
   List<int> pageStack = [0]; // Page stack to track the currently displayed page and the previous pages.
   Client? _client; // Client for the requests to the server
+  Completer<void>? cameraPageCompleter;
 
   void pushPage(int index) { // Push a new page onto the stack
     setState(() {
@@ -44,12 +46,15 @@ class AddMealPageState extends State<AddMealPage> {
     });
   }
 
-  void popPage() { // Pop the top page from the stack to go back
+  Future<void> popPage() async { // Pop the top page from the stack to go back
     if (pageStack.length > 1) {
       setState(() {
         pageStack.removeLast();
       });
     }
+
+    cameraPageCompleter?.complete();
+    cameraPageCompleter = null;
   }
 
   final List<Widget> _pages = []; // List to hold the different pages.
@@ -83,7 +88,12 @@ class AddMealPageState extends State<AddMealPage> {
         image: image,
         client: _client!,
         onAddIngredients: () => pushPage(1), // Changes the shown page to "add_ingredent_page.dart" when executed.
-        onCamera: () => pushPage(2), // Changes the shown page to "camera_page.dart" when executed.
+        onCamera: ()
+          async {
+            cameraPageCompleter = Completer<void>();
+            pushPage(2);
+            await cameraPageCompleter!.future;
+          }, // Changes the shown page to "camera_page.dart" when executed.
       ),
       AddIngredientPage( // The AddIngredientPage is the second page.
         ingredients: ingredients, // Pass the ingredients to the AddIngredientPage.
@@ -105,6 +115,7 @@ class AddMealPageState extends State<AddMealPage> {
           setState(() {
             if(image is File) this.image = image;
           });
+          popPage();
         },
       ), // The CameraPage is the third page.
     ]);

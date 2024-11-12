@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
@@ -23,7 +24,7 @@ class MealFormPage extends StatefulWidget {
   final TextEditingController mealTitleController;
   final File? image;
   final VoidCallback onAddIngredients; // Callback for adding ingredients.
-  final VoidCallback onCamera; // Callback for opening the camera.
+  final AsyncCallback onCamera; // Callback for opening the camera.
   final Client client;
   
   const MealFormPage({
@@ -61,8 +62,7 @@ class _MealFormPageState extends State<MealFormPage> {
         authProvider,
         widget.image!
       )).body
-    ) as Map<String, dynamic>)['id'] as int? :
-  null;
+    ) as Map<String, dynamic>)['id'] as int? : null;
   await createMeal( // Creates a meal using the inputted ingredients, without an image.
     widget.client,
     authProvider,
@@ -143,19 +143,19 @@ class _MealFormPageState extends State<MealFormPage> {
                       CupertinoDialogAction(
                         isDefaultAction: true, // Highlight the default action.
                         onPressed: () async { // Leads the user to the camera page. 
-                          widget.onCamera(); // Calls the camera callback.
-                          onCreateMeal();
                           Navigator.pop(context);
-                          context.pop();
+                          await widget.onCamera(); // Calls the camera callback.
+                          onCreateMeal();
+                          //context.pop();
                         },
                         child: const Text("Ja"), // Button text for "Yes".
                       ),
                       CupertinoDialogAction(
                         isDestructiveAction: true, // Mark as a destructive action.
                         onPressed: () async {
-                          onCreateMeal();
                           Navigator.pop(context);
-                          context.pop();
+                          onCreateMeal();
+                          //context.pop();
                         },
                         child: const Text('Nej'),  // Button text for "No".
                       ),

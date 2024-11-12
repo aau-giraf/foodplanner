@@ -44,7 +44,7 @@ Future<http.Response> createMeal(http.Client client, AuthProvider authProvider, 
         'id': 0,
         'title': title, // Meal title.
         'image_ref': image_ref,//image_ref, // Meal image URL (ensured to be a string).
-        'user_ref' : 1,
+        'user_ref' : 2,
         'date': date?.toIso8601String(), // Optional date for the meal.
     }),
   );

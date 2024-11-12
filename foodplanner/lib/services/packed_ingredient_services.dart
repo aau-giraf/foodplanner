@@ -48,6 +48,9 @@ Future<http.Response> createPackedIngredient(http.Client client, AuthProvider au
       'ingredient_ref': ingredient_ref, // ID of the ingredient being packed.
     }),
   );
+  if (response.statusCode != 201) {
+    throw Exception('Failed to create packed ingredient: ${response.statusCode} - ${response.body}');
+  }
   return response;   // Return the response from the server.
 }
 
