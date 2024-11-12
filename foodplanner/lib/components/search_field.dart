@@ -16,31 +16,39 @@ class SearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-        decoration: BoxDecoration(
-          color: AppColors.background,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          children: [
-            SFIcon(
-              SFIcons.sf_magnifyingglass,
-              color: AppColors.textPrimary,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      child: SizedBox(
+        width: double.infinity,
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+            decoration: BoxDecoration(
+              color: AppColors.background,
             ),
-            SizedBox(width: 10),
-            Expanded(
-              child: TextField(
-                controller: controller,
-                decoration: InputDecoration(
-                  hintText: hintText,
-                  border: InputBorder.none,
+            child: Row(
+              children: [
+                SFIcon(
+                  SFIcons.sf_magnifyingglass,
+                  color: AppColors.textPrimary,
                 ),
-                style: AppTextStyles.bigText,
-              ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      hintText: hintText,
+                      border: InputBorder.none,
+                    ),
+                    style: AppTextStyles.bigText,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

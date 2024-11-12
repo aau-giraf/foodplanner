@@ -126,6 +126,9 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
                   'Administrer profiler. Her kan du deaktivere eller genaktivere brugere.',
               type: SettingsType.header,
             ),
+            SizedBox(
+              height: 20,
+            ),
             SearchField(
               controller: searchController,
               hintText: 'Søg efter bruger',
