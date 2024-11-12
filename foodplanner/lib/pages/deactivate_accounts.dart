@@ -1,10 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/user.dart';
@@ -21,8 +21,6 @@ class DeactivateAccountsPage extends StatefulWidget {
 
 class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
   bool isSwitched = true;
-  /* Future<List<User>> futureUsers =
-      DeactivateAccountsPage.userService.fetchAllUsers(); */
   TextEditingController searchController = TextEditingController();
 
   List<User> users = [];
@@ -86,6 +84,31 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
     });
   }
 
+  void showPopup(bool isActive, User user, int userId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return IPhonePopupBox(
+          title: isActive
+              ? 'Er du sikker på at du vil genaktivere brugeren'
+              : 'Er du sikker på at du vil deaktivere brugeren',
+          confirmText: 'Ja',
+          cancelText: 'Nej',
+          onConfirm: () {
+            Navigator.of(context).pop();
+            setState(() {
+              controllers[userId] = isActive;
+            });
+            updateArchived(user.id);
+          },
+          onCancel: () {
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,17 +164,27 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
                   leftIcon: user.role == 'Teacher'
                       ? SFIcons.sf_graduationcap_fill
                       : SFIcons.sf_figure_and_child_holdinghands,
-                  cta: AdvancedSwitch(
-                    //controller: controllers[user.id],
-                    activeColor: AppColors.primary,
-                    width: 60,
-                    initialValue: controllers[user.id]!,
-                    onChanged: (value) {
-                      setState(() {
-                        controllers[user.id] = !controllers[user.id]!;
-                      });
-                      updateArchived(user.id);
-                    },
+                  cta: Stack(
+                    children: [
+                      AdvancedSwitch(
+                        activeColor: AppColors.primary,
+                        width: 60,
+                        initialValue: controllers[user.id]!,
+                        onChanged: (value) {
+                          // Do nothing here
+                        },
+                      ),
+                      Positioned.fill(
+                        child: GestureDetector(
+                          onTap: () {
+                            showPopup(!controllers[user.id]!, user, user.id);
+                          },
+                          child: Container(
+                            color: Colors.transparent,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
