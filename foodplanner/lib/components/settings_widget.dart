@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
@@ -14,6 +15,8 @@ class SettingsWidget extends StatefulWidget {
   final bool divider;
   final bool clickable;
   final VoidCallback? ctaFunction;
+  final bool isEditable;
+  final TextEditingController? controller;
   const SettingsWidget({
     super.key,
     this.leftIcon,
@@ -24,6 +27,8 @@ class SettingsWidget extends StatefulWidget {
     this.divider = true,
     this.clickable = false,
     this.ctaFunction,
+    this.isEditable = false,
+    this.controller,
   });
 
   @override
@@ -63,12 +68,19 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 ),
               ),
             Expanded(
-              child: Text(
-                widget.title,
-                style: AppTextStyles.bigText,
-                softWrap: true, // Allow text to wrap
-              ),
-            ),
+                child: widget.isEditable
+                    ? CustomTextField(
+                        controller: widget.controller!,
+                        errorText: "",
+                        hintText: widget.title,
+                        type: TextFieldType.smallTextField,
+                        color: Colors.white,
+                      )
+                    : Text(
+                        widget.title,
+                        style: AppTextStyles.bigText,
+                        softWrap: true, // Allow text to wrap
+                      )),
             widget.cta ?? Container(),
             SizedBox(width: 10),
           ],

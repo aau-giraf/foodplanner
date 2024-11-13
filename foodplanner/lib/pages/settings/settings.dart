@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/pages/admin_approve_page.dart';
-import 'package:foodplanner/pages/deactivate_accounts.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/settings_widget.dart';
@@ -9,9 +7,10 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_advanced_segment/flutter_advanced_segment.dart';
+import 'package:foodplanner/pages/settings/admin_approve_page.dart';
+import 'package:foodplanner/pages/settings/SchoolClasses.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:provider/provider.dart';
-import 'package:foodplanner/pages/student_page.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -96,12 +95,6 @@ class _SettingsPage extends State<Settings> {
               )
             ],
           ),
-          'ctaFunction': () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => DeactivateAccountsPage()),
-            );
-          }
         },
         {
           'title': "Administrer børn",
@@ -123,8 +116,15 @@ class _SettingsPage extends State<Settings> {
             ],
           ),
           'divider': false,
+          'ctaFunction': () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SchoolClasses()),
+            );
+          }
         },
       ];
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
