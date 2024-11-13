@@ -1,17 +1,24 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/models/ingredient.dart';
+import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/routes/paths.dart';
+import 'package:foodplanner/services/food_image_service.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
+import 'package:foodplanner/services/meal_services.dart';
+import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import 'package:foodplanner/api/openapi/lib/api.dart' as openapi;
 import 'package:http/http.dart';
 
 /// This is used to manage the page shifting between "meal_form_page.dart", "add_ingredient_page.dart", and "camera_page.dart".
@@ -35,7 +42,7 @@ class AddMealPageState extends State<AddMealPage> {
   String mealTitle = '';
   late TextEditingController mealTitleController;
   List<PackedIngredient> packedIngredients = []; // List to store all ingredients added to the meal.
-  File? image;
+  http.MultipartFile? image;
   List<int> pageStack = [0]; // Page stack to track the currently displayed page and the previous pages.
   Client? _client; // Client for the requests to the server
   Completer<void>? cameraPageCompleter;
@@ -57,7 +64,34 @@ class AddMealPageState extends State<AddMealPage> {
     cameraPageCompleter = null;
   }
 
-  final List<Widget> _pages = []; // List to hold the different pages.
+  List<Widget> _pages = []; // List to hold the different pages.
+
+  Future<void> onCreateMeal(http.Client client, String title) async {
+    final authProvider = AuthProvider();
+    int? imageId = this.image != null ? 
+        int.parse((await UploadFoodImage(
+          // openapi.ApiClient(),
+          http.Client(),
+          this.image!
+        )).body): null;
+    await createMeal( // Creates a meal using the inputted ingredients, without an image.
+      client,
+      authProvider,
+      title, // Title from the text input.
+      imageId,
+      DateTime.now(),  // Current date and time for the meal.
+    ).then((response) {
+      final storedMeal = Meal.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+      packedIngredients.forEach((packedIngredient) async {
+        await createPackedIngredient(
+          client,
+          authProvider,
+          storedMeal.id,
+          packedIngredient.ingredientRef.id,
+        );
+      });
+    });
+  }
 
   @override
   void initState() { 
@@ -88,12 +122,13 @@ class AddMealPageState extends State<AddMealPage> {
         image: image,
         client: _client!,
         onAddIngredients: () => pushPage(1), // Changes the shown page to "add_ingredent_page.dart" when executed.
-        onCamera: ()
-          async {
+        onCamera: () async
+          {
             cameraPageCompleter = Completer<void>();
             pushPage(2);
             await cameraPageCompleter!.future;
-          }, // Changes the shown page to "camera_page.dart" when executed.
+          },// Changes the shown page to "camera_page.dart" when executed.
+        onCreateMeal: (client, title) => onCreateMeal(client, title),
       ),
       AddIngredientPage( // The AddIngredientPage is the second page.
         ingredients: ingredients, // Pass the ingredients to the AddIngredientPage.
@@ -113,7 +148,7 @@ class AddMealPageState extends State<AddMealPage> {
       CameraPage(
         onImagePicked: (image) {
           setState(() {
-            if(image is File) this.image = image;
+            if(image is http.MultipartFile) {this.image = image;}
           });
           popPage();
         },

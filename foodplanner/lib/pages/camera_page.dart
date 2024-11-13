@@ -1,12 +1,13 @@
 import 'dart:io' show File;
-import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/components/custom_square_camera_overlay.dart';
+import 'package:http/http.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 import 'package:foodplanner/config/colors.dart';
 
@@ -35,8 +36,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   List<CameraDescription> cameras = []; // List for containing the available cameras of the device.
   CameraController? cameraController; // Controller for managing the camera.
   ImagePicker? imagePicker; // ImagePicker instance for selecting images.
-  File? image; // The selected image's file.
-  Uint8List? webImageBytes; // Used to store the image bytes for web
+  MultipartFile? image; // The selected image's file.
 
   /// A method for checking whether the app becomes inactive.
   @override
@@ -73,7 +73,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
 
     // Scaffold is a layout structure from the flutter library for the UI.
     return Scaffold(
-      body: image == null && webImageBytes == null
+      body: image == null
           ? SafeArea( // Ensures content is within the safe areas of the device.
               child: Stack( // Creates a stack layout widget.
                 children: [
@@ -99,63 +99,138 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
     );
   }
 
-  /// The method which 
+  /// Widget to display the selected image.
   Widget _acceptImage(BuildContext context) {
-    final displayImage = kIsWeb
-        ? Image.memory(webImageBytes!) // Display image as bytes for web
-        : Image.file(image!); // Display image as a file for mobile
+    return FutureBuilder<Uint8List>(
+      future: image!.finalize().toBytes(), // Fetch the image bytes asynchronously.
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (snapshot.hasData) {
+        final multipartFile = http.MultipartFile.fromBytes(
+          'imageFile', // Field name for the file in the request
+          snapshot.data!, // The actual Uint8List data
+          filename: 'image.png', // Optional: specify a filename if required
+          contentType: MediaType('image', 'png'), // Optional: specify the content type
+        );
+        print('Media type: ${multipartFile.contentType}');
 
-    return Container(
-      child: Center( // Alligns the widget to the center.
-        child: Column( // Vertical layout for the body.
-          children: [
-            Spacer(), // Creates an empty space.
-            Container( // Container used for determining the size of the display image.
-              width: MediaQuery.sizeOf(context).width > MediaQuery.sizeOf(context).height // Checks if the width is larger than the height of the device. This is done to create the smallest square for the display.
-                  ? MediaQuery.sizeOf(context).height // If so, sets the width as the height of the device.
-                  : MediaQuery.sizeOf(context).width, // If not, sets the width as the width of the device.
-              height: MediaQuery.sizeOf(context).width > MediaQuery.sizeOf(context).height // Checks if the height is larger than the width of the device. This is done to create the smallest square for the display.
-                  ? MediaQuery.sizeOf(context).height // If so, sets the height as the width of the device.
-                  : MediaQuery.sizeOf(context).width, // If not, sets the height as the height of the device.
-              decoration: BoxDecoration( // Used for changing the appearance of the display image.
-                borderRadius: BorderRadius.circular(20), // Determines the rounded corner of the rectangle should have a radius of 20.
+        // Display the image and use the MultipartFile as needed
+        final displayImage = Image.memory(snapshot.data!); // Display the Uint8List as an image.
+
+
+          return Container(
+            child: Center( // Alligns the widget to the center.
+              child: Column( // Vertical layout for the body.
+                children: [
+                  Spacer(), // Creates an empty space.
+                  Container( // Container used for determining the size of the display image.
+                    width: MediaQuery.sizeOf(context).width > MediaQuery.sizeOf(context).height // Checks if the width is larger than the height of the device. This is done to create the smallest square for the display.
+                        ? MediaQuery.sizeOf(context).height // If so, sets the width as the height of the device.
+                        : MediaQuery.sizeOf(context).width, // If not, sets the width as the width of the device.
+                    height: MediaQuery.sizeOf(context).width > MediaQuery.sizeOf(context).height // Checks if the height is larger than the width of the device. This is done to create the smallest square for the display.
+                        ? MediaQuery.sizeOf(context).height // If so, sets the height as the width of the device.
+                        : MediaQuery.sizeOf(context).width, // If not, sets the height as the height of the device.
+                    decoration: BoxDecoration( // Used for changing the appearance of the display image.
+                      borderRadius: BorderRadius.circular(20), // Determines the rounded corner of the rectangle should have a radius of 20.
+                    ),
+                    child: displayImage,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: CustomButton(
+                          onTab: () {
+                            setState(() {
+                              widget.onImagePicked(multipartFile); // Use the picked image.
+                            });
+                          },
+                          text: 'Anvend billede',
+                        ),
+                      ),
+                      Expanded(
+                        child: CustomButton(
+                          onTab: () {
+                            setState(() {
+                              image = null;
+                              _setupCameraController();
+                            });
+                          },
+                          text: 'Fortryd',
+                          backgroundColor: AppColors.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                ],
               ),
-              child: displayImage, // Creates the widget for the display image.
             ),
-            Row( // Horizontal layout for the body.
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Spaces the layout evenly 
-              children: [
-                Expanded( // Fills the available space of the row.
-                  child: CustomButton( // Creates a custom made button for using the displayed image.
-                    onTab: () { // When clicked, uses the picked image.
-                      setState(() {
-                        widget.onImagePicked(image ?? webImageBytes); // Sets the picked image to be the image selected image.
-                      });
-                    },
-                    text: 'Anvend billede', // Text that is displayed on the button.
-                  ),
-                ),
-                Expanded( // Fills the available space.
-                  child: CustomButton( // Creates a custom button for cancelling the image selection.
-                    onTab: () { // When clicked, sets the body back to the camera controller for taking another picture.
-                      setState(() { // Updates the state of the page.
-                        image = null; // Sets the selected image as null.
-                        webImageBytes = null; // Sets the selected image as bytes to null.
-                        _setupCameraController(); // Sets up the camera controller.
-                      });
-                    },
-                    text: 'Fortryd', // Text that is displayed on the button.
-                    backgroundColor: AppColors.secondary, // The background color of the button.
-                  ),
-                ),
-              ],
-            ),
-            Spacer(),
-          ],
-        ),
-      ),
+          );
+        } else {
+          return Center(child: Text('No image available'));
+        }
+      },
     );
   }
+
+  // /// The method which 
+  // Widget _acceptImage(BuildContext context) {
+  //   final displayImage = Image.memory(this.image!.finalize().toBytes());
+
+  //   return Container(
+  //     child: Center( // Alligns the widget to the center.
+  //       child: Column( // Vertical layout for the body.
+  //         children: [
+  //           Spacer(), // Creates an empty space.
+  //           Container( // Container used for determining the size of the display image.
+  //             width: MediaQuery.sizeOf(context).width > MediaQuery.sizeOf(context).height // Checks if the width is larger than the height of the device. This is done to create the smallest square for the display.
+  //                 ? MediaQuery.sizeOf(context).height // If so, sets the width as the height of the device.
+  //                 : MediaQuery.sizeOf(context).width, // If not, sets the width as the width of the device.
+  //             height: MediaQuery.sizeOf(context).width > MediaQuery.sizeOf(context).height // Checks if the height is larger than the width of the device. This is done to create the smallest square for the display.
+  //                 ? MediaQuery.sizeOf(context).height // If so, sets the height as the width of the device.
+  //                 : MediaQuery.sizeOf(context).width, // If not, sets the height as the height of the device.
+  //             decoration: BoxDecoration( // Used for changing the appearance of the display image.
+  //               borderRadius: BorderRadius.circular(20), // Determines the rounded corner of the rectangle should have a radius of 20.
+  //             ),
+  //             child: displayImage, // Creates the widget for the display image.
+  //           ),
+  //           Row( // Horizontal layout for the body.
+  //             mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Spaces the layout evenly 
+  //             children: [
+  //               Expanded( // Fills the available space of the row.
+  //                 child: CustomButton( // Creates a custom made button for using the displayed image.
+  //                   onTab: () { // When clicked, uses the picked image.
+  //                     setState(() {
+  //                       widget.onImagePicked(image); // Sets the picked image to be the image selected image.
+  //                     });
+  //                   },
+  //                   text: 'Anvend billede', // Text that is displayed on the button.
+  //                 ),
+  //               ),
+  //               Expanded( // Fills the available space.
+  //                 child: CustomButton( // Creates a custom button for cancelling the image selection.
+  //                   onTab: () { // When clicked, sets the body back to the camera controller for taking another picture.
+  //                     setState(() { // Updates the state of the page.
+  //                       image = null; // Sets the selected image as null.
+  //                       _setupCameraController(); // Sets up the camera controller.
+  //                     });
+  //                   },
+  //                   text: 'Fortryd', // Text that is displayed on the button.
+  //                   backgroundColor: AppColors.secondary, // The background color of the button.
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //           Spacer(),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   /// A method that contains the methods for creating the 2 buttons for the camera.
   Widget _controlPanel(BuildContext context) {
@@ -217,13 +292,11 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
 
                 try { // Tries to run the following code, and catches any errors that occurs.
                   final XFile picture = await cameraController!.takePicture(); // Makes the device take a picture.
-                  if (kIsWeb) { // Checks if the application is run on the web.
-                    webImageBytes = await picture.readAsBytes(); // Reads the picture as bytes.
-                    await cropImageToSquare(webImageBytes!); // Crops the image into a square.
-                  } else { // If the application is not run on the web.
-                    image = File(picture.path); // Sets the selected image as the taken image.
-                    await cropImageToSquare(image!); // Crops the image into a square.
-                  }
+                  image = MultipartFile.fromBytes(
+                    'imageFile',
+                    await picture.readAsBytes()
+                  ); // Reads the picture as bytes.
+                  await cropImageToSquare(); // Crops the image into a square.
                   setState(() {}); // Updates the state of the page.
                 } catch (e) { // Catches any errors.
                   print("Error taking picture: $e");
@@ -245,15 +318,8 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   }
 
   // A method for cropping the inputted image's size.
-  Future<void> cropImageToSquare(dynamic inputImage) async {
-    final img.Image? decodedImage; // The variable which will store the decoded image.
-    if (inputImage is File) { // Checks if the image is in file form. If it is, the application is an app.
-      decodedImage = img.decodeImage(await inputImage.readAsBytes()); // Decodes the image from the picture as bytes.
-    } else if (inputImage is Uint8List) { // Checks if the image is an unsigned int. If it is, the application is a web application.
-      decodedImage = img.decodeImage(inputImage); // Decodes the image.
-    } else { // If none of the above, the image is an invalid type.
-      throw ArgumentError('Invalid image type'); // Throws an error message.
-    }
+  Future<void> cropImageToSquare() async {
+    final img.Image? decodedImage = img.decodeImage(await this.image!.finalize().toBytes());; // Decodes the image from the MultipartFile as bytes.
 
     if (decodedImage != null) { // Checks that the decoded image is not null.
       final width = decodedImage.width; // Sets the width of the decoded image.
@@ -269,14 +335,12 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
       final croppedBytes = img.encodeJpg(croppedImage); // Encoded the cropped image into JPEG format.
 
       setState(() { // Updates the state.
-        if (kIsWeb) { // Checks if the application is run on the web.
-          webImageBytes = Uint8List.fromList(croppedBytes); // Sets the image as bytes.
-        } else {
-          final tempPath = inputImage.path.replaceFirst('.jpg', '_cropped.jpg'); // Creates a temporary path for the inputted image.
-          final croppedFile = File(tempPath); // Sets the image as the file from the temp path.
-          croppedFile.writeAsBytesSync(croppedBytes); // Synchronously writes the cropped bytes into a file.
-          image = croppedFile; // Sets the selected image as the cropped image file.
-        }
+        this.image = MultipartFile.fromBytes(
+          'imageFile',
+          croppedBytes,
+          filename: image?.filename,
+          contentType: MediaType('image', 'jpeg'),
+        );
       });
     }
   }
@@ -285,13 +349,8 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   Future<void> _pickImageFromGallery() async {
     final returnedImage = await imagePicker!.pickImage(source: ImageSource.gallery); // Gets image from the gallery of the device.
     if (returnedImage != null) { // Checks if any image was returned.
-      if (kIsWeb) { // Checks if the application is run on the web.
-        webImageBytes = await returnedImage.readAsBytes(); // Reads the picture as bytes.
-        await cropImageToSquare(webImageBytes!); // Crops the image into a square.
-      } else { // If the application is not run on the web.
-        image = File(returnedImage.path); // Sets the selected image as the taken image.
-        await cropImageToSquare(image!); // Crops the image into a square.
-      }
+      final image = Image.memory(await this.image!.finalize().toBytes()); // Reads the picture as bytes.
+      await cropImageToSquare(); // Crops the image into a square.
       setState(() {}); // Updates the state.
     }
   }

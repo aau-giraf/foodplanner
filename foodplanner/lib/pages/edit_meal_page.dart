@@ -37,7 +37,7 @@ class EditMealPageState extends State<EditMealPage> {
   List<PackedIngredient> packedIngredients = [];
   List<Ingredient> ingredients = []; // List to store all the users ingredient presets.
   List<int> pageStack = [0]; // Page stack to track the currently displayed page and the previous pages.
-  File? image;
+  MultipartFile? image;
   Client? _client; // Client for the requests to the server
 
   void pushPage(int index) { // Push a new page onto the stack
@@ -84,7 +84,7 @@ class EditMealPageState extends State<EditMealPage> {
           onCamera: () {
             pushPage(2); // Changes the shown page to "camera_page.dart" when executed.
           },
-          image: image!,
+          image: image,
         ),
         AddIngredientPage(
           ingredients: ingredients, // Pass the ingredients to the AddIngredientPage.
@@ -106,7 +106,7 @@ class EditMealPageState extends State<EditMealPage> {
         CameraPage(
           onImagePicked: (image) {
           setState(() {
-            if(image is File) this.image = image;
+            if(image is MultipartFile) this.image = image;
           });
         },
         ), // Instantiates the CameraPage.

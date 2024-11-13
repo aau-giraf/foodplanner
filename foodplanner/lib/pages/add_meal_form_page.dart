@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:foodplanner/api/openapi/lib/api.dart' as openapi;
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/models/ingredient.dart';
@@ -15,6 +16,7 @@ import 'package:foodplanner/services/meal_services.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 /// This class is used to create the meal page where the user can create an individual meal for their children.
@@ -22,10 +24,11 @@ class MealFormPage extends StatefulWidget {
   final List<Ingredient>? ingredients; // The list of ingredients available.
   final List<PackedIngredient> packedIngredients; // The meal being created or edited.
   final TextEditingController mealTitleController;
-  final File? image;
+  final MultipartFile? image;
   final VoidCallback onAddIngredients; // Callback for adding ingredients.
-  final AsyncCallback onCamera; // Callback for opening the camera.
+  final Future<void> Function() onCamera; // Callback for opening the camera.
   final Client client;
+  final Future<void> Function(http.Client, String) onCreateMeal;
   
   const MealFormPage({
     super.key, // Key for the widget, maintaining state.
@@ -36,6 +39,7 @@ class MealFormPage extends StatefulWidget {
     required this.onAddIngredients, // Callback for adding ingredients.
     required this.onCamera, // Callback for accessing the camera.
     required this.client,
+    required this.onCreateMeal,
   });
 
   static const String routeName = '/meal_form_page'; // Route name for navigation.
@@ -48,38 +52,10 @@ class MealFormPage extends StatefulWidget {
 
 class _MealFormPageState extends State<MealFormPage> {
   // Method for deleting the controllers when they are done being used.
+
   @override
   void dispose() {
     super.dispose(); // Call the superclass dispose method.
-  }
-
-  void onCreateMeal() async {
-  final authProvider = AuthProvider();
-  int? imageId = widget.image != null ? 
-    (jsonDecode(
-      (await UploadFoodImage(
-        widget.client,
-        authProvider,
-        widget.image!
-      )).body
-    ) as Map<String, dynamic>)['id'] as int? : null;
-  await createMeal( // Creates a meal using the inputted ingredients, without an image.
-    widget.client,
-    authProvider,
-    widget.mealTitleController.text, // Title from the text input.
-    imageId,
-    DateTime.now(),  // Current date and time for the meal.
-  ).then((response) {
-    final storedMeal = Meal.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
-    widget.packedIngredients.forEach((packedIngredient) async {
-      await createPackedIngredient(
-        widget.client,
-        authProvider,
-        storedMeal.id,
-        packedIngredient.ingredientRef.id,
-      );
-    });
-  });
   }
 
   @override
@@ -145,16 +121,16 @@ class _MealFormPageState extends State<MealFormPage> {
                         onPressed: () async { // Leads the user to the camera page. 
                           Navigator.pop(context);
                           await widget.onCamera(); // Calls the camera callback.
-                          onCreateMeal();
+                          widget.onCreateMeal(widget.client, widget.mealTitleController.text);
                           //context.pop();
                         },
                         child: const Text("Ja"), // Button text for "Yes".
                       ),
                       CupertinoDialogAction(
                         isDestructiveAction: true, // Mark as a destructive action.
-                        onPressed: () async {
+                        onPressed: () {
                           Navigator.pop(context);
-                          onCreateMeal();
+                          widget.onCreateMeal(widget.client, widget.mealTitleController.text);
                           //context.pop();
                         },
                         child: const Text('Nej'),  // Button text for "No".

@@ -13,6 +13,7 @@ import 'package:foodplanner/services/food_image_service.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 /// This class is used to create the page for editing an already existing meal.
@@ -21,7 +22,7 @@ class EditMealFormPage extends StatelessWidget {
   final List<PackedIngredient> packedIngredients;
   final List<Ingredient>? ingredients;
   final Client client;
-  final File image;
+  final MultipartFile? image;
 
   final VoidCallback onAddIngredients; // Callback to change the shown page through "add_ingredient_page.dart"
   final VoidCallback onCamera; // Callback to change the shown page through "camera_page.dart"
@@ -75,12 +76,17 @@ class EditMealFormPage extends StatelessWidget {
 
           // The button for saving the changes made to meal.
           CustomElevatedButton(
-            onTab: () {
+            onTab: () async {
               final authProvider = AuthProvider();
+              int? imageId = this.image != null ? 
+                int.parse((await UploadFoodImage(
+                  http.Client(),
+                  this.image!
+                )).body): null;
               updateMeal(client, authProvider, Meal(
                 id: meal.id,
                 title: editTitleController.text,
-                imageRef: meal.imageRef,
+                imageRef: imageId,
                 date: meal.date,
                 ingredients: [],
               ));
@@ -101,7 +107,6 @@ class EditMealFormPage extends StatelessWidget {
                   meal.id
                 );
               });
-              UploadFoodImage(client, authProvider, image);
 
               // context.pop(); // Goes back to the previous page.
             },

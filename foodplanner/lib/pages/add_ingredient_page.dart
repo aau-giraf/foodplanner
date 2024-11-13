@@ -11,7 +11,7 @@ import 'package:http/http.dart';
 /// This class is used for selecting which ingredients should be added to the meal.
 class AddIngredientPage extends StatefulWidget {
   final List<Ingredient> ingredients; // List of available ingredients for selection.
-  final File? image;
+  final MultipartFile? image;
   final ValueChanged<List<Ingredient>> onIngredientsUpdated; // Callback to the method which modifies the list of existing ingredients
   final VoidCallback onCamera; // Callback to change the shown page through "add_meal_page.dart"
   final ValueSetter onIngredientAdded; // Callback to handle what to do once a new ingredient is added.
