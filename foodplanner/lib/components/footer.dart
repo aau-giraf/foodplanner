@@ -29,31 +29,16 @@ class _FooterBarState extends State<FooterBar> {
   Widget page;
     switch (index) {
       case 0:
-        Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FeedbackChatPage()),
-                    );
+              GoRouter.of(context).go(FEEDBACK_Page);
         break;
       case 1:
-      /*
-      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ParentLandingPageMadpakke()),
-                    );
-                    */
-                    GoRouter.of(context).go(PARENT_ROOT);
+              GoRouter.of(context).go(PARENT_ROOT);
         break;
       case 2:
-      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProfilePage()),
-                    );
+              GoRouter.of(context).go(PROFILE_PAGE);
         break;
       case 3:
-      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SettingsPage()),
-                    );
+              GoRouter.of(context).go(SETTINGS_PAGE);
         break;
       default:
         page = LoginPage();

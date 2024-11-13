@@ -10,6 +10,8 @@ import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
 import 'package:foodplanner/pages/landing_page_teacher.dart';
+import 'package:foodplanner/pages/profilePage.dart';
+import 'package:foodplanner/pages/settingsPage.dart';
 import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
@@ -73,7 +75,7 @@ final router = GoRouter(
       builder: (context, state) {
          final authProvider = Provider.of<AuthProvider>(context, listen: false);
             return FutureBuilder<bool>(
-          future: authProvider.hasRole(ROLES.teacher),
+          future: authProvider.hasRoles([ROLES.teacher]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
@@ -91,7 +93,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
             return FutureBuilder<bool>(
-          future: authProvider.hasRole(ROLES.student),
+          future: authProvider.hasRoles([ROLES.student]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
@@ -109,7 +111,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
             return FutureBuilder<bool>(
-          future: authProvider.hasRole(ROLES.student),
+          future: authProvider.hasRoles([ROLES.student]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
@@ -122,12 +124,66 @@ final router = GoRouter(
     );
       },
     ),
+     GoRoute(
+      path: SETTINGS_PAGE,
+      builder: (context, state) {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+            return FutureBuilder<bool>(
+          future: authProvider.hasRoles([ROLES.parent,ROLES.teacher]),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator(); // Show loading while waiting
+            } else if (snapshot.hasData && snapshot.data == true) {
+              return const SettingsPage(); // im guessing this page, student_page is a dummy one it seems TODO
+            } else {
+              return const UnauthorizedPage();
+            }
+      },
+    );
+      },
+    ),
+        GoRoute(
+      path: PROFILE_PAGE,
+      builder: (context, state) {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+            return FutureBuilder<bool>(
+          future: authProvider.hasRoles([ROLES.parent,ROLES.teacher]),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator(); // Show loading while waiting
+            } else if (snapshot.hasData && snapshot.data == true) {
+              return const ProfilePage(); // im guessing this page, student_page is a dummy one it seems TODO
+            } else {
+              return const UnauthorizedPage();
+            }
+      },
+    );
+      },
+    ),
+        GoRoute(
+      path: FEEDBACK_Page,
+      builder: (context, state) {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+            return FutureBuilder<bool>(
+          future: authProvider.hasRoles([ROLES.parent,ROLES.teacher]),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator(); // Show loading while waiting
+            } else if (snapshot.hasData && snapshot.data == true) {
+              return const FeedbackChatPage(); // im guessing this page, student_page is a dummy one it seems TODO
+            } else {
+              return const UnauthorizedPage();
+            }
+      },
+    );
+      },
+    ),
     GoRoute(
       path: ADMIN_ROOT,
       builder: (context, state) {
          final authProvider = Provider.of<AuthProvider>(context, listen: false);
             return FutureBuilder<bool>(
-          future: authProvider.hasRole(ROLES.admin),
+          future: authProvider.hasRoles([ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
@@ -145,7 +201,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
             return FutureBuilder<bool>(
-          future: authProvider.hasRole(ROLES.parent),
+          future: authProvider.hasRoles([ROLES.parent]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting

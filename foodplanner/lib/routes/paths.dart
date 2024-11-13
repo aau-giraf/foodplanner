@@ -11,6 +11,9 @@ const String LOGIN_PAGE = '/login';
 const String SIGNUP_PAGE = '/signup';
 const String MADPAKKE = '/madpakke';
 const String CREATE = '/create';
+const String PROFILE_PAGE = '/profile';
+const String SETTINGS_PAGE = '/settings';
+const String FEEDBACK_Page = '/feedbackPage';
 
 // routing through concat of pages from above (lavet baseret på vores p3 dont ask why)
 const String MAIN_PAGE_ROUTE = MAIN_PAGE;
