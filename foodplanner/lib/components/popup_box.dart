@@ -11,7 +11,7 @@ class IPhonePopupBox extends StatelessWidget {
 
   IPhonePopupBox({
     required this.title,
-    required this.message,
+    this.message = '',
     required this.confirmText,
     required this.cancelText,
     required this.onConfirm,
@@ -28,14 +28,21 @@ class IPhonePopupBox extends StatelessWidget {
         child: Text(
           title,
           style: AppTextStyles.headline3,
+          textAlign: TextAlign.center,
         ),
       ),
-      content: Text(message, style: AppTextStyles.mediumText),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (message.isNotEmpty)
+            Text(message, style: AppTextStyles.mediumText),
+          Divider(
+            color: Colors.black,
+            thickness: 0.25,
+          ),
+        ],
+      ),
       actions: [
-        Divider(
-          color: Colors.black,
-          thickness: 0.25,
-        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -72,7 +79,7 @@ class IPhonePopupBox extends StatelessWidget {
 void showIPhonePopupBox({
   required BuildContext context,
   required String title,
-  required String message,
+  String message = '',
   required String confirmText,
   required String cancelText,
   required VoidCallback onConfirm,
