@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:foodplanner/components/edit_meal_element.dart';
 import 'package:foodplanner/components/meal_list_element.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/meal.dart';
@@ -18,15 +19,18 @@ void main() {
     Ingredient(id: 2, name: 'franskbrød', imageRef: 2),
   ];
 
+  final List<PackedIngredient> packedIngredients = [
+      PackedIngredient(id: 0, mealRef: 1, ingredientRef: ingredients[1]),
+      PackedIngredient(id: 0, mealRef: 1, ingredientRef: ingredients[2])
+    ];
+
   final Meal meal = Meal(
     id: 1,
     title: 'meal1',
     imageRef: 0,
     date: DateTime.now(),
-    ingredients: [
-      PackedIngredient(id: 0, mealRef: 1, ingredientRef: ingredients[1]),
-      PackedIngredient(id: 0, mealRef: 1, ingredientRef: ingredients[2])
-    ]);
+    ingredients: packedIngredients,
+  );
 
   late bool cameraNavigated;
   late bool ingredientNavigated;
@@ -39,19 +43,21 @@ void main() {
   EditMealFormPage createWidgetUnderTest() {
     return EditMealFormPage(
       meal: meal,
+      packedIngredients: packedIngredients,
       ingredients: ingredients,
       onAddIngredients: () => ingredientNavigated = true,
       onCamera: () => cameraNavigated = true,
       client: MockClient(),
+      image: null,
     );
   }
   group('EditMealFormPage ', () {
     group('contains widget: ', () {
-      testWidgets('Meal element"', (WidgetTester tester) async {
+      testWidgets('edit meal element"', (WidgetTester tester) async {
         await tester.pumpWidget(
           MaterialApp(home: createWidgetUnderTest()),
         );
-        expect(find.byType(MealListElement), findsOneWidget);
+        expect(find.byType(EditMealElement), findsOneWidget);
       });
       testWidgets('add ingredient button', (WidgetTester tester) async {
         await tester.pumpWidget(
@@ -73,7 +79,7 @@ void main() {
         MaterialApp(home: createWidgetUnderTest()),
       );
 
-      await tester.tap(find.text('Gem ændringer'));
+      await tester.tap(find.text('Redigér billede'));
       await tester.pumpAndSettle();
       
       expect(cameraNavigated, isTrue);

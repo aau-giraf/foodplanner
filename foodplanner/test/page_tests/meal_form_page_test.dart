@@ -23,12 +23,14 @@ void main() {
 
   late bool cameraNavigated;
   late bool ingredientNavigated;
+  late bool createdMeal;
 
   setUp(() {
     cameraNavigated = false;
     ingredientNavigated = false;
+    createdMeal =  false;
   });
-
+  
   MealFormPage createWidgetUnderTest() {
     return MealFormPage(
       ingredients: ingredients,
@@ -36,7 +38,11 @@ void main() {
       mealTitleController: TextEditingController(),
       image: null,
       onAddIngredients: () => ingredientNavigated = true,
-      onCamera: () => cameraNavigated = true,
+      onCamera: () async {
+        cameraNavigated = true;
+        print('Camera Navigated Set to True');
+      },
+      onCreateMeal: (client, title) async => createdMeal = true,
       client: MockClient(),
     );
   }
@@ -83,6 +89,17 @@ void main() {
 
       await tester.tap(find.text('Opret madpakke'));
       await tester.pumpAndSettle();
+
+      print('Button 1 tapped');
+
+      await tester.tap(find.text('Ja'));
+      await tester.pumpAndSettle();
+
+      await tester.runAsync(() async {
+        await Future.delayed(Duration(seconds: 1));
+      });
+
+      print('cameraNavigated: $cameraNavigated');
       
       expect(cameraNavigated, isTrue);
     });

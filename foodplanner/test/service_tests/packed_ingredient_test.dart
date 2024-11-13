@@ -69,7 +69,7 @@ void main() {
     });
 
     group('createPackedIngredient tests', () {
-      test('return with 200 response when a packed ingredient is added to the database', () async {
+      test('return with 201 response when a packed ingredient is added to the database', () async {
         final client = MyMockClient();
 
         // Arrange: Set up the stub for POST
@@ -85,11 +85,11 @@ void main() {
           }),
         ))
         .thenAnswer((_) async => http.Response(
-          '{"id": ${packed.id}, "meal_ref": ${packed.mealRef}, "ingredient_ref": ${packed.ingredientRef.id}}', 200));
+          '{"id": ${packed.id}, "meal_ref": ${packed.mealRef}, "ingredient_ref": ${packed.ingredientRef.id}}', 201));
 
         final response = await createPackedIngredient(client, authProvider, packed.mealRef, packed.ingredientRef.id);
         
-        expect(response.statusCode, 200);
+        expect(response.statusCode, 201);
       });
     });
 

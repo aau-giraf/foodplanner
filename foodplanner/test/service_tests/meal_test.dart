@@ -79,10 +79,9 @@
               'Authorization': 'Bearer mocked_token_value',
             },
             body: jsonEncode({
-              'id': meal.id,
+              'id': 0,
               'title': meal.title,
               'image_ref': meal.imageRef,
-              'user_ref': 1,
               'date': meal.date?.toIso8601String(),
             }),
           )).thenAnswer((_) async => http.Response(
@@ -105,10 +104,26 @@
               'Content-Type': 'application/json; charset=UTF-8', // Specify that the content is JSON.
               'Authorization': 'Bearer mocked_token_value',
             },
-            body: meal.toJson(),
+            body: jsonEncode(meal.toJson()),
           )).thenAnswer((_) async => http.Response(
-            '{"id": ${meal.id}, "title": "${meal.title}", "image_ref": ${meal.imageRef}, "date": "${meal.date?.toIso8601String()}", "ingredients": [{"id": ${meal.ingredients[0].id}, "ingredient_ref": {"id": ${meal.ingredients[0].ingredientRef.id}, "name": "${meal.ingredients[0].ingredientRef.name}", "image_ref": "${meal.ingredients[0].ingredientRef.imageRef}"}}, {"id": ${meal.ingredients[1].id}, "ingredient_ref": {"id": ${meal.ingredients[1].ingredientRef.id}, "name": "${meal.ingredients[1].ingredientRef.name}", "image_ref": "${meal.ingredients[1].ingredientRef.imageRef}"}}]}',
-            200));
+            jsonEncode({
+              'id': meal.id,
+              'title': meal.title,
+              'image_ref': meal.imageRef,
+              'date': meal.date?.toIso8601String(),
+              'ingredients': meal.ingredients.map((ingredient) => {
+                'id': ingredient.id,
+                'ingredient_ref': {
+                  'id': ingredient.ingredientRef.id,
+                  'name': ingredient.ingredientRef.name,
+                  'image_ref': ingredient.ingredientRef.imageRef,
+                }
+              }).toList(),
+            }),
+            200,
+          ));
+            // '{"id": ${meal.id}, "title": "${meal.title}", "image_ref": ${meal.imageRef}, "date": "${meal.date?.toIso8601String()}", "ingredients": [{"id": ${meal.ingredients[0].id}, "ingredient_ref": {"id": ${meal.ingredients[0].ingredientRef.id}, "name": "${meal.ingredients[0].ingredientRef.name}", "image_ref": "${meal.ingredients[0].ingredientRef.imageRef}"}}, {"id": ${meal.ingredients[1].id}, "ingredient_ref": {"id": ${meal.ingredients[1].ingredientRef.id}, "name": "${meal.ingredients[1].ingredientRef.name}", "image_ref": "${meal.ingredients[1].ingredientRef.imageRef}"}}]}',
+            // 200));
           
           final response = await updateMeal(client, authProvider, meal);
 
