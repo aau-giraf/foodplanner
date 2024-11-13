@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/addMealButton.dart';
-import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/components/dateTimePicker.dart';
+
 import 'package:foodplanner/components/mealBox.dart';
-import 'package:foodplanner/components/mealBoxContent.dart';
-import 'package:foodplanner/components/mealBoxEmpty.dart';
-import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/feedbackChatPage.dart';
-import 'package:foodplanner/components/footer.dart'; // Import the footer widget
+
 import 'package:foodplanner/pages/pin_code.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart'; // Import the reusable widget
+import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:provider/provider.dart';
+
 
 class ChildLandingPageMadpakke extends StatelessWidget {
   const ChildLandingPageMadpakke({super.key, required Map<String, String> student});
@@ -19,6 +15,7 @@ class ChildLandingPageMadpakke extends StatelessWidget {
   Widget build(BuildContext context) {
     // Get the size of the screen
     final size = MediaQuery.of(context).size;
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(),
@@ -51,6 +48,7 @@ class ChildLandingPageMadpakke extends StatelessWidget {
               ),
             ),
           ),
+          if (authProvider.hasRole([ROLES.parent]) || authProvider.hasRole([ROLES.child]))
           Positioned(
             top: -8,
             right: 30,
@@ -61,7 +59,6 @@ class ChildLandingPageMadpakke extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (context) => PinCode()),
                 );  
-                
               },
             ),
           ),
