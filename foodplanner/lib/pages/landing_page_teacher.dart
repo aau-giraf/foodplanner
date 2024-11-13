@@ -31,18 +31,20 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
       var apiClient = ApiClient(basePath: ApiConfig.baseUrl);
       apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
       final childrensApi = ChildrensApi(apiClient);
-      final List<ChildrenGetAllDTO>? data = await childrensApi.apiChildrensGetAllChildrenGet();
+      final List<ChildrenGetAllDTO>? data =
+          await childrensApi.apiChildrensGetAllChildrenClassesGet();
 
       if (data != null) {
         setState(() {
-          students = data.map((ChildrenGetAllDTO e) => {
-            'id': e.childId.toString(),
-            'name': '${e.firstName} ${e.lastName}',
-            'classId': e.classId.toString(),
-            'className': e.className,
-          }).toList();
+          students = data
+              .map((ChildrenGetAllDTO e) => {
+                    'id': e.childId.toString(),
+                    'name': '${e.firstName} ${e.lastName}',
+                    'classId': e.classId.toString(),
+                    'className': e.className,
+                  })
+              .toList();
           filteredStudents = students;
-
 
           schoolClasses = students
               .map((student) => {
@@ -73,12 +75,14 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
 
   void navigateToStudentDetails(Map<String, String?> student) {
     // Filter out null values from the student map
-    final filteredStudent = student.map((key, value) => MapEntry(key, value ?? ''));
+    final filteredStudent =
+        student.map((key, value) => MapEntry(key, value ?? ''));
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChildLandingPageMadpakke(student: filteredStudent),
+        builder: (context) =>
+            ChildLandingPageMadpakke(student: filteredStudent),
       ),
     );
   }
@@ -172,24 +176,26 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
                           padding: const EdgeInsets.only(left: 16.0),
                           child: Column(
                             children: students
-                                .where((student) => student['classId'] == schoolClass['id'])
+                                .where((student) =>
+                                    student['classId'] == schoolClass['id'])
                                 .map((student) {
-                                  return ListTile(
-                                    title: Text(
-                                      student['name'] ?? 'Unknown',
-                                      style: TextStyle(
-                                        fontWeight: highlightedStudentIds.contains(student['id'])
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        color: highlightedStudentIds.contains(student['id'])
-                                            ? Colors.blue
-                                            : Colors.black,
-                                      ),
-                                    ),
-                                    onTap: () => navigateToStudentDetails(student),
-                                  );
-                                })
-                                .toList(),
+                              return ListTile(
+                                title: Text(
+                                  student['name'] ?? 'Unknown',
+                                  style: TextStyle(
+                                    fontWeight: highlightedStudentIds
+                                            .contains(student['id'])
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    color: highlightedStudentIds
+                                            .contains(student['id'])
+                                        ? Colors.blue
+                                        : Colors.black,
+                                  ),
+                                ),
+                                onTap: () => navigateToStudentDetails(student),
+                              );
+                            }).toList(),
                           ),
                         ),
                     ],

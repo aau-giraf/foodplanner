@@ -123,7 +123,6 @@ class UserService {
     return response;
   }
 
-
   Future<List<User>> fetchAllParents() async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http
@@ -140,6 +139,8 @@ class UserService {
           .toList();
     } else {
       throw Exception('Kunne ikke hente forældre');
+    }
+  }
 
   Future<List<User>> fetchAllUsers() async {
     final jwtToken = await AuthProvider().retrieveToken();
@@ -172,7 +173,6 @@ class UserService {
 
     if (response.statusCode != 200) {
       return {'Message': 'Kunne ikke opdatere brugeren'};
-
     }
   }
 }
