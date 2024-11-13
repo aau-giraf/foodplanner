@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,37 +12,39 @@ import 'package:foodplanner/models/meal.dart';
 class EditMealElement extends StatefulWidget {
   final Meal meal; // The ingredient being represented in the UI
   final VoidCallback onCamera; // Callback to pageshift to the camera page
+  final TextEditingController editTitleController; // The TextEditingController making the Ingredient title TextField editable.
 
   const EditMealElement({
     super.key,
     required this.meal, // Required parameter to pass an Ingredient object
     required this.onCamera, // Required parameter to shift the page to the camera page
+    required this.editTitleController, // The text editing controller for the title.
   });
 
   @override
   _EditMealElement createState() => _EditMealElement();
 }
 
+/// The state of the component which contains the body.
 class _EditMealElement extends State<EditMealElement> {
-  late TextEditingController _editTitleController; // The TextEditingController making the Ingredient title TextField editable.
   bool _isEditing = false; // Determines whether the the user can edit the TextField.
   int maxTextLength = 20; // The max number of characters that can be written in the TextField.
 
-  File? image;
-  Uint8List? webImageBytes;
+  File? image; // The image of the meal.
+  Uint8List? webImageBytes; // The image of the meal in byte form for web applications.
 
   @override
   void initState() {
     super.initState();
-    _editTitleController = TextEditingController(text: widget.meal.title);
+    // widget.editTitleController = TextEditingController(text: widget.meal.title);
   }
 
+  // This method is used for deleting the text editing controller.
   @override
   void dispose() {
-    _editTitleController.dispose();
+    widget.editTitleController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -61,135 +64,75 @@ class _EditMealElement extends State<EditMealElement> {
           ),
         ],
       ),
-      child: Padding(
-        // Padding inside the container
-        // padding: EdgeInsets.only(top: 5, left: 16, right: 16, bottom: 15),
+      child: Padding( // Padding inside the container
         padding: EdgeInsets.all(16),
         child: Row(
           children: [
-            widget.meal.imageRef != null 
-              ? AspectRatio(
-                aspectRatio: 1.0,
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  fit: BoxFit.cover,
-                )
-                // child: FoodImage(foodImageId: widget.meal.imageRef!),
-              )
-              : Container(),
+            if (widget.meal.imageRef != null) 
+              Flexible(
+                flex: 2,
+                child: Column(
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 1.0,
+                      // child: Image.asset(
+                      //   'assets/images/wordle.png',
+                      //   fit: BoxFit.cover,
+                      // )
+                      child: FoodImage(foodImageId: widget.meal.imageRef!),
+                    ),
+                    TextButton(
+                      onPressed: widget.onCamera, 
+                      child: Text("Redigér billede"),
+                    ),
+                  ],
+                ),
+              ),
             SizedBox(width: 16),
             Expanded(
+              flex: 3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Spacer(), // Space at the top of this column
                   // The text displaying the title of the ingredient.
                   _isEditing // Checks if _isEditing is true
-                    ? TextField( // If yes, 
-                      controller: _editTitleController, // The TextEditingController for the textfield.
-                      maxLength: maxTextLength, // Limits the max number of charaters that can be inputted in the TextField.
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z +-]")),
-                      ], // Only alphanumeric characters can be entered
-                      style: AppTextStyles.headline2, // Custom text style for the ingredient name.
+                    ? Flexible(
+                      child: TextField( // If yes, 
+                        controller: widget.editTitleController, // The TextEditingController for the textfield.
+                        maxLength: maxTextLength, // Limits the max number of charaters that can be inputted in the TextField.
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z +-]")),
+                        ], // Only alphanumeric characters can be entered
+                        style: AppTextStyles.headline2, // Custom text style for the ingredient name.
+                        maxLines: 1,
+                        decoration: InputDecoration(
+                          isDense: true,
+                        ),
+                      ),
                     )
-                    : Text(
-                      widget.meal.title,
-                      style: AppTextStyles.headline1,
-                      overflow: TextOverflow.ellipsis,
+                    : Flexible(
+                      child: AutoSizeText(
+                        widget.editTitleController.text,
+                        style: AppTextStyles.headline1,
+                        maxLines: 1,
+                        minFontSize: 10,
+                      ),
                     ),
-                  // : SingleChildScrollView( 
-                  //   scrollDirection: Axis.horizontal,
-                  //   child: Text(
-                  //     widget.meal.title, // Name of the ingredient retrieved from the Ingredient object
-                  //     style: AppTextStyles.headline1,  // Custom text style for the ingredient name
-                  //     overflow: TextOverflow.ellipsis, // Ellipsis for overflowed text
-                  //   ),
-                  // ),
                   // The button for editing the title of the ingredient.
                   TextButton(
                     onPressed: () {
                       setState(() { // Changes the state of the element when the button is clicked.
                         _isEditing = !_isEditing; // Changes whether the TextField is editable to the opposite.
                       });
+                      print('${widget.meal.title} is set to: ${widget.editTitleController.text}');
                     },
                     child: Text("Redigér tekst"), // Button text for editing title
                   ),
-                  TextButton(
-                    onPressed: widget.onCamera, 
-                    child: Text("Redigér billede"),
-                  )
                   // Spacer(), // Space at the bottom of this column
                 ],
               ),
             ),
-            //     child: Column(
-            //     children: [
-            //       Spacer(), // Space at the top of the column
-            //       // The image displaying the ingredient.
-            //       // SizedBox(
-            //       //   height: 50,
-            //       //   width: 50,
-            //       //   child: FoodImage(foodImageId: widget.meal.imageRef!),
-            //       // ),
-            //       Expanded(
-            //         // child: SizedBox(
-            //         //   height: MediaQuery.sizeOf(context).height > MediaQuery.sizeOf(context).width
-            //         //     ? MediaQuery.sizeOf(context).width
-            //         //     : MediaQuery.sizeOf(context).height,
-            //         //   width: MediaQuery.sizeOf(context).height > MediaQuery.sizeOf(context).width
-            //         //     ? MediaQuery.sizeOf(context).width
-            //         //     : MediaQuery.sizeOf(context).height,
-            //         //   child: FoodImage(foodImageId: widget.meal.imageRef!),
-            //         // ),
-            //         child: FoodImage(foodImageId: widget.meal.imageRef!),
-            //       ),
-            //       // The button for editing the image.
-            //       TextButton(
-            //         onPressed: () {
-            //           widget.onCamera(); // Page shifts to the camera page through the "edit_meal_page.dart"
-            //         },
-            //         child: Text("Redigér billede"), // Button text for editing 
-            //       ),
-            //       // Spacer(), // Space at the bottom of the column
-            //     ],
-            //   ),
-            // ) : Spacer(),
-            // SizedBox(width: 16),
-            // Spacer(), // Space between image column and text column
-            // Column(
-            //   children: [
-            //     Spacer(), // Space at the top of this column
-            //     // The text displaying the title of the ingredient.
-            //     _isEditing // Checks if _isEditing is true
-            //       ? TextField( // If yes, 
-            //         controller: _editTitleController, // The TextEditingController for the textfield.
-            //         maxLength: maxTextLength, // Limits the max number of charaters that can be inputted in the TextField.
-            //         inputFormatters: <TextInputFormatter>[
-            //           FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z +-]")),
-            //         ], // Only alphanumeric characters can be entered
-            //         style: AppTextStyles.headline2, // Custom text style for the ingredient name.
-            //       )
-            //     : SingleChildScrollView( 
-            //       scrollDirection: Axis.horizontal,
-            //       child: Text(
-            //         widget.meal.title, // Name of the ingredient retrieved from the Ingredient object
-            //         style: AppTextStyles.headline1,  // Custom text style for the ingredient name
-            //         overflow: TextOverflow.ellipsis, // Ellipsis for overflowed text
-            //       ),
-            //     ),
-            //     // The button for editing the title of the ingredient.
-            //     TextButton(
-            //       onPressed: () {
-            //         setState(() { // Changes the state of the element when the button is clicked.
-            //           _isEditing = !_isEditing; // Changes whether the TextField is editable to the opposite.
-            //         });
-            //       },
-            //       child: Text("Redigér tekst"), // Button text for editing title
-            //     ),
-            //     Spacer(), // Space at the bottom of this column
-            //   ],
-            // ),
           ],
         ),
       ),

@@ -94,6 +94,27 @@
           expect(response.statusCode, 201);
         });
       });
+      group('updateMeal tests', () {
+        test('return with 200 response when a meal is updated in the database', () async {
+          final client = MyMockClient();
+
+          // Arrange: Set up the stub to return a 200 response
+          when(client.put(
+            Uri.parse('${ApiConfig.baseUrl}/api/Meals/Update/${meal.id}'), // Specify the API endpoint for meal creation.
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8', // Specify that the content is JSON.
+              'Authorization': 'Bearer mocked_token_value',
+            },
+            body: meal.toJson(),
+          )).thenAnswer((_) async => http.Response(
+            '{"id": ${meal.id}, "title": "${meal.title}", "image_ref": ${meal.imageRef}, "date": "${meal.date?.toIso8601String()}", "ingredients": [{"id": ${meal.ingredients[0].id}, "ingredient_ref": {"id": ${meal.ingredients[0].ingredientRef.id}, "name": "${meal.ingredients[0].ingredientRef.name}", "image_ref": "${meal.ingredients[0].ingredientRef.imageRef}"}}, {"id": ${meal.ingredients[1].id}, "ingredient_ref": {"id": ${meal.ingredients[1].ingredientRef.id}, "name": "${meal.ingredients[1].ingredientRef.name}", "image_ref": "${meal.ingredients[1].ingredientRef.imageRef}"}}]}',
+            200));
+          
+          final response = await updateMeal(client, authProvider, meal);
+
+          expect(response.statusCode, 200);
+        });
+      });
       group('deleteMeal tests', () {
         test('return with 200 response when a meal is removed from the database', () async {
           final client = MyMockClient();

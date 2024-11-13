@@ -123,7 +123,6 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                     );
                   }
                   final newPacked = PackedIngredient(
-                    id: 0,
                     ingredientRef: sortedIngredients[index],
                   );
                   widget.onIngredientAdded(newPacked);
