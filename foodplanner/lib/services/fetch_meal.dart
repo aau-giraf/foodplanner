@@ -1,0 +1,35 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../auth/auth_provider.dart';
+
+class MealService{
+  final String apiUrl;
+
+  MealService({required this.apiUrl});
+
+  Future<Map<String, String>> fetchMealData(String userRef, String date) async {
+    try {
+      final response = await http.post(Uri.parse('$apiUrl/api/meal/getmeal'), 
+      headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'user_ref': userRef,
+      'date': date,
+    }),);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final String title = data['title'];
+        final String image_ref = data['image_ref'];
+        
+        return {'title': title, 'image_ref': image_ref};
+      } else {
+        throw Exception('Failed to load meal data');
+      }
+    } catch (e) {
+      print('Error fetching meal data: $e');
+      return {};
+    }
+  }
+}

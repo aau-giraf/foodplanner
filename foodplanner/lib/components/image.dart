@@ -31,8 +31,6 @@ class FoodImage extends StatelessWidget {
 
     var imagesApi = ImagesApi(apiClient);
 
-    await imagesApi.apiImagesGetPresignedImageLinkGet(foodImageId: foodImageId);
-
-    return jwtToken;
+    return await imagesApi.apiImagesGetPresignedImageLinkGet(foodImageId: foodImageId);
   }
 }

@@ -29,9 +29,3 @@ class StudentPage extends StatelessWidget {
     );
   }
 }
-
-void main() {
-  runApp(MaterialApp(
-    home: StudentPage(),
-  ));
-}

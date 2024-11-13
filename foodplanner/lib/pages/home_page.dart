@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/pages/login_page.dart';
+import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'landing_page_teacher.dart';
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -28,18 +32,48 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
+                GoRouter.of(context).go('/login');
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => LoginPage()),
+                // );
               },
               child: const Text('Go to Login Page'),
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChildLandingPageMadpakke(student: {},)),
+                );
+              },
+              child: const Text('Go to Child Landing Page'),
+            ),      
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ParentLandingPageMadpakke()),
+                );
+              },
+              child: const Text('Go to Parent Landing Page'),
+            ),           
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const TeacherLandingPage()),
+                );
+              },
+              child: const Text('Go to Teacher Landing Page'),
+            ),           
             // Used for development purposes
             ElevatedButton(
               onPressed: () {
-                final authProvider =
-                    Provider.of<AuthProvider>(context, listen: false);
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
                 authProvider.setRole(ROLES.admin);
               },
               child: const Text('Set role to admin'),
@@ -48,7 +82,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 final authProvider =
                     Provider.of<AuthProvider>(context, listen: false);
-                if (authProvider.hasRole(ROLES.admin)) {
+                if (true) {
                   context.go(ADMIN_ROOT);
                 } else {
                   context.go('/unauthorized');
@@ -56,7 +90,6 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Go to Admin Page'),
             ),
-
             // ElevatedButton(
             // onPressed: () async {
             //   final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -77,7 +110,6 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Logout'),
             ),
-
             ElevatedButton(
               onPressed: () async {
                 final authProvider =

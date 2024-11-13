@@ -46,9 +46,13 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool hasRole(ROLES role) {
-    loadFromStorage();
-    return _isLoggedIn && _userRole == role;
+  Future<bool> hasRoles(List<ROLES> roles) async {
+  await loadFromStorage();
+  return _isLoggedIn && _isApproved == true && roles.contains(_userRole);
+  }
+  bool hasRole(List<ROLES> roles)  {
+   loadFromStorage();
+  return _isLoggedIn && _isApproved == true && roles.contains(_userRole);
   }
 
   Future<void> setRole(ROLES role) async {

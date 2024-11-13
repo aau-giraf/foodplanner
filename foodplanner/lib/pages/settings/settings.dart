@@ -182,7 +182,7 @@ class _SettingsPage extends State<Settings> {
                 ),
               ),
               SizedBox(height: 10),
-              if (authProvider.hasRole(ROLES.admin))
+              if (authProvider.hasRole([ROLES.admin]))
                 Card(
                   elevation: 2,
                   color: AppColors.background,
