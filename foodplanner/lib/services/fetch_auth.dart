@@ -47,6 +47,8 @@ class AuthService {
         return ROLES.admin;
       case 'parent':
         return ROLES.parent;
+      case 'child':
+        return ROLES.child;
       default:
         throw Exception('Unknown role: $role');
     }
