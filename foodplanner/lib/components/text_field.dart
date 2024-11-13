@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
+enum TextFieldType { defaultTextField, smallTextField }
+
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String errorText;
   final dynamic hintText;
   final dynamic obscureText;
   final dynamic color;
+  final TextFieldType type;
 
   const CustomTextField(
       {super.key,
@@ -15,11 +18,11 @@ class CustomTextField extends StatelessWidget {
       required this.errorText,
       required this.hintText,
       this.obscureText = false, // default value
-      this.color = AppColors.textFieldBackground // default color
+      this.color = AppColors.textFieldBackground, // default color
+      this.type = TextFieldType.defaultTextField // default type
       });
 
-  @override
-  Widget build(BuildContext context) {
+  Widget defaultTextField() {
     return Column(
       children: [
         TextField(
@@ -61,5 +64,49 @@ class CustomTextField extends StatelessWidget {
             : SizedBox(),
       ],
     );
+  }
+
+  Widget smallTextField() {
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      textAlign: TextAlign.left,
+      cursorColor: AppColors.primary,
+      cursorErrorColor: AppColors.errorText,
+      onTapOutside: (event) {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      decoration: InputDecoration(
+        fillColor: color,
+        filled: true,
+        hintText: hintText,
+        hintStyle: AppTextStyles.bigText.copyWith(
+            color: AppColors.textFieldHint, fontWeight: FontWeight.w500),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 13),
+        isDense: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (type == TextFieldType.smallTextField) {
+      return smallTextField();
+    } else {
+      return defaultTextField();
+    }
   }
 }

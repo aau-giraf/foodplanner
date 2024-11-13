@@ -227,6 +227,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_advanced_segment:
+    dependency: "direct main"
+    description:
+      name: flutter_advanced_segment
+      sha256: "58518e2b7229cc4dd98a778f594e54813a4c244bcbf9e702a8fa194bf09509b8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.2"
+  flutter_advanced_switch:
+    dependency: "direct main"
+    description:
+      name: flutter_advanced_switch
+      sha256: e1147161a3dd9b708a71c65e76174d4d1a0a5908a571b8b38b65c79b142c52a0
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -526,7 +542,7 @@ packages:
     source: hosted
     version: "2.0.0"
   mockito:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: mockito
       sha256: "6841eed20a7befac0ce07df8116c8b8233ed1f4486a7647c7fc5a02ae6163917"
@@ -558,13 +574,13 @@ packages:
     source: hosted
     version: "5.0.2"
   openapi_generator_cli:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: openapi_generator_cli
-      sha256: "772694a131972634ce6d04754fc8b30a5106240c324f9e3454476462d80d72c2"
+      sha256: "503e553d699508546ebae33235603271df20bb7b805296c7624afe5d5389101c"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.2"
+    version: "6.0.0"
   package_config:
     dependency: transitive
     description:
