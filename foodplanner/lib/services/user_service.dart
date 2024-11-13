@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:foodplanner/auth/auth_provider.dart';
@@ -8,11 +9,24 @@ class UserService {
 
   UserService({required this.apiUrl});
 
-  Future<User> fetchUser() async {
-    final response = await http.get(Uri.parse('$apiUrl/api/Users/Get/1'));
+  Future<User> fetchUser(int id) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.get(Uri.parse('$apiUrl/api/Admin/Get/${id}'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $jwtToken',
+        });
 
     if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      final filteredJson = {
+        'id': json['id'],
+        'first_name': json['firstName'],
+        'last_name': json['lastName'],
+        'email': json['email'],
+        'role': json['role'],
+        'archived': json['archived'],
+      };
+      return User.fromJson(filteredJson);
     } else {
       throw Exception('Kunne ikke hente bruger');
     }
@@ -107,6 +121,25 @@ class UserService {
     );
 
     return response;
+  }
+
+  Future<List<User>> fetchAllParents() async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http
+        .get(Uri.parse('$apiUrl/api/Admin/GetAll'), headers: <String, String>{
+      'Authorization': 'Bearer $jwtToken',
+    });
+    print("hej med dig ${response.body}");
+    if (response.statusCode == 200) {
+      print(response.body);
+      final List<dynamic> usersJson = jsonDecode(response.body);
+
+      return usersJson
+          .map((json) => User.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } else {
+      throw Exception('Kunne ikke hente forældre');
+    }
   }
 
   Future<List<User>> fetchAllUsers() async {

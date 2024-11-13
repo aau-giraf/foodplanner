@@ -5,6 +5,8 @@ import 'package:foodplanner/pages/additional_lunch_box.dart';
 import 'package:foodplanner/pages/landing_page.dart';
 import 'package:foodplanner/pages/profile.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
+import 'package:foodplanner/pages/administrate_children.dart';
+import 'package:foodplanner/pages/child_profile.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
@@ -73,7 +75,7 @@ class _NavBarState extends State<NavBar> {
         AdditionalLunchBox(),
         LandingPage(),
         Profile(),
-        Settings()
+        Settings(),
       ][currentPageIndex],
     );
   }

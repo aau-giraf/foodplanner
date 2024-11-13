@@ -6,13 +6,15 @@ class User {
   final String role;
   final bool archived;
 
-  const User(
-      {required this.id,
-      required this.firstName,
-      required this.lastName,
-      required this.email,
-      required this.role,
-      required this.archived});
+  const User({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.role,
+    required this.archived,
+  });
+
 
   factory User.fromJson(Map<String, dynamic> json) {
     return switch (json) {

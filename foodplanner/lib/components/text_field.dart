@@ -11,16 +11,18 @@ class CustomTextField extends StatelessWidget {
   final dynamic obscureText;
   final dynamic color;
   final TextFieldType type;
+  final Function(String)? onChanged;
 
-  const CustomTextField(
-      {super.key,
-      required this.controller,
-      required this.errorText,
-      required this.hintText,
-      this.obscureText = false, // default value
-      this.color = AppColors.textFieldBackground, // default color
-      this.type = TextFieldType.defaultTextField // default type
-      });
+  const CustomTextField({
+    super.key,
+    required this.controller,
+    required this.errorText,
+    required this.hintText,
+    this.obscureText = false, // default value
+    this.color = AppColors.textFieldBackground, // default color
+      this.type = TextFieldType.defaultTextField, // default type
+    this.onChanged,
+  });
 
   Widget defaultTextField() {
     return Column(
@@ -52,6 +54,7 @@ class CustomTextField extends StatelessWidget {
               borderSide: BorderSide(color: AppColors.errorText),
             ),
           ),
+          onChanged: onChanged,
         ),
         errorText.isNotEmpty && errorText != ' '
             ? Padding(

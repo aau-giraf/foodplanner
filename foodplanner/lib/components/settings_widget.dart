@@ -17,6 +17,8 @@ class SettingsWidget extends StatefulWidget {
   final VoidCallback? ctaFunction;
   final bool isEditable;
   final TextEditingController? controller;
+  final bool showIcon;
+  final bool showSpacer;
   const SettingsWidget({
     super.key,
     this.leftIcon,
@@ -27,13 +29,16 @@ class SettingsWidget extends StatefulWidget {
     this.divider = true,
     this.clickable = false,
     this.ctaFunction,
-    this.isEditable = false,
     this.controller,
+    this.showIcon = true, // Default value is true, starts off being visible
+    this.isEditable = false, // Default value is false, starts off being not editable
+    this.showSpacer = true,
   });
 
   @override
   State<SettingsWidget> createState() => _SettingsWidgetState();
 }
+
 
 class _SettingsWidgetState extends State<SettingsWidget> {
   bool _isHovered = false;
@@ -46,6 +51,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         surfaceTintColor: AppColors.background,
         child: Row(
           children: [
+            if (widget.showIcon)
             if (widget.leftIcon != null)
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -60,7 +66,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                     child: Center(
                       child: SFIcon(
                         widget.leftIcon!,
-                        fontSize: 24,
+                        fontSize: 30,
                         color: AppColors.textSecondary,
                       ),
                     ),
@@ -129,7 +135,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                             widget.title,
                             style: AppTextStyles.bigText,
                           ),
-                          Spacer(),
+                          widget.showSpacer ? Spacer() : Container(),
                           widget.cta ?? Container(),
                         ],
                       ),
