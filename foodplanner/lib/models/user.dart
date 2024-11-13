@@ -15,6 +15,7 @@ class User {
     required this.archived,
   });
 
+
   factory User.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
