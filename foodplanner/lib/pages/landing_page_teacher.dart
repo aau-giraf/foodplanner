@@ -46,13 +46,16 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
               .toList();
           filteredStudents = students;
 
-          schoolClasses = students
-              .map((student) => {
-                    'id': student['classId']!,
-                    'name': student['className']!,
-                  })
-              .toSet()
+  // Extract unique class IDs and names from students
+          final uniqueClasses = <String, String>{};
+          for (var student in students) {
+            uniqueClasses[student['classId']!] = student['className']!;
+          }
+          schoolClasses = uniqueClasses.entries
+              .map((entry) => {'id': entry.key, 'name': entry.value})
               .toList();
+
+          // Sort school classes alphabetically in ascending order
           schoolClasses.sort((a, b) => a['name']!.compareTo(b['name']!));
         });
       } else {
@@ -179,23 +182,25 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
                                 .where((student) =>
                                     student['classId'] == schoolClass['id'])
                                 .map((student) {
-                              return ListTile(
-                                title: Text(
-                                  student['name'] ?? 'Unknown',
-                                  style: TextStyle(
-                                    fontWeight: highlightedStudentIds
-                                            .contains(student['id'])
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                    color: highlightedStudentIds
-                                            .contains(student['id'])
-                                        ? Colors.blue
-                                        : Colors.black,
-                                  ),
-                                ),
-                                onTap: () => navigateToStudentDetails(student),
-                              );
-                            }).toList(),
+                                  return ListTile(
+                                    key: ValueKey(student['id']), // Add a unique key to each ListTile
+                                    title: Text(
+                                      student['name'] ?? 'Unknown',
+                                      style: TextStyle(
+                                        fontWeight: highlightedStudentIds
+                                                .contains(student['id'])
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: highlightedStudentIds
+                                                .contains(student['id'])
+                                            ? Colors.blue
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                    onTap: () => navigateToStudentDetails(student),
+                                  );
+                                })
+                                .toList(),
                           ),
                         ),
                     ],
