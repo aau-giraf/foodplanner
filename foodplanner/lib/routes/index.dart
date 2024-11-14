@@ -10,6 +10,7 @@ import 'package:foodplanner/pages/home_page.dart';
 import 'package:foodplanner/pages/landing_page_teacher.dart';
 import 'package:foodplanner/pages/profilePage.dart';
 import 'package:foodplanner/pages/settingsPage.dart';
+import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
@@ -139,7 +140,7 @@ final router = GoRouter(
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const SettingsPage(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const Settings(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
               return const UnauthorizedPage();
             }

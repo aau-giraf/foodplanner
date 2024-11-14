@@ -13,6 +13,7 @@ import 'package:foodplanner/pages/settings/SchoolClasses.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
+import 'package:foodplanner/components/footer.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -234,6 +235,7 @@ class _SettingsPage extends State<Settings> {
                   size: ButtonSize.medium,
                 ),
               ),
+              FooterBar(),
             ],
           ),
         ),

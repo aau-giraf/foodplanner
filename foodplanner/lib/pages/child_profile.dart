@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
@@ -83,19 +82,11 @@ class ChildProfileState extends State<ChildProfile>
     }).catchError((error) {
       throw (error);
     });
-
-    /* ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
-      setState(() {
-        parent = result;
-        selectedParent = result;
-      });
-    }).catchError((error) {
-      throw (error);
-    }); */
   }
 
   void fetchParent() {
     ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
+      print(result);
       setState(() {
         parent = result;
         selectedParent = result;
@@ -440,29 +431,7 @@ class ChildProfileState extends State<ChildProfile>
                   child: CustomButton(
                     text: 'Slet barn',
                     onTab: () => {
-                      showIPhonePopupBox(
-                        context: context,
-                        title: 'Slet klasse',
-                        message:
-                            'Er du sikker på, at du vil slette denne klasse?',
-                        confirmText: 'Ja',
-                        cancelText: 'Nej',
-                        onConfirm: () {
-                          ChildProfile.childService
-                              .deleteChild(widget.child.childId)
-                              .then((response) {
-                            if (response.statusCode == 204) {
-                              Navigator.pop(context);
-                            } else {
-                              throw Exception('Der skete en fejl');
-                            }
-                          });
-                          Navigator.of(context).pop(); // Close the popup
-                        },
-                        onCancel: () {
-                          Navigator.of(context).pop(); // Close the popup
-                        },
-                      ),
+                      print(widget.child.childId),
                     },
                     backgroundColor: Colors.red,
                   ),
@@ -494,6 +463,7 @@ class ChildProfileState extends State<ChildProfile>
                               int.parse(selectedClassId!))
                           .then((response) {
                         if (response.statusCode == 204) {
+                          print('successfullyupdated');
                           Navigator.pop(context);
                         } else {
                           throw Exception('Der skete en fejl');
