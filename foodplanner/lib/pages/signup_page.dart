@@ -7,7 +7,10 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/login_page.dart';
+import 'package:foodplanner/routes/paths.dart';
+import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 
@@ -244,24 +247,35 @@ class _SignupState extends State<SignupPage> {
             duration: Duration(seconds: 5),
           ),
         );
-
-        final error =
-            await LoginPage.authService.fetchAuthData(email, password);
-
-        if (error != null) {
-          handleErrors(error);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Fejl ved login af bruger: $error'),
-              backgroundColor: Colors.red,
-              duration: Duration(seconds: 5),
-            ),
-          );
-        } else {
-          if (role.first == 'Parent') {
-            context.go('/signup/create-child');
+        try {
+          final role =
+              await LoginPage.authService.fetchAuthData(email, password);
+          switch (role) {
+            case ROLES.student:
+              GoRouter.of(context).go(STUDENT_CREATE);
+              break;
+            default:
+              GoRouter.of(context).go(UNAUTHORIZED);
+              break;
+          }
+        } catch (e) {
+          if (e is AuthException) {
+            handleErrors({
+              'Message': [e.message]
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Fejl ved login af bruger: ${e.message}'),
+                backgroundColor: Colors.red,
+                duration: Duration(seconds: 5),
+              ),
+            );
           } else {
-            context.go('/');
+            if (role.first == 'Parent') {
+              context.go('/signup/create-child');
+            } else {
+              context.go('/');
+            }
           }
         }
       } else {

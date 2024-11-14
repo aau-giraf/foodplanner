@@ -9,6 +9,7 @@ class CustomSegmentButton extends StatefulWidget {
   final Color selectedBackgroundColor;
   final Color textColor;
   final Color selectedTextColor;
+  final bool fullWidth;
 
   const CustomSegmentButton({
     super.key,
@@ -19,6 +20,7 @@ class CustomSegmentButton extends StatefulWidget {
     this.selectedBackgroundColor = AppColors.primary,
     this.textColor = AppColors.textPrimary,
     this.selectedTextColor = AppColors.textSecondary,
+    this.fullWidth = false,
   });
 
   @override
@@ -29,13 +31,16 @@ class _CustomSegmentButtonState extends State<CustomSegmentButton> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: double.infinity,
+      width: widget.fullWidth ? double.infinity : null,
       child: SegmentedButton(
         segments: widget.buttonSegments,
         showSelectedIcon: false,
         selected: widget.selected,
         onSelectionChanged: widget.onTab,
         style: ButtonStyle(
+          padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(
+            EdgeInsets.symmetric(horizontal: 6.0),
+          ),
           backgroundColor: WidgetStateProperty.resolveWith<Color>(
             (Set<WidgetState> states) {
               if (states.contains(WidgetState.selected)) {

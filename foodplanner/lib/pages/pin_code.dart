@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/pages/landing_page_parent.dart';
+import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/pin_code.dart';
+import 'package:go_router/go_router.dart';
 
 class PinCode extends StatefulWidget {
   const PinCode({
@@ -96,7 +99,12 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
       await Future.delayed(Duration(milliseconds: 300));
       print(error);
       if (error == null) {
-        Navigator.of(context).pop();
+        // TODO fix so its all GoRouter
+        GoRouter.of(context).go(PARENT_ROOT);
+        /*Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ParentLandingPageMadpakke()),
+        );*/
       } else {
         setState(() {
           pin = [];
