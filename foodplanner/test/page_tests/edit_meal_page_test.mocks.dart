@@ -334,10 +334,29 @@ class MockAuthProvider extends _i1.Mock implements _i7.AuthProvider {
       ) as _i3.Future<void>);
 
   @override
-  bool hasRole(_i8.ROLES? role) => (super.noSuchMethod(
+  _i3.Future<bool> hasRoles(List<_i8.ROLES>? roles) => (super.noSuchMethod(
+        Invocation.method(
+          #hasRoles,
+          [roles],
+        ),
+        returnValue: _i3.Future<bool>.value(false),
+      ) as _i3.Future<bool>);
+
+  @override
+  _i3.Future<bool> hasRolesUnapproved(List<_i8.ROLES>? roles) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #hasRolesUnapproved,
+          [roles],
+        ),
+        returnValue: _i3.Future<bool>.value(false),
+      ) as _i3.Future<bool>);
+
+  @override
+  bool hasRole(List<_i8.ROLES>? roles) => (super.noSuchMethod(
         Invocation.method(
           #hasRole,
-          [role],
+          [roles],
         ),
         returnValue: false,
       ) as bool);

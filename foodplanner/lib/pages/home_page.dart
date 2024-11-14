@@ -99,7 +99,7 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                if (authProvider.hasRole(ROLES.parent)) {
+                if (authProvider.hasRole([ROLES.parent])) {
                   context.go(MEAL_LIST_PAGE); 
                 } else {
                   context.go('/unauthorized'); 

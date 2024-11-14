@@ -39,6 +39,8 @@ dependencies:
     global_configuration: ^2.0.0
     local_auth: ^2.3.0
     path_provider: ^2.1.5
+    flutter_advanced_switch: ^3.1.0
+    flutter_advanced_segment: ^3.0.2
 
 dev_dependencies:
     flutter_test:
