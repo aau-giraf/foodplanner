@@ -29,6 +29,23 @@ class ChildService {
     }
   }
 
+  Future<Child> fetchChildById() async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.get(
+      Uri.parse('$apiUrl/api/Childrens/GetChildrenByParentId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $jwtToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return Child.fromJson(data);
+    } else {
+      throw Exception('Failed to load child data');
+    }
+  }
+
   Future<http.Response> createChild(
       String firstName, String lastName, int classId) async {
     final jwtToken = await AuthProvider().retrieveToken();
