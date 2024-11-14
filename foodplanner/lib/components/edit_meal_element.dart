@@ -75,11 +75,13 @@ class _EditMealElement extends State<EditMealElement> {
                   children: [
                     AspectRatio(
                       aspectRatio: 1.0,
-                      // child: Image.asset(
-                      //   'assets/images/wordle.png',
-                      //   fit: BoxFit.cover,
-                      // )
-                      child: FoodImage(foodImageId: widget.meal.imageRef!),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: 100,
+                          maxWidth: 100,
+                        ),
+                        child: FoodImage(foodImageId: widget.meal.imageRef!),
+                      ),
                     ),
                     TextButton(
                       onPressed: widget.onCamera, 

@@ -347,13 +347,23 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
 
   /// The method which creates the button for opening the gallery through the camera.
   Future<void> _pickImageFromGallery() async {
-    final returnedImage = await imagePicker!.pickImage(source: ImageSource.gallery); // Gets image from the gallery of the device.
-    if (returnedImage != null) { // Checks if any image was returned.
-      final image = Image.memory(await this.image!.finalize().toBytes()); // Reads the picture as bytes.
-      await cropImageToSquare(); // Crops the image into a square.
-      setState(() {}); // Updates the state.
-    }
+  imagePicker ??= ImagePicker();
+
+  final returnedImage = await imagePicker!.pickImage(source: ImageSource.gallery);
+  if (returnedImage != null) {
+    final bytes = await returnedImage.readAsBytes();
+    image = http.MultipartFile.fromBytes(
+      'imageFile',
+      bytes,
+      filename: returnedImage.name,
+      contentType: MediaType('image', 'jpeg'),
+    );
+    await cropImageToSquare();
+    setState(() {});
   }
+}
+
+  
 
   /// The method which sets up the camera controller for using the device's cameras.
   Future<void> _setupCameraController() async {
