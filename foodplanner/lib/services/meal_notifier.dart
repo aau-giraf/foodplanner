@@ -3,7 +3,6 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_meal.dart';
 import 'package:intl/intl.dart';
 
-
 class MealNotifier extends ChangeNotifier {
   DateTime selectedDate = DateTime.now();
   String mealTitle = '';
@@ -18,8 +17,8 @@ class MealNotifier extends ChangeNotifier {
   Future<void> _fetchMealData() async {
     final mealService = MealService(apiUrl: baseUrl);
     final mealData = await mealService.fetchMealData(
-      // TODO - Replace 'user123' with the actual user id
-        'user123', DateFormat('yyyy-MM-dd').format(selectedDate));
+        // TODO - Replace 'user123' with the actual user id
+        DateFormat('yyyy-MM-dd').format(selectedDate));
 
     mealTitle = mealData['title'] ?? 'No meal available';
     mealImageRef = mealData['image_ref'] ?? '';
