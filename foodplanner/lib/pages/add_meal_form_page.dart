@@ -42,8 +42,6 @@ class MealFormPage extends StatefulWidget {
     required this.onCreateMeal,
   });
 
-  static const String routeName = '/meal_form_page'; // Route name for navigation.
-
   @override
   _MealFormPageState createState() => _MealFormPageState(); // Create the state for this page.
 }

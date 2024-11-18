@@ -26,8 +26,6 @@ class EditMealPage extends StatefulWidget {
     this.fetchMealFunction = fetchMeal,
   });
 
-  static const String routeName = '/edit_meal_page'; // Route name for navigation to this page.
-
   @override
   State<EditMealPage> createState() => EditMealPageState(); // Creates the state object for this widget.
 }

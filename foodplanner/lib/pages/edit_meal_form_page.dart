@@ -38,9 +38,6 @@ class EditMealFormPage extends StatelessWidget {
     required this.image,
   });
 
-
-  static const String routeName = '/edit_meal_form_page'; // Route name for navigation to this page.
-
   @override
   Widget build(BuildContext context) {
     // List<Ingredient> ingredients = <Ingredient>[ // The list containing the ingredients of the meal.

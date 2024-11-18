@@ -26,8 +26,6 @@ class AddIngredientPage extends StatefulWidget {
     required this.onIngredientAdded, // Required callback to handle navigation after a new ingredient is added.
     required this.client,
   });
-  
-  static const String routeName = '/add_ingredient_page'; // Route name for navigation.
 
   @override
   _AddIngredientPageState createState() => _AddIngredientPageState(); // Create state for the page.

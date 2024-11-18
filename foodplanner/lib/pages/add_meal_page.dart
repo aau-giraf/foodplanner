@@ -30,8 +30,6 @@ class AddMealPage extends StatefulWidget {
     this.fetchFunction = fetchIngredientsByUserID,
   });
 
-  static const String routeName = '/add_meal_page'; // Route name for navigation.
-
   @override
   State<AddMealPage> createState() => AddMealPageState(); // Creates the state for this widget.
 

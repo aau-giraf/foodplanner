@@ -21,12 +21,9 @@ const String CREATE = '/create';
 const String PROFILE_PAGE = '/profile';
 const String SETTINGS_PAGE = '/settings';
 const String FEEDBACK_Page = '/feedbackPage';
-const String ADD_INGREDIENT_PAGE = AddIngredientPage.routeName;
-const String ADD_MEAL_PAGE = AddMealPage.routeName;
-const String MEAL_FORM_PAGE = MealFormPage.routeName;
-const String CAMERA_PAGE = CameraPage.routeName;
-const String EDIT_MEAL_PAGE = EditMealPage.routeName;
-const String MEAL_LIST_PAGE = MealListPage.routeName;
+const String ADD_MEAL = '/create';
+const String EDIT_MEAL = '/edit';
+const String NO_MEAL = '/empy';
 
 // routing through concat of pages from above (lavet baseret på vores p3 dont ask why)
 const String MAIN_PAGE_ROUTE = MAIN_PAGE;

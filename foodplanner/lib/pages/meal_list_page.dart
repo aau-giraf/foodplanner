@@ -13,8 +13,6 @@ class MealListPage extends StatelessWidget {
     super.key, // Key for the widget, used for maintaining state.
   });
 
-  static const String routeName = '/meal_list_page'; // Route name for navigating to this page.
-
   @override
   Widget build(BuildContext context) {
     dynamic meals = <Meal>[ // List of meals that will be shown
@@ -59,7 +57,7 @@ class MealListPage extends StatelessWidget {
             // The button for creating a new meal
             CustomElevatedButton(
               onTab: () { // Leads to the "add_meal_page"
-                context.go(ADD_MEAL_PAGE);
+                context.go(ADD_MEAL);
               },
               widget: Icon(Icons.add, color: AppColors.textSecondary), // Icon displayed on the button.
               width: MediaQuery.sizeOf(context).width / 2, // Button width is half the screen width.

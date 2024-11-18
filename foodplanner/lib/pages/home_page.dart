@@ -100,16 +100,16 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
                 if (authProvider.hasRole([ROLES.parent])) {
-                  context.go(MEAL_LIST_PAGE); 
+                  context.go(NO_MEAL); 
                 } else {
                   context.go('/unauthorized'); 
                 }
               },
-              child: const Text('Go to Meal List Page'),
+              child: const Text('Go to No Meal Page'),
             ),
             ElevatedButton(
               onPressed: () {
-                context.go(EDIT_MEAL_PAGE);
+                context.go(EDIT_MEAL);
               },
               child: const Text('Go to Edit Meal Page'),
             ),

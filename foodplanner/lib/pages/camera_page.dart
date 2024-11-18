@@ -24,8 +24,6 @@ class CameraPage extends StatefulWidget {
     required this.onImagePicked,
   });
 
-  static const String routeName = '/camera_page'; // Route name for navigation to this page.
-
   @override
   State<CameraPage> createState() => _MealPageState(); // Creates the state object for this widget.
 }
@@ -176,61 +174,6 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
       },
     );
   }
-
-  // /// The method which 
-  // Widget _acceptImage(BuildContext context) {
-  //   final displayImage = Image.memory(this.image!.finalize().toBytes());
-
-  //   return Container(
-  //     child: Center( // Alligns the widget to the center.
-  //       child: Column( // Vertical layout for the body.
-  //         children: [
-  //           Spacer(), // Creates an empty space.
-  //           Container( // Container used for determining the size of the display image.
-  //             width: MediaQuery.sizeOf(context).width > MediaQuery.sizeOf(context).height // Checks if the width is larger than the height of the device. This is done to create the smallest square for the display.
-  //                 ? MediaQuery.sizeOf(context).height // If so, sets the width as the height of the device.
-  //                 : MediaQuery.sizeOf(context).width, // If not, sets the width as the width of the device.
-  //             height: MediaQuery.sizeOf(context).width > MediaQuery.sizeOf(context).height // Checks if the height is larger than the width of the device. This is done to create the smallest square for the display.
-  //                 ? MediaQuery.sizeOf(context).height // If so, sets the height as the width of the device.
-  //                 : MediaQuery.sizeOf(context).width, // If not, sets the height as the height of the device.
-  //             decoration: BoxDecoration( // Used for changing the appearance of the display image.
-  //               borderRadius: BorderRadius.circular(20), // Determines the rounded corner of the rectangle should have a radius of 20.
-  //             ),
-  //             child: displayImage, // Creates the widget for the display image.
-  //           ),
-  //           Row( // Horizontal layout for the body.
-  //             mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Spaces the layout evenly 
-  //             children: [
-  //               Expanded( // Fills the available space of the row.
-  //                 child: CustomButton( // Creates a custom made button for using the displayed image.
-  //                   onTab: () { // When clicked, uses the picked image.
-  //                     setState(() {
-  //                       widget.onImagePicked(image); // Sets the picked image to be the image selected image.
-  //                     });
-  //                   },
-  //                   text: 'Anvend billede', // Text that is displayed on the button.
-  //                 ),
-  //               ),
-  //               Expanded( // Fills the available space.
-  //                 child: CustomButton( // Creates a custom button for cancelling the image selection.
-  //                   onTab: () { // When clicked, sets the body back to the camera controller for taking another picture.
-  //                     setState(() { // Updates the state of the page.
-  //                       image = null; // Sets the selected image as null.
-  //                       _setupCameraController(); // Sets up the camera controller.
-  //                     });
-  //                   },
-  //                   text: 'Fortryd', // Text that is displayed on the button.
-  //                   backgroundColor: AppColors.secondary, // The background color of the button.
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //           Spacer(),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   /// A method that contains the methods for creating the 2 buttons for the camera.
   Widget _controlPanel(BuildContext context) {
