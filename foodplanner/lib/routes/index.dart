@@ -9,7 +9,7 @@ import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
 import 'package:foodplanner/pages/landing_page_teacher.dart';
 import 'package:foodplanner/pages/profilePage.dart';
-import 'package:foodplanner/pages/settingsPage.dart';
+import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
@@ -25,7 +25,31 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => NavBar(),
+      builder: (context, state) {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        return FutureBuilder<ROLES?>(
+          future: authProvider.retrieveRole(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator(); // Show loading while waiting
+            } else if (snapshot.hasData) {
+              print('snapshot: ${snapshot.data}');
+              switch (snapshot.data) {
+                case ROLES.teacher || ROLES.admin:
+                  return const TeacherLandingPage();
+                case ROLES.parent:
+                  return const ParentLandingPageMadpakke();
+                default:
+                  return const ChildLandingPageMadpakke(
+                    student: {},
+                  );
+              }
+            } else {
+              return const UnauthorizedPage();
+            }
+          },
+        );
+      },
     ),
     GoRoute(
       path: '/login',
@@ -139,7 +163,7 @@ final router = GoRouter(
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const SettingsPage(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const Settings(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
               return const UnauthorizedPage();
             }
@@ -193,7 +217,7 @@ final router = GoRouter(
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const NavBar(); // another dummy page, I think Dressi is making a new one TODO
+              return NavBar(); // another dummy page, I think Dressi is making a new one TODO
             } else {
               return const UnauthorizedPage();
             }

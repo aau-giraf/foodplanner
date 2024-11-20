@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:foodplanner/components/mealBox.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/models/child.dart';
 
 import 'package:foodplanner/pages/pin_code.dart';
@@ -58,6 +59,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
 
     return Scaffold(
       appBar: AppBar(),
+      bottomNavigationBar: NavBar(),
       body: Stack(
         children: [
           Align(

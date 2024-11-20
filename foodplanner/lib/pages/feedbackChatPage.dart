@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/footer.dart'; // Import the FooterBar widget
+import 'package:foodplanner/components/nav_bar.dart'; // Import the FooterBar widget
 
 class FeedbackChatPage extends StatelessWidget {
   const FeedbackChatPage({Key? key}) : super(key: key);
@@ -9,9 +9,13 @@ class FeedbackChatPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Feedback Chat'),
+        backgroundColor: Colors.white,
       ),
+      bottomNavigationBar: NavBar(currentPageIndex: 0),
+      backgroundColor: Colors.white,
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensure footer is at the bottom
+        mainAxisAlignment:
+            MainAxisAlignment.spaceBetween, // Ensure footer is at the bottom
         children: [
           Expanded(
             child: Center(
@@ -21,7 +25,6 @@ class FeedbackChatPage extends StatelessWidget {
               ),
             ),
           ),
-          FooterBar(), // Add the footer widget here
         ],
       ),
     );
