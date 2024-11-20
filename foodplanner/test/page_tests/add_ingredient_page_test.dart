@@ -17,10 +17,12 @@ void main() {
   ];
 
   late bool cameraNavigated;
+  late bool ingredientCreated;
   late bool ingredientAdded;
 
   setUp(() {
     cameraNavigated = false;
+    ingredientCreated = false;
     ingredientAdded = false;
   });
 
@@ -29,6 +31,7 @@ void main() {
       ingredients: ingredients,
       image: null,
       onIngredientsUpdated: (_) {},
+      onCreateIngredient: () => ingredientCreated = true,
       onCamera: () => cameraNavigated = true,
       onIngredientAdded: (_) => ingredientAdded = true,
       client: MockClient(),

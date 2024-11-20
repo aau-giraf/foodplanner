@@ -11,6 +11,7 @@ import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
+import 'package:foodplanner/pages/create_ingredient_page.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/food_image_service.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
@@ -133,6 +134,10 @@ class AddMealPageState extends State<AddMealPage> {
         image: image,
         client: _client!,
         onCamera: () => pushPage(2), // Changes the shown page to "camera_page.dart" when executed.
+        onCreateIngredient: ()  {
+          print("Changed page");
+          pushPage(3);
+        },
         onIngredientsUpdated: (newIngredients) { // Update ingredients when modified.
           setState(() {
             ingredients = newIngredients;
@@ -143,14 +148,22 @@ class AddMealPageState extends State<AddMealPage> {
           popPage();
          } // Go back to the previous page after adding new ingredient.
       ),
-      CameraPage(
+      CameraPage( // The CameraPage is the third page.
         onImagePicked: (image) {
           setState(() {
             if(image is http.MultipartFile) {this.image = image;}
           });
           popPage();
         },
-      ), // The CameraPage is the third page.
+      ), 
+      CreateIngredientPage( // The CreateIngredientPage is the fourth page.
+        onCreatedIngredient: (ingredient) {
+          setState(() {
+            ingredients.add(ingredient);
+            popPage();
+          });
+        } 
+      ),
     ]);
   }
 

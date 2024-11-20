@@ -7,6 +7,7 @@ import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
+import 'package:foodplanner/pages/create_ingredient_page.dart';
 import 'package:foodplanner/pages/edit_meal_form_page.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
 import 'package:foodplanner/services/meal_services.dart';
@@ -96,6 +97,7 @@ class EditMealPageState extends State<EditMealPage> {
               ingredients = newIngredients;
             });
           },
+          onCreateIngredient: () => pushPage(3),
           onIngredientAdded: (addedIngredient) {
             packedIngredients.add(addedIngredient);
             popPage();
@@ -106,8 +108,15 @@ class EditMealPageState extends State<EditMealPage> {
           setState(() {
             if(image is MultipartFile) this.image = image;
           });
-        },
-        ), // Instantiates the CameraPage.
+        }), // Instantiates the CameraPage.
+        CreateIngredientPage( // The CreateIngredientPage is the fourth page.
+          onCreatedIngredient: (ingredient) {
+            setState(() {
+              ingredients.add(ingredient);
+              popPage();
+            });
+          } 
+        ),
       ];
     });
   }
