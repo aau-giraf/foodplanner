@@ -1,4 +1,5 @@
 import 'package:foodplanner/services/fetch_auth.dart';
+import 'package:http/io_client.dart';
 
 class ApiConfig {
 
