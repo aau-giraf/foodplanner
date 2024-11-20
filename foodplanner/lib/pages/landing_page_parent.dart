@@ -8,9 +8,11 @@ import 'package:foodplanner/components/mealBoxEmpty.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/feedbackChatPage.dart';
 import 'package:foodplanner/components/footer.dart'; // Import the footer widget
+import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart'; // Import the reusable widget
+import 'package:go_router/go_router.dart'; // Import GoRouter
 
 
 class ParentLandingPageMadpakke extends StatelessWidget {
@@ -43,10 +45,7 @@ class ParentLandingPageMadpakke extends StatelessWidget {
                     ? AddMealButton(size: size)
                     : CustomButton(
                   onTab: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FeedbackChatPage()),
-                    );
+                    GoRouter.of(context).go(FEEDBACK_Page, extra: {'from': PARENT_ROOT});;
                   }, 
                   text: 'Se Feedback',
                   //fontSize: 16,

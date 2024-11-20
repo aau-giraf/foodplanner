@@ -27,9 +27,10 @@ class _FooterBarState extends State<FooterBar> {
   
 
   Widget page;
+  String currentPath = GoRouter.of(context).routerDelegate.currentConfiguration.fullPath;
     switch (index) {
       case 0:
-              GoRouter.of(context).go(FEEDBACK_Page);
+              GoRouter.of(context).go(FEEDBACK_Page, extra: {'from': currentPath});
         break;
       case 1:
               GoRouter.of(context).go(PARENT_ROOT);
