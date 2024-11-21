@@ -101,7 +101,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ReusableMealBox(size: size),
+                    child: ReusableMealBox(),
                   ), // Use the reusable widget
                   SizedBox(height: 20),
                 ],

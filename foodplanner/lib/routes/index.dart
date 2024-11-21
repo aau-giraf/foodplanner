@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/pages/add_meal_page.dart';
-import 'package:foodplanner/pages/createMealPage.dart';
 import 'package:foodplanner/pages/feedbackChatPage.dart';
 import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
@@ -32,7 +31,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         final role = await authProvider.retrieveRole();
         switch (role) {
-          case ROLES.teacher || ROLES.admin:
+          case ROLES.teacher:
             return TEACHER_ROOT;
           case ROLES.parent:
             return PARENT_ROOT;
@@ -77,7 +76,7 @@ final router = GoRouter(
 
     GoRoute(
       path: '/create-meal',
-      builder: (context, state) => CreateMealPage(),
+      builder: (context, state) => AddMealPage(),
     ),
 
     GoRoute(
@@ -107,7 +106,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
-          future: authProvider.hasRoles([ROLES.teacher]),
+          future: authProvider.hasRoles([ROLES.teacher, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
@@ -125,7 +124,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
-          future: authProvider.hasRoles([ROLES.student]),
+          future: authProvider.hasRoles([ROLES.student, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
@@ -163,7 +162,8 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
-          future: authProvider.hasRoles([ROLES.parent, ROLES.teacher]),
+          future:
+              authProvider.hasRoles([ROLES.parent, ROLES.teacher, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
@@ -181,7 +181,8 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
-          future: authProvider.hasRoles([ROLES.parent, ROLES.teacher]),
+          future:
+              authProvider.hasRoles([ROLES.parent, ROLES.teacher, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
@@ -199,7 +200,8 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
-          future: authProvider.hasRoles([ROLES.parent, ROLES.teacher]),
+          future:
+              authProvider.hasRoles([ROLES.parent, ROLES.teacher, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
@@ -236,7 +238,7 @@ final router = GoRouter(
           final authProvider =
               Provider.of<AuthProvider>(context, listen: false);
           return FutureBuilder<bool>(
-            future: authProvider.hasRoles([ROLES.parent]),
+            future: authProvider.hasRoles([ROLES.parent, ROLES.admin]),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator(); // Show loading while waiting

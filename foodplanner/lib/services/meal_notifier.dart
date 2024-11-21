@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_meal.dart';
 import 'package:intl/intl.dart';
 
-class MealNotifier extends ChangeNotifier {
+class MealNotifier with ChangeNotifier {
+  final FlutterSecureStorage _secureStorage;
   DateTime selectedDate = DateTime.now();
   String mealTitle = '';
   String mealImageRef = '';
@@ -12,17 +14,32 @@ class MealNotifier extends ChangeNotifier {
   String baseUrl = ApiConfig.baseUrl;
   Meal? meal;
 
-  MealNotifier() {
+  MealNotifier({FlutterSecureStorage? secureStorage})
+      : _secureStorage = secureStorage ??
+            const FlutterSecureStorage(
+              iOptions:
+                  IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+            ) {
     _fetchMealData();
   }
 
   Future<void> _fetchMealData() async {
+    print('Fetching meal data');
     final mealService = MealService(apiUrl: baseUrl);
     final mealData = await mealService
         .fetchMealData(DateFormat('yyyy-MM-dd').format(selectedDate));
 
     meal = mealData;
     notifyListeners();
+  }
+
+  Future<DateTime> retrieveDate() async {
+    selectedDate = DateTime.parse(
+        await _secureStorage.read(key: '_selectedDate') ??
+            DateFormat('yyyy-MM-dd').format(DateTime.now()));
+    notifyListeners();
+
+    return selectedDate;
   }
 
   Future<void> selectDate(BuildContext context) async {
@@ -34,7 +51,9 @@ class MealNotifier extends ChangeNotifier {
     );
     if (picked != null && picked != selectedDate) {
       selectedDate = picked;
-      _fetchMealData();
+      await _secureStorage.write(
+          key: '_selectedDate', value: selectedDate.toString());
+      await _fetchMealData();
     }
   }
 }

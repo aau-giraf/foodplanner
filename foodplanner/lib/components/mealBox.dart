@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/mealBoxContent.dart';
-import 'package:foodplanner/components/mealBoxEmpty.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/landing_page_children_se_madpakke.dart'; // Update with the correct import
@@ -10,9 +9,7 @@ import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:provider/provider.dart';
 
 class ReusableMealBox extends StatelessWidget {
-  final Size size;
-
-  const ReusableMealBox({super.key, required this.size});
+  const ReusableMealBox({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +44,18 @@ class ReusableMealBox extends StatelessWidget {
               ),
             ),
             if (mealNotifier.meal == null)
-              Mealboxempty(size: size)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // sabrina carpenter tho :flushedEmoj:
+                  const Text(
+                    'ingen madpakke at vise',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              )
             else
-              Mealboxcontent(size: size, caption: mealNotifier.meal!.name)
+              Mealboxcontent(caption: mealNotifier.meal!.name)
           ],
         ),
       ),

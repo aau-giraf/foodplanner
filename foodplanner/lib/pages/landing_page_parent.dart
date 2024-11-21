@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/components/addMealButton.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/mealBox.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/pages/add_meal_page.dart';
 import 'package:foodplanner/pages/feedbackChatPage.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -90,11 +90,26 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ReusableMealBox(size: size),
+                    child: ReusableMealBox(),
                   ), // Use the reusable widget
                   SizedBox(height: 20),
                   mealNotifier.meal == null
-                      ? AddMealButton(size: size)
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: CustomButton(
+                            onTab: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const AddMealPage()),
+                              );
+                            },
+                            icon: SFIcon(
+                              SFIcons.sf_plus,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ))
                       : Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: CustomButton(

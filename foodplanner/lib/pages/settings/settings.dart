@@ -14,6 +14,7 @@ import 'package:foodplanner/pages/settings/SchoolClasses.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
+import 'package:go_router/go_router.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -226,6 +227,21 @@ class _SettingsPage extends State<Settings> {
                     ),
                   ),
                 ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: CustomButton(
+                  onTab: () async {
+                    final authProvider =
+                        Provider.of<AuthProvider>(context, listen: false);
+                    await authProvider.logout();
+                    context.go('/login');
+                  },
+                  text: "Log ud",
+                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.errorText,
+                  size: ButtonSize.medium,
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: CustomButton(

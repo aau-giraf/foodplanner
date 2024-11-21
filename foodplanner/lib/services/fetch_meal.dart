@@ -9,6 +9,7 @@ class MealService {
   MealService({required this.apiUrl});
 
   Future<Meal?> fetchMealData(String date) async {
+    print("Fetching meal data for date: $date");
     try {
       final jwtToken = await AuthProvider().retrieveToken();
       final response = await http.get(
