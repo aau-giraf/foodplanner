@@ -134,9 +134,8 @@ class AddMealPageState extends State<AddMealPage> {
         image: image,
         client: _client!,
         onCamera: () => pushPage(2), // Changes the shown page to "camera_page.dart" when executed.
-        onCreateIngredient: ()  {
-          print("Changed page");
-          pushPage(3);
+        onCreateIngredient: ()  { 
+          pushPage(3); // Changes the shown page to "create_ingredient_page.dart"
         },
         onIngredientsUpdated: (newIngredients) { // Update ingredients when modified.
           setState(() {
@@ -159,8 +158,8 @@ class AddMealPageState extends State<AddMealPage> {
       CreateIngredientPage( // The CreateIngredientPage is the fourth page.
         onCreatedIngredient: (ingredient) {
           setState(() {
-            ingredients.add(ingredient);
-            popPage();
+            ingredients.add(ingredient); // Creates a new ingredient in the database.
+            popPage(); // Shows the previously viewed page. 
           });
         } 
       ),

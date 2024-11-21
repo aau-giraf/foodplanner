@@ -97,7 +97,7 @@ class EditMealPageState extends State<EditMealPage> {
               ingredients = newIngredients;
             });
           },
-          onCreateIngredient: () => pushPage(3),
+          onCreateIngredient: () => pushPage(3), // Changes the shown page to "create_ingredient_page.dart" when executed.
           onIngredientAdded: (addedIngredient) {
             packedIngredients.add(addedIngredient);
             popPage();
@@ -112,8 +112,8 @@ class EditMealPageState extends State<EditMealPage> {
         CreateIngredientPage( // The CreateIngredientPage is the fourth page.
           onCreatedIngredient: (ingredient) {
             setState(() {
-              ingredients.add(ingredient);
-              popPage();
+              ingredients.add(ingredient); // Adds the new ingredient to the database.
+              popPage(); // Go back to the previous page after creating new ingredient.
             });
           } 
         ),

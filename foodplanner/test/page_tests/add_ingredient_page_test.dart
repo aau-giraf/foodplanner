@@ -95,6 +95,19 @@ void main() {
       });
     });
 
+    group('create ingredient button functionality', () {
+      testWidgets('calls onIngredientCreated callback', (WidgetTester tester) async {
+        await tester.pumpWidget(
+          MaterialApp(home: createWidgetUnderTest()),
+        );
+
+        await tester.tap(find.byIcon(Icons.add));
+        await tester.pumpAndSettle();
+
+        expect(ingredientCreated, isTrue);
+      });
+    });
+
     group('navigates to:', () {
       testWidgets('CameraPage when pressing OK in the alert dialog', (WidgetTester tester) async {
         await tester.pumpWidget(
