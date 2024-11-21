@@ -1,4 +1,11 @@
 // main root and auth root
+import 'package:foodplanner/pages/add_ingredient_page.dart';
+import 'package:foodplanner/pages/add_meal_page.dart';
+import 'package:foodplanner/pages/add_meal_form_page.dart';
+import 'package:foodplanner/pages/camera_page.dart';
+import 'package:foodplanner/pages/edit_meal_page.dart';
+import 'package:foodplanner/pages/meal_list_page.dart';
+
 const String MAIN_ROOT = '/';
 const String ADMIN_ROOT = '/admin';
 const String TEACHER_ROOT = '/teacher';
@@ -14,6 +21,9 @@ const String CREATE = '/create';
 const String PROFILE_PAGE = '/profile';
 const String SETTINGS_PAGE = '/settings';
 const String FEEDBACK_Page = '/feedbackPage';
+const String ADD_MEAL = '/create';
+const String EDIT_MEAL = '/edit';
+const String NO_MEAL = '/empy';
 
 // routing through concat of pages from above (lavet baseret på vores p3 dont ask why)
 const String MAIN_PAGE_ROUTE = MAIN_PAGE;
