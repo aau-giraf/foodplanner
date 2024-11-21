@@ -35,39 +35,39 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
 
   int? _editingMessageIndex;
 
-  Future<void> _sendMessage() async {
-    if (_controller.text.isNotEmpty) {
-      setState(() {
-        if (_editingMessageIndex != null) {
-          _messages[_editingMessageIndex!].text = _controller.text;
-          _editingMessageIndex = null;
-        } else {
-          _messages.add(Message(text: _controller.text, isSent: true, date: DateTime.now(), sender: "Parent"));
-        }
-        _controller.clear();
-      });
-    }
-  }
-
-  Future<void> _deleteMessage(int index) async {
+Future<void> _sendMessage() async {
+  if (_controller.text.isNotEmpty) {
     setState(() {
-      _messages[index].text = "Denne besked er blevet slettet.";
-    });
-  }
-
-  void _editMessage(int index) {
-    setState(() {
-      _controller.text = _messages[index].text;
-      _editingMessageIndex = index;
-    });
-  }
-
-  void _cancelEdit() {
-    setState(() {
+      if (_editingMessageIndex != null) {
+        _messages[_editingMessageIndex!].text = "${_controller.text} (Redigeret)";
+        _editingMessageIndex = null;
+      } else {
+        _messages.add(Message(text: _controller.text, isSent: true, date: DateTime.now(), sender: "Parent"));
+      }
       _controller.clear();
-      _editingMessageIndex = null;
     });
   }
+}
+
+Future<void> _deleteMessage(int index) async {
+  setState(() {
+    _messages[index].text = "Denne besked er blevet slettet.";
+  });
+}
+
+void _editMessage(int index) {
+  setState(() {
+    _controller.text = _messages[index].text.replaceAll(" (Redigeret)", "");
+    _editingMessageIndex = index;
+  });
+}
+
+void _cancelEdit() {
+  setState(() {
+    _controller.clear();
+    _editingMessageIndex = null;
+  });
+}
 
   void _showEditDeleteDialog(int index) {
     showModalBottomSheet(
