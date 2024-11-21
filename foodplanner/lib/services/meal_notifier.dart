@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_meal.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +10,7 @@ class MealNotifier extends ChangeNotifier {
   String mealImageRef = '';
   bool isMealEmpty = true;
   String baseUrl = ApiConfig.baseUrl;
+  Meal? meal;
 
   MealNotifier() {
     _fetchMealData();
@@ -16,14 +18,10 @@ class MealNotifier extends ChangeNotifier {
 
   Future<void> _fetchMealData() async {
     final mealService = MealService(apiUrl: baseUrl);
-    final mealData = await mealService.fetchMealData(
-        // TODO - Replace 'user123' with the actual user id
-        DateFormat('yyyy-MM-dd').format(selectedDate));
+    final mealData = await mealService
+        .fetchMealData(DateFormat('yyyy-MM-dd').format(selectedDate));
 
-    mealTitle = mealData['title'] ?? 'No meal available';
-    mealImageRef = mealData['image_ref'] ?? '';
-    isMealEmpty = mealTitle != 'No meal available';
-
+    meal = mealData;
     notifyListeners();
   }
 

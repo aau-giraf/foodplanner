@@ -93,7 +93,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                     child: ReusableMealBox(size: size),
                   ), // Use the reusable widget
                   SizedBox(height: 20),
-                  mealNotifier.isMealEmpty
+                  mealNotifier.meal == null
                       ? AddMealButton(size: size)
                       : Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),

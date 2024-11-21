@@ -25,30 +25,17 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) {
+      redirect: (context, state) async {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        return FutureBuilder<ROLES?>(
-          future: authProvider.retrieveRole(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
-            } else if (snapshot.hasData) {
-              print('snapshot: ${snapshot.data}');
-              switch (snapshot.data) {
-                case ROLES.teacher || ROLES.admin:
-                  return const TeacherLandingPage();
-                case ROLES.parent:
-                  return const ParentLandingPageMadpakke();
-                default:
-                  return const ChildLandingPageMadpakke(
-                    student: {},
-                  );
-              }
-            } else {
-              return const UnauthorizedPage();
-            }
-          },
-        );
+        final role = await authProvider.retrieveRole();
+        switch (role) {
+          case ROLES.teacher || ROLES.admin:
+            return TEACHER_ROOT;
+          case ROLES.parent:
+            return PARENT_ROOT;
+          default:
+            return STUDENT_ROOT;
+        }
       },
     ),
     GoRoute(

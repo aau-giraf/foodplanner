@@ -9,11 +9,9 @@ class Mealboxcontent extends StatelessWidget {
   final Size size;
   final String caption;
 
-  const Mealboxcontent({
-  Key? key, 
-  required this.size, 
-  this.caption = 'Madpakke Text'}) : 
-  super(key: key);
+  const Mealboxcontent(
+      {Key? key, required this.size, this.caption = 'Madpakke Text'})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,19 +36,6 @@ class Mealboxcontent extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: FoodImage(foodImageId: 1),
-                // child: Image.network(
-                //   imageUrl, 
-                //   fit: BoxFit.cover,
-                //   width: double.infinity,
-                //   height: double.infinity,
-                //   errorBuilder: (context, error, stackTrace) {
-                //     return const Center(child: Text('Image not available'));
-                //   },
-                //   loadingBuilder: (context, child, loadingProgress) {
-                //     if (loadingProgress == null) return child;
-                //     return const Center(child: CircularProgressIndicator());
-                //   },
-                
               ),
             ),
             SizedBox(height: size.height * 0.05),
@@ -62,7 +47,8 @@ class Mealboxcontent extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChildLandingPageSeMadpakke()),
+                      MaterialPageRoute(
+                          builder: (context) => ChildLandingPageSeMadpakke()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -70,7 +56,8 @@ class Mealboxcontent extends StatelessWidget {
                     shadowColor: Colors.black, // Set the shadow color to black
                     elevation: 5, // Set the elevation to create a shadow effect
                   ),
-                  child: const Text('Se madpakke', style: AppTextStyles.buttonText),
+                  child: const Text('Se madpakke',
+                      style: AppTextStyles.buttonText),
                 ),
               ),
             ),

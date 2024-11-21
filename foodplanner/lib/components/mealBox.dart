@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/mealBoxContent.dart';
 import 'package:foodplanner/components/mealBoxEmpty.dart';
 import 'package:foodplanner/config/colors.dart';
@@ -10,12 +11,8 @@ import 'package:provider/provider.dart';
 
 class ReusableMealBox extends StatelessWidget {
   final Size size;
-  final String imageUrl;
-  final String caption;
 
-  const ReusableMealBox({super.key, required this.size})
-      : caption = 'Madpakke Tekst',
-        imageUrl = 'https://cdn-icons-png.flaticon.com/512/739/739249.png';
+  const ReusableMealBox({super.key, required this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +28,28 @@ class ReusableMealBox extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Column(
           children: [
-            DateTimePickerWidget(),
-
-            //Added listener for checking if meal is empty or not
-            mealNotifier.isMealEmpty
-                ? Mealboxempty(size: size)
-                : Mealboxcontent(size: size, caption: caption),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: InkWell(
+                onTap: () => mealNotifier.selectDate(context),
+                overlayColor: WidgetStatePropertyAll(AppColors.primary),
+                borderRadius: BorderRadius.circular(10),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      DateTimePickerWidget(),
+                      SFIcon(SFIcons.sf_calendar, fontSize: 36),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (mealNotifier.meal == null)
+              Mealboxempty(size: size)
+            else
+              Mealboxcontent(size: size, caption: mealNotifier.meal!.name)
           ],
         ),
       ),

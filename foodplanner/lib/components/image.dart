@@ -4,6 +4,7 @@ import 'package:foodplanner/auth/auth_provider.dart';
 
 class FoodImage extends StatelessWidget {
   final int foodImageId;
+  final imageUrl = 'https://cdn-icons-png.flaticon.com/512/739/739249.png';
 
   FoodImage({required this.foodImageId});
 
@@ -18,7 +19,10 @@ class FoodImage extends StatelessWidget {
               child: Image.network(snapshot.data!),
             );
           } else {
-            return Text("Image not found");
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.network(imageUrl),
+            );
           }
         });
   }
@@ -31,6 +35,7 @@ class FoodImage extends StatelessWidget {
 
     var imagesApi = ImagesApi(apiClient);
 
-    return await imagesApi.apiImagesGetPresignedImageLinkGet(foodImageId: foodImageId);
+    return await imagesApi.apiImagesGetPresignedImageLinkGet(
+        foodImageId: foodImageId);
   }
 }
