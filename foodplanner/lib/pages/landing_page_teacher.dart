@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/search_field.dart';
+import 'package:foodplanner/components/settings_widget.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -46,7 +49,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
               .toList();
           filteredStudents = students;
 
-  // Extract unique class IDs and names from students
+          // Extract unique class IDs and names from students
           final uniqueClasses = <String, String>{};
           for (var student in students) {
             uniqueClasses[student['classId']!] = student['className']!;
@@ -132,19 +135,27 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
       appBar: AppBar(
         title: const Text('Vælg en elev'), // "Select a student"
       ),
+      backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
+            SettingsWidget(
+              leftIcon: SFIcons.sf_figure_and_child_holdinghands,
+              title: 'Vælg en elev for at forsætte',
+              subTitle:
+                  'Her kan du vælge eller søge efter elever i de repektive klasser',
+              type: SettingsType.header,
+            ),
+            SizedBox(
+              height: 20,
+            ),
             Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: SearchField(
                     controller: searchController,
-                    decoration: InputDecoration(
-                      labelText: 'Search Students',
-                      border: OutlineInputBorder(),
-                    ),
+                    hintText: 'Søg efter elev',
                     onChanged: filterStudents,
                   ),
                 ),
@@ -182,25 +193,25 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
                                 .where((student) =>
                                     student['classId'] == schoolClass['id'])
                                 .map((student) {
-                                  return ListTile(
-                                    key: ValueKey(student['id']), // Add a unique key to each ListTile
-                                    title: Text(
-                                      student['name'] ?? 'Unknown',
-                                      style: TextStyle(
-                                        fontWeight: highlightedStudentIds
-                                                .contains(student['id'])
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        color: highlightedStudentIds
-                                                .contains(student['id'])
-                                            ? Colors.blue
-                                            : Colors.black,
-                                      ),
-                                    ),
-                                    onTap: () => navigateToStudentDetails(student),
-                                  );
-                                })
-                                .toList(),
+                              return ListTile(
+                                key: ValueKey(student[
+                                    'id']), // Add a unique key to each ListTile
+                                title: Text(
+                                  student['name'] ?? 'Unknown',
+                                  style: TextStyle(
+                                    fontWeight: highlightedStudentIds
+                                            .contains(student['id'])
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    color: highlightedStudentIds
+                                            .contains(student['id'])
+                                        ? Colors.blue
+                                        : Colors.black,
+                                  ),
+                                ),
+                                onTap: () => navigateToStudentDetails(student),
+                              );
+                            }).toList(),
                           ),
                         ),
                     ],

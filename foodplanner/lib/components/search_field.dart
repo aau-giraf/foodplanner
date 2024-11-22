@@ -6,11 +6,13 @@ import 'package:foodplanner/config/text_styles.dart';
 class SearchField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
+  final ValueChanged<String>? onChanged;
 
   const SearchField({
     super.key,
     required this.controller,
     this.hintText = 'Søg...',
+    this.onChanged,
   });
 
   @override
@@ -44,6 +46,7 @@ class SearchField extends StatelessWidget {
                       border: InputBorder.none,
                     ),
                     style: AppTextStyles.bigText,
+                    onChanged: onChanged,
                   ),
                 ),
               ],
