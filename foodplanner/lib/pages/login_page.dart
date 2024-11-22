@@ -117,6 +117,7 @@ class LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: Colors.white,
         title: Text(
           'Egebakkeskolen\nFoodplanner',
@@ -124,114 +125,116 @@ class LoginPageState extends State<LoginPage> {
           textAlign: TextAlign.center,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          children: [
-            const SizedBox(height: 35),
-            Image(
-              image: AssetImage('assets/images/logo.png'),
-              height: 160,
-            ),
-            const SizedBox(height: 35),
-            Column(
-              children: [
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  color: AppColors.background,
-                  surfaceTintColor: AppColors.background,
-                  elevation: 3,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 15),
-                      Text(
-                        'Log ind',
-                        style: AppTextStyles.headline3.copyWith(fontSize: 22),
-                      ),
-                      const SizedBox(height: 30),
-                      Text(
-                        'Brugernavn',
-                        style: AppTextStyles.headline4.copyWith(fontSize: 18),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: CustomTextField(
-                            hintText: "Brugernavn",
-                            controller: usernameController,
-                            errorText: emailError),
-                      ),
-                      const SizedBox(height: 50),
-                      Text(
-                        'Adgangskode',
-                        style: AppTextStyles.headline4.copyWith(fontSize: 18),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: CustomTextField(
-                            hintText: "Adgangskode",
-                            obscureText: true,
-                            controller: passwordController,
-                            errorText: passwordError),
-                      ),
-                      const SizedBox(height: 25),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Flexible(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ForgotPasswordPage()),
-                                  );
-                                },
-                                child: Text(
-                                  "Glemt adgangskode?",
-                                  style: AppTextStyles.standard.copyWith(
-                                    color: AppColors.secondary,
-                                    decoration: TextDecoration.underline,
-                                    decorationColor: AppColors.secondary,
-                                    fontSize: 14,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              const SizedBox(height: 35),
+              Image(
+                image: AssetImage('assets/images/logo.png'),
+                height: 160,
+              ),
+              const SizedBox(height: 35),
+              Column(
+                children: [
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    color: AppColors.background,
+                    surfaceTintColor: AppColors.background,
+                    elevation: 3,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 15),
+                        Text(
+                          'Log ind',
+                          style: AppTextStyles.headline3.copyWith(fontSize: 22),
+                        ),
+                        const SizedBox(height: 30),
+                        Text(
+                          'Brugernavn',
+                          style: AppTextStyles.headline4.copyWith(fontSize: 18),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: CustomTextField(
+                              hintText: "Brugernavn",
+                              controller: usernameController,
+                              errorText: emailError),
+                        ),
+                        const SizedBox(height: 50),
+                        Text(
+                          'Adgangskode',
+                          style: AppTextStyles.headline4.copyWith(fontSize: 18),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: CustomTextField(
+                              hintText: "Adgangskode",
+                              obscureText: true,
+                              controller: passwordController,
+                              errorText: passwordError),
+                        ),
+                        const SizedBox(height: 25),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Flexible(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ForgotPasswordPage()),
+                                    );
+                                  },
+                                  child: Text(
+                                    "Glemt adgangskode?",
+                                    style: AppTextStyles.standard.copyWith(
+                                      color: AppColors.secondary,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: AppColors.secondary,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 25),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: CustomButton(
+                          onTab: () => directSignUpPage(context),
+                          text: 'Opret',
+                          backgroundColor: AppColors.secondary,
                         ),
                       ),
-                      const SizedBox(height: 25),
+                      SizedBox(width: 15),
+                      Expanded(
+                        child: CustomButton(
+                          text: "Login",
+                          onTab: () => signUserIn(context),
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: CustomButton(
-                        onTab: () => directSignUpPage(context),
-                        text: 'Opret',
-                        backgroundColor: AppColors.secondary,
-                      ),
-                    ),
-                    SizedBox(width: 15),
-                    Expanded(
-                      child: CustomButton(
-                        text: "Login",
-                        onTab: () => signUserIn(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

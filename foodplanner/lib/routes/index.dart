@@ -30,6 +30,10 @@ final router = GoRouter(
       redirect: (context, state) async {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         final role = await authProvider.retrieveRole();
+        final isLoggedIn = authProvider.isLoggedIn;
+        if (!isLoggedIn) {
+          return '/login';
+        }
         switch (role) {
           case ROLES.teacher:
             return TEACHER_ROOT;

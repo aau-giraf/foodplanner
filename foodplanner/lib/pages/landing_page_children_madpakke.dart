@@ -56,10 +56,6 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the size of the screen
-    final size = MediaQuery.of(context).size;
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
