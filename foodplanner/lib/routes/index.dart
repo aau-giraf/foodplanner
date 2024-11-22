@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/pages/add_ingredient_page.dart';
+import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/add_meal_page.dart';
 import 'package:foodplanner/pages/feedbackChatPage.dart';
 import 'package:foodplanner/pages/landing_page_parent.dart';
@@ -76,7 +78,7 @@ final router = GoRouter(
 
     GoRoute(
       path: '/create-meal',
-      builder: (context, state) => AddMealPage(),
+      builder: (context, state) => MealFormPage(),
     ),
 
     GoRoute(
@@ -97,6 +99,11 @@ final router = GoRouter(
     GoRoute(
       path: '/empty',
       builder: (context, state) => MealListPage(),
+    ),
+
+    GoRoute(
+      path: '/add-ingridients',
+      builder: (context, state) => AddIngredientPage(),
     ),
 
     //no need for wildcard handling as flutter already does it

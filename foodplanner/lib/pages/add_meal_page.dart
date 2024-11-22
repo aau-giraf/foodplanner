@@ -129,7 +129,7 @@ class AddMealPageState extends State<AddMealPage> {
     _pages.addAll([
       // Adds all of the pages to the "_pages" list
       MealFormPage(
-        // The MealFormPage is the first page to be displayed.
+/*         // The MealFormPage is the first page to be displayed.
         ingredients: ingredients, // Pass the ingredients to the MealFormPage.
         packedIngredients:
             packedIngredients, // Pass the meal to the MealFormPage.
@@ -143,10 +143,10 @@ class AddMealPageState extends State<AddMealPage> {
           pushPage(2);
           await cameraPageCompleter!.future;
         }, // Changes the shown page to "camera_page.dart" when executed.
-        onCreateMeal: (client, title) => onCreateMeal(client, title),
-      ),
+        onCreateMeal: (client, title) => onCreateMeal(client, title), */
+          ),
       AddIngredientPage(
-          // The AddIngredientPage is the second page.
+/*           // The AddIngredientPage is the second page.
           ingredients:
               ingredients, // Pass the ingredients to the AddIngredientPage.
           image: image,
@@ -162,7 +162,7 @@ class AddMealPageState extends State<AddMealPage> {
           onIngredientAdded: (addedIngredient) {
             packedIngredients.add(addedIngredient as PackedIngredient);
             popPage();
-          } // Go back to the previous page after adding new ingredient.
+          } // Go back to the previous page after adding new ingredient. */
           ),
       CameraPage(
         onImagePicked: (image) {
@@ -188,29 +188,6 @@ class AddMealPageState extends State<AddMealPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Main structure of the page.
-      appBar: AppBar(
-        leading:
-            pageStack.length > 1 // Show back button if there's a previous page
-                ? IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: popPage,
-                  )
-                : null, // No back button on the first page
-        title: const Text("Opret madpakke"), // Title of the AppBar.
-        centerTitle: true, // Center the title in the AppBar.
-        backgroundColor:
-            AppColors.background, // Background color for the AppBar.
-        elevation: 1.0, // Shadow effect for the AppBar.
-        iconTheme: const IconThemeData(
-            color: AppColors.textPrimary), // Icon color in the AppBar.
-        titleTextStyle: const TextStyle(
-          // Text style for the title.
-          color: AppColors.textPrimary, // Color for the title text.
-          fontSize: 18, // Font size for the title.
-          fontWeight: FontWeight.bold, // Bold font weight for the title.
-        ),
-      ),
       body: _pages.isNotEmpty
           ? _pages[pageStack.last] // Show the page at the top of the stack
           : Center(
