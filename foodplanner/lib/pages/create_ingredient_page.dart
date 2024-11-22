@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -94,7 +96,7 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
                                   name: ingredientNameController.text, // The name recieved from the controller.
                                   imageRef: null,
                                 );
-                                createIngredient(client!, AuthProvider(), newIngredient.name, newIngredient.imageRef);
+                                newIngredient = Ingredient.fromJson(jsonDecode((await createIngredient(client!, AuthProvider(), newIngredient.name, newIngredient.imageRef)).body));
                                 Navigator.pop(context);
                                 widget.onCreatedIngredient(newIngredient); // Calls the camera callback.
                                 //context.pop();
