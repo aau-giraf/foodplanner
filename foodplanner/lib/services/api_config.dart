@@ -3,6 +3,6 @@ import 'package:http/io_client.dart';
 
 class ApiConfig {
   static final AuthService authService =
-      AuthService(apiUrl: 'https://0812sjhc-8080.euw.devtunnels.ms');
-  static const String baseUrl = 'https://0812sjhc-8080.euw.devtunnels.ms';
+      AuthService(apiUrl: 'http://192.168.0.115:8080');
+  static const String baseUrl = 'http://192.168.0.115:8080';
 }
