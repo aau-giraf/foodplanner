@@ -152,13 +152,13 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
             ),
             Row(
               children: [
-                Expanded(
+                /*Expanded(
                   child: SearchField(
                     controller: searchController,
                     hintText: 'Søg efter elev',
                     onChanged: filterStudents,
                   ),
-                ),
+                ),*/
                 const SizedBox(width: 16.0),
                 GestureDetector(
                   onTap: collapseAll,

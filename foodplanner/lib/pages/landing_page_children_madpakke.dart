@@ -14,6 +14,7 @@ import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 
 class ChildLandingPageMadpakke extends StatefulWidget {
   final Map<String, String> student;
@@ -29,6 +30,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   late Future<bool> _hasRolesFuture;
   Child? _child;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
+  String? userRole;
 
   @override
   void initState() {
@@ -36,8 +38,10 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     //_hasRolesFuture = authProvider.hasRoles([ROLES.parent, ROLES.student]);
     authProvider.loadFromStorage().then((_) {
-      authProvider.retrieveToken().then((token) {
+      authProvider.retrieveToken().then((token) async {
+        final role = await authProvider.retrieveRole();
         setState(() {
+          userRole = role?.toString();
           _hasRolesFuture =
               authProvider.hasRoles([ROLES.parent, ROLES.student]);
           if (authProvider.userRole == ROLES.student ||
@@ -62,29 +66,39 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Center(
-                  child: Text(
-                    '${_child?.firstName} ${_child?.lastName}',
-                    style: AppTextStyles.headline4,
-                  ),
+        leading: userRole == ROLES.teacher.toString()
+            ? IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PinCode()),
+                  );
+                },
+                icon: Icon(SFIcons.sf_chevron_backward),
+              )
+            : null,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Center(
+                child: Text(
+                  '${_child?.firstName} ${_child?.lastName}',
+                  style: AppTextStyles.headline4,
                 ),
               ),
+            ),
+            if (userRole != ROLES.teacher.toString())
               IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => PinCode()),
-                    );
-                  },
-                  icon: SFIcon(SFIcons.sf_lock_fill)),
-            ],
-          ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PinCode()),
+                  );
+                },
+                icon: SFIcon(SFIcons.sf_lock_fill),
+              ),
+          ],
         ),
         leadingWidth: double.infinity,
         backgroundColor: Colors.white,
