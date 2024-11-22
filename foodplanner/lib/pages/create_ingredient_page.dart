@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/ingredient.dart';
+import 'package:foodplanner/services/ingredient_services.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 /// This class is used when creating a new ingredient in the system.
 class CreateIngredientPage extends StatefulWidget {
@@ -23,12 +27,14 @@ class CreateIngredientPage extends StatefulWidget {
 class _CreateIngredientPageState extends State<CreateIngredientPage> {
   TextEditingController ingredientNameController = TextEditingController(); // The controller for the ingredient name text field.
   final ValueNotifier<bool> isButtonEnabled = ValueNotifier<bool>(false); // Notifier to track the button state.
+  Client? client;
 
   int maxTextLength = 20;
 
   @override
   void initState() {
     super.initState();
+    client = http.Client();
     ingredientNameController.addListener(() {
       isButtonEnabled.value = ingredientNameController.text.isNotEmpty;
     });
@@ -88,6 +94,7 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
                                   name: ingredientNameController.text, // The name recieved from the controller.
                                   imageRef: null,
                                 );
+                                createIngredient(client!, AuthProvider(), newIngredient.name, newIngredient.imageRef);
                                 Navigator.pop(context);
                                 widget.onCreatedIngredient(newIngredient); // Calls the camera callback.
                                 //context.pop();
