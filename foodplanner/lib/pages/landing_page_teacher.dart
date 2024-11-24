@@ -6,6 +6,9 @@ import 'package:foodplanner/components/settings_widget.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/config/text_styles.dart';
 
 class TeacherLandingPage extends StatefulWidget {
   const TeacherLandingPage({super.key});
@@ -133,7 +136,14 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vælg en elev'), // "Select a student"
+        title: Center(
+          child: const Text(
+            'Velkommen',
+            style: AppTextStyles.headline4,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        backgroundColor: Colors.white,
       ),
       backgroundColor: Colors.white,
       body: Padding(
@@ -222,6 +232,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
           ],
         ),
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }

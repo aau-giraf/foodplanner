@@ -5,6 +5,7 @@ import 'package:foodplanner/components/mealBox.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/pages/landing_page_teacher.dart';
 
 import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/routes/user_roles.dart';
@@ -71,14 +72,15 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PinCode()),
+                    MaterialPageRoute(
+                        builder: (context) => TeacherLandingPage()),
                   );
                 },
                 icon: Icon(SFIcons.sf_chevron_backward),
               )
             : null,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Expanded(
               child: Center(
@@ -100,7 +102,6 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
               ),
           ],
         ),
-        leadingWidth: double.infinity,
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
       ),
