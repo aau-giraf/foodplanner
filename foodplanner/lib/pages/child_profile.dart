@@ -50,9 +50,11 @@ class ChildProfileState extends State<ChildProfile>
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   String? selectedClassId;
+  String? initialClassId;
   String updatedFirstName = '';
   String updatedLastName = '';
   int? selectedParentId;
+  int? initialParentId;
   User? selectedParent;
 
   void onFieldChanged() {
@@ -72,9 +74,11 @@ class ChildProfileState extends State<ChildProfile>
     updatedFirstName = widget.child.firstName;
     updatedLastName = widget.child.lastName;
     selectedClassId = widget.child.classId.toString();
+    initialClassId = widget.child.classId.toString();
     fetchParent();
     selectedParent = parent;
     selectedParentId = widget.child.parentId;
+    initialParentId = widget.child.parentId;
 
     ChildProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
@@ -510,6 +514,9 @@ class ChildProfileState extends State<ChildProfile>
                         isEditingLastName = false;
                         isEditingClass = false;
                         hasChanges = false;
+                        selectedClassId = initialClassId;
+                        selectedParentId = initialParentId;
+                        selectedParent = parent;
                       }),
                     },
                     backgroundColor: Colors.white,
