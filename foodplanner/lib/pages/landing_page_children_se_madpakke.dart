@@ -5,6 +5,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
+import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -94,6 +95,11 @@ class _ChildLandingPageSeMadpakkeState
             }
             final item = packedIngredients.removeAt(oldIndex);
             packedIngredients.insert(newIndex, item);
+            // set the order number for each packed ingredient
+            for (int i = 0; i < packedIngredients.length; i++) {
+              packedIngredients[i].orderNumber = i;
+            }
+            updatePackedIngredientOrder(packedIngredients);
           });
         },
       ),

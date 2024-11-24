@@ -22,6 +22,7 @@ class MealService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print('Meal data: $data');
         if (data.isEmpty) {
           return null;
         }

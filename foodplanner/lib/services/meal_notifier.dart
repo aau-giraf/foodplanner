@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:foodplanner/models/meal.dart';
+import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_meal.dart';
 import 'package:intl/intl.dart';
