@@ -21,10 +21,16 @@ class MealNotifier with ChangeNotifier {
               iOptions:
                   IOSOptions(accessibility: KeychainAccessibility.first_unlock),
             ) {
-    _fetchMealData();
+    fetchMealData();
   }
 
-  Future<void> _fetchMealData() async {
+  void updateDate(DateTime date) async {
+    selectedDate = date;
+    await fetchMealData();
+    notifyListeners();
+  }
+
+  Future<void> fetchMealData() async {
     print('Fetching meal data');
     final mealService = MealService(apiUrl: baseUrl);
     final mealData = await mealService
@@ -54,7 +60,7 @@ class MealNotifier with ChangeNotifier {
       selectedDate = picked;
       await _secureStorage.write(
           key: '_selectedDate', value: selectedDate.toString());
-      await _fetchMealData();
+      await fetchMealData();
     }
   }
 }

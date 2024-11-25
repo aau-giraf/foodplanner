@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/mealBoxContent.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/components/dateTimePicker.dart';
+import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:provider/provider.dart';
 
 class ReusableMealBox extends StatelessWidget {
   const ReusableMealBox({super.key});
 
+  Future<ROLES?> _retrieveRole() async {
+    return await AuthProvider().retrieveRole();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final mealNotifier = Provider.of<MealNotifier>(context);
+    final mealNotifier = Provider.of<MealNotifier>(context, listen: false);
+    mealNotifier.fetchMealData();
     return Card(
       color: AppColors.background,
       surfaceTintColor: AppColors.background,
@@ -25,21 +32,38 @@ class ReusableMealBox extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: InkWell(
-                onTap: () => mealNotifier.selectDate(context),
-                overlayColor: WidgetStatePropertyAll(AppColors.primary),
-                borderRadius: BorderRadius.circular(10),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      DateTimePickerWidget(),
-                      SFIcon(SFIcons.sf_calendar, fontSize: 36),
-                    ],
-                  ),
-                ),
-              ),
+              child: FutureBuilder(
+                  future: _retrieveRole(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data == ROLES.parent) {
+                      return InkWell(
+                        onTap: () => mealNotifier.selectDate(context),
+                        overlayColor: WidgetStatePropertyAll(AppColors.primary),
+                        borderRadius: BorderRadius.circular(10),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              DateTimePickerWidget(),
+                              SFIcon(SFIcons.sf_calendar, fontSize: 36),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            DateTimePickerWidget(),
+                            SFIcon(SFIcons.sf_calendar, fontSize: 36),
+                          ],
+                        ),
+                      );
+                    }
+                  }),
             ),
             if (mealNotifier.meal == null)
               Column(
