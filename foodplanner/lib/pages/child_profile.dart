@@ -398,11 +398,12 @@ class ChildProfileState extends State<ChildProfile>
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          SettingsHeader(
-            icon: SFIcons.sf_figure_and_child_holdinghands,
+          SettingsWidget(
+            leftIcon: SFIcons.sf_figure_and_child_holdinghands,
             title: '${widget.child.firstName}s',
-            subtitle:
+            subTitle:
                 'Her kan du redigere ${widget.child.firstName}s profil og klasse. ',
+            type: SettingsType.header,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
