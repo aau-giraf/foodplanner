@@ -9,6 +9,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/components/Custom_List_Item.dart';
 
 class TeacherLandingPage extends StatefulWidget {
   const TeacherLandingPage({super.key});
@@ -140,7 +141,6 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
           child: const Text(
             'Velkommen',
             style: AppTextStyles.headline4,
-            textAlign: TextAlign.center,
           ),
         ),
         backgroundColor: Colors.white,
@@ -182,8 +182,77 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 20),
             Expanded(
+              child: SingleChildScrollView(
+                child: Card(
+                  elevation: 2,
+                  color: AppColors.background,
+                  surfaceTintColor: AppColors.background,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(
+                          'Klasser',
+                          style: AppTextStyles.headline4,
+                        ),
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: schoolClasses.length,
+                        itemBuilder: (context, index) {
+                          final schoolClass = schoolClasses[index];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomListItem(
+                                leftIcon: SFIcons.sf_figure_2,
+                                title: schoolClass['name'] ?? 'Unknown',
+                                isHighlighted: false,
+                                onTap: () =>
+                                    toggleClassStudents(schoolClass['id']!),
+                              ),
+                              if (selectedClassIds.contains(schoolClass['id']))
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  child: Column(
+                                    children: students
+                                        .where((student) =>
+                                            student['classId'] ==
+                                            schoolClass['id'])
+                                        .map((student) {
+                                      return CustomListItem(
+                                        leftIcon: SFIcons.sf_figure_child,
+                                        key: ValueKey(student['id']),
+                                        title: student['name'] ?? 'Unknown',
+                                        isHighlighted: highlightedStudentIds
+                                            .contains(student['id']),
+                                        onTap: () =>
+                                            navigateToStudentDetails(student),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: NavBar(),
+    );
+  }
+}
+
+/*
+Expanded(
               child: ListView.builder(
                 itemCount: schoolClasses.length,
                 itemBuilder: (context, index) {
@@ -229,10 +298,5 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
                 },
               ),
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: NavBar(),
-    );
-  }
-}
+
+          */
