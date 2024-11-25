@@ -68,15 +68,16 @@ void initState() {
 
   Future<void> fetchMessages() async {
   try {
-    // Fetch the raw data from the API
-    final data = await FeedbackChatPage.feedbackService.fetchFeedbackMessages(1, AuthProvider());
+    // Fetch the data from the FeedbackService
+    final List<Map<String, dynamic>> data =
+        await FeedbackChatPage.feedbackService.fetchFeedbackMessages(1, AuthProvider());
 
     // Assume AuthProvider has a method to get the current user's ID
     //final currentUserId = await AuthProvider().getUserId();
 
-    // Parse the JSON list into a list of Message objects
+    // Map the JSON response to the list of Message objects
     setState(() {
-      _messages = (data as List)
+      _messages = data
           .map((messageJson) => Message.fromJson(messageJson, 1))
           .toList();
     });
