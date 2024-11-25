@@ -34,6 +34,7 @@ class PackedIngredient {
       'id': id,
       'meal_id': mealId,
       'ingredient_id': ingredient.id,
+      'order_number': orderNumber,
     };
   }
 }

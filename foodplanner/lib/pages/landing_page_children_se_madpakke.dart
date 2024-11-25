@@ -99,6 +99,7 @@ class _ChildLandingPageSeMadpakkeState
             for (int i = 0; i < packedIngredients.length; i++) {
               packedIngredients[i].orderNumber = i;
             }
+            print(packedIngredients.toString());
             updatePackedIngredientOrder(packedIngredients);
           });
         },
