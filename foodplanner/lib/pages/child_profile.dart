@@ -56,6 +56,7 @@ class ChildProfileState extends State<ChildProfile>
   int? selectedParentId;
   int? initialParentId;
   User? selectedParent;
+  
 
   void onFieldChanged() {
     setState(() {
@@ -135,22 +136,16 @@ class ChildProfileState extends State<ChildProfile>
                   child: isEditingFirstName
                       ? Padding(
                           padding: const EdgeInsets.only(left: 10.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: CustomTextField(
-                              controller: firstNameController,
-                              errorText: '',
-                              hintText: 'Fornavn',
-                              obscureText: false,
-                              color: Colors.transparent,
-                              onChanged: (value) {
-                                updatedFirstName = value;
-                                onFieldChanged();
-                              },
-                            ),
+                          child: CustomTextField(
+                            controller: firstNameController,
+                            errorText: '',
+                            hintText: 'Fornavn',
+                            obscureText: false,
+                            color: Colors.white,
+                            onChanged: (value) {
+                              updatedLastName = value;
+                              onFieldChanged();
+                            },
                           ),
                         )
                       : Row(
@@ -170,9 +165,14 @@ class ChildProfileState extends State<ChildProfile>
                     fontSize: 28,
                   ),
                   onPressed: () {
+                    if (isEditingFirstName) {
+                      setState(() {
+                        isEditingFirstName = false;
+                      });
+                    } else {
                     setState(() {
                       isEditingFirstName = true;
-                    });
+                    });};
                   },
                 ),
               ],
@@ -220,9 +220,14 @@ class ChildProfileState extends State<ChildProfile>
                     fontSize: 28,
                   ),
                   onPressed: () {
+                    if (isEditingLastName) {
+                      setState(() {
+                        isEditingLastName = false;
+                      });
+                    } else {
                     setState(() {
                       isEditingLastName = true;
-                    });
+                    });};
                   },
                 ),
               ],
@@ -447,9 +452,9 @@ class ChildProfileState extends State<ChildProfile>
                     onTab: () => {
                       showIPhonePopupBox(
                         context: context,
-                        title: 'Slet klasse',
+                        title: 'Slet barn',
                         message:
-                            'Er du sikker på, at du vil slette denne klasse?',
+                            'Er du sikker på, at du vil slette dette barn?',
                         confirmText: 'Ja',
                         cancelText: 'Nej',
                         onConfirm: () {
