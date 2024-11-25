@@ -8,9 +8,8 @@ class FeedbackService{
 
   FeedbackService({required this.apiUrl});
 
-  Future<Map<String, String>> fetchFeedbackMessages(int chatThreadId, AuthProvider authProvider) async {
+  Future<List<Message>> fetchFeedbackMessages(int chatThreadId, AuthProvider authProvider) async {
     final token = await authProvider.retrieveToken();
-
 
     try {
       final response = await http.get(Uri.parse('$apiUrl/api/FeedbackChat/GetMessages/${chatThreadId}'), 
@@ -29,8 +28,8 @@ class FeedbackService{
         throw Exception('Failed to load feedback message data');
       }
     } catch (e) {
-      print('proble with feedback messages: $e');
-      return {};
+      print('problem with feedback messages: $e');
+      throw Exception('Failed to load feedback message data');
     }
   }
 }

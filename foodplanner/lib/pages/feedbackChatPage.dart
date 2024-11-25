@@ -9,14 +9,36 @@ import 'package:go_router/go_router.dart'; // Import GoRouter
 import 'package:foodplanner/services/fetch_feedbackMessages.dart'; 
 
 class Message {
-  String text;
-  final bool isSent;
-  final DateTime date;
+  int MessageID;
+  String Content;
+  String firstName;
+  DateTime Date;
+  int UserId;
+  int ChatThreadId;
+  bool Archived;
+  bool isSent;
   bool showDate;
-  final String sender;
+  
 
-  Message({required this.text, required this.isSent, required this.date, this.showDate = false, required this.sender});
+  Message({required this.Content, required this.isSent, required this.Date, required this.firstName, this.showDate = false, this.MessageID = 0, this.UserId = 0, this.ChatThreadId = 0, this.Archived = false});
+
+
+  factory Message.fromJson(Map<String, dynamic> json, int currentUserId) {
+    return Message(
+      MessageID: json['messageID'],
+      Content: json['content'] ?? '',
+      firstName: json['firstName'] ?? '',
+      Date: DateTime.parse(json['date']),
+      UserId: json['userId'],
+      ChatThreadId: json['chatThreadId'],
+      Archived: json['archived'] ?? false,
+      // Check if the message was sent by the current user
+      isSent: json['userId'] == currentUserId,
+    );
+  }
 }
+
+
 
 class FeedbackChatPage extends StatefulWidget {
   const FeedbackChatPage({Key? key}) : super(key: key);
@@ -24,32 +46,57 @@ class FeedbackChatPage extends StatefulWidget {
   
   @override
   _FeedbackChatPageState createState() => _FeedbackChatPageState();
+
 }
+
 
 class _FeedbackChatPageState extends State<FeedbackChatPage> {
   final TextEditingController _controller = TextEditingController();
-  final List<Message> _messages = [
-    Message(text: "Hej, hvordan var dagens måltid?", isSent: false, date: DateTime.now().subtract(Duration(days: 1)), sender: "Teacher"),
-    Message(text: "Det var fantastisk, tak!", isSent: true, date: DateTime.now().subtract(Duration(days: 1)), sender: "Parent"),
-    Message(text: "Har du nogen feedback til forbedring?", isSent: false, date: DateTime.now().subtract(Duration(days: 1)), sender: "Teacher"),
-    Message(text: "Måske lidt mere variation i grøntsagerne.", isSent: true, date: DateTime.now().subtract(Duration(days: 1)), sender: "Parent"),
-    Message(text: "Selvfølgelig, vi vil tage det i betragtning.", isSent: false, date: DateTime.now().subtract(Duration(days: 1)), sender: "Teacher"),
-    Message(text: "Tak!", isSent: true, date: DateTime.now().subtract(Duration(days: 1)), sender: "Parent"),
+  List<Message> _messages = [
+    Message(Content: "Hej, hvordan var dagens måltid?", isSent: false, Date: DateTime.now().subtract(Duration(days: 1)), firstName: "Teacher"),
   ];
 
   int? _editingMessageIndex;
 
+@override
+void initState() {
+  super.initState();
+  fetchMessages();
+}
+  
+
+
+  Future<void> fetchMessages() async {
+  try {
+    // Fetch the raw data from the API
+    final data = await FeedbackChatPage.feedbackService.fetchFeedbackMessages(1, AuthProvider());
+
+    // Assume AuthProvider has a method to get the current user's ID
+    //final currentUserId = await AuthProvider().getUserId();
+
+    // Parse the JSON list into a list of Message objects
+    setState(() {
+      _messages = (data as List)
+          .map((messageJson) => Message.fromJson(messageJson, 1))
+          .toList();
+    });
+  } catch (e) {
+    print('Error fetching messages: $e');
+  }
+}
+
+
   Future<void> _sendMessage() async {
-    final message = await FeedbackChatPage.feedbackService
-          .fetchFeedbackMessages(1, AuthProvider());
-    print(message);
+    fetchMessages();
+    // final data = await FeedbackChatPage.feedbackService
+    //       .fetchFeedbackMessages(1, AuthProvider());
     if (_controller.text.isNotEmpty) {
       setState(() {
         if (_editingMessageIndex != null) {
-          _messages[_editingMessageIndex!].text = _controller.text;
+          _messages[_editingMessageIndex!].Content = _controller.text;
           _editingMessageIndex = null;
         } else {
-          _messages.add(Message(text: _controller.text, isSent: true, date: DateTime.now(), sender: "Parent"));
+          _messages.add(Message(Content: _controller.text, isSent: true, Date: DateTime.now(), firstName: "Parent"));
         }
         _controller.clear();
       });
@@ -58,13 +105,13 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
 
   Future<void> _deleteMessage(int index) async {
     setState(() {
-      _messages[index].text = "Denne besked er blevet slettet.";
+      _messages[index].Content = "Denne besked er blevet slettet.";
     });
   }
 
   void _editMessage(int index) {
     setState(() {
-      _controller.text = _messages[index].text;
+      _controller.text = _messages[index].Content;
       _editingMessageIndex = index;
     });
   }
@@ -106,7 +153,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
                     icon: Icon(Icons.delete),
                     onPressed: () {
                       Navigator.of(context).pop();
-                      _showDeleteConfirmationDialog(index);
+                      //_showDeleteConfirmationDialog(index);
                     },
                   ),
                   Text("Slet"),
@@ -190,7 +237,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
               itemBuilder: (context, index) {
                 final message = _messages[index];
                 final previousMessage = index > 0 ? _messages[index - 1] : null;
-                final isNewDate = previousMessage == null || message.date.day != previousMessage.date.day;
+                final isNewDate = previousMessage == null || message.Date.day != previousMessage.Date.day;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -204,7 +251,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
-                                DateFormat('dd MMMM yyyy').format(message.date),
+                                DateFormat('dd MMMM yyyy').format(message.Date),
                                 style: TextStyle(fontSize: 12, color: Colors.grey),
                               ),
                             ),
@@ -232,7 +279,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 5),
                                 child: Text(
-                                  message.sender,
+                                  message.firstName,
                                   style: TextStyle(fontSize: 12, color: Colors.grey),
                                 ),
                               ),
@@ -240,7 +287,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 5),
                                 child: Text(
-                                  DateFormat('dd MMMM yyyy, HH:mm').format(message.date),
+                                  DateFormat('dd MMMM yyyy, HH:mm').format(message.Date),
                                   style: TextStyle(fontSize: 10, color: Colors.grey),
                                 ),
                               ),
@@ -252,7 +299,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
-                                message.text,
+                                message.Content,
                                 style: TextStyle(color: message.isSent ? Colors.white : Colors.black),
                               ),
                             ),
