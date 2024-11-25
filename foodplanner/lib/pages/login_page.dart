@@ -84,7 +84,7 @@ class LoginPageState extends State<LoginPage> {
       } else if (e is NetworkException) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Der opstod et problem ved login: ${e.message}'),
+            content: Text('Forkert brugernavn eller adgangskode'),
             backgroundColor: Colors.red,
             duration: Duration(seconds: 5),
           ),
