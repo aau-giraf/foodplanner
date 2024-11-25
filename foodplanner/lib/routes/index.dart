@@ -71,6 +71,10 @@ final router = GoRouter(
       path: '/home',
       builder: (context, state) => HomePage(),
     ),
+    /* GoRoute(
+      path: '/Profile',
+      builder: (context, state) => ParentProfile(),
+    ), */
 
     //no need for wildcard handling as flutter already does it
 
@@ -158,7 +162,7 @@ final router = GoRouter(
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const ProfilePage(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const ParentProfile();
             } else {
               return const UnauthorizedPage();
             }
