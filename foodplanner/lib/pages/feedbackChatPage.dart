@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/footer.dart'; // Import the FooterBar widget
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/services/api_config.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart'; // Import GoRouter
+import 'package:foodplanner/services/fetch_feedbackMessages.dart'; 
 
 class Message {
   String text;
@@ -17,7 +20,8 @@ class Message {
 
 class FeedbackChatPage extends StatefulWidget {
   const FeedbackChatPage({Key? key}) : super(key: key);
-
+  static final FeedbackService feedbackService = FeedbackService(apiUrl: ApiConfig.baseUrl);
+  
   @override
   _FeedbackChatPageState createState() => _FeedbackChatPageState();
 }
@@ -36,6 +40,9 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
   int? _editingMessageIndex;
 
   Future<void> _sendMessage() async {
+    final message = await FeedbackChatPage.feedbackService
+          .fetchFeedbackMessages(1, AuthProvider());
+    print(message);
     if (_controller.text.isNotEmpty) {
       setState(() {
         if (_editingMessageIndex != null) {
