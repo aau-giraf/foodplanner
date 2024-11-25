@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/addMealButton.dart';
+import 'package:foodplanner/components/add_meal_button.dart';
 import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/components/dateTimePicker.dart';
-import 'package:foodplanner/components/mealBox.dart';
-import 'package:foodplanner/components/mealBoxContent.dart';
-import 'package:foodplanner/components/mealBoxEmpty.dart';
-import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/feedbackChatPage.dart';
 import 'package:foodplanner/components/footer.dart'; // Import the footer widget
+import 'package:foodplanner/components/meal_box.dart';
+import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart'; // Import the reusable widget
-
 
 class ParentLandingPageMadpakke extends StatelessWidget {
   const ParentLandingPageMadpakke({super.key});
@@ -31,7 +25,7 @@ class ParentLandingPageMadpakke extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const Text(
-                  // TODO read user title and display based on who is logged in 
+                  // TODO read user title and display based on who is logged in
                   'Velkommen' + ' ' + 'Forældre',
                   style: TextStyle(fontSize: 16),
                 ),
@@ -42,16 +36,17 @@ class ParentLandingPageMadpakke extends StatelessWidget {
                 mealNotifier.isMealEmpty
                     ? AddMealButton(size: size)
                     : CustomButton(
-                  onTab: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FeedbackChatPage()),
-                    );
-                  }, 
-                  text: 'Se Feedback',
-                  //fontSize: 16,
-                  customWidth: size.width * 0.6,
-                ),
+                        onTab: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FeedbackChatPage()),
+                          );
+                        },
+                        text: 'Se Feedback',
+                        //fontSize: 16,
+                        customWidth: size.width * 0.6,
+                      ),
               ],
             ),
           ),
