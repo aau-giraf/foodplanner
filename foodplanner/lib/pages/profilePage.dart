@@ -36,6 +36,13 @@ class ParentProfileState extends State<ParentProfile>
       role: 'Unknown',
       archived: false);
 
+  Child child = Child(
+      childId: 0,
+      firstName: 'Unknown',
+      lastName: 'Unknown',
+      parentId: 0,
+      classId: 0);
+
   bool isEditingFirstName = false;
   bool isEditingLastName = false;
   bool isEditingEmail = false;
@@ -52,7 +59,6 @@ class ParentProfileState extends State<ParentProfile>
   String updatedEmail = '';
   String updatedPassword = '';
   String updatedPincode = '';
-  Child? child;
 
   @override
   void initState() {
@@ -166,6 +172,7 @@ class ParentProfileState extends State<ParentProfile>
                               controller: firstNameController,
                               errorText: '',
                               hintText: 'Fornavn',
+                              type: TextFieldType.smallTextField,
                               obscureText: false,
                               color: Colors.transparent,
                               onChanged: (value) {
@@ -281,7 +288,7 @@ class ParentProfileState extends State<ParentProfile>
                             ),
                           ),
                         )
-                      : Flexible(
+                      : Expanded(
                           child: Text(
                             parent.email,
                             style: AppTextStyles.bigText,
@@ -335,12 +342,14 @@ class ParentProfileState extends State<ParentProfile>
                             ),
                           ),
                         )
-                      : Flexible(
-                          child: Text(
-                            '********',
-                            style: AppTextStyles.bigText,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              '********',
+                              style: AppTextStyles.bigText,
+                            ),
+                          ],
                         ),
                 ),
                 IconButton(
@@ -390,12 +399,14 @@ class ParentProfileState extends State<ParentProfile>
                             ),
                           ),
                         )
-                      : Flexible(
-                          child: Text(
-                            '****', // Ændres til pincode
-                            style: AppTextStyles.bigText,
-                          ),
-                        ),
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                              Text(
+                                '****',
+                                style: AppTextStyles.bigText,
+                              ),
+                            ]),
                 ),
                 IconButton(
                   icon: SFIcon(
@@ -418,7 +429,7 @@ class ParentProfileState extends State<ParentProfile>
         {
           'title': 'Barn',
           'isEditable': false,
-          'cta': Text('${child!.firstName} ${child!.lastName}'),
+          'cta': Text('${child.firstName} ${child.lastName}'),
           'divider': false,
         },
       ];
@@ -443,7 +454,7 @@ class ParentProfileState extends State<ParentProfile>
             subtitle: 'Her kan du redigere dine oplysninger.',
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Column(
               children: [
                 Card(
@@ -462,8 +473,10 @@ class ParentProfileState extends State<ParentProfile>
                               isEditable: item['isEditable'],
                               cta: item['cta'],
                               type: SettingsType.inlineItems,
+                              divider: item['divider'] ?? true,
+                              showSpacer: item['showSpacer'] ?? true,
                             );
-                          }).toList(),
+                          }),
                         ],
                       ),
                     ),
