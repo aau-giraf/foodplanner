@@ -446,12 +446,15 @@ class ChildProfileState extends State<ChildProfile>
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          SettingsWidget(
-            leftIcon: SFIcons.sf_figure_and_child_holdinghands,
-            title: '${widget.child.firstName}s',
-            subTitle:
-                'Her kan du redigere ${widget.child.firstName}s profil og klasse. ',
-            type: SettingsType.header,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: SettingsWidget(
+              leftIcon: SFIcons.sf_figure_and_child_holdinghands,
+              title: '${widget.child.firstName}s',
+              subTitle:
+                  'Her kan du redigere ${widget.child.firstName}s profil og klasse. ',
+              type: SettingsType.header,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
