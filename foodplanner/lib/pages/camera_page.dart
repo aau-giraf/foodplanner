@@ -3,12 +3,13 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/icon_button.dart';
 import 'package:http/http.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-
+import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/config/colors.dart';
 
 /// This class is used to set up the in-app camera, to allow users to use their device's cameras.
@@ -34,7 +35,10 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   List<CameraDescription> cameras = []; // List for containing the available cameras of the device.
   CameraController? cameraController; // Controller for managing the camera.
   ImagePicker? imagePicker; // ImagePicker instance for selecting images.
-  MultipartFile? image; // The selected image's file.
+  Uint8List? imageBytes; // The selected image's file.
+  bool imagePicked = false;
+  bool imageCropped = false;
+  bool imageAccepted = false;
 
   /// A method for checking whether the app becomes inactive.
   @override
@@ -62,6 +66,18 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
     }
   }
 
+  /// The method which sets up the camera controller for using the device's cameras.
+  Future<void> _setupCameraController() async {
+    cameras = await availableCameras(); // Checks if the device has any available cameras
+    if (cameras.isNotEmpty) { // Checks that the camera list contains a camera.
+      setState(() { // Updates the state to uses the new camera controller.
+        cameraController = CameraController(cameras.first, ResolutionPreset.high); // Creates a camera controller using the front camera and sets the resolution as 720p.
+      });
+      await cameraController?.initialize(); // Waits until the camera controller is initialized.
+      if (mounted) setState(() {}); // Checks if the state is currently a part of a tree. If yes, it updates the state.
+    }
+  }
+
   /// The method which contains all the UI widgets, and forms them into the front end.
   @override
   Widget build(BuildContext context) {
@@ -71,120 +87,116 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
 
     // Scaffold is a layout structure from the flutter library for the UI.
     return Scaffold(
-      body: image == null
-          ? SafeArea( // Ensures content is within the safe areas of the device.
-              child: Stack( // Creates a stack layout widget.
-                children: [
-                  Positioned.fill(
-                    child: AspectRatio( // Defining the aspect ratio of the widget.
-                      aspectRatio: cameraController!.value.aspectRatio, // Sets the aspect ratio to match the camera controller.
-                      child: CameraPreview(cameraController!), // Displays the camera preview.
+      body: imageBytes == null
+            ? SafeArea( // Ensures content is within the safe areas of the device.
+                child: Stack( // Creates a stack layout widget.
+                  children: [
+                    Positioned.fill(
+                      child: AspectRatio( // Defining the aspect ratio of the widget.
+                        aspectRatio: cameraController!.value.aspectRatio, // Sets the aspect ratio to match the camera controller.
+                        child: CameraPreview(cameraController!), // Displays the camera preview.
+                      ),
                     ),
-                  ),
-                  // Positioned.fill(
-                  //   child: CustomPaint(
-                  //     painter: CustomSquareCameraOverlay(),
-                  //   ),
-                  // ),
-                  Align( // Allows its widgets to be alligned.
-                    alignment: Alignment.bottomCenter, // Alligns the widgets to the bottom center of the screen.
-                    child: _controlPanel(context), // The control panel which contains the buttons.
-                  ),
-                ],
-              ),
-            )
-          : _acceptImage(context),  
+                    // Positioned.fill(
+                    //   child: CustomPaint(
+                    //     painter: CustomSquareCameraOverlay(),
+                    //   ),
+                    // ),
+                    Align( // Allows its widgets to be alligned.
+                      alignment: Alignment.bottomCenter, // Alligns the widgets to the bottom center of the screen.
+                      child: _buttonPanel(context), // The control panel which contains the buttons.
+                    ),
+                  ],
+                ),
+              )
+            : imagePicked
+              ? CircularProgressIndicator()
+              : _displayImage(context),
     );
   }
 
   /// Widget to display the selected image.
-  Widget _acceptImage(BuildContext context) {
-    return FutureBuilder<Uint8List>(
-      future: image!.finalize().toBytes(), // Fetch the image bytes asynchronously.
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (snapshot.hasData) {
-        final multipartFile = http.MultipartFile.fromBytes(
-          'imageFile', // Field name for the file in the request
-          snapshot.data!, // The actual Uint8List data
-          filename: 'image.png', // Optional: specify a filename if required
-          contentType: MediaType('image', 'png'), // Optional: specify the content type
-        );
-        print('Media type: ${multipartFile.contentType}');
+  Widget _displayImage(BuildContext context) {
+    final size = MediaQuery.sizeOf(context).width > MediaQuery.sizeOf(context).height
+        ? MediaQuery.sizeOf(context).height
+        : MediaQuery.sizeOf(context).width;
 
-        // Display the image and use the MultipartFile as needed
-        final displayImage = Image.memory(snapshot.data!); // Display the Uint8List as an image.
-
-
-          return Container(
-            child: Center( // Alligns the widget to the center.
-              child: Column( // Vertical layout for the body.
-                children: [
-                  Spacer(), // Creates an empty space.
-                  Container( // Container used for determining the size of the display image.
-                    width: MediaQuery.sizeOf(context).width > MediaQuery.sizeOf(context).height // Checks if the width is larger than the height of the device. This is done to create the smallest square for the display.
-                        ? MediaQuery.sizeOf(context).height // If so, sets the width as the height of the device.
-                        : MediaQuery.sizeOf(context).width, // If not, sets the width as the width of the device.
-                    height: MediaQuery.sizeOf(context).width > MediaQuery.sizeOf(context).height // Checks if the height is larger than the width of the device. This is done to create the smallest square for the display.
-                        ? MediaQuery.sizeOf(context).height // If so, sets the height as the width of the device.
-                        : MediaQuery.sizeOf(context).width, // If not, sets the height as the height of the device.
-                    decoration: BoxDecoration( // Used for changing the appearance of the display image.
-                      borderRadius: BorderRadius.circular(20), // Determines the rounded corner of the rectangle should have a radius of 20.
-                    ),
-                    child: displayImage,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: CustomButton(
-                          onTab: () {
-                            setState(() {
-                              widget.onImagePicked(multipartFile); // Use the picked image.
-                            });
-                          },
-                          text: 'Anvend billede',
-                        ),
-                      ),
-                      Expanded(
-                        child: CustomButton(
-                          onTab: () {
-                            setState(() {
-                              image = null;
-                              _setupCameraController();
-                            });
-                          },
-                          text: 'Fortryd',
-                          backgroundColor: AppColors.secondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Spacer(),
-                ],
+    return Container(
+      child: Center(
+        child: Column(
+          children: [
+            Spacer(),
+            Container(
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
               ),
+              child: imageBytes != null ? Image.memory(imageBytes!) : Container(),
             ),
-          );
-        } else {
-          return Center(child: Text('No image available'));
-        }
-      },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: CustomElevatedButton(
+                    onTab: () async {
+                      setState(() {
+                        imageAccepted = true; // Show loading state
+                      });
+
+                      // Call onImagePicked after the image is cropped
+                      widget.onImagePicked(
+                        http.MultipartFile.fromBytes(
+                          'imageFile',
+                          imageBytes!,
+                          filename: 'image.png',
+                          contentType: MediaType('image', 'png'),
+                        ),
+                      );
+                    },
+                    widget: imageAccepted && !imageCropped
+                      ? CircularProgressIndicator()
+                      : Text(
+                          'Anvend billede',
+                          style: AppTextStyles.buttonTextMedium,
+                        ),
+                    blocked: imageAccepted
+                  ),
+                ),
+                Expanded(
+                  child: CustomButton(
+                    onTab: () {
+                      setState(() {
+                        imageBytes = null;
+                        imagePicked = false;
+                        imageCropped = false;
+                        imageAccepted = false;
+                        _setupCameraController();
+                      });
+                    },
+                    text: 'Fortryd',
+                    backgroundColor: AppColors.secondary,
+                  ),
+                ),
+              ],
+            ),
+            Spacer(),
+          ],
+        ),
+      ),
     );
   }
 
   /// A method that contains the methods for creating the 2 buttons for the camera.
-  Widget _controlPanel(BuildContext context) {
+  Widget _buttonPanel(BuildContext context) {
     return Container(
       height: 120, // Fixed height for the control panel.
       padding: const EdgeInsets.all(15), // Insets the buttens 15 pixels from the edge of the screen.
       child: Row( // Horizontal layout for the control buttons.
         mainAxisAlignment: MainAxisAlignment.start, // Aligns buttons to the start of the row.
         children: <Widget>[
-          Flexible(child: _galleryControlWidget(context)), // Button to access the image gallery.
-          Flexible(child: _cameraControlWidget(context)), // Button to take a picture with the camera.
+          Flexible(child: _pickFromGalleryButton(context)), // Button to access the image gallery.
+          Flexible(child: _takePictureButton(context)), // Button to take a picture with the camera.
           Spacer(), // Creates some space between the former and next widgets.
         ],
       ),
@@ -192,7 +204,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   }
 
   /// The method which creates the button for opening the gallery through the camera.
-  Widget _galleryControlWidget(context) {
+  Widget _pickFromGalleryButton(context) {
     return Align( // Allows the widget to be alligned.
       alignment: Alignment.centerLeft, // Aligns button to the center left.
       child: Row( // Horizontal layout for the buttons.
@@ -201,9 +213,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
         children: <Widget>[
           FloatingActionButton( // Button for opening the gallery.
             backgroundColor: AppColors.secondary, // Sets background color for the button.
-            onPressed: () { // Callback for when the button is pressed.
-              _pickImageFromGallery(); // Calls function to pick an image from the gallery.
-            },
+            onPressed: () => _pickImageFromGallery(),
             shape: RoundedRectangleBorder( // Sets the shape of the button to be a rounded rectangle.
               borderRadius: BorderRadius.circular(MediaQuery.sizeOf(context).height), // Determines how rounded the corner of the rectangle should be.
             ),
@@ -218,7 +228,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   }
 
   /// The method which creates the button for taking a picture.
-  Widget _cameraControlWidget(BuildContext context) {
+  Widget _takePictureButton(BuildContext context) {
     return Align( // Centers the button within the expanded widget.
       alignment: Alignment.center, // Aligns the button to the center.
       child: SingleChildScrollView( // Creates a box which is scrollable.
@@ -228,23 +238,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
           children: <Widget>[
             FloatingActionButton( // Represents the button to take a picture.
               backgroundColor: AppColors.primary, // Sets the background color for the button.
-              onPressed: () async { // Asynchronous callback when button is pressed.
-                if (cameraController == null || !cameraController!.value.isInitialized) { // Checks if the camera controller is null or not initialized.
-                  return; // Exits the method.
-                }
-
-                try { // Tries to run the following code, and catches any errors that occurs.
-                  final XFile picture = await cameraController!.takePicture(); // Makes the device take a picture.
-                  image = MultipartFile.fromBytes(
-                    'imageFile',
-                    await picture.readAsBytes()
-                  ); // Reads the picture as bytes.
-                  await cropImageToSquare(); // Crops the image into a square.
-                  setState(() {}); // Updates the state of the page.
-                } catch (e) { // Catches any errors.
-                  print("Error taking picture: $e");
-                }
-              },
+              onPressed: () => _takePicture(),
               shape: RoundedRectangleBorder( // Sets the border to be a rounded rectangle.
                 borderRadius: BorderRadius.circular(MediaQuery.sizeOf(context).height), // Determines how rounded the corner of the rectangle should be.
               ),
@@ -261,8 +255,8 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   }
 
   // A method for cropping the inputted image's size.
-  Future<void> cropImageToSquare() async {
-    final img.Image? decodedImage = img.decodeImage(await this.image!.finalize().toBytes());; // Decodes the image from the MultipartFile as bytes.
+  Future<void> _cropImageToSquare() async {
+    final img.Image? decodedImage = img.decodeImage(imageBytes!);; // Decodes the image from the MultipartFile as bytes.
 
     if (decodedImage != null) { // Checks that the decoded image is not null.
       final width = decodedImage.width; // Sets the width of the decoded image.
@@ -275,48 +269,42 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
         squareSize, // Sets the width of the cropped image as the square size.
         squareSize, // Sets the height of the cropped image as the square size.
       );
-      final croppedBytes = img.encodeJpg(croppedImage); // Encoded the cropped image into JPEG format.
 
       setState(() { // Updates the state.
-        this.image = MultipartFile.fromBytes(
-          'imageFile',
-          croppedBytes,
-          filename: image?.filename,
-          contentType: MediaType('image', 'jpeg'),
-        );
+        this.imageBytes = croppedImage.getBytes();
+        imageCropped = true;
       });
+    }
+  }
+
+  Future<void> _takePicture() async {
+    if (cameraController == null || !cameraController!.value.isInitialized) { // Checks if the camera controller is null or not initialized.
+      return; // Exits the method.
+    }
+
+    try { // Tries to run the following code, and catches any errors that occurs.
+      final XFile picture = await cameraController!.takePicture(); // Makes the device take a picture.
+      setState(() async {
+        imageBytes = await picture.readAsBytes(); // Reads the picture as bytes.
+        imagePicked = true;
+      });
+      await _cropImageToSquare(); // Crops the image into a square.
+    } catch (e) { // Catches any errors.
+      print("Error taking picture: $e");
     }
   }
 
   /// The method which creates the button for opening the gallery through the camera.
   Future<void> _pickImageFromGallery() async {
-  imagePicker ??= ImagePicker();
+    imagePicker ??= ImagePicker();
 
-  final returnedImage = await imagePicker!.pickImage(source: ImageSource.gallery);
-  if (returnedImage != null) {
-    final bytes = await returnedImage.readAsBytes();
-    image = http.MultipartFile.fromBytes(
-      'imageFile',
-      bytes,
-      filename: returnedImage.name,
-      contentType: MediaType('image', 'jpeg'),
-    );
-    await cropImageToSquare();
-    setState(() {});
-  }
-}
-
-  
-
-  /// The method which sets up the camera controller for using the device's cameras.
-  Future<void> _setupCameraController() async {
-    cameras = await availableCameras(); // Checks if the device has any available cameras
-    if (cameras.isNotEmpty) { // Checks that the camera list contains a camera.
-      setState(() { // Updates the state to uses the new camera controller.
-        cameraController = CameraController(cameras.first, ResolutionPreset.high); // Creates a camera controller using the front camera and sets the resolution as 720p.
+    final returnedImage = await imagePicker!.pickImage(source: ImageSource.gallery);
+    if (returnedImage != null) {
+      setState(() async {
+        imageBytes = await returnedImage.readAsBytes();
+        imagePicked = true;
       });
-      await cameraController?.initialize(); // Waits until the camera controller is initialized.
-      if (mounted) setState(() {}); // Checks if the state is currently a part of a tree. If yes, it updates the state.
+      await _cropImageToSquare();
     }
   }
 }

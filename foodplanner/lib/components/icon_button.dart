@@ -47,6 +47,7 @@ class CustomElevatedButton extends StatelessWidget {
   final double width; // Width of the button
   final Color backgroundColor; // Background color of the button
   final Widget widget; // Widget to display inside the button (default is a Text widget)
+  final bool blocked;
 
   // Constructor for the CustomElevatedButton with required parameters and default values
   const CustomElevatedButton({
@@ -57,6 +58,7 @@ class CustomElevatedButton extends StatelessWidget {
     this.width = 100, // Deault width of the button 
     this.backgroundColor = AppColors.primary, // Default background color
     this.widget = const Text('Button', style: AppTextStyles.buttonText,), // Default widget
+    this.blocked = false,
   });
 
   @override
@@ -76,7 +78,7 @@ class CustomElevatedButton extends StatelessWidget {
       ),
       child: ElevatedButton(
         child: widget, // The child widget (e.g., text) inside the button
-        onPressed: onTab, // Function to call on button press
+        onPressed: blocked ? onTab : () {}, // Function to call on button press
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor, // Set background color of the 
           minimumSize: Size(width, height), // Set minimum size of the button
