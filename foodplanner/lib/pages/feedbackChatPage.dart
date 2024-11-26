@@ -70,15 +70,15 @@ void initState() {
   try {
     // Fetch the data from the FeedbackService
     final List<Map<String, dynamic>> data =
-        await FeedbackChatPage.feedbackService.fetchFeedbackMessages(1, AuthProvider());
+        await FeedbackChatPage.feedbackService.fetchGetFeedbackMessages(2, AuthProvider());
 
-    // Assume AuthProvider has a method to get the current user's ID
+    // Assume AuthProvider has a method to get the current user's ID OR we get it through fetch
     //final currentUserId = await AuthProvider().getUserId();
 
     // Map the JSON response to the list of Message objects
     setState(() {
       _messages = data
-          .map((messageJson) => Message.fromJson(messageJson, 1))
+          .map((messageJson) => Message.fromJson(messageJson, 2))
           .toList();
     });
   } catch (e) {
@@ -87,22 +87,53 @@ void initState() {
 }
 
 
+
+
   Future<void> _sendMessage() async {
-    fetchMessages();
-    // final data = await FeedbackChatPage.feedbackService
-    //       .fetchFeedbackMessages(1, AuthProvider());
-    if (_controller.text.isNotEmpty) {
+  fetchMessages();
+  if (_controller.text.isNotEmpty) {
+    final String messageContent = _controller.text;
+
+    setState(() {
+      if (_editingMessageIndex != null) {
+        // Edit the message locally
+        _messages[_editingMessageIndex!].Content = messageContent;
+        _editingMessageIndex = null;
+      } else {
+        // Optimistically add the new message locally
+        _messages.add(
+          Message(
+            Content: messageContent,
+            isSent: true,
+            Date: DateTime.now(),
+            firstName: "Parent", // Replace with the actual user first name if available
+          ),
+        );
+      }
+      _controller.clear(); // Clear the input field
+    });
+
+    try {
+      // Send the message to the backend
+      await FeedbackChatPage.feedbackService.fetchSendFeedbackMessage(
+        userId: 2, // Replace with actual userId
+        chatThreadId: 1, // Replace with the actual chatThreadId
+        content: messageContent,
+        authProvider: AuthProvider(),
+      );
+
+      // Optionally refresh messages from the server to reflect the updated state
+      await fetchMessages();
+    } catch (e) {
+      print('Error sending message: $e');
+      // Handle error by optionally showing a message to the user or retrying
       setState(() {
-        if (_editingMessageIndex != null) {
-          _messages[_editingMessageIndex!].Content = _controller.text;
-          _editingMessageIndex = null;
-        } else {
-          _messages.add(Message(Content: _controller.text, isSent: true, Date: DateTime.now(), firstName: "Parent"));
-        }
-        _controller.clear();
+        _messages.removeWhere((msg) => msg.Content == messageContent && msg.isSent);
       });
     }
   }
+}
+
 
   Future<void> _deleteMessage(int index) async {
     setState(() {
