@@ -146,105 +146,125 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
         backgroundColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            SettingsWidget(
-              leftIcon: SFIcons.sf_figure_and_child_holdinghands,
-              title: 'Vælg en elev for at forsætte',
-              subTitle:
-                  'Her kan du vælge eller søge efter elever i de repektive klasser',
-              type: SettingsType.header,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                /*Expanded(
+      body: Column(
+        children: [
+          SettingsWidget(
+            leftIcon: SFIcons.sf_figure_and_child_holdinghands,
+            title: 'Vælg en elev for at forsætte',
+            subTitle:
+                'Her kan du vælge eller søge efter elever i de repektive klasser',
+            type: SettingsType.header,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: [
+              /*Expanded(
                   child: SearchField(
                     controller: searchController,
                     hintText: 'Søg efter elev',
                     onChanged: filterStudents,
                   ),
                 ),*/
-                const SizedBox(width: 16.0),
-                GestureDetector(
-                  onTap: collapseAll,
-                  child: Text(
-                    'Collapse all',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Card(
-                  elevation: 2,
-                  color: AppColors.background,
-                  surfaceTintColor: AppColors.background,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Text(
-                          'Klasser',
-                          style: AppTextStyles.headline4,
-                        ),
-                      ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: schoolClasses.length,
-                        itemBuilder: (context, index) {
-                          final schoolClass = schoolClasses[index];
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomListItem(
-                                leftIcon: SFIcons.sf_figure_2,
-                                title: schoolClass['name'] ?? 'Unknown',
-                                isHighlighted: false,
-                                onTap: () =>
-                                    toggleClassStudents(schoolClass['id']!),
-                              ),
-                              if (selectedClassIds.contains(schoolClass['id']))
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  child: Column(
-                                    children: students
-                                        .where((student) =>
-                                            student['classId'] ==
-                                            schoolClass['id'])
-                                        .map((student) {
-                                      return CustomListItem(
-                                        leftIcon: SFIcons.sf_figure_child,
-                                        key: ValueKey(student['id']),
-                                        title: student['name'] ?? 'Unknown',
-                                        isHighlighted: highlightedStudentIds
-                                            .contains(student['id']),
-                                        onTap: () =>
-                                            navigateToStudentDetails(student),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                            ],
-                          );
-                        },
-                      ),
-                    ],
+              const SizedBox(width: 16.0),
+              GestureDetector(
+                onTap: collapseAll,
+                child: Text(
+                  'Collapse all',
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: Colors.blue,
                   ),
                 ),
               ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Card(
+                elevation: 2,
+                color: AppColors.background,
+                surfaceTintColor: AppColors.background,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Text(
+                        'Klasser:',
+                        style: AppTextStyles.bigText
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: schoolClasses.length,
+                              itemBuilder: (context, index) {
+                                final schoolClass = schoolClasses[index];
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomListItem(
+                                      leftIcon: SFIcons.sf_figure_2,
+                                      leftIconStyle: TextStyle(fontSize: 22),
+                                      title: schoolClass['name'] ?? 'Unknown',
+                                      isHighlighted: false,
+                                      isLastItem: index == schoolClass.length,
+                                      onTap: () => toggleClassStudents(
+                                          schoolClass['id']!),
+                                    ),
+                                    if (selectedClassIds
+                                        .contains(schoolClass['id']))
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 40),
+                                        child: Column(
+                                          children: students
+                                              .where((student) =>
+                                                  student['classId'] ==
+                                                  schoolClass['id'])
+                                              .map((student) {
+                                            return CustomListItem(
+                                              leftIcon: SFIcons.sf_figure_child,
+                                              key: ValueKey(student['id']),
+                                              title:
+                                                  student['name'] ?? 'Unknown',
+                                              isHighlighted:
+                                                  highlightedStudentIds
+                                                      .contains(student['id']),
+                                              isLastItem: false,
+                                              onTap: () =>
+                                                  navigateToStudentDetails(
+                                                      student),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 10),
+        ],
       ),
       bottomNavigationBar: NavBar(),
     );
