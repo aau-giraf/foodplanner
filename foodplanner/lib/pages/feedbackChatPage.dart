@@ -7,6 +7,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart'; // Import GoRouter
 import 'package:foodplanner/services/fetch_feedbackMessages.dart'; 
+import 'package:foodplanner/components/nav_bar.dart'; // Import the FooterBar widget
 
 class Message {
   int MessageID;
@@ -260,8 +261,11 @@ void initState() {
           onPressed: navigateBack,
         ),
       ),
+      bottomNavigationBar: NavBar(currentPageIndex: 0),
+      //backgroundColor: Colors.white,
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensure footer is at the bottom
+        mainAxisAlignment:
+            MainAxisAlignment.spaceBetween, // Ensure footer is at the bottom
         children: [
           Expanded(
             child: ListView.builder(
@@ -380,7 +384,6 @@ void initState() {
               ),
             ),
           ),
-          FooterBar(), // Add the footer widget here
         ],
       ),
     );

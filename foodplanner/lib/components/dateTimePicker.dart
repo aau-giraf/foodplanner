@@ -3,22 +3,19 @@ import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-
 class DateTimePickerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mealNotifier = Provider.of<MealNotifier>(context);
-    String formattedDate = DateFormat('dd. MMMM').format(mealNotifier.selectedDate);
+    String formattedDate =
+        DateFormat('dd. MMMM').format(mealNotifier.selectedDate);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        GestureDetector(
-          onTap: () => mealNotifier.selectDate(context),
-          child: Text(
-            'Madpakke i dag d. $formattedDate',
-            style: TextStyle(fontSize: 16),
-          ),
+        Text(
+          'Madpakke i dag d. $formattedDate',
+          style: TextStyle(fontSize: 16),
         ),
         mealNotifier.mealImageRef.isNotEmpty
             ? Image.network(

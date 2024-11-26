@@ -32,6 +32,29 @@ class UserService {
     }
   }
 
+  Future<User> fetchLoggedInUser() async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.get(Uri.parse('$apiUrl/api/Users/GetLoggedIn'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $jwtToken',
+        });
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      final filteredJson = {
+        'id': json['id'],
+        'first_name': json['first_name'],
+        'last_name': json['last_name'],
+        'email': json['email'],
+        'role': json['role'],
+        'archived': json['archived'],
+      };
+      return User.fromJson(filteredJson);
+    } else {
+      throw Exception('Kunne ikke hente bruger');
+    }
+  }
+
   Future<List<User>> fetchApproveUsers() async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(

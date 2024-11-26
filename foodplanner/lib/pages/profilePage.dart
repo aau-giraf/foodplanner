@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/footer.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -9,9 +9,13 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile Page'),
+        backgroundColor: Colors.white,
       ),
+      bottomNavigationBar: NavBar(currentPageIndex: 2),
+      backgroundColor: Colors.white,
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensure footer is at the bottom
+        mainAxisAlignment:
+            MainAxisAlignment.spaceBetween, // Ensure footer is at the bottom
         children: [
           Expanded(
             child: Center(
@@ -21,7 +25,6 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
           ),
-          FooterBar(), // Add the footer widget here
         ],
       ),
     );

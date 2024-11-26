@@ -24,16 +24,18 @@ class EditMealFormPage extends StatelessWidget {
   final Client client;
   final MultipartFile? image;
 
-  final VoidCallback onAddIngredients; // Callback to change the shown page through "add_ingredient_page.dart"
-  final VoidCallback onCamera; // Callback to change the shown page through "camera_page.dart"
-  
+  final VoidCallback
+      onAddIngredients; // Callback to change the shown page through "add_ingredient_page.dart"
+  final VoidCallback
+      onCamera; // Callback to change the shown page through "camera_page.dart"
+
   const EditMealFormPage({
     super.key, // Key for the widget, used for maintaining state.
     required this.meal, // Required parameter for the meal being edited.
     required this.packedIngredients,
     required this.ingredients, // Required parameter for the ingredients used in the meal.
     required this.onAddIngredients, // Required callback for adding new ingredients.
-    required this.onCamera,  // Required callback for opening the camera page.
+    required this.onCamera, // Required callback for opening the camera page.
     required this.client,
     required this.image,
   });
@@ -45,29 +47,47 @@ class EditMealFormPage extends StatelessWidget {
     //   Ingredient(name: "Æble"),       /// TEST ///
     // ];
 
-    return Scaffold( // Scaffold provides the basic visual structure for the page.
-      body: _buildEditMealPage(context, ingredients ?? []) // Build the edit meal page with the ingredients.
-    );
+    return Scaffold(
+        // Scaffold provides the basic visual structure for the page.
+        body: _buildEditMealPage(context,
+            ingredients ?? []) // Build the edit meal page with the ingredients.
+        );
   }
-  
-  // Helper method to build the Edit Meal Page after ingredients are fetched
-  Widget _buildEditMealPage(BuildContext context, List<Ingredient> ingredients) {
-    TextEditingController editTitleController = TextEditingController(text: meal.title);
 
-    return Padding( // Padding applied around the content inside the column.
-      padding: EdgeInsets.only(top: 5, left: 16, right: 16, bottom: 12), // Define the padding in all directions.
-      child: Column( // Vertical layout for the page.
+  // Helper method to build the Edit Meal Page after ingredients are fetched
+  Widget _buildEditMealPage(
+      BuildContext context, List<Ingredient> ingredients) {
+    TextEditingController editTitleController =
+        TextEditingController(text: meal.name);
+
+    return Padding(
+      // Padding applied around the content inside the column.
+      padding: EdgeInsets.only(
+          top: 5,
+          left: 16,
+          right: 16,
+          bottom: 12), // Define the padding in all directions.
+      child: Column(
+        // Vertical layout for the page.
         children: [
-          EditMealElement(meal: meal, onCamera: onCamera, editTitleController: editTitleController),
+          EditMealElement(
+              meal: meal,
+              onCamera: onCamera,
+              editTitleController: editTitleController),
 
           // The button for adding a new ingredient to the meal.
           CustomElevatedButton(
-            onTab: () { // Leads to the "add_ingredient_page"
+            onTab: () {
+              // Leads to the "add_ingredient_page"
               onAddIngredients(); // Calls the callback to change to the "add_ingredient_page".
             },
-            widget: Icon(Icons.add, color: AppColors.textSecondary),  // Icon displayed on the button.
-            backgroundColor: AppColors.tertiary, // Background color of the button.
-            width: MediaQuery.sizeOf(context).width/2, // Half the width of the screen for the button.
+            widget: Icon(Icons.add,
+                color:
+                    AppColors.textSecondary), // Icon displayed on the button.
+            backgroundColor:
+                AppColors.tertiary, // Background color of the button.
+            width: MediaQuery.sizeOf(context).width /
+                2, // Half the width of the screen for the button.
           ),
           Spacer(),
 
@@ -75,42 +95,44 @@ class EditMealFormPage extends StatelessWidget {
           CustomElevatedButton(
             onTab: () async {
               final authProvider = AuthProvider();
-              int? imageId = this.image != null ? 
-                int.parse((await UploadFoodImage(
-                  http.Client(),
-                  this.image!
-                )).body): null;
-              updateMeal(client, authProvider, Meal(
-                id: meal.id,
-                title: editTitleController.text,
-                imageRef: imageId,
-                date: meal.date,
-                ingredients: [],
-              ));
-              final ingredientsToAdd = packedIngredients.where((element) => element.id == 0);
+              int? imageId = this.image != null
+                  ? int.parse(
+                      (await UploadFoodImage(http.Client(), this.image!)).body)
+                  : null;
+              updateMeal(
+                  client,
+                  authProvider,
+                  Meal(
+                    id: meal.id,
+                    name: editTitleController.text,
+                    foodImageId: imageId,
+                    date: meal.date,
+                    ingredients: [],
+                  ));
+              final ingredientsToAdd =
+                  packedIngredients.where((element) => element.id == 0);
               ingredientsToAdd.forEach((ingredientToAdd) {
                 createPackedIngredient(
                   client,
                   authProvider,
                   meal.id,
-                  ingredientToAdd.ingredientRef.id,
+                  ingredientToAdd.ingredient.id,
                 );
               });
-              final ingredientsToRemove = packedIngredients.where((element) => meal.ingredients.contains(element));
+              final ingredientsToRemove = packedIngredients
+                  .where((element) => meal.ingredients.contains(element));
               ingredientsToRemove.forEach((ingredientToRemove) {
-                deletePackedIngredient(
-                  client, 
-                  authProvider, 
-                  meal.id
-                );
+                deletePackedIngredient(client, authProvider, meal.id);
               });
 
               // context.pop(); // Goes back to the previous page.
             },
-            width: MediaQuery.sizeOf(context).width/2, // Half the width of the screen for saving button.
-            widget: const Text( // Text displayed on the button.
+            width: MediaQuery.sizeOf(context).width /
+                2, // Half the width of the screen for saving button.
+            widget: const Text(
+              // Text displayed on the button.
               'Gem ændringer',
-              style: AppTextStyles.buttonText,  // Style for the text.
+              style: AppTextStyles.buttonText, // Style for the text.
             ),
           ),
         ],
