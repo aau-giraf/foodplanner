@@ -288,12 +288,17 @@ class ParentProfileState extends State<ParentProfile>
                             ),
                           ),
                         )
-                      : Expanded(
-                          child: Text(
-                            parent.email,
-                            style: AppTextStyles.bigText,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                parent.email,
+                                style: AppTextStyles.bigText,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                 ),
                 IconButton(
