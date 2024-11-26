@@ -19,9 +19,7 @@ class Message {
   bool isSent;
   bool showDate;
   
-
   Message({required this.Content, required this.isSent, required this.Date, required this.firstName, this.showDate = false, this.MessageID = 0, this.UserId = 0, this.ChatThreadId = 0, this.Archived = false});
-
 
   factory Message.fromJson(Map<String, dynamic> json, int currentUserId) {
     return Message(
@@ -39,16 +37,13 @@ class Message {
 }
 
 
-
 class FeedbackChatPage extends StatefulWidget {
   const FeedbackChatPage({Key? key}) : super(key: key);
   static final FeedbackService feedbackService = FeedbackService(apiUrl: ApiConfig.baseUrl);
   
   @override
   _FeedbackChatPageState createState() => _FeedbackChatPageState();
-
 }
-
 
 class _FeedbackChatPageState extends State<FeedbackChatPage> {
   final TextEditingController _controller = TextEditingController();
@@ -63,29 +58,29 @@ void initState() {
   super.initState();
   fetchMessages();
 }
-  
 
 
   Future<void> fetchMessages() async {
   try {
-    // Fetch the data from the FeedbackService
-    final List<Map<String, dynamic>> data =
-        await FeedbackChatPage.feedbackService.fetchGetFeedbackMessages(2, AuthProvider());
+    
+    final Map<String, dynamic> chatThreadAndUserId =
+        await FeedbackChatPage.feedbackService.fetchGetChatThreadIdAndUserIdFromToken(AuthProvider());
+    
+    final int chatThreadId = chatThreadAndUserId['chatThreadId'];
+    final int userId = chatThreadAndUserId['userId'];
 
-    // Assume AuthProvider has a method to get the current user's ID OR we get it through fetch
-    //final currentUserId = await AuthProvider().getUserId();
-
-    // Map the JSON response to the list of Message objects
+    final List<Map<String, dynamic>> messagesData =
+        await FeedbackChatPage.feedbackService.fetchGetFeedbackMessages(chatThreadId, AuthProvider());
+    
     setState(() {
-      _messages = data
-          .map((messageJson) => Message.fromJson(messageJson, 2))
+      _messages = messagesData
+          .map((messageJson) => Message.fromJson(messageJson, userId))
           .toList();
     });
   } catch (e) {
     print('Error fetching messages: $e');
   }
 }
-
 
 
 
@@ -115,9 +110,16 @@ void initState() {
 
     try {
       // Send the message to the backend
+      final Map<String, dynamic> chatThreadAndUserId =
+              await FeedbackChatPage.feedbackService.fetchGetChatThreadIdAndUserIdFromToken(AuthProvider());
+
+          
+          final int _chatThreadId = chatThreadAndUserId['chatThreadId'];
+          final int _userId = chatThreadAndUserId['userId'];
+
       await FeedbackChatPage.feedbackService.fetchSendFeedbackMessage(
-        userId: 2, // Replace with actual userId
-        chatThreadId: 1, // Replace with the actual chatThreadId
+        userId: _userId, // Replace with actual userId
+        chatThreadId: _chatThreadId, // Replace with the actual chatThreadId
         content: messageContent,
         authProvider: AuthProvider(),
       );
