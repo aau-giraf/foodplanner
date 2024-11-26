@@ -8,17 +8,29 @@ import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:provider/provider.dart';
 
-class ReusableMealBox extends StatelessWidget {
+class ReusableMealBox extends StatefulWidget {
   const ReusableMealBox({super.key});
+
+  @override
+  State<ReusableMealBox> createState() => _ReusableMealBoxState();
+}
+
+class _ReusableMealBoxState extends State<ReusableMealBox> {
+  late MealNotifier mealNotifier;
 
   Future<ROLES?> _retrieveRole() async {
     return await AuthProvider().retrieveRole();
   }
 
   @override
-  Widget build(BuildContext context) {
-    final mealNotifier = Provider.of<MealNotifier>(context, listen: false);
+  void initState() {
+    super.initState();
+    mealNotifier = Provider.of<MealNotifier>(context, listen: false);
     mealNotifier.fetchMealData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       color: AppColors.background,
       surfaceTintColor: AppColors.background,

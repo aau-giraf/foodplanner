@@ -12,40 +12,43 @@ class Mealboxcontent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mealNotifier = Provider.of<MealNotifier>(context, listen: false);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Text(
-            caption,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: FoodImage(foodImageId: mealNotifier.meal!.foodImageId),
-          ),
-        ),
-        SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: CustomButton(
-            onTab: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ChildLandingPageSeMadpakke()),
-              );
-            },
-            text: 'Se madpakke',
-            size: ButtonSize.medium,
-          ),
-        ),
-      ],
+    return Consumer<MealNotifier>(
+      builder: (context, mealNotifier, child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(
+                caption,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: FoodImage(foodImageId: mealNotifier.meal!.foodImageId),
+              ),
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: CustomButton(
+                onTab: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChildLandingPageSeMadpakke()),
+                  );
+                },
+                text: 'Se madpakke',
+                size: ButtonSize.medium,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
