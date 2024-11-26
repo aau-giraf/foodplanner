@@ -32,9 +32,9 @@ class UserService {
     }
   }
 
-  Future<User> fetchUserNotAdmin(int id) async {
+  Future<User> fetchLoggedInUser() async {
     final jwtToken = await AuthProvider().retrieveToken();
-    final response = await http.get(Uri.parse('$apiUrl/api/Users/Get/${id}'),
+    final response = await http.get(Uri.parse('$apiUrl/api/Users/GetLoggedIn'),
         headers: <String, String>{
           'Authorization': 'Bearer $jwtToken',
         });
@@ -43,8 +43,8 @@ class UserService {
       final Map<String, dynamic> json = jsonDecode(response.body);
       final filteredJson = {
         'id': json['id'],
-        'first_name': json['firstName'],
-        'last_name': json['lastName'],
+        'first_name': json['first_name'],
+        'last_name': json['last_name'],
         'email': json['email'],
         'role': json['role'],
         'archived': json['archived'],

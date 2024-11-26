@@ -314,113 +314,115 @@ class _SignupState extends State<SignupPage> {
           textAlign: TextAlign.center,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          children: [
-            SizedBox(height: 10),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              color: AppColors.background,
-              surfaceTintColor: AppColors.background,
-              elevation: 3,
-              child: Column(
-                children: [
-                  SizedBox(height: 10),
-                  Text('Opret mig', style: AppTextStyles.title),
-                  SizedBox(height: 10),
-                  Text(
-                    'Fornavn',
-                    style: AppTextStyles.bigText
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: CustomTextField(
-                        controller: firstNameController,
-                        errorText: firstNameError,
-                        hintText: "Fornavn"),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    'Efternavn',
-                    style: AppTextStyles.bigText
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: CustomTextField(
-                        controller: lastNameController,
-                        errorText: lastNameError,
-                        hintText: "Efternavn"),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    'Email',
-                    style: AppTextStyles.bigText
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: CustomTextField(
-                        controller: emailController,
-                        errorText: emailError,
-                        hintText: "Email"),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    'Adgangskode',
-                    style: AppTextStyles.bigText
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              SizedBox(height: 10),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                color: AppColors.background,
+                surfaceTintColor: AppColors.background,
+                elevation: 3,
+                child: Column(
+                  children: [
+                    SizedBox(height: 10),
+                    Text('Opret mig', style: AppTextStyles.title),
+                    SizedBox(height: 10),
+                    Text(
+                      'Fornavn',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: CustomTextField(
-                          controller: passwordController,
-                          errorText: passwordError,
-                          hintText: "Adgangskode",
-                          obscureText: true)),
-                  SizedBox(height: 15),
-                  Text(
-                    'Bekræft adgangskode',
-                    style: AppTextStyles.bigText
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: CustomTextField(
-                      controller: confirmPasswordController,
-                      errorText: confirmPasswordError,
-                      hintText: "Adgangskode",
-                      obscureText: true,
+                          controller: firstNameController,
+                          errorText: firstNameError,
+                          hintText: "Fornavn"),
                     ),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    'Jeg er',
-                    style: AppTextStyles.bigText
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: CustomSegmentButton(
-                      buttonSegments: segments,
-                      selected: role,
-                      onTab: roleChange,
+                    SizedBox(height: 15),
+                    Text(
+                      'Efternavn',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  SizedBox(height: 15),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomTextField(
+                          controller: lastNameController,
+                          errorText: lastNameError,
+                          hintText: "Efternavn"),
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      'Email',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomTextField(
+                          controller: emailController,
+                          errorText: emailError,
+                          hintText: "Email"),
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      'Adgangskode',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: CustomTextField(
+                            controller: passwordController,
+                            errorText: passwordError,
+                            hintText: "Adgangskode",
+                            obscureText: true)),
+                    SizedBox(height: 15),
+                    Text(
+                      'Bekræft adgangskode',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomTextField(
+                        controller: confirmPasswordController,
+                        errorText: confirmPasswordError,
+                        hintText: "Adgangskode",
+                        obscureText: true,
+                      ),
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      'Jeg er',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomSegmentButton(
+                        buttonSegments: segments,
+                        selected: role,
+                        onTab: roleChange,
+                      ),
+                    ),
+                    SizedBox(height: 15),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 10),
-            CustomButton(
-              text: 'Opret mig',
-              onTab: showButton() ? () => validateInputs(context) : null,
-            ),
-          ],
+              SizedBox(height: 10),
+              CustomButton(
+                text: 'Opret mig',
+                onTab: showButton() ? () => validateInputs(context) : null,
+              ),
+            ],
+          ),
         ),
       ),
     );

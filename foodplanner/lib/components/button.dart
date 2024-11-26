@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
@@ -8,6 +9,7 @@ enum ButtonSize { small, medium, large }
 class CustomButton extends StatelessWidget {
   final Function()? onTab;
   final String text;
+  final SFIcon? icon;
   final Color backgroundColor;
   final Color foregroundColor;
   final ButtonSize? size; // Optional size parameter
@@ -17,7 +19,8 @@ class CustomButton extends StatelessWidget {
   const CustomButton({
     super.key,
     required this.onTab,
-    required this.text,
+    this.text = '',
+    this.icon,
     this.backgroundColor = AppColors.primary, // Default background color
     this.foregroundColor = AppColors.textSecondary, // Default foreground color
     this.size, // Size parameter
@@ -99,10 +102,11 @@ class CustomButton extends StatelessWidget {
           elevation: 3,
           padding: buttonPadding, // Set the padding for the button
         ),
-        child: Text(
-          text,
-          style: buttonTextStyle, // Use the determined text style
-        ),
+        child: icon ??
+            Text(
+              text,
+              style: buttonTextStyle, // Use the determined text style
+            ),
       ),
     );
   }

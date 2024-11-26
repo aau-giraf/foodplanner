@@ -14,6 +14,7 @@ import 'package:foodplanner/components/button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 
 class ParentProfile extends StatefulWidget {
   const ParentProfile({super.key});
@@ -450,6 +451,7 @@ class ParentProfileState extends State<ParentProfile>
           textAlign: TextAlign.center,
         ),
       ),
+      bottomNavigationBar: NavBar(currentPageIndex: 2),
       backgroundColor: Colors.white,
       body: Column(
         children: [

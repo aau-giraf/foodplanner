@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/pages/login_page.dart';
+import 'package:foodplanner/pages/meal_list_page.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
@@ -80,8 +81,13 @@ class HomePage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                final authProvider =
-                    Provider.of<AuthProvider>(context, listen: false);
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                authProvider.setRole(ROLES.parent);},
+              child: const Text('Set role to parent'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
                 if (true) {
                   context.go(ADMIN_ROOT);
                 } else {
@@ -90,6 +96,24 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Go to Admin Page'),
             ),
+            ElevatedButton(
+              onPressed: () {
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                if (authProvider.hasRole([ROLES.parent])) {
+                  context.go(NO_MEAL); 
+                } else {
+                  context.go('/unauthorized'); 
+                }
+              },
+              child: const Text('Go to No Meal Page'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.go(EDIT_MEAL);
+              },
+              child: const Text('Go to Edit Meal Page'),
+            ),
+
             // ElevatedButton(
             // onPressed: () async {
             //   final authProvider = Provider.of<AuthProvider>(context, listen: false);

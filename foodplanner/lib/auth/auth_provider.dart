@@ -85,4 +85,9 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     return _jwtToken;
   }
+
+  Future<ROLES?> retrieveRole() async {
+    await loadFromStorage();
+    return _userRole;
+  }
 }

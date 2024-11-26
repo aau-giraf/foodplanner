@@ -4,6 +4,15 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Foodplanner would like to use your gallery</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Foodplanner would like to access your gallery</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Foodplanner would like to use your gallery</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Foodplanner would like to use your microphone</string>
+	
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
