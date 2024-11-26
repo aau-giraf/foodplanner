@@ -46,7 +46,9 @@ class ChildProfileState extends State<ChildProfile>
   bool isEditingFirstName = false;
   bool isEditingLastName = false;
   bool isEditingClass = false;
+  bool isEditingParents = false;
   bool hasChanges = false;
+  bool classChanges = false;
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   String? selectedClassId;
@@ -56,7 +58,6 @@ class ChildProfileState extends State<ChildProfile>
   int? selectedParentId;
   int? initialParentId;
   User? selectedParent;
-  
 
   void onFieldChanged() {
     setState(() {
@@ -168,11 +169,19 @@ class ChildProfileState extends State<ChildProfile>
                     if (isEditingFirstName) {
                       setState(() {
                         isEditingFirstName = false;
+                        firstNameController.text = widget.child.firstName;
+                        if (!isEditingLastName &&
+                            !isEditingClass &&
+                            !classChanges) {
+                          hasChanges = false;
+                        }
                       });
                     } else {
-                    setState(() {
-                      isEditingFirstName = true;
-                    });};
+                      setState(() {
+                        isEditingFirstName = true;
+                      });
+                    }
+                    ;
                   },
                 ),
               ],
@@ -223,11 +232,20 @@ class ChildProfileState extends State<ChildProfile>
                     if (isEditingLastName) {
                       setState(() {
                         isEditingLastName = false;
+                        lastNameController.text = widget.child.lastName;
+                        if (!isEditingFirstName &&
+                            !isEditingLastName &&
+                            !isEditingClass &&
+                            !classChanges) {
+                          hasChanges = false;
+                        }
                       });
                     } else {
-                    setState(() {
-                      isEditingLastName = true;
-                    });};
+                      setState(() {
+                        isEditingLastName = true;
+                      });
+                    }
+                    ;
                   },
                 ),
               ],
@@ -276,8 +294,21 @@ class ChildProfileState extends State<ChildProfile>
                 value: selectedClassId,
                 onChanged: (String? value) {
                   setState(() {
+                    if (value == initialClassId) {
+                      isEditingClass = false;
+                      classChanges = false;
+                      if (!isEditingFirstName &&
+                          !isEditingLastName &&
+                          !isEditingClass &&
+                          !classChanges) {
+                        hasChanges = false;
+                      }
+                      selectedClassId = value;
+                      return;
+                    }
                     selectedClassId = value;
                     onFieldChanged();
+                    classChanges = true;
                   });
                 },
                 selectedItemBuilder: (BuildContext context) {
@@ -377,6 +408,18 @@ class ChildProfileState extends State<ChildProfile>
               final selectedParent =
                   await ChildProfile.userService.fetchUser(selectedParentId);
               setState(() {
+                if (selectedParentId == initialParentId) {
+                  isEditingParents = false;
+                  if (!isEditingFirstName &&
+                      !isEditingLastName &&
+                      !isEditingClass &&
+                      !classChanges) {
+                    hasChanges = false;
+                  }
+                  this.selectedParentId = selectedParentId;
+                  this.selectedParent = selectedParent;
+                  return;
+                }
                 this.selectedParentId = selectedParentId;
                 this.selectedParent = selectedParent;
                 onFieldChanged();
@@ -519,10 +562,13 @@ class ChildProfileState extends State<ChildProfile>
                         isEditingFirstName = false;
                         isEditingLastName = false;
                         isEditingClass = false;
+                        classChanges = false;
                         hasChanges = false;
                         selectedClassId = initialClassId;
                         selectedParentId = initialParentId;
                         selectedParent = parent;
+                        firstNameController.text = widget.child.firstName;
+                        lastNameController.text = widget.child.lastName;
                       }),
                     },
                     backgroundColor: Colors.white,
