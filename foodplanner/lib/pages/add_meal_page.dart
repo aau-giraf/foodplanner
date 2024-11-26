@@ -1,4 +1,4 @@
-import 'dart:async';
+/* import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
@@ -20,12 +20,11 @@ import 'package:intl/intl.dart';
 
 /// This is used to manage the page shifting between "meal_form_page.dart", "add_ingredient_page.dart", and "camera_page.dart".
 class AddMealPage extends StatefulWidget {
-  final Future<List<Ingredient>> Function(Client client, AuthProvider auth)
-      fetchFunction;
-
+/*   final Future<List<Ingredient>> Function(AuthProvider auth) fetchFunction;
+ */
   const AddMealPage({
     super.key, // Key for the widget, used for maintaining state.
-    this.fetchFunction = fetchIngredientsByUserID,
+/*     this.fetchFunction = fetchIngredientsByUserID, */
   });
 
   @override
@@ -34,8 +33,8 @@ class AddMealPage extends StatefulWidget {
 }
 
 class AddMealPageState extends State<AddMealPage> {
-  List<Ingredient> ingredients =
-      []; // List to store all the users ingredient presets.
+/*   List<Ingredient> ingredients =
+      [];  */ // List to store all the users ingredient presets.
   String mealTitle = '';
   late TextEditingController mealTitleController;
   List<PackedIngredient> packedIngredients =
@@ -46,13 +45,6 @@ class AddMealPageState extends State<AddMealPage> {
   ]; // Page stack to track the currently displayed page and the previous pages.
   Client? _client; // Client for the requests to the server
   Completer<void>? cameraPageCompleter;
-
-  void pushPage(int index) {
-    // Push a new page onto the stack
-    setState(() {
-      pageStack.add(index);
-    });
-  }
 
   Future<void> popPage() async {
     // Pop the top page from the stack to go back
@@ -68,7 +60,7 @@ class AddMealPageState extends State<AddMealPage> {
 
   List<Widget> _pages = []; // List to hold the different pages.
 
-  Future<void> onCreateMeal(http.Client client, String title) async {
+  Future<void> onCreateMeal(String title) async {
     final authProvider = AuthProvider();
     final mealNotifier = MealNotifier();
     int? imageId = this.image != null
@@ -82,9 +74,8 @@ class AddMealPageState extends State<AddMealPage> {
     print(
         "her: ${DateFormat('yyyy-MM-dd').format(await mealNotifier.retrieveDate())}");
 
-    await createMeal(
+    await (
       // Creates a meal using the inputted ingredients, without an image.
-      client,
       authProvider,
       title, // Title from the text input.
       imageId,
@@ -94,7 +85,6 @@ class AddMealPageState extends State<AddMealPage> {
           Meal.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
       packedIngredients.forEach((packedIngredient) async {
         await createPackedIngredient(
-          client,
           authProvider,
           storedMeal.id,
           packedIngredient.ingredient.id,
@@ -116,19 +106,19 @@ class AddMealPageState extends State<AddMealPage> {
     //   return;
     // }
 
-    widget.fetchFunction(_client!, auth).then((fetchedIngredients) {
+/*     widget.fetchFunction(auth).then((fetchedIngredients) {
       setState(() {
         ingredients =
             fetchedIngredients; // Assign the fetched ingredients to the state variable.
         _initializePages(); // Initialize pages after fetching ingredients.
       });
     });
-  }
+  } */
 
-  void _initializePages() {
-    _pages.addAll([
-      // Adds all of the pages to the "_pages" list
-      MealFormPage(
+    void _initializePages() {
+      _pages.addAll([
+        // Adds all of the pages to the "_pages" list
+        MealFormPage(
 /*         // The MealFormPage is the first page to be displayed.
         ingredients: ingredients, // Pass the ingredients to the MealFormPage.
         packedIngredients:
@@ -144,8 +134,8 @@ class AddMealPageState extends State<AddMealPage> {
           await cameraPageCompleter!.future;
         }, // Changes the shown page to "camera_page.dart" when executed.
         onCreateMeal: (client, title) => onCreateMeal(client, title), */
-          ),
-      AddIngredientPage(
+            ),
+        AddIngredientPage(
 /*           // The AddIngredientPage is the second page.
           ingredients:
               ingredients, // Pass the ingredients to the AddIngredientPage.
@@ -163,36 +153,39 @@ class AddMealPageState extends State<AddMealPage> {
             packedIngredients.add(addedIngredient as PackedIngredient);
             popPage();
           } // Go back to the previous page after adding new ingredient. */
-          ),
-      CameraPage(
-        onImagePicked: (image) {
-          setState(() {
-            if (image is http.MultipartFile) {
-              this.image = image;
-            }
-          });
-          popPage();
-        },
-      ), // The CameraPage is the third page.
-    ]);
-  }
+            ),
+        CameraPage(
+          onImagePicked: (image) {
+            setState(() {
+              if (image is http.MultipartFile) {
+                this.image = image;
+              }
+            });
+            popPage();
+          },
+        ), // The CameraPage is the third page.
+      ]);
+    }
 
-  @override
-  void dispose() {
-    _client?.close(); // Close the client when the page is closed.
-    mealTitleController
-        .dispose(); // Dispose of the title controller to free up resources.
-    super.dispose();
-  }
+    @override
+    void dispose() {
+      _client?.close(); // Close the client when the page is closed.
+      mealTitleController
+          .dispose(); // Dispose of the title controller to free up resources.
+      super.dispose();
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages.isNotEmpty
-          ? _pages[pageStack.last] // Show the page at the top of the stack
-          : Center(
-              child:
-                  CircularProgressIndicator()), // Show loading spinner if _pages is empty
-    );
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Add Meal'),
+        ),
+        body: Center(
+          child: Text('Add your meal here'),
+        ),
+      );
+    }
   }
 }
+ */

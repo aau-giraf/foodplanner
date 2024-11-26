@@ -86,10 +86,6 @@ final router = GoRouter(
       builder: (context, state) => HomePage(),
     ),
     GoRoute(
-      path: '/create',
-      builder: (context, state) => AddMealPage(),
-    ),
-    GoRoute(
       path: '/edit/:mealID',
       builder: (context, state) {
         final mealID = int.parse(state.pathParameters['mealID']!);

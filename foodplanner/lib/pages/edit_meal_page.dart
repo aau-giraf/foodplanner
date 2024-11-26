@@ -16,15 +16,15 @@ import 'package:http/http.dart';
 /// This is used to manage the page shifting between "edit_meal_form_page.dart", "add_ingredient_page.dart", and "camera_page.dart".
 class EditMealPage extends StatefulWidget {
   final int mealID; // Meal ID needed for editing the specific meal.
-  final Future<List<Ingredient>> Function(Client client, AuthProvider auth)
-      fetchIngredientsFunction;
+/*   final Future<List<Ingredient>> Function(AuthProvider auth)
+      fetchIngredientsFunction; */
   final Future<Meal> Function(Client client, AuthProvider auth, int mealId)
       fetchMealFunction;
 
   const EditMealPage({
     super.key, // Key for the widget, used for maintaining state.
     required this.mealID, // Required meal ID parameter.
-    this.fetchIngredientsFunction = fetchIngredientsByUserID,
+/*     this.fetchIngredientsFunction = fetchIngredientsByUserID, */
     this.fetchMealFunction = fetchMeal,
   });
 
@@ -36,8 +36,8 @@ class EditMealPage extends StatefulWidget {
 class EditMealPageState extends State<EditMealPage> {
   Meal meal = Meal(); // Meal object being edited.
   List<PackedIngredient> packedIngredients = [];
-  List<Ingredient> ingredients =
-      []; // List to store all the users ingredient presets.
+/*   List<Ingredient> ingredients =
+      []; */ // List to store all the users ingredient presets.
   List<int> pageStack = [
     0
   ]; // Page stack to track the currently displayed page and the previous pages.
@@ -77,28 +77,28 @@ class EditMealPageState extends State<EditMealPage> {
         widget.mealID); // Fetch the meal details using the mealID.
     packedIngredients = meal.ingredients;
     // Fetch user's ingredients by decoding the JWT token.
-    ingredients = await widget.fetchIngredientsFunction(_client!, authProvier);
-
+/*     ingredients = await widget.fetchIngredientsFunction(authProvier);
+ */
     setState(() {
       // Update the state of the widget.
       _pages = [
         // Assign the fetched meal and ingredients to the list of pages.
-        EditMealFormPage(
-          meal: meal, // Pass the meal object to the EditMealFormPage.
+        /*  EditMealFormPage(
+/*           meal: meal, // Pass the meal object to the EditMealFormPage.
           packedIngredients: packedIngredients,
           ingredients:
               ingredients, // Pass the ingredients to the EditMealFormPage.
           client: _client!,
           onAddIngredients: () {
             pushPage(
-                1); // Changes the shown page to "add_ingredent_page.dart" when executed.
+                1); // Changes the shown page to "add_ingredient_page.dart" when executed.
           },
           onCamera: () {
             pushPage(
                 2); // Changes the shown page to "camera_page.dart" when executed.
           },
-          image: image,
-        ),
+          image: image, */
+            ), */
         AddIngredientPage(
 /*           ingredients: ingredients, // Pass the ingredients to the AddIngredientPage.
           image: image,

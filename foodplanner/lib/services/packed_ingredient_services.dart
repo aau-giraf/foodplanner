@@ -8,10 +8,10 @@ import 'package:foodplanner/services/api_config.dart';
 // Takes an HTTP client and the packed ingredient ID as parameters.
 // Returns a PackedIngredient object if the request is successful, or throws an exception if the request fails.
 Future<PackedIngredient> fetchPackedIngredient(
-    http.Client client, AuthProvider authProvider, int id) async {
+    AuthProvider authProvider, int id) async {
   final jwtToken = await authProvider.retrieveToken();
   // Sending a GET request to the API endpoint to retrieve a packed ingredient by the specified ID.
-  final response = await client.get(
+  final response = await http.get(
     Uri.parse('${ApiConfig.baseUrl}/api/PackedIngredient/Get/$id'),
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -34,11 +34,11 @@ Future<PackedIngredient> fetchPackedIngredient(
 // Takes an HTTP client, a reference to a meal, a reference to an ingredient,
 // and the packed ingredient ID as parameters.
 // Returns the server's response after attempting to create the packed
-Future<http.Response> createPackedIngredient(http.Client client,
+Future<http.Response> createPackedIngredient(
     AuthProvider authProvider, int mealId, int ingredientId) async {
   final jwtToken = await authProvider.retrieveToken();
   // Sending a POST request to the API endpoint to create a new packed ingredient.
-  final response = await client.post(
+  final response = await http.post(
     Uri.parse(
         '${ApiConfig.baseUrl}/api/PackedIngredient/Create'), // Specify the API endpoint for creating packed ingredients.
     headers: <String, String>{
@@ -64,10 +64,10 @@ Future<http.Response> createPackedIngredient(http.Client client,
 // Takes an HTTP client and the packed ingredient ID as parameters.
 // Returns the server's response after attempting to delete the packed ingredient.
 Future<http.Response> deletePackedIngredient(
-    http.Client client, AuthProvider authProvider, int id) async {
+    AuthProvider authProvider, int id) async {
   final jwtToken = await authProvider.retrieveToken();
   // Sending a DELETE request to the API endpoint to remove a packed ingredient by ID.
-  final response = await client.delete(
+  final response = await http.delete(
     Uri.parse(
         '${ApiConfig.baseUrl}/api/PackedIngredient/Delete/$id'), // Specify the API endpoint for deleting packed ingredients.
     headers: <String, String>{

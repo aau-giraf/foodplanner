@@ -113,7 +113,6 @@ class EditMealFormPage extends StatelessWidget {
                   packedIngredients.where((element) => element.id == 0);
               ingredientsToAdd.forEach((ingredientToAdd) {
                 createPackedIngredient(
-                  client,
                   authProvider,
                   meal.id,
                   ingredientToAdd.ingredient.id,
@@ -122,7 +121,7 @@ class EditMealFormPage extends StatelessWidget {
               final ingredientsToRemove = packedIngredients
                   .where((element) => meal.ingredients.contains(element));
               ingredientsToRemove.forEach((ingredientToRemove) {
-                deletePackedIngredient(client, authProvider, meal.id);
+                deletePackedIngredient(authProvider, meal.id);
               });
 
               // context.pop(); // Goes back to the previous page.
