@@ -4,11 +4,11 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/landing_page_children_se_madpakke.dart'; // Update with the correct import
 
-class Mealboxcontent extends StatelessWidget {
+class MealBoxContent extends StatelessWidget {
   final Size size;
   final String caption;
 
-  const Mealboxcontent(
+  const MealBoxContent(
       {Key? key, required this.size, this.caption = 'Madpakke Text'})
       : super(key: key);
 
