@@ -48,8 +48,8 @@ class _FakeStreamedResponse_1 extends _i1.SmartFake
 /// A class which mocks [Client].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MyMockClient extends _i1.Mock implements _i2.Client {
-  MyMockClient() {
+class MockClient extends _i1.Mock implements _i2.Client {
+  MockClient() {
     _i1.throwOnMissingStub(this);
   }
 
