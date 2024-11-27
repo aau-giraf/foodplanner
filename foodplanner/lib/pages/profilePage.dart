@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/routes/paths.dart';
 
 class ParentProfile extends StatefulWidget {
   const ParentProfile({super.key});
@@ -124,19 +125,6 @@ class ParentProfileState extends State<ParentProfile>
         updatedLastName.isNotEmpty ? updatedLastName : parent.lastName,
         updatedEmail.isNotEmpty ? updatedEmail : parent.email,
       );
-
-      /* if (response.statusCode == 204) {
-        await fetchParentAndChild();
-        setState(() {
-          isEditingFirstName = false;
-          isEditingLastName = false;
-          isEditingEmail = false;
-          hasChanges = false;
-        });
-      } else {
-        // Handle error
-        print('Failed to update user');
-      } */
     }
   }
 
@@ -163,7 +151,7 @@ class ParentProfileState extends State<ParentProfile>
                 Expanded(
                   child: isEditingFirstName
                       ? Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
+                          padding: const EdgeInsets.only(left: 17.0),
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -221,16 +209,23 @@ class ParentProfileState extends State<ParentProfile>
                   child: isEditingLastName
                       ? Padding(
                           padding: const EdgeInsets.only(left: 10.0),
-                          child: CustomTextField(
-                            controller: lastNameController,
-                            errorText: '',
-                            hintText: 'Efternavn',
-                            obscureText: false,
-                            color: Colors.white,
-                            onChanged: (value) {
-                              updatedLastName = value;
-                              onFieldChanged();
-                            },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: CustomTextField(
+                              controller: lastNameController,
+                              errorText: '',
+                              hintText: 'Efternavn',
+                              type: TextFieldType.smallTextField,
+                              obscureText: false,
+                              color: Colors.transparent,
+                              onChanged: (value) {
+                                updatedLastName = value;
+                                onFieldChanged();
+                              },
+                            ),
                           ),
                         )
                       : Row(
@@ -270,7 +265,7 @@ class ParentProfileState extends State<ParentProfile>
                 Expanded(
                   child: isEditingEmail
                       ? Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
+                          padding: const EdgeInsets.only(left: 40.0),
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -292,12 +287,9 @@ class ParentProfileState extends State<ParentProfile>
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Expanded(
-                              child: Text(
-                                parent.email,
-                                style: AppTextStyles.bigText,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                            Text(
+                              parent.email,
+                              style: AppTextStyles.bigText,
                             ),
                           ],
                         ),
@@ -386,7 +378,7 @@ class ParentProfileState extends State<ParentProfile>
                 Expanded(
                   child: isEditingPincode
                       ? Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
+                          padding: const EdgeInsets.only(left: 20.0),
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -532,7 +524,7 @@ class ParentProfileState extends State<ParentProfile>
                       final authProvider =
                           Provider.of<AuthProvider>(context, listen: false);
                       await authProvider.logout();
-                      Navigator.pushReplacementNamed(context, '/login');
+                      context.go(LOGIN_PAGE);
                     },
                     backgroundColor: Colors.red,
                     foregroundColor: Colors.white,
