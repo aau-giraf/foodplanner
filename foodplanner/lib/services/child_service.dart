@@ -40,6 +40,7 @@ class ChildService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+      print('API Response: ${response.body}');
       return Child.fromJson(data);
     } else {
       throw Exception('Failed to load child data');

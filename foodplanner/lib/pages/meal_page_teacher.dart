@@ -27,34 +27,33 @@ class _TeacherMealPageState extends State<TeacherMealPage> {
   Child? _child;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
 
-  @override
-  void initState() {
-    super.initState();
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    authProvider.loadFromStorage().then((_){
-      authProvider.retrieveToken().then((token){
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  //   authProvider.loadFromStorage().then((_){
+  //     authProvider.retrieveToken().then((token){
         
-        setState(() {
-          _hasRolesFuture = authProvider.hasRoles([ROLES.parent, ROLES.student]);
-          if (authProvider.userRole == ROLES.student || authProvider.userRole == ROLES.parent) {
-            childService.fetchChildById().then((childData) {
-              setState(() {
-                _child = childData;
-                print(_child!.firstName);
-              });
-            });
-          }
-        });
-      });
-    });
-  }
+  //       setState(() {
+  //         _hasRolesFuture = authProvider.hasRoles([ROLES.teacher, ROLES.student]);
+  //         if (authProvider.userRole == ROLES.student || authProvider.userRole == ROLES.teacher) {
+  //           childService.fetchChildById().then((childData) {
+  //             setState(() {
+  //               _child = childData;
+                
+  //             });
+  //           });
+  //         }
+  //       });
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     
-
     return Scaffold(
       appBar: AppBar(),
       body: Stack(
@@ -72,8 +71,7 @@ class _TeacherMealPageState extends State<TeacherMealPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          'Velkommen ${_child != null ? '${_child?.firstName} ${_child?.lastName}' : widget.student['name']}',
-                          
+                          'Velkommen ${_child != null ? '${_child?.firstName} ${_child?.lastName} ' : widget.student['name']}',
                           style: TextStyle(fontSize: 16),
                           textAlign: TextAlign.center,
                         ),
@@ -81,14 +79,27 @@ class _TeacherMealPageState extends State<TeacherMealPage> {
                         ReusableMealBox(size: size),
                         SizedBox(height: size.height * 0.02),
 
+
                         CustomButton(
-                            onTab: () {
-                              GoRouter.of(context).go(FEEDBACK_Page, extra: {'from': TEACHER_ROOT, 'childId': _child?.childId});;
-                            }, 
-                            text: 'Se Feedback',
-                            //fontSize: 16,
-                            customWidth: size.width * 0.6,
-                          ),
+                          onTab: () {
+                            final childId = widget.student['id'];
+                            print("det her er voeres childId");
+                            print(childId);
+
+                            if (childId != null) {
+                              GoRouter.of(context).go(
+                                FEEDBACK_Page,
+                                extra: {'from': TEACHER_ROOT, 'childId': childId},
+                              );
+                              print("Navigating with extra: {'from': $TEACHER_ROOT, 'childId': $childId}");
+                              print("Navigating to Feedback Page with childId: $childId");
+                            } else {
+                              print("Error: childId is null!");
+                            }
+                          },
+                          text: 'Se Feedback',
+                          customWidth: size.width * 0.6,
+                        ),
                       ],
                     ),
                   ),

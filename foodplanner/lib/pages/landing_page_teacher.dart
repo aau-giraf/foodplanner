@@ -81,12 +81,14 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
     // Filter out null values from the student map
     final filteredStudent =
         student.map((key, value) => MapEntry(key, value ?? ''));
-
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
+print(filteredStudent);
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) =>
             TeacherMealPage(student: filteredStudent),
+            
       ),
     );
   }

@@ -171,7 +171,33 @@ Future<bool> fetchUpdateMessageFromMessageID(int messageId, String content, Auth
   } catch (e) {
     print('problem with updating message: $e');
     return false;
+  }
+}
+
+Future<int> fetchGetChatThreadIdByChildId (int childId, AuthProvider authProvider) async {
+  final token = await authProvider.retrieveToken();
+
+  try {
+    final response = await http.get(
+      Uri.parse('$apiUrl/api/FeedbackChat/GetChatThreadIdAndUserIdFromChildIdAndToken/$childId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      final int chatThreadId = responseBody['chatThreadId'];
+      return chatThreadId;
+    } else {
+      throw Exception('Failed to load chat thread id');
+    }
+  } catch (e) {
+    print('problem with chat thread id: $e');
     rethrow;
   }
 }
+
+
 }

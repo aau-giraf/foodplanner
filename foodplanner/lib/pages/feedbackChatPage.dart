@@ -3,6 +3,7 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/footer.dart'; // Import the FooterBar widget
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart'; // Import GoRouter
@@ -38,9 +39,11 @@ class Message {
 
 
 class FeedbackChatPage extends StatefulWidget {
+
   const FeedbackChatPage({Key? key}) : super(key: key);
   static final FeedbackService feedbackService = FeedbackService(apiUrl: ApiConfig.baseUrl);
   static bool isEditing = false;
+  
   
   @override
   _FeedbackChatPageState createState() => _FeedbackChatPageState();
@@ -49,39 +52,86 @@ class FeedbackChatPage extends StatefulWidget {
 class _FeedbackChatPageState extends State<FeedbackChatPage> {
   final TextEditingController _controller = TextEditingController();
   List<Message> _messages = [
-    Message(Content: "Hej, hvordan var dagens måltid?", isSent: false, Date: DateTime.now().subtract(Duration(days: 1)), firstName: "Teacher"),
+    
   ];
+  int? _childId ;
 
   int? _editingMessageIndex;
 
 @override
-void initState() {
-  super.initState();
-  fetchMessages();
-}
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final GoRouterState state = GoRouterState.of(context);
+      final Map<String, dynamic>? extra = state.extra as Map<String, dynamic>?;
+      final int? childId = extra != null && extra['childId'] != null
+       ? int.tryParse(extra['childId']) // Safely parse the value to int
+       : null;
+      setState(() {
+        _childId = childId;
+      });
+
+      print("Child ID retrieved in initState: $extra?['childId']");
+    });
+  }
 
 
   Future<void> fetchMessages() async {
-  try {
-    
-    final Map<String, dynamic> chatThreadAndUserId =
-        await FeedbackChatPage.feedbackService.fetchGetChatThreadIdAndUserIdFromToken(AuthProvider());
-    
-    final int chatThreadId = chatThreadAndUserId['chatThreadId'];
-    final int userId = chatThreadAndUserId['userId'];
+  final GoRouterState state = GoRouterState.of(context);
+  final Map<String, dynamic>? extra = state.extra as Map<String, dynamic>?; // Cast the extra parameter
+  // final int? childId = extra != null && extra['childId'] != null
+  //     ? int.tryParse(extra['childId']) // Safely parse the value to int
+    //   : null;
+  //_childId = extra['childId']
 
-    final List<Map<String, dynamic>> messagesData =
-        await FeedbackChatPage.feedbackService.fetchGetFeedbackMessages(chatThreadId, AuthProvider());
-    
-    setState(() {
-      _messages = messagesData
-          .map((messageJson) => Message.fromJson(messageJson, userId))
-          .toList();
-    });
-  } catch (e) {
-    print('Error fetching messages: $e');
+  print("Retrieved childId: $_childId");
+
+  if (_childId == null) {
+    await fetchMessagesFromToken();
+  } else {
+    await fetchMessagesFromChildId(_childId!);
   }
 }
+
+Future<void> fetchMessagesFromToken () async {
+    try {
+        
+        final Map<String, dynamic> chatThreadAndUserId =
+            await FeedbackChatPage.feedbackService.fetchGetChatThreadIdAndUserIdFromToken(AuthProvider());
+        
+        final int chatThreadId = chatThreadAndUserId['chatThreadId'];
+        final int userId = chatThreadAndUserId['userId'];
+
+        final List<Map<String, dynamic>> messagesData =
+            await FeedbackChatPage.feedbackService.fetchGetFeedbackMessages(chatThreadId, AuthProvider());
+        
+        setState(() {
+          _messages = messagesData
+              .map((messageJson) => Message.fromJson(messageJson, userId))
+              .toList();
+        });
+      } catch (e) {
+        print('Error fetching messages: $e');
+      }
+  }
+
+  Future<void> fetchMessagesFromChildId(int childId) async {
+    try {
+      int chatThreadId = await FeedbackChatPage.feedbackService.fetchGetChatThreadIdByChildId(childId, AuthProvider());
+      print("chatThreadId from fetchMessagesFromChildId ");
+      print(chatThreadId);
+      final List<Map<String, dynamic>> messagesData =
+          await FeedbackChatPage.feedbackService.fetchGetFeedbackMessages(chatThreadId, AuthProvider());
+      
+      setState(() {
+        _messages = messagesData
+            .map((messageJson) => Message.fromJson(messageJson, childId))
+            .toList();
+      });
+    } catch (e) {
+      print('Error fetching messages: $e');
+    }
+  }
 
 
 
@@ -257,10 +307,16 @@ void initState() {
     GoRouter.of(context).go(from ?? '/');
   }
 
-  void getChildIdFromPreviousPage(){
+  Future<int?> getChildIdFromPreviousPage() async{
     final GoRouterState state = GoRouterState.of(context);
     final Map<String, dynamic>? extra = state.extra as Map<String, dynamic>?;
     final int? childId = extra?['childId'];
+    
+    print("childId from getChildIdFromPreviousPage HAS LANDED ON FEEDBACKCHATPAGE ");
+    print(childId);
+    return childId;
+
+    
   }
 
   @override
