@@ -78,3 +78,21 @@ Future<http.Response> deletePackedIngredient(
   );
   return response; // Return the response from the server.
 }
+
+Future<http.Response> updatePackedIngredientOrder(
+    List<PackedIngredient> packedIngredients) async {
+  final jwtToken = await AuthProvider().retrieveToken();
+  final response = await http.put(
+    Uri.parse('${ApiConfig.baseUrl}/api/PackedIngredient/UpdateOrder'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $jwtToken',
+    },
+    body: jsonEncode(packedIngredients),
+  );
+  if (response.statusCode != 200) {
+    throw Exception(
+        'Failed to update packed ingredient: ${response.statusCode} - ${response.body}');
+  }
+  return response;
+}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/meal.dart';
+import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_meal.dart';
 import 'package:intl/intl.dart';
@@ -21,10 +22,16 @@ class MealNotifier with ChangeNotifier {
               iOptions:
                   IOSOptions(accessibility: KeychainAccessibility.first_unlock),
             ) {
-    _fetchMealData();
+    fetchMealData();
   }
 
-  Future<void> _fetchMealData() async {
+  void updateDate(DateTime date) async {
+    selectedDate = date;
+    await fetchMealData();
+    notifyListeners();
+  }
+
+  Future<void> fetchMealData() async {
     print('Fetching meal data');
     final mealService = MealService(apiUrl: baseUrl);
     final mealData = await mealService
@@ -54,7 +61,7 @@ class MealNotifier with ChangeNotifier {
       selectedDate = picked;
       await _secureStorage.write(
           key: '_selectedDate', value: selectedDate.toString());
-      await _fetchMealData();
+      await fetchMealData();
     }
   }
 }

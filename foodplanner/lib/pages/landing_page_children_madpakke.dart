@@ -11,8 +11,7 @@ import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
-import 'package:foodplanner/services/user_service.dart';
-import 'package:go_router/go_router.dart';
+import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:provider/provider.dart';
 
 class ChildLandingPageMadpakke extends StatefulWidget {
@@ -21,7 +20,7 @@ class ChildLandingPageMadpakke extends StatefulWidget {
       {super.key, /* required Map<String, String> */ required this.student});
 
   @override
-  _ChildLandingPageMadpakkeState createState() =>
+  State<ChildLandingPageMadpakke> createState() =>
       _ChildLandingPageMadpakkeState();
 }
 
@@ -33,6 +32,8 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   @override
   void initState() {
     super.initState();
+    final mealNotifier = Provider.of<MealNotifier>(context, listen: false);
+    mealNotifier.updateDate(DateTime.now());
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     //_hasRolesFuture = authProvider.hasRoles([ROLES.parent, ROLES.student]);
     authProvider.loadFromStorage().then((_) {
@@ -56,10 +57,6 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the size of the screen
-    final size = MediaQuery.of(context).size;
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -91,7 +88,6 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
         scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
-      bottomNavigationBar: NavBar(),
       body: Center(
         child: Column(
           children: [
