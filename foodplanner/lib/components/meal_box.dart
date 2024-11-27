@@ -50,7 +50,7 @@ class ReusableMealBox extends StatelessWidget {
 
           //Added listener for checking if meal is empty or not
           mealNotifier.isMealEmpty
-              ? Mealboxempty(size: size)
+              ? MealBoxEmpty(size: size)
               : MealBoxContent(size: size, caption: caption),
         ],
       ),
