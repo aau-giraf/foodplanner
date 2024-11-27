@@ -10,6 +10,9 @@ import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/components/Custom_List_Item.dart';
+import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/models/user.dart';
+import 'package:foodplanner/services/user_service.dart';
 
 class TeacherLandingPage extends StatefulWidget {
   const TeacherLandingPage({super.key});
@@ -127,9 +130,25 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
     });
   }
 
+  void toggleAllClasses() {
+    setState(() {
+      if (selectedClassIds.length == schoolClasses.length) {
+        selectedClassIds.clear();
+      } else {
+        selectedClassIds =
+            schoolClasses.map((schoolClass) => schoolClass['id']!).toSet();
+      }
+    });
+  }
+
   void collapseAll() {
     setState(() {
-      selectedClassIds.clear();
+      if (selectedClassIds.isEmpty) {
+        selectedClassIds =
+            schoolClasses.map((schoolClass) => schoolClass['id']!).toSet();
+      } else {
+        selectedClassIds.clear();
+      }
     });
   }
 
@@ -160,22 +179,20 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
           ),
           Row(
             children: [
-              /*Expanded(
-                  child: SearchField(
-                    controller: searchController,
-                    hintText: 'Søg efter elev',
-                    onChanged: filterStudents,
-                  ),
-                ),*/
-              const SizedBox(width: 16.0),
-              GestureDetector(
-                onTap: collapseAll,
-                child: Text(
-                  'Collapse all',
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    color: Colors.blue,
-                  ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.7,
+                child: SearchField(
+                  controller: searchController,
+                  hintText: 'Søg efter elev',
+                  onChanged: filterStudents,
+                ),
+              ),
+              const SizedBox(width: 0),
+              Expanded(
+                child: CustomButton(
+                  onTab: collapseAll,
+                  text: selectedClassIds.isEmpty ? 'Åben alle' : 'Luk alle',
+                  customHeight: 30,
                 ),
               ),
             ],
@@ -270,53 +287,3 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
     );
   }
 }
-
-/*
-Expanded(
-              child: ListView.builder(
-                itemCount: schoolClasses.length,
-                itemBuilder: (context, index) {
-                  final schoolClass = schoolClasses[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        title: Text(schoolClass['name'] ?? 'Unknown'),
-                        onTap: () => toggleClassStudents(schoolClass['id']!),
-                      ),
-                      if (selectedClassIds.contains(schoolClass['id']))
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: Column(
-                            children: students
-                                .where((student) =>
-                                    student['classId'] == schoolClass['id'])
-                                .map((student) {
-                              return ListTile(
-                                key: ValueKey(student[
-                                    'id']), // Add a unique key to each ListTile
-                                title: Text(
-                                  student['name'] ?? 'Unknown',
-                                  style: TextStyle(
-                                    fontWeight: highlightedStudentIds
-                                            .contains(student['id'])
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                    color: highlightedStudentIds
-                                            .contains(student['id'])
-                                        ? Colors.blue
-                                        : Colors.black,
-                                  ),
-                                ),
-                                onTap: () => navigateToStudentDetails(student),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                    ],
-                  );
-                },
-              ),
-            ),
-
-          */
