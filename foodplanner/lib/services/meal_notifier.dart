@@ -31,7 +31,6 @@ class MealNotifier with ChangeNotifier {
   }
 
   Future<void> fetchMealData() async {
-    print('Fetching meal data');
     final mealService = MealService(apiUrl: baseUrl);
     final mealData = await mealService
         .fetchMealData(DateFormat('yyyy-MM-dd').format(selectedDate));

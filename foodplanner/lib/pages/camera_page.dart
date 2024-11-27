@@ -1,14 +1,17 @@
-import 'dart:io' show File;
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/popup_box.dart';
 import 'package:http/http.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:foodplanner/config/colors.dart';
 
@@ -67,8 +70,9 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
           widget.controller; // Use the provided camera controller.
       imagePicker = widget.imagePicker ??
           ImagePicker(); // Use provided image picker or create a new one.
+      print('Camera controller provided');
     } else {
-      _setupCameraController(); // Set up the camera controller if none is provided.
+      print('No camera controller provided');
       imagePicker = ImagePicker(); // Set up a new image picker.
     }
   }
@@ -76,48 +80,68 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   /// The method which contains all the UI widgets, and forms them into the front end.
   @override
   Widget build(BuildContext context) {
-    if (cameraController == null ||
+    /*    if (cameraController == null ||
         cameraController?.value.isInitialized == false) {
       // Check if the camera controller is null or not initialized.
       return const Center(
-          child:
-              CircularProgressIndicator()); // Center widget to show loading indicator if camera is not ready.
+          child: Column(
+        children: [
+          CircularProgressIndicator(),
+          Text('Loading camera...'),
+        ],
+      )); // Center widget to show loading indicator if camera is not ready.
     }
 
-    // Scaffold is a layout structure from the flutter library for the UI.
-    return Scaffold(
-      body: image == null
-          ? SafeArea(
-              // Ensures content is within the safe areas of the device.
-              child: Stack(
-                // Creates a stack layout widget.
-                children: [
-                  Positioned.fill(
-                    child: AspectRatio(
-                      // Defining the aspect ratio of the widget.
-                      aspectRatio: cameraController!.value
-                          .aspectRatio, // Sets the aspect ratio to match the camera controller.
-                      child: CameraPreview(
-                          cameraController!), // Displays the camera preview.
-                    ),
-                  ),
-                  // Positioned.fill(
-                  //   child: CustomPaint(
-                  //     painter: CustomSquareCameraOverlay(),
-                  //   ),
-                  // ),
-                  Align(
-                    // Allows its widgets to be alligned.
-                    alignment: Alignment
-                        .bottomCenter, // Alligns the widgets to the bottom center of the screen.
-                    child: _controlPanel(
-                        context), // The control panel which contains the buttons.
-                  ),
-                ],
-              ),
-            )
-          : _acceptImage(context),
-    );
+    print('controller: $cameraController');
+    print('init: ${cameraController?.value.isInitialized}');
+ */
+    return FutureBuilder(
+        future: _setupCameraController(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Scaffold(
+              body: image == null
+                  ? SafeArea(
+                      // Ensures content is within the safe areas of the device.
+                      child: Stack(
+                        // Creates a stack layout widget.
+                        children: [
+                          Positioned.fill(
+                            child: AspectRatio(
+                              // Defining the aspect ratio of the widget.
+                              aspectRatio: cameraController!.value
+                                  .aspectRatio, // Sets the aspect ratio to match the camera controller.
+                              child: CameraPreview(
+                                  cameraController!), // Displays the camera preview.
+                            ),
+                          ),
+                          // Positioned.fill(
+                          //   child: CustomPaint(
+                          //     painter: CustomSquareCameraOverlay(),
+                          //   ),
+                          // ),
+                          Align(
+                            // Allows its widgets to be alligned.
+                            alignment: Alignment
+                                .bottomCenter, // Alligns the widgets to the bottom center of the screen.
+                            child: _controlPanel(
+                                context), // The control panel which contains the buttons.
+                          ),
+                        ],
+                      ),
+                    )
+                  : _acceptImage(context),
+            );
+          } else {
+            return const Center(
+                child: Column(
+              children: [
+                CircularProgressIndicator(),
+                Text('Loading camera...'),
+              ],
+            ));
+          }
+        });
   }
 
   /// Widget to display the selected image.
@@ -138,7 +162,6 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
             contentType:
                 MediaType('image', 'png'), // Optional: specify the content type
           );
-          print('Media type: ${multipartFile.contentType}');
 
           // Display the image and use the MultipartFile as needed
           final displayImage = Image.memory(
@@ -370,39 +393,95 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   Future<void> _pickImageFromGallery() async {
     imagePicker ??= ImagePicker();
 
-    final returnedImage =
-        await imagePicker!.pickImage(source: ImageSource.gallery);
-    if (returnedImage != null) {
-      final bytes = await returnedImage.readAsBytes();
-      image = http.MultipartFile.fromBytes(
-        'imageFile',
-        bytes,
-        filename: returnedImage.name,
-        contentType: MediaType('image', 'jpeg'),
-      );
-      await cropImageToSquare();
-      setState(() {});
+    var status = await Permission.photos.request();
+    print('Permission status: $status');
+    if (status.isGranted) {
+      try {
+        final returnedImage =
+            await imagePicker!.pickImage(source: ImageSource.gallery);
+        if (returnedImage != null) {
+          final bytes = await returnedImage.readAsBytes();
+          image = http.MultipartFile.fromBytes(
+            'imageFile',
+            bytes,
+            filename: returnedImage.name,
+            contentType: MediaType('image', 'jpeg'),
+          );
+          await cropImageToSquare();
+          setState(() {});
+        }
+      } on PlatformException catch (e) {
+        print('PlatformException: ${e.message}');
+      } catch (e) {
+        print('Error picking image: $e');
+      }
+    } else if (status.isDenied) {
+      print('Permission denied. Please enable photo access in settings.');
+    } else if (status.isPermanentlyDenied) {
+      print(
+          'Permission permanently denied. Please enable photo access in settings.');
+    } else {
+      print(status);
     }
   }
 
   /// The method which sets up the camera controller for using the device's cameras.
   Future<void> _setupCameraController() async {
-    cameras =
-        await availableCameras(); // Checks if the device has any available cameras
-    if (cameras.isNotEmpty) {
-      // Checks that the camera list contains a camera.
-      setState(() {
-        // Updates the state to uses the new camera controller.
-        cameraController = CameraController(
+    print('Setting up camera controller');
+    try {
+      cameras =
+          await availableCameras(); // Checks if the device has any available cameras
+      if (cameras.isNotEmpty) {
+        // Checks that the camera list contains a camera.
+        setState(() {
+          // Updates the state to uses the new camera controller.
+          cameraController = CameraController(
             cameras.first,
-            ResolutionPreset
-                .high); // Creates a camera controller using the front camera and sets the resolution as 720p.
-      });
-      await cameraController
-          ?.initialize(); // Waits until the camera controller is initialized.
-      if (mounted)
-        setState(
-            () {}); // Checks if the state is currently a part of a tree. If yes, it updates the state.
+            ResolutionPreset.high,
+            enableAudio: false,
+          ); // Creates a camera controller using the front camera and sets the resolution as 720p.
+        });
+        await cameraController
+            ?.initialize(); // Waits until the camera controller is initialized.
+      }
+      print(
+          'Camera controller initialized: ${cameraController?.value.isInitialized}');
+    } on CameraException catch (e) {
+      if (e.code == 'CameraAccessDeniedWithoutPrompt') {
+        print('Camera access denied without prompt');
+        showCupertinoDialog(
+          // If not, it opens a pop-up window.
+          context: context,
+          builder: (BuildContext context) => CupertinoAlertDialog(
+            // Create a Cupertino alert dialog.
+            title: Text('Adgang afvist'), // Title of the dialog.
+            content: Text(
+                'Kamera adgang er blevet afvist. Vil du åbne indstillingerne for at aktivere kameraadgang?'), // Content of the dialog.
+            actions: <CupertinoDialogAction>[
+              // Actions for the alert dialog.
+              CupertinoDialogAction(
+                isDefaultAction: true, // Highlight the default action.
+                onPressed: () {
+                  openAppSettings();
+                },
+                child: const Text("Ja"), // Button text for "Yes".
+              ),
+              CupertinoDialogAction(
+                isDestructiveAction: true, // Mark as a destructive action.
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Nej'), // Button text for "No".
+              ),
+            ],
+          ),
+        );
+      } else {
+        print('Camera exception: $e');
+      }
+    } catch (e) {
+      print('Error setting up camera controller: $e');
     }
+    print('Camera controller set up');
   }
 }

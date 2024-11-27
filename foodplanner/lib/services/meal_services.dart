@@ -65,7 +65,6 @@ Future<http.Response> updateMeal(
     http.Client client, AuthProvider authProvider, final Meal meal) async {
   final jwtToken = await authProvider.retrieveToken();
   // Sending a POST request to the API endpoint to create a new meal.
-  print("Meal is ${meal.id}");
   final response = await client.put(
     Uri.parse(
         '${ApiConfig.baseUrl}/api/Meals/Update/${meal.id}'), // Specify the API endpoint for meal creation.

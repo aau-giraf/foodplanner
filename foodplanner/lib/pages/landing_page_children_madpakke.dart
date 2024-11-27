@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-
 import 'package:foodplanner/components/mealBox.dart';
-import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child.dart';
-
 import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/auth/auth_provider.dart';

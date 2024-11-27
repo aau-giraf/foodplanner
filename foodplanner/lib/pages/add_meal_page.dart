@@ -79,9 +79,6 @@ class AddMealPageState extends State<AddMealPage> {
             .body)
         : null;
 
-    print(
-        "her: ${DateFormat('yyyy-MM-dd').format(await mealNotifier.retrieveDate())}");
-
     await createMeal(
       // Creates a meal using the inputted ingredients, without an image.
       client,
