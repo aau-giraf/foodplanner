@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/pages/meal_page_teacher.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -85,7 +86,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
       context,
       MaterialPageRoute(
         builder: (context) =>
-            ChildLandingPageMadpakke(student: filteredStudent),
+            TeacherMealPage(student: filteredStudent),
       ),
     );
   }

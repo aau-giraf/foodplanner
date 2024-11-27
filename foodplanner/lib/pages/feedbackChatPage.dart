@@ -252,6 +252,12 @@ void initState() {
     GoRouter.of(context).go(from ?? '/');
   }
 
+  void getChildIdFromPreviousPage(){
+    final GoRouterState state = GoRouterState.of(context);
+    final Map<String, dynamic>? extra = state.extra as Map<String, dynamic>?;
+    final int? childId = extra?['childId'];
+  }
+
   @override
   Widget build(BuildContext context) {
     final GoRouterState state = GoRouterState.of(context);

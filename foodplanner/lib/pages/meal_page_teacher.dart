@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/mealBox.dart';
 import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/pages/pin_code.dart';
+import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/user_service.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 
-class ChildLandingPageMadpakke extends StatefulWidget {
+class TeacherMealPage extends StatefulWidget {
   final Map<String, String> student;
-  const ChildLandingPageMadpakke({super.key, /* required Map<String, String> */ required this.student});
+  const TeacherMealPage({super.key, /* required Map<String, String> */ required this.student});
 
   @override
-  _ChildLandingPageMadpakkeState createState() => _ChildLandingPageMadpakkeState();
+  _TeacherMealPageState createState() => _TeacherMealPageState();
 }
 
 
-class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
+class _TeacherMealPageState extends State<TeacherMealPage> {
   late Future<bool> _hasRolesFuture;
   Child? _child;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
@@ -28,7 +31,6 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   void initState() {
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    //_hasRolesFuture = authProvider.hasRoles([ROLES.parent, ROLES.student]);
     authProvider.loadFromStorage().then((_){
       authProvider.retrieveToken().then((token){
         
@@ -49,7 +51,6 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the size of the screen
     final size = MediaQuery.of(context).size;
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     
@@ -61,7 +62,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
           Align(
             alignment: Alignment.topCenter,
             child: SizedBox(
-              width: size.width * 0.9,  // Adjust width percentage as needed
+              width: size.width * 0.9,  
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -79,6 +80,15 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                         SizedBox(height: size.height * 0.05),
                         ReusableMealBox(size: size),
                         SizedBox(height: size.height * 0.02),
+
+                        CustomButton(
+                            onTab: () {
+                              GoRouter.of(context).go(FEEDBACK_Page, extra: {'from': TEACHER_ROOT, 'childId': _child?.childId});;
+                            }, 
+                            text: 'Se Feedback',
+                            //fontSize: 16,
+                            customWidth: size.width * 0.6,
+                          ),
                       ],
                     ),
                   ),
@@ -105,25 +115,12 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                     },
                   ),
                 );
+                
               } else {
                 return SizedBox.shrink(); // Show nothing if the user does not have the roles
               }
             },
           ),
-          /* if (authProvider.hasRoles([ROLES.parent], [ROLES.child]))
-          Positioned(
-            top: -8,
-            right: 30,
-            child: IconButton(
-              icon: Icon(Icons.lock_outline, size: 40, color: Colors.black),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PinCode()),
-                );  
-              },
-            ),
-          ), */
         ],
       ),
     );
