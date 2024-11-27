@@ -42,6 +42,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
   CameraController? cameraController; // Controller for managing the camera.
   ImagePicker? imagePicker; // ImagePicker instance for selecting images.
   MultipartFile? image; // The selected image's file.
+  Future<void>? _cameraSetupFuture; // Future for initializing the controller.
 
   /// A method for checking whether the app becomes inactive.
   @override
@@ -57,6 +58,7 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
       cameraController?.dispose(); // Deletes the camera controller.
     } else if (state == AppLifecycleState.resumed) {
       // Checks if the app becomes active.
+      print('App resumed');
       _setupCameraController(); // Sets up the camera controller.
     }
   }
@@ -70,10 +72,10 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
           widget.controller; // Use the provided camera controller.
       imagePicker = widget.imagePicker ??
           ImagePicker(); // Use provided image picker or create a new one.
-      print('Camera controller provided');
     } else {
-      print('No camera controller provided');
       imagePicker = ImagePicker(); // Set up a new image picker.
+      _cameraSetupFuture =
+          _setupCameraController(); // Set up the camera controller.
     }
   }
 
@@ -96,8 +98,9 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
     print('init: ${cameraController?.value.isInitialized}');
  */
     return FutureBuilder(
-        future: _setupCameraController(),
+        future: _cameraSetupFuture,
         builder: (context, snapshot) {
+          print('snapshot: $snapshot');
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
               body: image == null
@@ -143,6 +146,17 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
           }
         });
   }
+
+  /* Future<Uint8List> _getImageBytes() async {
+    if (!image!.isFinalized) {
+      return await image!.finalize().toBytes();
+    } else {
+      // Handle the case where the image is already finalized
+      // For example, you can log a message or return the existing bytes
+      print('The image is already finalized.');
+      return image!.toBytes();
+    }
+  } */
 
   /// Widget to display the selected image.
   Widget _acceptImage(BuildContext context) {
@@ -353,8 +367,8 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
 
   // A method for cropping the inputted image's size.
   Future<void> cropImageToSquare() async {
-    final img.Image? decodedImage =
-        img.decodeImage(await this.image!.finalize().toBytes());
+    var finalizedImage = await image!.finalize().toBytes();
+    final img.Image? decodedImage = img.decodeImage(finalizedImage);
     ; // Decodes the image from the MultipartFile as bytes.
 
     if (decodedImage != null) {
@@ -427,7 +441,6 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
 
   /// The method which sets up the camera controller for using the device's cameras.
   Future<void> _setupCameraController() async {
-    print('Setting up camera controller');
     try {
       cameras =
           await availableCameras(); // Checks if the device has any available cameras
@@ -444,8 +457,6 @@ class _MealPageState extends State<CameraPage> with WidgetsBindingObserver {
         await cameraController
             ?.initialize(); // Waits until the camera controller is initialized.
       }
-      print(
-          'Camera controller initialized: ${cameraController?.value.isInitialized}');
     } on CameraException catch (e) {
       if (e.code == 'CameraAccessDeniedWithoutPrompt') {
         print('Camera access denied without prompt');
