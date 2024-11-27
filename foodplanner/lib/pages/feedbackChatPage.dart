@@ -146,12 +146,17 @@ void initState() {
   }
 
   void _editMessage(int index)async {
-    bool response = await FeedbackChatPage.feedbackService.fetchUpdateMessageFromMessageID(_messages[index].MessageID,_controller.text, AuthProvider());
-    fetchMessages();
     setState(() {
       _controller.text = _messages[index].Content;
       _editingMessageIndex = index;
     });
+  }
+  void _sendEditMessage(int index)async {
+    bool response = await FeedbackChatPage.feedbackService.fetchUpdateMessageFromMessageID(_messages[index].MessageID,_controller.text, AuthProvider());
+    if (response){
+      fetchMessages();
+      _cancelEdit();
+    }
   }
 
   void _cancelEdit() {
@@ -383,7 +388,7 @@ void initState() {
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(Icons.send),
-                  onPressed: FeedbackChatPage.isEditing ? () => _editMessage(_editingMessageIndex!) : _sendMessage,
+                  onPressed: FeedbackChatPage.isEditing ? () => _sendEditMessage(_editingMessageIndex!) : _sendMessage,
                 ),
               ),
             ),
