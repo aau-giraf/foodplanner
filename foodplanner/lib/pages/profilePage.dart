@@ -161,7 +161,6 @@ class ParentProfileState extends State<ParentProfile>
                               controller: firstNameController,
                               errorText: '',
                               hintText: 'Fornavn',
-                              type: TextFieldType.smallTextField,
                               obscureText: false,
                               color: Colors.transparent,
                               onChanged: (value) {
@@ -218,7 +217,6 @@ class ParentProfileState extends State<ParentProfile>
                               controller: lastNameController,
                               errorText: '',
                               hintText: 'Efternavn',
-                              type: TextFieldType.smallTextField,
                               obscureText: false,
                               color: Colors.transparent,
                               onChanged: (value) {
