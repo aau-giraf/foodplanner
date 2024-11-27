@@ -2,20 +2,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:convert';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
+import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/meal_services.dart';
+import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
+import 'package:foodplanner/services/fetch_meal.dart';
 
 /// This class is used to create the meal page where the user can create an individual meal for their children.
 class MealFormPage extends StatefulWidget {
@@ -35,11 +40,12 @@ class _MealFormPageState extends State<MealFormPage> {
   DateTime? date;
   late List<int> selectedIngredientsIds;
   final TextEditingController mealNameController = TextEditingController();
+  String baseUrl = ApiConfig.baseUrl;
+  int mealId = 0;
 
   @override
   void initState() {
     super.initState(); // Call the superclass initState method.
-    mealTitle = retrieveMealName();
     foodImageId = retrieveFoodImageId();
     _initializeDate();
     selectedIngredientsIds = retrieveSelectedIngredients();
@@ -53,7 +59,11 @@ class _MealFormPageState extends State<MealFormPage> {
 
   // Method for deleting the controllers when they are done being used.
   String retrieveMealName() {
-    return mealNameController.text;
+    if (mealNameController.text.isEmpty) {
+      return 'Madpakke';
+    } else {
+      return mealNameController.text;
+    }
   }
 
   int? retrieveFoodImageId() {
@@ -137,8 +147,7 @@ class _MealFormPageState extends State<MealFormPage> {
                       child: ListView.builder(
                         itemCount: selectedIngredients.length,
                         itemBuilder: (BuildContext context, index) {
-                          final ingredient = selectedIngredients[index]
-                              as Map<String, dynamic>;
+                          final ingredient = selectedIngredients[index];
                           return SettingsWidget(
                             leftIcon: SFIcons
                                 .sf_person_crop_circle_fill_badge_checkmark,
@@ -201,7 +210,9 @@ class _MealFormPageState extends State<MealFormPage> {
                                   isDestructiveAction:
                                       true, // Mark as a destructive action.
                                   onPressed: () async {
-                                    Navigator.pop(context);
+                                    selectedIngredientsIds =
+                                        retrieveSelectedIngredients();
+                                    final mealTitle = retrieveMealName();
                                     // Add your create meal callback here
                                     final authProvider =
                                         AuthProvider(); // Ensure you have an instance of AuthProvider
@@ -211,13 +222,44 @@ class _MealFormPageState extends State<MealFormPage> {
                                       foodImageId,
                                       date,
                                     );
-                                    if (response.statusCode == 200) {
-                                      // Handle successful meal creation
-                                      print('Meal created successfully');
+                                    final Map<String, dynamic> responseData =
+                                        jsonDecode(response.body);
+                                    if (responseData.containsKey('id')) {
+                                      setState(() {
+                                        mealId = responseData['id'];
+                                      });
+                                      print('Created meal ID: $mealId');
+                                      if (selectedIngredientsIds.isNotEmpty) {
+                                        print(
+                                            'Processing selected ingredients: $selectedIngredientsIds');
+                                        for (var ingredientId
+                                            in selectedIngredientsIds) {
+                                          print(
+                                              'Processing ingredient ID: $ingredientId');
+                                          try {
+                                            final packedIngredientResponse =
+                                                await createPackedIngredient(
+                                              authProvider,
+                                              mealId,
+                                              ingredientId,
+                                            );
+                                            print(
+                                                'Successfully created packed ingredient for ID: $ingredientId');
+                                          } catch (e) {
+                                            print(
+                                                'Failed to create packed ingredient for ID: $ingredientId - $e');
+                                          }
+                                        }
+                                      } else {
+                                        print(
+                                            'No selected ingredients to process.');
+                                      }
                                     } else {
-                                      // Handle error
-                                      print('Failed to create meal');
+                                      print(
+                                          'Failed to retrieve meal ID from response.');
                                     }
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
                                   },
                                   child: const Text(
                                       'Nej'), // Button text for "No".
