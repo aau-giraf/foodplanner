@@ -2,23 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/pages/add_meal_page.dart';
-import 'package:foodplanner/pages/createMealPage.dart';
-import 'package:foodplanner/pages/feedbackChatPage.dart';
-import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
+import 'package:foodplanner/pages/create_meal_page.dart';
 import 'package:foodplanner/pages/edit_meal_page.dart';
+import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
-import 'package:foodplanner/pages/landing_page_teacher.dart';
-import 'package:foodplanner/pages/profilePage.dart';
-import 'package:foodplanner/pages/settingsPage.dart';
-import 'package:foodplanner/pages/meal_list_page.dart';
-import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
+import 'package:foodplanner/pages/landing_page_parent.dart';
+import 'package:foodplanner/pages/landing_page_teacher.dart';
+import 'package:foodplanner/pages/meal_list_page.dart';
+import 'package:foodplanner/pages/profile_page.dart';
+import 'package:foodplanner/pages/settings_page.dart';
+import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
 import '../pages/login_page.dart';
 import '../pages/unauthorized_page.dart';
 
@@ -88,7 +89,6 @@ final router = GoRouter(
       path: '/empty',
       builder: (context, state) => MealListPage(),
     ),
-
 
     //no need for wildcard handling as flutter already does it
 
