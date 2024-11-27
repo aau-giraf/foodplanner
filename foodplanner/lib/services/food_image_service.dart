@@ -2,8 +2,10 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:http/http.dart' as http;
 
-Future<http.Response> UploadFoodImage(http.Client client, http.MultipartFile image) async {
-  final jwtToken = await AuthProvider().retrieveToken(); // Get the authorization token
+Future<http.Response> UploadFoodImage(http.MultipartFile image) async {
+  final jwtToken =
+      await AuthProvider().retrieveToken(); // Get the authorization token
+  final client = http.Client();
 
   try {
     // Initialize the MultipartRequest for a file upload

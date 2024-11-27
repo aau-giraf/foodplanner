@@ -96,8 +96,7 @@ class EditMealFormPage extends StatelessWidget {
             onTab: () async {
               final authProvider = AuthProvider();
               int? imageId = this.image != null
-                  ? int.parse(
-                      (await UploadFoodImage(http.Client(), this.image!)).body)
+                  ? int.parse((await UploadFoodImage(this.image!)).body)
                   : null;
               updateMeal(
                   client,

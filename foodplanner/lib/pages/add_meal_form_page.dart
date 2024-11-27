@@ -12,15 +12,15 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
+import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
-import 'package:foodplanner/services/fetch_meal.dart';
+import 'package:foodplanner/services/food_image_service.dart';
 
 /// This class is used to create the meal page where the user can create an individual meal for their children.
 class MealFormPage extends StatefulWidget {
@@ -42,6 +42,7 @@ class _MealFormPageState extends State<MealFormPage> {
   final TextEditingController mealNameController = TextEditingController();
   String baseUrl = ApiConfig.baseUrl;
   int mealId = 0;
+  http.MultipartFile? image;
 
   @override
   void initState() {
@@ -59,6 +60,7 @@ class _MealFormPageState extends State<MealFormPage> {
 
   // Method for deleting the controllers when they are done being used.
   String retrieveMealName() {
+    print('Retrieving meal name ${mealNameController.text}');
     if (mealNameController.text.isEmpty) {
       return 'Madpakke';
     } else {
@@ -77,8 +79,46 @@ class _MealFormPageState extends State<MealFormPage> {
         .toList();
   }
 
+  Future<void> createMealWithIngredients() async {
+    final selectedIngredientsIds = retrieveSelectedIngredients();
+    final mealTitle = retrieveMealName();
+    final authProvider =
+        AuthProvider(); // Ensure you have an instance of AuthProvider
+
+    final response = await createMeal(
+      authProvider,
+      mealTitle,
+      foodImageId,
+      date,
+    );
+
+    final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+    if (responseData.containsKey('id')) {
+      setState(() {
+        mealId = responseData['id'];
+      });
+
+      if (selectedIngredientsIds.isNotEmpty) {
+        for (var ingredientId in selectedIngredientsIds) {
+          try {
+            final packedIngredientResponse = await createPackedIngredient(
+              authProvider,
+              mealId,
+              ingredientId,
+            );
+          } catch (e) {
+            print(
+                'Failed to create packed ingredient for ID: $ingredientId - $e');
+          }
+        }
+      }
+    }
+  }
+
   @override
   void dispose() {
+    mealNameController.dispose(); // Dispose of the controller.
     super.dispose(); // Call the superclass dispose method.
   }
 
@@ -134,7 +174,7 @@ class _MealFormPageState extends State<MealFormPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: CustomTextField(
-                        controller: TextEditingController(),
+                        controller: mealNameController,
                         errorText: "",
                         hintText: 'Navn fx. "Rugbrød med ost og grønt"',
                       ),
@@ -199,9 +239,35 @@ class _MealFormPageState extends State<MealFormPage> {
                                 CupertinoDialogAction(
                                   isDefaultAction:
                                       true, // Highlight the default action.
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    final image = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CameraPage(
+                                          onImagePicked: (image) {
+                                            setState(() {
+                                              if (image is http.MultipartFile) {
+                                                this.image = image;
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                    if (image != null) {
+                                      final imageResponse = await UploadFoodImage(
+                                          image); // Ensure this method is defined.
+                                      final Map<String, dynamic> responseData =
+                                          jsonDecode(imageResponse.body);
+                                      if (responseData.containsKey('id')) {
+                                        setState(() {
+                                          foodImageId = responseData['id'];
+                                        });
+                                      }
+                                    }
+                                    createMealWithIngredients();
                                     Navigator.pop(context);
-                                    // Add your camera callback here
+                                    Navigator.pop(context);
                                   },
                                   child: const Text(
                                       "Ja"), // Button text for "Yes".
@@ -210,54 +276,7 @@ class _MealFormPageState extends State<MealFormPage> {
                                   isDestructiveAction:
                                       true, // Mark as a destructive action.
                                   onPressed: () async {
-                                    selectedIngredientsIds =
-                                        retrieveSelectedIngredients();
-                                    final mealTitle = retrieveMealName();
-                                    // Add your create meal callback here
-                                    final authProvider =
-                                        AuthProvider(); // Ensure you have an instance of AuthProvider
-                                    final response = await createMeal(
-                                      authProvider,
-                                      mealTitle,
-                                      foodImageId,
-                                      date,
-                                    );
-                                    final Map<String, dynamic> responseData =
-                                        jsonDecode(response.body);
-                                    if (responseData.containsKey('id')) {
-                                      setState(() {
-                                        mealId = responseData['id'];
-                                      });
-                                      print('Created meal ID: $mealId');
-                                      if (selectedIngredientsIds.isNotEmpty) {
-                                        print(
-                                            'Processing selected ingredients: $selectedIngredientsIds');
-                                        for (var ingredientId
-                                            in selectedIngredientsIds) {
-                                          print(
-                                              'Processing ingredient ID: $ingredientId');
-                                          try {
-                                            final packedIngredientResponse =
-                                                await createPackedIngredient(
-                                              authProvider,
-                                              mealId,
-                                              ingredientId,
-                                            );
-                                            print(
-                                                'Successfully created packed ingredient for ID: $ingredientId');
-                                          } catch (e) {
-                                            print(
-                                                'Failed to create packed ingredient for ID: $ingredientId - $e');
-                                          }
-                                        }
-                                      } else {
-                                        print(
-                                            'No selected ingredients to process.');
-                                      }
-                                    } else {
-                                      print(
-                                          'Failed to retrieve meal ID from response.');
-                                    }
+                                    await createMealWithIngredients();
                                     Navigator.pop(context);
                                     Navigator.pop(context);
                                   },
