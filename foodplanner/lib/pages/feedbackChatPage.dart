@@ -40,6 +40,7 @@ class Message {
 class FeedbackChatPage extends StatefulWidget {
   const FeedbackChatPage({Key? key}) : super(key: key);
   static final FeedbackService feedbackService = FeedbackService(apiUrl: ApiConfig.baseUrl);
+  static bool isEditing = false;
   
   @override
   _FeedbackChatPageState createState() => _FeedbackChatPageState();
@@ -138,12 +139,15 @@ void initState() {
 
 
   Future<void> _deleteMessage(int index) async {
+    FeedbackChatPage.feedbackService.fetchArchieveMessageFromMessageID(_messages[index].MessageID, AuthProvider());
     setState(() {
       _messages[index].Content = "Denne besked er blevet slettet.";
     });
   }
 
-  void _editMessage(int index) {
+  void _editMessage(int index)async {
+    bool response = await FeedbackChatPage.feedbackService.fetchUpdateMessageFromMessageID(_messages[index].MessageID,_controller.text, AuthProvider());
+    fetchMessages();
     setState(() {
       _controller.text = _messages[index].Content;
       _editingMessageIndex = index;
@@ -151,6 +155,7 @@ void initState() {
   }
 
   void _cancelEdit() {
+    FeedbackChatPage.isEditing = false;
     setState(() {
       _controller.clear();
       _editingMessageIndex = null;
@@ -175,6 +180,7 @@ void initState() {
                     onPressed: () {
                       Navigator.of(context).pop();
                       _editMessage(index);
+                      FeedbackChatPage.isEditing = true;
                     },
                   ),
                   Text("Rediger"),
@@ -187,7 +193,7 @@ void initState() {
                     icon: Icon(Icons.delete),
                     onPressed: () {
                       Navigator.of(context).pop();
-                      //_showDeleteConfirmationDialog(index);
+                      _showDeleteConfirmationDialog(index);
                     },
                   ),
                   Text("Slet"),
@@ -377,7 +383,7 @@ void initState() {
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(Icons.send),
-                  onPressed: _sendMessage,
+                  onPressed: FeedbackChatPage.isEditing ? () => _editMessage(_editingMessageIndex!) : _sendMessage,
                 ),
               ),
             ),

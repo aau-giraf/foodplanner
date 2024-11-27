@@ -124,16 +124,54 @@ Future<void> fetchSendFeedbackMessage({
     }
   }
 
+Future<void> fetchArchieveMessageFromMessageID(int messageId, AuthProvider authProvider) async {
+  final token = await authProvider.retrieveToken();
 
+  try {
+    final response = await http.delete(
+      Uri.parse('$apiUrl/api/FeedbackChat/ArchiveMessage/$messageId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      print('Message archived successfully');
+    } else {
+      throw Exception('Failed to archive message');
+    }
+  } catch (e) {
+    print('problem with archiving message: $e');
+    rethrow;
+  }
+}
+Future<bool> fetchUpdateMessageFromMessageID(int messageId, String content, AuthProvider authProvider) async {
+  final token = await authProvider.retrieveToken();
 
+  final Map<String, dynamic> requestBody = {
+    "messageId": messageId,
+    "content": content,
+  };
 
-
-
-
-
-
-
-
-
-
+  try {
+    final response = await http.put(
+      Uri.parse('$apiUrl/api/FeedbackChat/UpdateMessage'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(requestBody),
+    );
+    if (response.statusCode == 200) {
+      print('Message updated successfully');
+      return true;
+    } else {
+      throw Exception('Failed to update message');
+    }
+  } catch (e) {
+    print('problem with updating message: $e');
+    return false;
+    rethrow;
+  }
+}
 }
