@@ -11,7 +11,6 @@ import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/components/settings_header.dart';
-import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:foodplanner/pages/choose_parent.dart';
