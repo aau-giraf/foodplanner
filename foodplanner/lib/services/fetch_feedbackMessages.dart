@@ -35,7 +35,6 @@ class FeedbackService{
 
 
 Future<void> fetchSendFeedbackMessage({
-  required int userId,
   required int chatThreadId,
   required String content,
   required AuthProvider authProvider,
@@ -44,7 +43,6 @@ Future<void> fetchSendFeedbackMessage({
 
   // Create the request payload
   final Map<String, dynamic> requestBody = {
-    "userId": userId,
     "chatThreadId": chatThreadId,
     "content": content,
   };

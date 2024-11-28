@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/pages/add_meal_page.dart';
 import 'package:foodplanner/pages/createMealPage.dart';
@@ -100,7 +101,12 @@ final router = GoRouter(
           future: authProvider.hasRoles([ROLES.teacher]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+              return const Center(
+            child: LoadingAnimation(
+              imagePath: 'assets/images/logo.png', // Replace with your image path
+              size: 50.0,
+            ),
+          );  // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const TeacherLandingPage();
             } else {
@@ -118,7 +124,12 @@ final router = GoRouter(
           future: authProvider.hasRoles([ROLES.student]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+               return const Center(
+            child: LoadingAnimation(
+              imagePath: 'assets/images/logo.png', // Replace with your image path
+              size: 50.0,
+            ),
+          );  // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const ChildLandingPageMadpakke(
                 student: {},
@@ -138,7 +149,12 @@ final router = GoRouter(
           future: authProvider.hasRolesUnapproved([ROLES.student]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+              return const Center(
+            child: LoadingAnimation(
+              imagePath: 'assets/images/logo.png', // Replace with your image path
+              size: 50.0,
+            ),
+          );  // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const CreateChildPage(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
@@ -156,7 +172,12 @@ final router = GoRouter(
           future: authProvider.hasRoles([ROLES.parent, ROLES.teacher]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+              return const Center(
+            child: LoadingAnimation(
+              imagePath: 'assets/images/logo.png', // Replace with your image path
+              size: 50.0,
+            ),
+          );  // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const SettingsPage(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
@@ -174,7 +195,12 @@ final router = GoRouter(
           future: authProvider.hasRoles([ROLES.parent, ROLES.teacher]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+              return const Center(
+            child: LoadingAnimation(
+              imagePath: 'assets/images/logo.png', // Replace with your image path
+              size: 50.0,
+            ),
+          );  // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const ProfilePage(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
@@ -192,7 +218,12 @@ final router = GoRouter(
           future: authProvider.hasRoles([ROLES.parent, ROLES.teacher]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+              return const Center(
+            child: LoadingAnimation(
+              imagePath: 'assets/images/logo.png', // Replace with your image path
+              size: 50.0,
+            ),
+          ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const FeedbackChatPage(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
@@ -210,7 +241,12 @@ final router = GoRouter(
           future: authProvider.hasRoles([ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+             return const Center(
+            child: LoadingAnimation(
+              imagePath: 'assets/images/logo.png', // Replace with your image path
+              size: 50.0,
+            ),
+          );  // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const NavBar(); // another dummy page, I think Dressi is making a new one TODO
             } else {
@@ -229,7 +265,12 @@ final router = GoRouter(
             future: authProvider.hasRoles([ROLES.parent]),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator(); // Show loading while waiting
+                return const Center(
+            child: LoadingAnimation(
+              imagePath: 'assets/images/logo.png', // Replace with your image path
+              size: 50.0,
+            ),
+          );  // Show loading while waiting
               } else if (snapshot.hasData && snapshot.data == true) {
                 return const ParentLandingPageMadpakke(); // This should be fine
               } else {

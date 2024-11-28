@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/footer.dart'; // Import the FooterBar widget
@@ -19,8 +21,9 @@ class Message {
   bool Archived;
   bool isSent;
   bool showDate;
+  bool isEdited;
   
-  Message({required this.Content, required this.isSent, required this.Date, required this.firstName, this.showDate = false, this.MessageID = 0, this.UserId = 0, this.ChatThreadId = 0, this.Archived = false});
+  Message({required this.Content, required this.isSent, required this.Date, required this.firstName, this.showDate = false, this.MessageID = 0, this.UserId = 0, this.ChatThreadId = 0, this.Archived = false, this.isEdited = false});
 
   factory Message.fromJson(Map<String, dynamic> json, int currentUserId) {
     return Message(
@@ -33,6 +36,7 @@ class Message {
       Archived: json['archived'] ?? false,
       // Check if the message was sent by the current user
       isSent: json['userId'] == currentUserId,
+      isEdited: json['isEdited'] ?? false,
     );
   }
 }
@@ -55,8 +59,9 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
     
   ];
   int? _childId ;
-
+  Timer? _timer;
   int? _editingMessageIndex;
+  final ScrollController _scrollController = ScrollController();
 
 @override
   void initState() {
@@ -72,17 +77,22 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
       });
 
       print("Child ID retrieved in initState: $extra?['childId']");
+      fetchMessages();
+      // Set up a timer to call fetchMessages every 5 seconds
+      _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+        fetchMessages();
+      });
     });
+    
+  }
+ @override
+  void dispose() {
+    _timer?.cancel();
+    _scrollController.dispose();
+    super.dispose();
   }
 
-
   Future<void> fetchMessages() async {
-  final GoRouterState state = GoRouterState.of(context);
-  final Map<String, dynamic>? extra = state.extra as Map<String, dynamic>?; // Cast the extra parameter
-  // final int? childId = extra != null && extra['childId'] != null
-  //     ? int.tryParse(extra['childId']) // Safely parse the value to int
-    //   : null;
-  //_childId = extra['childId']
 
   print("Retrieved childId: $_childId");
 
@@ -91,6 +101,12 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
   } else {
     await fetchMessagesFromChildId(_childId!);
   }
+   // Scroll to the bottom of the message list
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+        }
+      });
 }
 
 Future<void> fetchMessagesFromToken () async {
@@ -110,6 +126,7 @@ Future<void> fetchMessagesFromToken () async {
               .map((messageJson) => Message.fromJson(messageJson, userId))
               .toList();
         });
+        
       } catch (e) {
         print('Error fetching messages: $e');
       }
@@ -117,15 +134,15 @@ Future<void> fetchMessagesFromToken () async {
 
   Future<void> fetchMessagesFromChildId(int childId) async {
     try {
-      int chatThreadId = await FeedbackChatPage.feedbackService.fetchGetChatThreadIdByChildId(childId, AuthProvider());
-      print("chatThreadId from fetchMessagesFromChildId ");
-      print(chatThreadId);
+      final Map<String, dynamic> chatThreadAndUserId = await FeedbackChatPage.feedbackService.fetchGetChatThreadIdAndUserIdFromChildIdAndToken(childId, AuthProvider());
+      final int chatThreadId = chatThreadAndUserId['chatThreadId'];
+        final int userId = chatThreadAndUserId['userId'];
       final List<Map<String, dynamic>> messagesData =
           await FeedbackChatPage.feedbackService.fetchGetFeedbackMessages(chatThreadId, AuthProvider());
       
       setState(() {
         _messages = messagesData
-            .map((messageJson) => Message.fromJson(messageJson, childId))
+            .map((messageJson) => Message.fromJson(messageJson, userId))
             .toList();
       });
     } catch (e) {
@@ -145,31 +162,29 @@ Future<void> fetchMessagesFromToken () async {
         // Edit the message locally
         _messages[_editingMessageIndex!].Content = messageContent;
         _editingMessageIndex = null;
-      } else {
-        // Optimistically add the new message locally
-        _messages.add(
-          Message(
-            Content: messageContent,
-            isSent: true,
-            Date: DateTime.now(),
-            firstName: "Parent", // Replace with the actual user first name if available
-          ),
-        );
-      }
+      } 
       _controller.clear(); // Clear the input field
     });
 
     try {
       // Send the message to the backend
-      final Map<String, dynamic> chatThreadAndUserId =
-              await FeedbackChatPage.feedbackService.fetchGetChatThreadIdAndUserIdFromToken(AuthProvider());
+      
 
           
-          final int _chatThreadId = chatThreadAndUserId['chatThreadId'];
-          final int _userId = chatThreadAndUserId['userId'];
+          int _chatThreadId = 0;
+
+          if (_childId == null) {
+            final Map<String, dynamic> chatThreadAndUserId =
+              await FeedbackChatPage.feedbackService.fetchGetChatThreadIdAndUserIdFromToken(AuthProvider());
+              _chatThreadId = chatThreadAndUserId['chatThreadId'];
+           
+          } else {
+             _chatThreadId = await FeedbackChatPage.feedbackService.fetchGetChatThreadIdByChildId(_childId!, AuthProvider());
+          }
+
+
 
       await FeedbackChatPage.feedbackService.fetchSendFeedbackMessage(
-        userId: _userId, // Replace with actual userId
         chatThreadId: _chatThreadId, // Replace with the actual chatThreadId
         content: messageContent,
         authProvider: AuthProvider(),
@@ -340,6 +355,7 @@ Future<void> fetchMessagesFromToken () async {
         children: [
           Expanded(
             child: ListView.builder(
+              controller: _scrollController,
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
@@ -373,7 +389,7 @@ Future<void> fetchMessagesFromToken () async {
                         });
                       },
                       onLongPress: () {
-                        if (message.isSent) {
+                        if (message.isSent && !message.Archived) {
                           _showEditDeleteDialog(index);
                         }
                       },
@@ -382,22 +398,31 @@ Future<void> fetchMessagesFromToken () async {
                         child: Column(
                           crossAxisAlignment: message.isSent ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                           children: [
-                            if (!message.isSent)
+                            if (!message.isSent && !message.Archived)
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 5),
+                                padding: const EdgeInsets.only(left: 12,bottom: 5),
                                 child: Text(
                                   message.firstName,
                                   style: TextStyle(fontSize: 12, color: Colors.grey),
                                 ),
                               ),
-                            if (message.showDate)
+                                if (message.isEdited)
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 5),
+                                padding: const EdgeInsets.only(right: 14,left: 14,bottom: 5),
                                 child: Text(
-                                  DateFormat('dd MMMM yyyy, HH:mm').format(message.Date),
+                                  "Redigeret",
                                   style: TextStyle(fontSize: 10, color: Colors.grey),
                                 ),
                               ),
+                            if (message.showDate)
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 12,left:12,bottom: 5),
+                                  child: Text(
+                                    DateFormat('dd MMMM yyyy, HH:mm').format(message.Date),
+                                    style: TextStyle(fontSize: 10, color: Colors.grey),
+                                  ),
+                                ),
+                             
                             Container(
                               padding: EdgeInsets.all(10),
                               margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
