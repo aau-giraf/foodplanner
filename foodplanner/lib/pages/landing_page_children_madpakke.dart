@@ -8,6 +8,7 @@ import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/pages/landing_page_teacher.dart';
 
 import 'package:foodplanner/pages/pin_code.dart';
+import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -43,8 +44,8 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
         final role = await authProvider.retrieveRole();
         setState(() {
           userRole = role?.toString();
-          _hasRolesFuture =
-              authProvider.hasRoles([ROLES.parent, ROLES.student]);
+          _hasRolesFuture = authProvider
+              .hasRoles([ROLES.parent, ROLES.student, ROLES.teacher]);
           if (authProvider.userRole == ROLES.student ||
               authProvider.userRole == ROLES.parent) {
             childService.fetchChildById().then((childData) {
@@ -70,11 +71,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
         leading: userRole == ROLES.teacher.toString()
             ? IconButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => TeacherLandingPage()),
-                  );
+                  GoRouter.of(context).go(TEACHER_ROOT);
                 },
                 icon: Icon(SFIcons.sf_chevron_backward),
               )

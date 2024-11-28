@@ -1,10 +1,9 @@
-import 'dart:isolate';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
+import 'package:go_router/go_router.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -15,6 +14,7 @@ import 'package:foodplanner/components/Custom_List_Item.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user.dart' as model;
 import 'package:foodplanner/services/user_service.dart';
+import 'package:foodplanner/routes/index.dart';
 
 class TeacherLandingPage extends StatefulWidget {
   const TeacherLandingPage({super.key});
@@ -32,7 +32,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
   Set<String> selectedClassIds = {};
   Set<String> highlightedStudentIds = {};
   TextEditingController searchController = TextEditingController();
-  model.User parent = model.User(
+  model.User teacher = model.User(
       id: 0,
       email: 'Unknown',
       firstName: 'Unknown',
@@ -50,7 +50,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
   Future<void> fetchUser() async {
     final userInfo = await TeacherLandingPage.userService.fetchLoggedInUser();
     setState(() {
-      parent = userInfo;
+      teacher = userInfo;
     });
   }
 
@@ -110,13 +110,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
     final filteredStudent =
         student.map((key, value) => MapEntry(key, value ?? ''));
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            ChildLandingPageMadpakke(student: filteredStudent),
-      ),
-    );
+    GoRouter.of(context).go('/student-details', extra: filteredStudent);
   }
 
   void filterStudents(String query) {
@@ -166,7 +160,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
       appBar: AppBar(
         title: Center(
           child: Text(
-            'Velkommen ${parent.firstName} ${parent.lastName}',
+            'Velkommen ${teacher.firstName} ${teacher.lastName}',
             style: AppTextStyles.headline4,
           ),
         ),

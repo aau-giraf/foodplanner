@@ -98,6 +98,14 @@ final router = GoRouter(
       path: '/empty',
       builder: (context, state) => MealListPage(),
     ),
+    GoRoute(
+      path: '/student-details',
+      builder: (context, state) {
+        final student = state.extra as Map<String, String?>;
+        return ChildLandingPageMadpakke(
+            student: student.cast<String, String>());
+      },
+    ),
 
     //no need for wildcard handling as flutter already does it
 
