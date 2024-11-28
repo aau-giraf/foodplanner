@@ -117,12 +117,12 @@ class EditMealPageState extends State<EditMealPage> {
           }  */ // Go back to the previous page after adding new ingredient.
             ),
         CameraPage(
-          onImagePicked: (image) {
+            /* onImagePicked: (image) {
             setState(() {
               if (image is MultipartFile) this.image = image;
             });
-          },
-        ), // Instantiates the CameraPage.
+          }, */
+            ), // Instantiates the CameraPage.
       ];
     });
   }

@@ -95,16 +95,16 @@ class EditMealFormPage extends StatelessWidget {
           CustomElevatedButton(
             onTab: () async {
               final authProvider = AuthProvider();
-              int? imageId = this.image != null
+              /* int? imageId = this.image != null
                   ? int.parse((await UploadFoodImage(this.image!)).body)
-                  : null;
+                  : null; */
               updateMeal(
                   client,
                   authProvider,
                   Meal(
                     id: meal.id,
                     name: editTitleController.text,
-                    foodImageId: imageId,
+                    foodImageId: 1, // TODO: Update this to the correct imageId
                     date: meal.date,
                     ingredients: [],
                   ));

@@ -241,38 +241,27 @@ class _MealFormPageState extends State<MealFormPage> {
                                     isDefaultAction:
                                         true, // Highlight the default action.
                                     onPressed: () async {
-                                      await Navigator.push(
+                                      final image = await Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => CameraPage(
-                                            onImagePicked: (image) {
-                                              print('Image picked: $image');
-                                              setState(() {
-                                                if (image
-                                                    is http.MultipartFile) {
-                                                  this.image = image;
-                                                }
-                                              });
-                                            },
-                                          ),
+                                          builder: (context) => CameraPage(),
                                         ),
                                       );
                                       if (image != null) {
                                         print("Uploading image");
                                         final imageResponse = await UploadFoodImage(
                                             image!); // Ensure this method is defined.
-                                        final Map<String, dynamic>
-                                            responseData =
-                                            jsonDecode(imageResponse.body);
-                                        if (responseData.containsKey('id')) {
+
+                                        if (imageResponse.body.isNotEmpty) {
                                           setState(() {
-                                            foodImageId = responseData['id'];
+                                            foodImageId =
+                                                int.parse(imageResponse.body);
                                           });
                                         }
+                                        createMealWithIngredients();
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
                                       }
-                                      createMealWithIngredients();
-                                      Navigator.pop(context);
-                                      Navigator.pop(context);
                                     },
                                     child: const Text(
                                         "Ja"), // Button text for "Yes".
