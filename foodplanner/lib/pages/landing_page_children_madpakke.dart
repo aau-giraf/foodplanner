@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/mealBox.dart';
+import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/pages/pin_code.dart';
@@ -9,6 +11,7 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ChildLandingPageMadpakke extends StatefulWidget {
