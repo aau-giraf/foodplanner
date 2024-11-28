@@ -1,11 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/footer.dart'; // Import the FooterBar widget
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart'; // Import GoRouter
@@ -75,8 +73,6 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
       setState(() {
         _childId = childId;
       });
-
-      print("Child ID retrieved in initState: $extra?['childId']");
       fetchMessages();
       // Set up a timer to call fetchMessages every 5 seconds
       _timer = Timer.periodic(Duration(seconds: 5), (timer) {
@@ -93,8 +89,6 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
   }
 
   Future<void> fetchMessages() async {
-
-  print("Retrieved childId: $_childId");
 
   if (_childId == null) {
     await fetchMessagesFromToken();
@@ -168,9 +162,6 @@ Future<void> fetchMessagesFromToken () async {
 
     try {
       // Send the message to the backend
-      
-
-          
           int _chatThreadId = 0;
 
           if (_childId == null) {
@@ -181,8 +172,6 @@ Future<void> fetchMessagesFromToken () async {
           } else {
              _chatThreadId = await FeedbackChatPage.feedbackService.fetchGetChatThreadIdByChildId(_childId!, AuthProvider());
           }
-
-
 
       await FeedbackChatPage.feedbackService.fetchSendFeedbackMessage(
         chatThreadId: _chatThreadId, // Replace with the actual chatThreadId
@@ -322,23 +311,8 @@ Future<void> fetchMessagesFromToken () async {
     GoRouter.of(context).go(from ?? '/');
   }
 
-  Future<int?> getChildIdFromPreviousPage() async{
-    final GoRouterState state = GoRouterState.of(context);
-    final Map<String, dynamic>? extra = state.extra as Map<String, dynamic>?;
-    final int? childId = extra?['childId'];
-    
-    print("childId from getChildIdFromPreviousPage HAS LANDED ON FEEDBACKCHATPAGE ");
-    print(childId);
-    return childId;
-
-    
-  }
-
   @override
   Widget build(BuildContext context) {
-    final GoRouterState state = GoRouterState.of(context);
-    final Map<String, dynamic>? extra = state.extra as Map<String, dynamic>?;
-    final String? from = extra?['from'];
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
