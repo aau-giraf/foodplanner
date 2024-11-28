@@ -3,13 +3,14 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
-class CustomListItem extends StatefulWidget {
+class CustomListItem extends StatelessWidget {
   final IconData? leftIcon;
   final TextStyle? leftIconStyle;
   final String title;
   final bool isHighlighted;
   final bool isLastItem;
   final VoidCallback onTap;
+  final bool isTapped;
 
   const CustomListItem({
     Key? key,
@@ -19,33 +20,20 @@ class CustomListItem extends StatefulWidget {
     required this.isHighlighted,
     required this.isLastItem,
     required this.onTap,
+    required this.isTapped,
   }) : super(key: key);
-
-  @override
-  _CustomListItemState createState() => _CustomListItemState();
-}
-
-class _CustomListItemState extends State<CustomListItem> {
-  bool isTapped = false;
-
-  void toggleIcon() {
-    setState(() {
-      isTapped = !isTapped;
-    });
-    widget.onTap();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: InkWell(
-        onTap: toggleIcon,
+        onTap: onTap,
         child: Column(
           children: [
             Row(
               children: [
-                if (widget.leftIcon != null)
+                if (leftIcon != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 6.0, vertical: 6.0),
@@ -57,10 +45,10 @@ class _CustomListItemState extends State<CustomListItem> {
                         height: 40,
                         child: Center(
                           child: SFIcon(
-                            widget.leftIcon!,
-                            fontSize: widget.leftIconStyle?.fontSize ?? 25,
-                            color: widget.leftIconStyle?.color ??
-                                AppColors.textSecondary,
+                            leftIcon!,
+                            fontSize: leftIconStyle?.fontSize ?? 25,
+                            color:
+                                leftIconStyle?.color ?? AppColors.textSecondary,
                           ),
                         ),
                       ),
@@ -68,12 +56,11 @@ class _CustomListItemState extends State<CustomListItem> {
                   ),
                 Expanded(
                   child: Text(
-                    widget.title,
+                    title,
                     style: AppTextStyles.bigText.copyWith(
-                      fontWeight: widget.isHighlighted
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: widget.isHighlighted ? Colors.blue : Colors.black,
+                      fontWeight:
+                          isHighlighted ? FontWeight.bold : FontWeight.normal,
+                      color: isHighlighted ? AppColors.primary : Colors.black,
                     ),
                     softWrap: true,
                   ),
@@ -86,7 +73,7 @@ class _CustomListItemState extends State<CustomListItem> {
                 SizedBox(width: 10),
               ],
             ),
-            if (!widget.isLastItem)
+            if (!isLastItem)
               Padding(
                 padding: const EdgeInsets.only(left: 50),
                 child: Container(

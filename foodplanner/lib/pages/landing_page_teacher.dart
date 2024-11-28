@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
@@ -11,11 +13,13 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/components/Custom_List_Item.dart';
 import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/models/user.dart';
+import 'package:foodplanner/models/user.dart' as model;
 import 'package:foodplanner/services/user_service.dart';
 
 class TeacherLandingPage extends StatefulWidget {
   const TeacherLandingPage({super.key});
+
+  static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
   @override
   State<TeacherLandingPage> createState() => _LandingPageTeacherState();
@@ -28,11 +32,26 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
   Set<String> selectedClassIds = {};
   Set<String> highlightedStudentIds = {};
   TextEditingController searchController = TextEditingController();
+  model.User parent = model.User(
+      id: 0,
+      email: 'Unknown',
+      firstName: 'Unknown',
+      lastName: 'Unknown',
+      role: 'Unknown',
+      archived: false);
 
   @override
   void initState() {
     super.initState();
     fetchChildrenData();
+    fetchUser();
+  }
+
+  Future<void> fetchUser() async {
+    final userInfo = await TeacherLandingPage.userService.fetchLoggedInUser();
+    setState(() {
+      parent = userInfo;
+    });
   }
 
   Future<void> fetchChildrenData() async {
@@ -130,17 +149,6 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
     });
   }
 
-  void toggleAllClasses() {
-    setState(() {
-      if (selectedClassIds.length == schoolClasses.length) {
-        selectedClassIds.clear();
-      } else {
-        selectedClassIds =
-            schoolClasses.map((schoolClass) => schoolClass['id']!).toSet();
-      }
-    });
-  }
-
   void collapseAll() {
     setState(() {
       if (selectedClassIds.isEmpty) {
@@ -157,8 +165,8 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: const Text(
-            'Velkommen',
+          child: Text(
+            'Velkommen ${parent.firstName} ${parent.lastName}',
             style: AppTextStyles.headline4,
           ),
         ),
@@ -177,27 +185,30 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
           SizedBox(
             height: 20,
           ),
-          Row(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.7,
-                child: SearchField(
-                  controller: searchController,
-                  hintText: 'Søg efter elev',
-                  onChanged: filterStudents,
+          Padding(
+            padding: const EdgeInsets.only(right: 25),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.65,
+                  child: SearchField(
+                    controller: searchController,
+                    hintText: 'Søg efter elev',
+                    onChanged: filterStudents,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 0),
-              Expanded(
-                child: CustomButton(
-                  onTab: collapseAll,
-                  text: selectedClassIds.isEmpty ? 'Åben alle' : 'Luk alle',
-                  customHeight: 30,
+                const SizedBox(width: 0),
+                Expanded(
+                  child: CustomButton(
+                    onTab: collapseAll,
+                    text: selectedClassIds.isEmpty ? 'Åben alle' : 'Luk alle',
+                    customHeight: 50,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -228,6 +239,12 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
                               itemCount: schoolClasses.length,
                               itemBuilder: (context, index) {
                                 final schoolClass = schoolClasses[index];
+                                final isLastClass =
+                                    index == schoolClasses.length - 1;
+                                final classStudents = students
+                                    .where((student) =>
+                                        student['classId'] == schoolClass['id'])
+                                    .toList();
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -236,9 +253,11 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
                                       leftIconStyle: TextStyle(fontSize: 22),
                                       title: schoolClass['name'] ?? 'Unknown',
                                       isHighlighted: false,
-                                      isLastItem: index == schoolClass.length,
+                                      isLastItem: isLastClass,
                                       onTap: () => toggleClassStudents(
                                           schoolClass['id']!),
+                                      isTapped: selectedClassIds
+                                          .contains(schoolClass['id']),
                                     ),
                                     if (selectedClassIds
                                         .contains(schoolClass['id']))
@@ -246,11 +265,14 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
                                         padding:
                                             const EdgeInsets.only(left: 40),
                                         child: Column(
-                                          children: students
-                                              .where((student) =>
-                                                  student['classId'] ==
-                                                  schoolClass['id'])
-                                              .map((student) {
+                                          children:
+                                              classStudents.map((student) {
+                                            final isLastStudentInLastClass =
+                                                isLastClass &&
+                                                    classStudents
+                                                            .indexOf(student) ==
+                                                        classStudents.length -
+                                                            1;
                                             return CustomListItem(
                                               leftIcon: SFIcons.sf_figure_child,
                                               key: ValueKey(student['id']),
@@ -259,10 +281,13 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
                                               isHighlighted:
                                                   highlightedStudentIds
                                                       .contains(student['id']),
-                                              isLastItem: false,
+                                              isLastItem:
+                                                  isLastStudentInLastClass,
                                               onTap: () =>
                                                   navigateToStudentDetails(
                                                       student),
+                                              isTapped: highlightedStudentIds
+                                                  .contains(student['id']),
                                             );
                                           }).toList(),
                                         ),

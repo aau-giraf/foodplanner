@@ -8,11 +8,12 @@ class SearchField extends StatelessWidget {
   final String hintText;
   final ValueChanged<String>? onChanged;
 
-  const SearchField(
-      {super.key,
-      required this.controller,
-      this.hintText = 'Søg...',
-      this.onChanged});
+  const SearchField({
+    super.key,
+    required this.controller,
+    this.hintText = 'Søg...',
+    this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
