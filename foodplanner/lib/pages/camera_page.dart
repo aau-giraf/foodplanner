@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +11,7 @@ import 'package:image/image.dart' as img;
 import 'package:http_parser/http_parser.dart';
 
 import 'package:foodplanner/config/colors.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({
@@ -22,6 +25,7 @@ class CameraPage extends StatefulWidget {
 class _MealPageState extends State<CameraPage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  final picker = ImagePicker();
 
   @override
   void initState() {
@@ -49,6 +53,18 @@ class _MealPageState extends State<CameraPage> {
     super.dispose();
   }
 
+  //Image Picker function to get image from gallery
+  Future<File?> getImageFromGallery() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      return File(pickedFile.path);
+    } else {
+      print('No image selected.');
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +73,8 @@ class _MealPageState extends State<CameraPage> {
           padding: const EdgeInsets.only(left: 20),
           child: InkWell(
             onTap: () {
-              Navigator.pop(context, null);
+              Navigator.pop(context);
+              Navigator.pop(context);
             },
             child: Row(
               children: [
@@ -93,7 +110,19 @@ class _MealPageState extends State<CameraPage> {
             bottom: 20,
             left: 20,
             child: FloatingActionButton(
-              onPressed: () {},
+              onPressed: () {
+                getImageFromGallery().then((image) {
+                  if (image != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DisplayPictureScreen(image: XFile(image.path)),
+                      ),
+                    );
+                  }
+                });
+              },
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               heroTag: 'galleryButton',
