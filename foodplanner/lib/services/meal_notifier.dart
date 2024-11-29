@@ -25,13 +25,18 @@ class MealNotifier with ChangeNotifier {
     fetchMealData();
   }
 
-  void updateDate(DateTime date) async {
+  Future<void> updateDate(DateTime date) async {
     selectedDate = date;
+    await _secureStorage.write(
+        key: '_selectedDate', value: selectedDate.toString());
     await fetchMealData();
     notifyListeners();
   }
 
   Future<void> fetchMealData() async {
+    selectedDate = DateTime.parse(
+        await _secureStorage.read(key: '_selectedDate') ??
+            DateFormat('yyyy-MM-dd').format(DateTime.now()));
     final mealService = MealService(apiUrl: baseUrl);
     final mealData = await mealService
         .fetchMealData(DateFormat('yyyy-MM-dd').format(selectedDate));

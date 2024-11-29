@@ -1,5 +1,4 @@
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
@@ -8,7 +7,6 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:http/http.dart';
 import 'package:image/image.dart' as img;
 import 'package:http_parser/http_parser.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:foodplanner/config/colors.dart';
 
@@ -30,7 +28,6 @@ class _MealPageState extends State<CameraPage> {
     super.initState();
 
     _initializeControllerFuture = _initializeCamera();
-    _checkAndRequestPermission();
   }
 
   Future<void> _initializeCamera() async {
@@ -50,75 +47,6 @@ class _MealPageState extends State<CameraPage> {
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  Future<void> _checkAndRequestPermission() async {
-    var status = await Permission.camera.status;
-    if (status.isDenied) {
-      var newStatus = await Permission.camera.request();
-      if (newStatus.isPermanentlyDenied) {
-        // Show dialog to guide the user to the app settings
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          showCupertinoDialog(
-            context: context,
-            builder: (BuildContext context) => CupertinoAlertDialog(
-              title: Text('Kamera Adgang'),
-              content: Text(
-                  'Tillad adgang til kameraet for at tage billeder i app indstillingerne.'),
-              actions: <CupertinoDialogAction>[
-                CupertinoDialogAction(
-                  isDefaultAction: true,
-                  onPressed: () {
-                    openAppSettings().then((_) {
-                      // Refresh the permission status after returning from settings
-                      setState(() {});
-                    });
-                  },
-                  child: const Text("Gå til indstillinger"),
-                ),
-                CupertinoDialogAction(
-                  isDestructiveAction: true,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("Annuller"),
-                ),
-              ],
-            ),
-          );
-        });
-      }
-    }
-  }
-
-  Widget _cameraPreview() {
-    return FutureBuilder<void>(
-      future: Permission.camera.status,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasData) {
-            var status = snapshot.data as PermissionStatus;
-            print(status);
-            if (status.isGranted) {
-              return CameraPreview(_controller);
-            } else if (status.isPermanentlyDenied) {
-              // Show a message or an alternative UI
-              return Center(
-                child: Text(
-                    'Kamera adgang er permanent nægtet. Gå til indstillinger for at tillade adgang.'),
-              );
-            } else {
-              // Show a message or an alternative UI
-              return Center(
-                child: Text(
-                    'Kamera adgang er nægtet. Tillad adgang for at bruge kameraet.'),
-              );
-            }
-          }
-        }
-        return Center(child: CircularProgressIndicator());
-      },
-    );
   }
 
   @override
@@ -153,7 +81,7 @@ class _MealPageState extends State<CameraPage> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return _cameraPreview();
+            return CameraPreview(_controller);
           } else {
             return Center(child: CircularProgressIndicator());
           }

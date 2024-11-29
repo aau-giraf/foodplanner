@@ -13,6 +13,7 @@ import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
+import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
@@ -258,9 +259,11 @@ class _MealFormPageState extends State<MealFormPage> {
                                                 int.parse(imageResponse.body);
                                           });
                                         }
-                                        createMealWithIngredients();
+                                        await createMealWithIngredients();
                                         Navigator.pop(context);
                                         Navigator.pop(context);
+                                        GoRouter.of(context).refresh();
+                                        //Navigator.pop(context);
                                       }
                                     },
                                     child: const Text(

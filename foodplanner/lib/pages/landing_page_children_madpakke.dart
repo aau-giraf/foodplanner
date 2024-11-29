@@ -32,8 +32,6 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   @override
   void initState() {
     super.initState();
-    final mealNotifier = Provider.of<MealNotifier>(context, listen: false);
-    mealNotifier.updateDate(DateTime.now());
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     //_hasRolesFuture = authProvider.hasRoles([ROLES.parent, ROLES.student]);
     authProvider.loadFromStorage().then((_) {
@@ -97,7 +95,16 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ReusableMealBox(),
+                    child: FutureBuilder(
+                      future: MealNotifier().updateDate(DateTime.now()),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return ReusableMealBox();
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      },
+                    ),
                   ), // Use the reusable widget
                   SizedBox(height: 20),
                 ],

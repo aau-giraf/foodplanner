@@ -103,7 +103,9 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => const MealFormPage()),
-                              );
+                              ).then((_) {
+                                mealNotifier.fetchMealData();
+                              });
                             },
                             icon: SFIcon(
                               SFIcons.sf_plus,
