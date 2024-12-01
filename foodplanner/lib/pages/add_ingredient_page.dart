@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
@@ -14,6 +15,7 @@ class AddIngredientPage extends StatefulWidget {
   final MultipartFile? image;
   final ValueChanged<List<Ingredient>> onIngredientsUpdated; // Callback to the method which modifies the list of existing ingredients
   final VoidCallback onCamera; // Callback to change the shown page through "add_meal_page.dart"
+  final VoidCallback onCreateIngredient; // Callback to change the shown page through "add_meal_page.dart"
   final ValueSetter onIngredientAdded; // Callback to handle what to do once a new ingredient is added.
   final Client client;
 
@@ -23,6 +25,7 @@ class AddIngredientPage extends StatefulWidget {
     required this.image,
     required this.onIngredientsUpdated, // Required callback to handle the ingredient list updating.
     required this.onCamera, // Required callback to handle camera navigation.
+    required this.onCreateIngredient, // Required callback to handle create ingredient navigation.
     required this.onIngredientAdded, // Required callback to handle navigation after a new ingredient is added.
     required this.client,
   });
@@ -142,6 +145,15 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
           )
         ),
         Divider(color: AppColors.textFieldBorder,), // Final divider at the bottom of the list.
+        CustomElevatedButton( // "+" button for leading the user to the create ingredient page.
+          onTab: () {
+            widget.onCreateIngredient(); // Changes the body of the page to show the create ingredient page.
+          },
+          widget: Icon(Icons.add, color: AppColors.textSecondary), // Icon displayed on the button.
+          backgroundColor: AppColors.tertiary, // Background color of the button.
+          width: MediaQuery.sizeOf(context).width/2, // Width of the button is half of the screen width.
+        ),
+        Spacer(),
       ],
     );
   }
