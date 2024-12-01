@@ -114,30 +114,24 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
   }
 
   void filterStudents(String query) {
-    if (query.isEmpty) {
-      setState(() {
-        filteredStudents = students;
-        highlightedStudentIds.clear();
-      });
-      return;
-    }
-
-    final suggestions = students.where((student) {
-      final studentName = student['name']!.toLowerCase();
-      final input = query.toLowerCase();
-      return studentName.contains(input);
-    }).toList();
-
+    final lowerCaseQuery = query.toLowerCase();
     setState(() {
-      filteredStudents = suggestions;
+      if (lowerCaseQuery.isEmpty) {
+        filteredStudents = students;
+        selectedClassIds.clear();
+      } else {
+        filteredStudents = students.where((student) {
+          final studentName = student['name']!.toLowerCase();
+          return studentName.contains(lowerCaseQuery);
+        }).toList();
 
-      // Automatically expand the classes containing the searched students
-      highlightedStudentIds.clear();
-      if (suggestions.isNotEmpty) {
-        for (var student in suggestions) {
-          final classId = student['classId'];
-          selectedClassIds.add(classId!);
-          highlightedStudentIds.add(student['id']!);
+        // Automatically expand the classes containing the searched students
+        selectedClassIds.clear();
+        if (filteredStudents.isNotEmpty) {
+          for (var student in filteredStudents) {
+            final classId = student['classId'];
+            selectedClassIds.add(classId!);
+          }
         }
       }
     });
@@ -150,6 +144,8 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
             schoolClasses.map((schoolClass) => schoolClass['id']!).toSet();
       } else {
         selectedClassIds.clear();
+        searchController.clear();
+        filteredStudents = students;
       }
     });
   }
@@ -239,6 +235,10 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
                                     .where((student) =>
                                         student['classId'] == schoolClass['id'])
                                     .toList();
+                                final filteredClassStudents = filteredStudents
+                                    .where((student) =>
+                                        student['classId'] == schoolClass['id'])
+                                    .toList();
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -260,7 +260,10 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
                                             const EdgeInsets.only(left: 40),
                                         child: Column(
                                           children:
-                                              classStudents.map((student) {
+                                              (searchController.text.isEmpty
+                                                      ? classStudents
+                                                      : filteredClassStudents)
+                                                  .map((student) {
                                             final isLastStudentInLastClass =
                                                 isLastClass &&
                                                     classStudents

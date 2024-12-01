@@ -76,29 +76,24 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                 icon: Icon(SFIcons.sf_chevron_backward),
               )
             : null,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Expanded(
-              child: Center(
-                child: Text(
-                  '${_child?.firstName} ${_child?.lastName}',
-                  style: AppTextStyles.headline4,
-                ),
-              ),
-            ),
-            if (userRole != ROLES.teacher.toString())
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PinCode()),
-                  );
-                },
-                icon: SFIcon(SFIcons.sf_lock_fill),
-              ),
-          ],
+        title: Text(
+          '${_child?.firstName} ${_child?.lastName}',
+          style: AppTextStyles.headline4,
         ),
+        centerTitle: true,
+        actions: userRole != ROLES.teacher.toString()
+            ? [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PinCode()),
+                    );
+                  },
+                  icon: SFIcon(SFIcons.sf_lock_fill),
+                ),
+              ]
+            : null,
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
       ),
