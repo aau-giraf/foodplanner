@@ -17,10 +17,12 @@ void main() {
   ];
 
   late bool cameraNavigated;
+  late bool ingredientCreated;
   late bool ingredientAdded;
 
   setUp(() {
     cameraNavigated = false;
+    ingredientCreated = false;
     ingredientAdded = false;
   });
 
@@ -29,6 +31,7 @@ void main() {
       ingredients: ingredients,
       image: null,
       onIngredientsUpdated: (_) {},
+      onCreateIngredient: () => ingredientCreated = true,
       onCamera: () => cameraNavigated = true,
       onIngredientAdded: (_) => ingredientAdded = true,
       client: MockClient(),
@@ -89,6 +92,19 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(ingredientAdded, isTrue);
+      });
+    });
+
+    group('create ingredient button functionality', () {
+      testWidgets('calls onIngredientCreated callback', (WidgetTester tester) async {
+        await tester.pumpWidget(
+          MaterialApp(home: createWidgetUnderTest()),
+        );
+
+        await tester.tap(find.byIcon(Icons.add));
+        await tester.pumpAndSettle();
+
+        expect(ingredientCreated, isTrue);
       });
     });
 
