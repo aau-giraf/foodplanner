@@ -13,6 +13,7 @@ import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +40,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     //_hasRolesFuture = authProvider.hasRoles([ROLES.parent, ROLES.student]);
+    print("Skyd dig selv hvis det virker. ${widget.student['name']}");
     authProvider.loadFromStorage().then((_) {
       authProvider.retrieveToken().then((token) async {
         final role = await authProvider.retrieveRole();
@@ -53,6 +55,16 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                 _child = childData;
                 print(_child!.firstName);
               });
+            });
+          } else if (authProvider.userRole == ROLES.teacher) {
+            int TempChildId = int.parse(widget.student['id']!);
+
+            childService.GetByChildId(TempChildId).then((childData) {
+              setState(() {
+                _child = childData;
+                print(_child!.firstName);
+              });
+              MealNotifier().teacherUpdateChildId(_child!.parentId);
             });
           }
         });

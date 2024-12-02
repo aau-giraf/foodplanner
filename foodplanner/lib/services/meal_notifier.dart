@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/meal.dart';
+import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_meal.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +15,7 @@ class MealNotifier with ChangeNotifier {
   bool isMealEmpty = true;
   String baseUrl = ApiConfig.baseUrl;
   Meal? meal;
+  int? teacherChildId;
 
   MealNotifier({FlutterSecureStorage? secureStorage})
       : _secureStorage = secureStorage ??
@@ -26,8 +29,21 @@ class MealNotifier with ChangeNotifier {
   Future<void> _fetchMealData() async {
     print('Fetching meal data');
     final mealService = MealService(apiUrl: baseUrl);
-    final mealData = await mealService
-        .fetchMealData(DateFormat('yyyy-MM-dd').format(selectedDate));
+    final role = await AuthProvider().retrieveRole();
+    Meal? mealData;
+    if (role == ROLES.student || role == ROLES.parent) {
+      mealData = await mealService
+          .fetchMealData(DateFormat('yyyy-MM-dd').format(selectedDate));
+    } else {
+      final teacherChildIdStr =
+          await _secureStorage.read(key: '_teacherChildId');
+      if (teacherChildIdStr != null) {
+        teacherChildId = int.parse(teacherChildIdStr);
+      }
+
+      mealData = await mealService.fetchMealDataTeacher(
+          DateFormat('yyyy-MM-dd').format(selectedDate), teacherChildId!);
+    }
 
     meal = mealData;
     notifyListeners();
@@ -55,5 +71,11 @@ class MealNotifier with ChangeNotifier {
           key: '_selectedDate', value: selectedDate.toString());
       await _fetchMealData();
     }
+  }
+
+  Future<void> teacherUpdateChildId(int id) async {
+    teacherChildId = id;
+    await _secureStorage.write(key: '_teacherChildId', value: id.toString());
+    notifyListeners();
   }
 }
