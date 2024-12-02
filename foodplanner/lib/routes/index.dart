@@ -101,11 +101,6 @@ final router = GoRouter(
       builder: (context, state) => MealListPage(),
     ),
 
-    GoRoute(
-      path: '/add-ingridients',
-      builder: (context, state) => AddIngredientPage(),
-    ),
-
     //no need for wildcard handling as flutter already does it
 
     GoRoute(

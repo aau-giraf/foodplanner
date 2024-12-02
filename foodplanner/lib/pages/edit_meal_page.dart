@@ -99,23 +99,6 @@ class EditMealPageState extends State<EditMealPage> {
           },
           image: image, */
             ), */
-        AddIngredientPage(
-/*           ingredients: ingredients, // Pass the ingredients to the AddIngredientPage.
-          image: image,
-          client: _client!,
-          onCamera: () {
-            pushPage(2); // Changes the shown page to "camera_page.dart" when executed.
-          },
-          onIngredientsUpdated: (newIngredients) { // Update ingredients when modified.
-            setState(() {
-              ingredients = newIngredients;
-            });
-          },
-          onIngredientAdded: (addedIngredient) {
-            packedIngredients.add(addedIngredient);
-            popPage();
-          }  */ // Go back to the previous page after adding new ingredient.
-            ),
         CameraPage(
             /* onImagePicked: (image) {
             setState(() {

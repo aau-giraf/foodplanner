@@ -45,7 +45,6 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
   @override
   Widget build(BuildContext context) {
     // Get the size of the screen
-    final size = MediaQuery.of(context).size;
     final mealNotifier = Provider.of<MealNotifier>(context);
 
     return Scaffold(
@@ -104,6 +103,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                                 MaterialPageRoute(
                                     builder: (context) => const MealFormPage()),
                               ).then((_) {
+                                print('Fetching meal data');
                                 mealNotifier.fetchMealData();
                               });
                             },
