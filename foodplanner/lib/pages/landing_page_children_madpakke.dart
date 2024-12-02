@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/mealBox.dart';
 import 'package:foodplanner/config/colors.dart';
@@ -7,7 +8,6 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/routes/user_roles.dart';
-import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
@@ -55,6 +55,10 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the size of the screen
+    final size = MediaQuery.of(context).size;
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         leading: Padding(

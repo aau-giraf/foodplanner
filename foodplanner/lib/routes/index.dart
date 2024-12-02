@@ -4,22 +4,25 @@ import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/add_meal_page.dart';
-import 'package:foodplanner/pages/feedbackChatPage.dart';
-import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
+import 'package:foodplanner/pages/create_meal_page.dart';
 import 'package:foodplanner/pages/edit_meal_page.dart';
+import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
+import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
+import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/landing_page_teacher.dart';
-import 'package:foodplanner/pages/profilePage.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
+import 'package:foodplanner/pages/profile_page.dart';
+import 'package:foodplanner/pages/settings_page.dart';
 import 'package:foodplanner/pages/signup_page.dart';
-import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
 import '../pages/login_page.dart';
 import '../pages/unauthorized_page.dart';
 
@@ -189,7 +192,7 @@ final router = GoRouter(
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const ProfilePage(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const ParentProfile();
             } else {
               return const UnauthorizedPage();
             }

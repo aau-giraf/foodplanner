@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/add_meal_button.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/components/mealBox.dart';
+import 'package:foodplanner/components/meal_box.dart';
+import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/add_meal_page.dart';
-import 'package:foodplanner/pages/feedbackChatPage.dart';
+
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
@@ -90,7 +92,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ReusableMealBox(),
+                    child: ReusableMealBox(size: size),
                   ), // Use the reusable widget
                   SizedBox(height: 20),
                   mealNotifier.meal == null

@@ -252,6 +252,7 @@ class _SettingsPage extends State<Settings> {
                   size: ButtonSize.medium,
                 ),
               ),
+              /* FooterBar(), */
             ],
           ),
         ),
