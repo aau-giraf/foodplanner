@@ -86,52 +86,55 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
         scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          SettingsWidget(
-            leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
-            title: 'Tilføj ingredienser',
-            subTitle:
-                'Her kan du tilføje ingredienser til din madpakke.\nDu kan tilføje ingredienser fra din egen liste eller tilføje nye ingredienser.',
-            type: SettingsType.header,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: SearchField(
-                  controller: _controller,
-                  hintText: 'Søg efter ingredienser',
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: CustomButton(
-                  onTab: null,
-                  text: 'Tilføj',
-                  customWidth: 100,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _ingredients.length,
-              itemBuilder: (BuildContext context, index) {
-                return SettingsWidget(
-                  leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
-                  title: _ingredients[index]['name'],
-                  type: SettingsType.items,
-                  cta: AdvancedSwitch(
-                    controller: _controllers[index],
-                    activeColor: AppColors.primary,
-                    width: 60,
-                  ),
-                );
-              },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SettingsWidget(
+              leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
+              title: 'Tilføj ingredienser',
+              subTitle:
+                  'Her kan du tilføje ingredienser til din madpakke.\nDu kan tilføje ingredienser fra din egen liste eller tilføje nye ingredienser.',
+              type: SettingsType.header,
             ),
-          ),
-        ],
+            Row(
+              children: [
+                Expanded(
+                  child: SearchField(
+                    controller: _controller,
+                    hintText: 'Søg efter ingredienser',
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: CustomButton(
+                    onTab: null,
+                    text: 'Tilføj',
+                    customWidth: 100,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _ingredients.length,
+                itemBuilder: (BuildContext context, index) {
+                  return SettingsWidget(
+                    leftIcon:
+                        SFIcons.sf_person_crop_circle_fill_badge_checkmark,
+                    title: _ingredients[index]['name'],
+                    type: SettingsType.items,
+                    cta: AdvancedSwitch(
+                      controller: _controllers[index],
+                      activeColor: AppColors.primary,
+                      width: 60,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
