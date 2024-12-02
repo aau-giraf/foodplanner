@@ -3,6 +3,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:go_router/go_router.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
@@ -180,7 +181,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
             child: Row(
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.65,
+                  width: MediaQuery.of(context).size.width * 0.6,
                   child: SearchField(
                     controller: searchController,
                     hintText: 'Søg efter elev',
@@ -220,81 +221,64 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
                       height: 5,
                     ),
                     Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: schoolClasses.length,
-                              itemBuilder: (context, index) {
-                                final schoolClass = schoolClasses[index];
-                                final isLastClass =
-                                    index == schoolClasses.length - 1;
-                                final classStudents = students
-                                    .where((student) =>
-                                        student['classId'] == schoolClass['id'])
-                                    .toList();
-                                final filteredClassStudents = filteredStudents
-                                    .where((student) =>
-                                        student['classId'] == schoolClass['id'])
-                                    .toList();
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CustomListItem(
-                                      leftIcon: SFIcons.sf_figure_2,
-                                      leftIconStyle: TextStyle(fontSize: 22),
-                                      title: schoolClass['name'] ?? 'Unknown',
-                                      isHighlighted: false,
-                                      isLastItem: isLastClass,
-                                      onTap: () => toggleClassStudents(
-                                          schoolClass['id']!),
-                                      isTapped: selectedClassIds
-                                          .contains(schoolClass['id']),
-                                    ),
-                                    if (selectedClassIds
-                                        .contains(schoolClass['id']))
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 40),
-                                        child: Column(
-                                          children:
-                                              (searchController.text.isEmpty
-                                                      ? classStudents
-                                                      : filteredClassStudents)
-                                                  .map((student) {
-                                            final isLastStudentInLastClass =
-                                                isLastClass &&
-                                                    classStudents
-                                                            .indexOf(student) ==
-                                                        classStudents.length -
-                                                            1;
-                                            return CustomListItem(
-                                              leftIcon: SFIcons.sf_figure_child,
-                                              key: ValueKey(student['id']),
-                                              title:
-                                                  student['name'] ?? 'Unknown',
-                                              isHighlighted:
-                                                  highlightedStudentIds
-                                                      .contains(student['id']),
-                                              isLastItem:
-                                                  isLastStudentInLastClass,
-                                              onTap: () =>
-                                                  navigateToStudentDetails(
-                                                      student),
-                                              isTapped: highlightedStudentIds
-                                                  .contains(student['id']),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: schoolClasses.length,
+                        itemBuilder: (context, index) {
+                          final schoolClass = schoolClasses[index];
+                          final isLastClass = index == schoolClasses.length - 1;
+                          final classStudents = students
+                              .where((student) =>
+                                  student['classId'] == schoolClass['id'])
+                              .toList();
+                          final filteredClassStudents = filteredStudents
+                              .where((student) =>
+                                  student['classId'] == schoolClass['id'])
+                              .toList();
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomListItem(
+                                leftIcon: SFIcons.sf_figure_2,
+                                leftIconStyle: TextStyle(fontSize: 22),
+                                title: schoolClass['name'] ?? 'Unknown',
+                                isHighlighted: false,
+                                isLastItem: isLastClass,
+                                onTap: () =>
+                                    toggleClassStudents(schoolClass['id']!),
+                                isTapped: selectedClassIds
+                                    .contains(schoolClass['id']),
+                              ),
+                              if (selectedClassIds.contains(schoolClass['id']))
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 40),
+                                  child: Column(
+                                    children: (searchController.text.isEmpty
+                                            ? classStudents
+                                            : filteredClassStudents)
+                                        .map((student) {
+                                      final isLastStudentInLastClass =
+                                          isLastClass &&
+                                              classStudents.indexOf(student) ==
+                                                  classStudents.length - 1;
+                                      return CustomListItem(
+                                        leftIcon: SFIcons.sf_figure_child,
+                                        key: ValueKey(student['id']),
+                                        title: student['name'] ?? 'Unknown',
+                                        isHighlighted: highlightedStudentIds
+                                            .contains(student['id']),
+                                        isLastItem: isLastStudentInLastClass,
+                                        onTap: () =>
+                                            navigateToStudentDetails(student),
+                                        isTapped: highlightedStudentIds
+                                            .contains(student['id']),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   ],

@@ -60,14 +60,11 @@ class LoginPageState extends State<LoginPage> {
           .fetchAuthData(usernameController.text, passwordController.text);
       print(role);
       switch (role) {
-        case ROLES.teacher:
+        case ROLES.teacher || ROLES.admin:
           GoRouter.of(context).go(TEACHER_ROOT);
           break;
         case ROLES.student:
           GoRouter.of(context).go(STUDENT_ROOT);
-          break;
-        case ROLES.admin:
-          GoRouter.of(context).go(ADMIN_ROOT);
           break;
         case ROLES.parent:
           GoRouter.of(context).go(PARENT_ROOT);

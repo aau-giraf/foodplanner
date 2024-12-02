@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/add_meal_button.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/meal_box.dart';

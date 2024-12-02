@@ -6,21 +6,31 @@ import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:provider/provider.dart'; // Update with the correct import
 
 class Mealboxcontent extends StatelessWidget {
-  final String caption;
-
-  const Mealboxcontent({super.key, this.caption = 'Madpakke Text'});
+  const Mealboxcontent({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<MealNotifier>(
       builder: (context, mealNotifier, child) {
+        if (mealNotifier.meal == null) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              // sabrina carpenter tho :flushedEmoj:
+              const Text(
+                'ingen madpakke at vise',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ],
+          );
+        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                caption,
+                mealNotifier.meal!.name,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),

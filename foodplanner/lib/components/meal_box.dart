@@ -31,6 +31,7 @@ class _ReusableMealBoxState extends State<ReusableMealBox> {
 
   @override
   Widget build(BuildContext context) {
+    print('mealNotifier.meal: ${mealNotifier.meal}');
     return Card(
       color: AppColors.background,
       surfaceTintColor: AppColors.background,
@@ -77,19 +78,7 @@ class _ReusableMealBoxState extends State<ReusableMealBox> {
                     }
                   }),
             ),
-            if (mealNotifier.meal == null)
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // sabrina carpenter tho :flushedEmoj:
-                  const Text(
-                    'ingen madpakke at vise',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              )
-            else
-              Mealboxcontent(caption: mealNotifier.meal!.name)
+            Mealboxcontent()
           ],
         ),
       ),

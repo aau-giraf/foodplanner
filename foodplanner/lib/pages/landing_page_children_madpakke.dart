@@ -32,54 +32,55 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   late Future<bool> _hasRolesFuture;
   Child? _child;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
-  String? userRole;
+  ROLES? userRole;
+  Future<void>? _callerFuture;
 
   @override
   void initState() {
     super.initState();
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    //_hasRolesFuture = authProvider.hasRoles([ROLES.parent, ROLES.student]);
-    print("Skyd dig selv hvis det virker. ${widget.student['name']}");
-    authProvider.loadFromStorage().then((_) {
-      authProvider.retrieveToken().then((token) async {
-        final role = await authProvider.retrieveRole();
-        setState(() {
-          userRole = role?.toString();
-          _hasRolesFuture = authProvider
-              .hasRoles([ROLES.parent, ROLES.student, ROLES.teacher]);
-          if (authProvider.userRole == ROLES.student ||
-              authProvider.userRole == ROLES.parent) {
-            childService.fetchChildById().then((childData) {
-              setState(() {
-                _child = childData;
-                print(_child!.firstName);
-              });
-            });
-          } else if (authProvider.userRole == ROLES.teacher) {
-            int TempChildId = int.parse(widget.student['id']!);
+    _initialize();
+  }
 
-            childService.GetByChildId(TempChildId).then((childData) {
-              setState(() {
-                _child = childData;
-                print(_child!.firstName);
-              });
-              MealNotifier().teacherUpdateChildId(_child!.parentId);
-            });
-          }
-        });
-      });
+  Future<void> _initialize() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final role = await authProvider.retrieveRole();
+    setState(() {
+      userRole = role;
+      _hasRolesFuture =
+          authProvider.hasRoles([ROLES.parent, ROLES.student, ROLES.teacher]);
     });
+
+    if (authProvider.userRole == ROLES.student ||
+        authProvider.userRole == ROLES.parent) {
+      final childData = await childService.fetchChildById();
+      setState(() {
+        _child = childData;
+        print(_child!.firstName);
+      });
+    } else if (authProvider.userRole == ROLES.teacher) {
+      int TempChildId = int.parse(widget.student['id']!);
+      final childData = await childService.GetByChildId(TempChildId);
+      setState(() {
+        _child = childData;
+        print(_child!.firstName);
+      });
+    }
+
+    setState(() {
+      _callerFuture = caller();
+    });
+  }
+
+  Future<void> caller() async {
+    await MealNotifier().teacherUpdateChildId(_child!.parentId);
+    await MealNotifier().updateDate(DateTime.now());
   }
 
   @override
   Widget build(BuildContext context) {
-    // Get the size of the screen
-    final size = MediaQuery.of(context).size;
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
-        leading: userRole == ROLES.teacher.toString()
+        leading: userRole == ROLES.teacher || userRole == ROLES.admin
             ? IconButton(
                 onPressed: () {
                   GoRouter.of(context).go(TEACHER_ROOT);
@@ -92,7 +93,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
           style: AppTextStyles.headline4,
         ),
         centerTitle: true,
-        actions: userRole != ROLES.teacher.toString()
+        actions: userRole != ROLES.teacher || userRole != ROLES.admin
             ? [
                 IconButton(
                   onPressed: () {
@@ -119,7 +120,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: FutureBuilder(
-                      future: MealNotifier().updateDate(DateTime.now()),
+                      future: _callerFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           return ReusableMealBox();

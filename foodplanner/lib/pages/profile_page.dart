@@ -6,6 +6,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/models/user.dart';
+import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
@@ -63,10 +64,33 @@ class ParentProfileState extends State<ParentProfile>
   String updatedPassword = '';
   String updatedPincode = '';
 
+  ROLES? userRole;
+
   @override
   void initState() {
     super.initState();
-    fetchParentAndChild();
+
+    AuthProvider().retrieveRole().then((role) {
+      if (role == ROLES.teacher || role == ROLES.admin) {
+        fetchAdminAndTeacher();
+      } else {
+        fetchParentAndChild();
+      }
+      userRole = role;
+    });
+  }
+
+  Future<void> fetchAdminAndTeacher() async {
+    final userInfo = await ParentProfile.userService.fetchLoggedInUser();
+    setState(() {
+      parent = userInfo;
+      firstNameController.text = parent.firstName;
+      lastNameController.text = parent.lastName;
+      emailController.text = parent.email;
+      updatedFirstName = parent.firstName;
+      updatedLastName = parent.lastName;
+      updatedEmail = parent.email;
+    });
   }
 
   Future<void> fetchParentAndChild() async {
@@ -133,15 +157,26 @@ class ParentProfileState extends State<ParentProfile>
   }
 
   Future<void> resetPage() async {
-    await fetchParentAndChild();
-    setState(() {
-      isEditingFirstName = false;
-      isEditingLastName = false;
-      isEditingEmail = false;
-      isEditingPassword = false;
-      isEditingPincode = false;
-      hasChanges = false;
-    });
+    if (userRole == ROLES.parent) {
+      await fetchParentAndChild();
+      setState(() {
+        isEditingFirstName = false;
+        isEditingLastName = false;
+        isEditingEmail = false;
+        isEditingPassword = false;
+        isEditingPincode = false;
+        hasChanges = false;
+      });
+    } else if (userRole == ROLES.teacher || userRole == ROLES.admin) {
+      await fetchAdminAndTeacher();
+      setState(() {
+        isEditingFirstName = false;
+        isEditingLastName = false;
+        isEditingEmail = false;
+        isEditingPassword = false;
+        hasChanges = false;
+      });
+    }
   }
 
   List<Map<String, dynamic>> get parentProfileItems => [
@@ -430,12 +465,13 @@ class ParentProfileState extends State<ParentProfile>
           ),
           'showSpacer': false,
         },
-        {
-          'title': 'Barn',
-          'isEditable': false,
-          'cta': Text('${child.firstName} ${child.lastName}'),
-          'divider': false,
-        },
+        if (userRole == ROLES.parent)
+          {
+            'title': 'Barn',
+            'isEditable': false,
+            'cta': Text('${child.firstName} ${child.lastName}'),
+            'divider': false,
+          },
       ];
 
   @override

@@ -1,10 +1,4 @@
 // main root and auth root
-import 'package:foodplanner/pages/add_ingredient_page.dart';
-import 'package:foodplanner/pages/add_meal_page.dart';
-import 'package:foodplanner/pages/add_meal_form_page.dart';
-import 'package:foodplanner/pages/camera_page.dart';
-import 'package:foodplanner/pages/edit_meal_page.dart';
-import 'package:foodplanner/pages/meal_list_page.dart';
 
 const String MAIN_ROOT = '/';
 const String ADMIN_ROOT = '/admin';
