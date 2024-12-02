@@ -6,13 +6,17 @@ import 'package:foodplanner/components/meal_box.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/pages/landing_page_teacher.dart';
+
 import 'package:foodplanner/pages/pin_code.dart';
+import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 
 class ChildLandingPageMadpakke extends StatefulWidget {
   final Map<String, String> student;
@@ -28,17 +32,21 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   late Future<bool> _hasRolesFuture;
   Child? _child;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
+  String? userRole;
 
   @override
   void initState() {
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     //_hasRolesFuture = authProvider.hasRoles([ROLES.parent, ROLES.student]);
+    print("Skyd dig selv hvis det virker. ${widget.student['name']}");
     authProvider.loadFromStorage().then((_) {
-      authProvider.retrieveToken().then((token) {
+      authProvider.retrieveToken().then((token) async {
+        final role = await authProvider.retrieveRole();
         setState(() {
-          _hasRolesFuture =
-              authProvider.hasRoles([ROLES.parent, ROLES.student]);
+          userRole = role?.toString();
+          _hasRolesFuture = authProvider
+              .hasRoles([ROLES.parent, ROLES.student, ROLES.teacher]);
           if (authProvider.userRole == ROLES.student ||
               authProvider.userRole == ROLES.parent) {
             childService.fetchChildById().then((childData) {
@@ -46,6 +54,16 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                 _child = childData;
                 print(_child!.firstName);
               });
+            });
+          } else if (authProvider.userRole == ROLES.teacher) {
+            int TempChildId = int.parse(widget.student['id']!);
+
+            childService.GetByChildId(TempChildId).then((childData) {
+              setState(() {
+                _child = childData;
+                print(_child!.firstName);
+              });
+              MealNotifier().teacherUpdateChildId(_child!.parentId);
             });
           }
         });
@@ -61,31 +79,32 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Center(
-                  child: Text(
-                    '${_child?.firstName} ${_child?.lastName}',
-                    style: AppTextStyles.headline4,
-                  ),
-                ),
-              ),
-              IconButton(
+        leading: userRole == ROLES.teacher.toString()
+            ? IconButton(
+                onPressed: () {
+                  GoRouter.of(context).go(TEACHER_ROOT);
+                },
+                icon: Icon(SFIcons.sf_chevron_backward),
+              )
+            : null,
+        title: Text(
+          '${_child?.firstName} ${_child?.lastName}',
+          style: AppTextStyles.headline4,
+        ),
+        centerTitle: true,
+        actions: userRole != ROLES.teacher.toString()
+            ? [
+                IconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => PinCode()),
                     );
                   },
-                  icon: SFIcon(SFIcons.sf_lock_fill)),
-            ],
-          ),
-        ),
-        leadingWidth: double.infinity,
+                  icon: SFIcon(SFIcons.sf_lock_fill),
+                ),
+              ]
+            : null,
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
       ),

@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/search_field.dart';
+import 'package:foodplanner/components/settings_widget.dart';
+import 'package:go_router/go_router.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/components/Custom_List_Item.dart';
+import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/models/user.dart' as model;
+import 'package:foodplanner/services/user_service.dart';
+import 'package:foodplanner/routes/index.dart';
 
 class TeacherLandingPage extends StatefulWidget {
   const TeacherLandingPage({super.key});
+
+  static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
   @override
   State<TeacherLandingPage> createState() => _LandingPageTeacherState();
@@ -18,11 +32,26 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
   Set<String> selectedClassIds = {};
   Set<String> highlightedStudentIds = {};
   TextEditingController searchController = TextEditingController();
+  model.User teacher = model.User(
+      id: 0,
+      email: 'Unknown',
+      firstName: 'Unknown',
+      lastName: 'Unknown',
+      role: 'Unknown',
+      archived: false);
 
   @override
   void initState() {
     super.initState();
     fetchChildrenData();
+    fetchUser();
+  }
+
+  Future<void> fetchUser() async {
+    final userInfo = await TeacherLandingPage.userService.fetchLoggedInUser();
+    setState(() {
+      teacher = userInfo;
+    });
   }
 
   Future<void> fetchChildrenData() async {
@@ -46,7 +75,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
               .toList();
           filteredStudents = students;
 
-  // Extract unique class IDs and names from students
+          // Extract unique class IDs and names from students
           final uniqueClasses = <String, String>{};
           for (var student in students) {
             uniqueClasses[student['classId']!] = student['className']!;
@@ -81,40 +110,28 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
     final filteredStudent =
         student.map((key, value) => MapEntry(key, value ?? ''));
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            ChildLandingPageMadpakke(student: filteredStudent),
-      ),
-    );
+    GoRouter.of(context).go('/student-details', extra: filteredStudent);
   }
 
   void filterStudents(String query) {
-    if (query.isEmpty) {
-      setState(() {
-        filteredStudents = students;
-        highlightedStudentIds.clear();
-      });
-      return;
-    }
-
-    final suggestions = students.where((student) {
-      final studentName = student['name']!.toLowerCase();
-      final input = query.toLowerCase();
-      return studentName.contains(input);
-    }).toList();
-
+    final lowerCaseQuery = query.toLowerCase();
     setState(() {
-      filteredStudents = suggestions;
+      if (lowerCaseQuery.isEmpty) {
+        filteredStudents = students;
+        selectedClassIds.clear();
+      } else {
+        filteredStudents = students.where((student) {
+          final studentName = student['name']!.toLowerCase();
+          return studentName.contains(lowerCaseQuery);
+        }).toList();
 
-      // Automatically expand the classes containing the searched students
-      highlightedStudentIds.clear();
-      if (suggestions.isNotEmpty) {
-        for (var student in suggestions) {
-          final classId = student['classId'];
-          selectedClassIds.add(classId!);
-          highlightedStudentIds.add(student['id']!);
+        // Automatically expand the classes containing the searched students
+        selectedClassIds.clear();
+        if (filteredStudents.isNotEmpty) {
+          for (var student in filteredStudents) {
+            final classId = student['classId'];
+            selectedClassIds.add(classId!);
+          }
         }
       }
     });
@@ -122,7 +139,14 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
 
   void collapseAll() {
     setState(() {
-      selectedClassIds.clear();
+      if (selectedClassIds.isEmpty) {
+        selectedClassIds =
+            schoolClasses.map((schoolClass) => schoolClass['id']!).toSet();
+      } else {
+        selectedClassIds.clear();
+        searchController.clear();
+        filteredStudents = students;
+      }
     });
   }
 
@@ -130,87 +154,158 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vælg en elev'), // "Select a student"
+        title: Center(
+          child: Text(
+            'Velkommen ${teacher.firstName} ${teacher.lastName}',
+            style: AppTextStyles.headline4,
+          ),
+        ),
+        backgroundColor: Colors.white,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Row(
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          SettingsWidget(
+            leftIcon: SFIcons.sf_figure_and_child_holdinghands,
+            title: 'Vælg en elev for at forsætte',
+            subTitle:
+                'Her kan du vælge eller søge efter elever i de repektive klasser',
+            type: SettingsType.header,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 25),
+            child: Row(
               children: [
-                Expanded(
-                  child: TextField(
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.65,
+                  child: SearchField(
                     controller: searchController,
-                    decoration: InputDecoration(
-                      labelText: 'Search Students',
-                      border: OutlineInputBorder(),
-                    ),
+                    hintText: 'Søg efter elev',
                     onChanged: filterStudents,
                   ),
                 ),
-                const SizedBox(width: 16.0),
-                GestureDetector(
-                  onTap: collapseAll,
-                  child: Text(
-                    'Collapse all',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.blue,
-                    ),
+                const SizedBox(width: 0),
+                Expanded(
+                  child: CustomButton(
+                    onTab: collapseAll,
+                    text: selectedClassIds.isEmpty ? 'Åben alle' : 'Luk alle',
+                    customHeight: 50,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16.0),
-            Expanded(
-              child: ListView.builder(
-                itemCount: schoolClasses.length,
-                itemBuilder: (context, index) {
-                  final schoolClass = schoolClasses[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        title: Text(schoolClass['name'] ?? 'Unknown'),
-                        onTap: () => toggleClassStudents(schoolClass['id']!),
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Card(
+                elevation: 2,
+                color: AppColors.background,
+                surfaceTintColor: AppColors.background,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Text(
+                        'Klasser:',
+                        style: AppTextStyles.bigText
+                            .copyWith(fontWeight: FontWeight.bold),
                       ),
-                      if (selectedClassIds.contains(schoolClass['id']))
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: Column(
-                            children: students
-                                .where((student) =>
-                                    student['classId'] == schoolClass['id'])
-                                .map((student) {
-                                  return ListTile(
-                                    key: ValueKey(student['id']), // Add a unique key to each ListTile
-                                    title: Text(
-                                      student['name'] ?? 'Unknown',
-                                      style: TextStyle(
-                                        fontWeight: highlightedStudentIds
-                                                .contains(student['id'])
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        color: highlightedStudentIds
-                                                .contains(student['id'])
-                                            ? Colors.blue
-                                            : Colors.black,
-                                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: schoolClasses.length,
+                              itemBuilder: (context, index) {
+                                final schoolClass = schoolClasses[index];
+                                final isLastClass =
+                                    index == schoolClasses.length - 1;
+                                final classStudents = students
+                                    .where((student) =>
+                                        student['classId'] == schoolClass['id'])
+                                    .toList();
+                                final filteredClassStudents = filteredStudents
+                                    .where((student) =>
+                                        student['classId'] == schoolClass['id'])
+                                    .toList();
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomListItem(
+                                      leftIcon: SFIcons.sf_figure_2,
+                                      leftIconStyle: TextStyle(fontSize: 22),
+                                      title: schoolClass['name'] ?? 'Unknown',
+                                      isHighlighted: false,
+                                      isLastItem: isLastClass,
+                                      onTap: () => toggleClassStudents(
+                                          schoolClass['id']!),
+                                      isTapped: selectedClassIds
+                                          .contains(schoolClass['id']),
                                     ),
-                                    onTap: () => navigateToStudentDetails(student),
-                                  );
-                                })
-                                .toList(),
-                          ),
+                                    if (selectedClassIds
+                                        .contains(schoolClass['id']))
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 40),
+                                        child: Column(
+                                          children:
+                                              (searchController.text.isEmpty
+                                                      ? classStudents
+                                                      : filteredClassStudents)
+                                                  .map((student) {
+                                            final isLastStudentInLastClass =
+                                                isLastClass &&
+                                                    classStudents
+                                                            .indexOf(student) ==
+                                                        classStudents.length -
+                                                            1;
+                                            return CustomListItem(
+                                              leftIcon: SFIcons.sf_figure_child,
+                                              key: ValueKey(student['id']),
+                                              title:
+                                                  student['name'] ?? 'Unknown',
+                                              isHighlighted:
+                                                  highlightedStudentIds
+                                                      .contains(student['id']),
+                                              isLastItem:
+                                                  isLastStudentInLastClass,
+                                              onTap: () =>
+                                                  navigateToStudentDetails(
+                                                      student),
+                                              isTapped: highlightedStudentIds
+                                                  .contains(student['id']),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                    ],
-                  );
-                },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 10),
+        ],
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }
