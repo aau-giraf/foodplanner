@@ -6,6 +6,7 @@ import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/mealBox.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/add_meal_page.dart';
 import 'package:foodplanner/pages/feedbackChatPage.dart';
 import 'package:foodplanner/components/footer.dart'; // Import the footer widget
@@ -47,7 +48,6 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
   @override
   Widget build(BuildContext context) {
     // Get the size of the screen
-    final size = MediaQuery.of(context).size;
     final mealNotifier = Provider.of<MealNotifier>(context);
 
     return Scaffold(
@@ -104,8 +104,11 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const AddMealPage()),
-                              );
+                                    builder: (context) => const MealFormPage()),
+                              ).then((_) {
+                                print('Fetching meal data');
+                                mealNotifier.fetchMealData();
+                              });
                             },
                             icon: SFIcon(
                               SFIcons.sf_plus,

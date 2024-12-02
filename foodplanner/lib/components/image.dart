@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:http/http.dart' as http;
 
 class FoodImage extends StatelessWidget {
   final int? foodImageId;
@@ -10,14 +11,14 @@ class FoodImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String?>(
+    return FutureBuilder<ImageProvider>(
         future: loadImageAndToken(),
-        builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
-          if (snapshot.hasData && snapshot.data != null) {
+        builder: (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
+          if (!snapshot.hasError && snapshot.hasData) {
             return ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image(
-                  image: NetworkImage(snapshot.data!),
+                  image: snapshot.data!,
                   width: 250,
                   height: 250,
                   fit: BoxFit.cover,
@@ -31,7 +32,7 @@ class FoodImage extends StatelessWidget {
         });
   }
 
-  Future<String?> loadImageAndToken() async {
+  Future<ImageProvider> loadImageAndToken() async {
     String? jwtToken = await AuthProvider().retrieveToken();
 
     var apiClient = ApiClient();
@@ -40,17 +41,25 @@ class FoodImage extends StatelessWidget {
     var imagesApi = ImagesApi(apiClient);
 
     if (foodImageId == null) {
-      return null;
+      return NetworkImage(imageUrl);
     }
 
-    String? imageUrl = await imagesApi.apiImagesGetPresignedImageLinkGet(
-        foodImageId: foodImageId);
+    try {
+      String? tempImageUrl = await imagesApi.apiImagesGetPresignedImageLinkGet(
+          foodImageId: foodImageId);
 
-    print('Image URL: $imageUrl');
+      tempImageUrl = tempImageUrl?.replaceFirst(
+          'http://localhost:9000', 'https://0812sjhc-9000.euw.devtunnels.ms');
 
-    imageUrl = imageUrl?.replaceFirst(
-        'http://localhost:9000', 'https://0812sjhc-9000.euw.devtunnels.ms');
-
-    return imageUrl;
+      final response = await http.get(Uri.parse(tempImageUrl!));
+      if (response.statusCode == 200) {
+        return NetworkImage(tempImageUrl);
+      } else {
+        return NetworkImage(imageUrl);
+      }
+    } catch (e) {
+      print("error");
+      return NetworkImage(imageUrl);
+    }
   }
 }

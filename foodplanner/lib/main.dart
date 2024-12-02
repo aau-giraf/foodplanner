@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../routes/index.dart';
 
 void main() {
+  // Ensure that plugin services are initialized ex so that `availableCameras()` work among others.
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     // For future, if you want to wrap app in another provider, add it to the list below
     MultiProvider(
@@ -19,8 +21,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
-  
 
   @override
   Widget build(BuildContext context) {
