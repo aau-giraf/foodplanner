@@ -7,6 +7,9 @@ import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/ingredient.dart';
+import 'package:foodplanner/pages/create_ingredient_page.dart';
+import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
 
 class AddIngredientPage extends StatefulWidget {
@@ -21,6 +24,10 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
   final TextEditingController _controller = TextEditingController();
   final List<ValueNotifier<bool>> _controllers = [];
 
+  final ingredientServices = IngredientServices(
+    apiUrl: ApiConfig.baseUrl,
+  );
+
   @override
   void initState() {
     super.initState();
@@ -30,7 +37,8 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
   Future<void> _getIngredients() async {
     try {
       final authProvider = AuthProvider(); // Initialize your AuthProvider
-      final ingredients = await fetchIngredientsByUserID(authProvider);
+      final ingredients =
+          await ingredientServices.fetchIngredientsByUserID(authProvider);
       setState(() {
         _ingredients.addAll(
             ingredients.map((e) => {'id': e.id, 'name': e.name}).toList());
@@ -106,7 +114,26 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
               Padding(
                 padding: const EdgeInsets.only(right: 20),
                 child: CustomButton(
-                  onTab: null,
+                  onTab: () async {
+                    // go to create ingredient page
+                    final ingredient = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CreateIngredientPage(),
+                      ),
+                    );
+
+                    if (ingredient != null) {
+                      final tempIngredient = ingredient as Ingredient;
+                      setState(() {
+                        _ingredients.add({
+                          'id': tempIngredient.id,
+                          'name': tempIngredient.name
+                        });
+                        _controllers.add(ValueNotifier<bool>(false));
+                      });
+                    }
+                  },
                   text: 'Tilføj',
                   customWidth: 100,
                 ),

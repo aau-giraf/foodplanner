@@ -9,7 +9,6 @@ import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
-import 'package:foodplanner/pages/add_meal_page.dart';
 
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';

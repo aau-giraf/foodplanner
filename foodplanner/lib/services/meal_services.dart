@@ -48,8 +48,7 @@ Future<http.Response> createMeal(AuthProvider authProvider, final String name,
     body: jsonEncode({
       'id': 0,
       'name': name, // Meal title.
-      'food_image_id':
-          foodImageId, //image_ref, // Meal image URL (ensured to be a string).
+      'food_image_id': foodImageId,
       'date':
           DateFormat('yyyy-MM-dd').format(date!), // Optional date for the meal.
     }),

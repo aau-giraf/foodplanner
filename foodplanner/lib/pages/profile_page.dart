@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
@@ -65,7 +66,6 @@ class ParentProfileState extends State<ParentProfile>
   @override
   void initState() {
     super.initState();
-
     fetchParentAndChild();
   }
 
@@ -106,6 +106,10 @@ class ParentProfileState extends State<ParentProfile>
   void dispose() {
     firstNameController.dispose();
     lastNameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    pincodeController.dispose();
+
     super.dispose();
   }
 
@@ -392,6 +396,10 @@ class ParentProfileState extends State<ParentProfile>
                                 updatedPincode = value;
                                 onFieldChanged();
                               },
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(4)
+                              ],
                             ),
                           ),
                         )
@@ -443,49 +451,49 @@ class ParentProfileState extends State<ParentProfile>
       ),
       bottomNavigationBar: NavBar(currentPageIndex: 2),
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          SettingsHeader(
-            icon: SFIcons.sf_person_fill,
-            title: '${parent.firstName} ${parent.lastName}',
-            subtitle: 'Her kan du redigere dine oplysninger.',
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              children: [
-                Card(
-                  elevation: 2,
-                  color: AppColors.background,
-                  surfaceTintColor: AppColors.background,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 10),
-                          ...parentProfileItems.map((item) {
-                            return SettingsWidget(
-                              title: item['title'],
-                              isEditable: item['isEditable'],
-                              cta: item['cta'],
-                              type: SettingsType.inlineItems,
-                              divider: item['divider'] ?? true,
-                              showSpacer: item['showSpacer'] ?? true,
-                            );
-                          }),
-                        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SettingsHeader(
+              icon: SFIcons.sf_person_fill,
+              title: '${parent.firstName} ${parent.lastName}',
+              subtitle: 'Her kan du redigere dine oplysninger.',
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                children: [
+                  Card(
+                    elevation: 2,
+                    color: AppColors.background,
+                    surfaceTintColor: AppColors.background,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10),
+                            ...parentProfileItems.map((item) {
+                              return SettingsWidget(
+                                title: item['title'],
+                                isEditable: item['isEditable'],
+                                cta: item['cta'],
+                                type: SettingsType.inlineItems,
+                                divider: item['divider'] ?? true,
+                                showSpacer: item['showSpacer'] ?? true,
+                              );
+                            }),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Visibility(
-                  visible: hasChanges,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: CustomButton(
+                  Visibility(
+                    visible: hasChanges,
+                    child: Column(
+                      children: [
+                        SizedBox(height: 20),
+                        CustomButton(
                           text: 'Gem ændringer',
                           onTab: () {
                             saveChanges();
@@ -498,10 +506,8 @@ class ParentProfileState extends State<ParentProfile>
                             resetPage();
                           },
                         ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: CustomButton(
+                        SizedBox(height: 20),
+                        CustomButton(
                           text: 'Fortryd',
                           onTab: () {
                             resetPage();
@@ -509,29 +515,29 @@ class ParentProfileState extends State<ParentProfile>
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.black,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  width: double.infinity,
-                  child: CustomButton(
-                    text: 'Log ud',
-                    onTab: () async {
-                      final authProvider =
-                          Provider.of<AuthProvider>(context, listen: false);
-                      await authProvider.logout();
-                      context.go(LOGIN_PAGE);
-                    },
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
+                  SizedBox(height: 20),
+                  Container(
+                    width: double.infinity,
+                    child: CustomButton(
+                      text: 'Log ud',
+                      onTab: () async {
+                        final authProvider =
+                            Provider.of<AuthProvider>(context, listen: false);
+                        await authProvider.logout();
+                        context.go(LOGIN_PAGE);
+                      },
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
