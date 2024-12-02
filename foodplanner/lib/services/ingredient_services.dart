@@ -63,9 +63,9 @@ Future<http.Response> createIngredient(http.Client client, AuthProvider authProv
       'Content-Type': 'application/json; charset=UTF-8', // Specify the content type as JSON.
       'Authorization': 'Bearer $jwtToken', // Include the authorization token for authentication.
     },
-    body: jsonEncode(<String, String>{ // Encode the request body as JSON.
+    body: jsonEncode({ // Encode the request body as JSON.
       'name': name, // Name of the ingredient.
-      'image_ref': imageRef.toString(), // Image URL of the ingredient (optional).
+      'image_ref': imageRef, // Image URL of the ingredient (optional).
     }),
   );
 
