@@ -513,7 +513,7 @@ class ParentProfileState extends State<ParentProfile>
                     ],
                   ),
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 20),
                 Container(
                   width: double.infinity,
                   child: CustomButton(
