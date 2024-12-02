@@ -4,16 +4,15 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.5.3
+    sdk: ^3.5.3
 
 dependencies:
-
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.
     cupertino_icons: ^1.0.8
     # Added camera dependency for camera widget
     camera: ^0.11.0+2
-    image: ^3.0.1 
+    image: ^3.0.1
     # Plugin for saving images to photos gallery
     gal: ^2.3.0
     image_picker: ^1.1.2
@@ -22,7 +21,8 @@ dependencies:
     http: ^1.2.2
     jwt_decoder: ^2.0.1
     auto_size_text: ^3.0.0
-    
+    permission_handler: ^10.2.0
+
     flutter:
         sdk: flutter
     go_router: ^14.3.0
@@ -41,6 +41,7 @@ dependencies:
     path_provider: ^2.1.5
     flutter_advanced_switch: ^3.1.0
     flutter_advanced_segment: ^3.0.2
+    http_parser: ^4.0.2
 
 dev_dependencies:
     flutter_test:
@@ -57,6 +58,6 @@ dev_dependencies:
     flutter_lints: ^5.0.0
 
 flutter:
-  uses-material-design: true  
-  assets:
-    - assets/images/logo.png
+    uses-material-design: true
+    assets:
+        - assets/images/logo.png

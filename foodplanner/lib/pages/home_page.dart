@@ -10,7 +10,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'landing_page_teacher.dart';
 
-
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -46,48 +45,57 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ChildLandingPageMadpakke(student: {},)),
+                  MaterialPageRoute(
+                      builder: (context) => const ChildLandingPageMadpakke(
+                            student: {},
+                          )),
                 );
               },
               child: const Text('Go to Child Landing Page'),
-            ),      
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ParentLandingPageMadpakke()),
+                  MaterialPageRoute(
+                      builder: (context) => const ParentLandingPageMadpakke()),
                 );
               },
               child: const Text('Go to Parent Landing Page'),
-            ),           
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const TeacherLandingPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const TeacherLandingPage()),
                 );
               },
               child: const Text('Go to Teacher Landing Page'),
-            ),           
+            ),
             // Used for development purposes
             ElevatedButton(
               onPressed: () {
-                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                final authProvider =
+                    Provider.of<AuthProvider>(context, listen: false);
                 authProvider.setRole(ROLES.admin);
               },
               child: const Text('Set role to admin'),
             ),
             ElevatedButton(
               onPressed: () {
-                final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                authProvider.setRole(ROLES.parent);},
+                final authProvider =
+                    Provider.of<AuthProvider>(context, listen: false);
+                authProvider.setRole(ROLES.parent);
+              },
               child: const Text('Set role to parent'),
             ),
             ElevatedButton(
               onPressed: () {
-                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                final authProvider =
+                    Provider.of<AuthProvider>(context, listen: false);
                 if (true) {
                   context.go(ADMIN_ROOT);
                 } else {
@@ -98,11 +106,12 @@ class HomePage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                final authProvider =
+                    Provider.of<AuthProvider>(context, listen: false);
                 if (authProvider.hasRole([ROLES.parent])) {
-                  context.go(NO_MEAL); 
+                  context.go(NO_MEAL);
                 } else {
-                  context.go('/unauthorized'); 
+                  context.go('/unauthorized');
                 }
               },
               child: const Text('Go to No Meal Page'),
@@ -113,17 +122,6 @@ class HomePage extends StatelessWidget {
               },
               child: const Text('Go to Edit Meal Page'),
             ),
-
-            // ElevatedButton(
-            // onPressed: () async {
-            //   final authProvider = Provider.of<AuthProvider>(context, listen: false);
-            //   await authProvider.login(ROLES.admin, AuthProvider().jwtToken, AuthProvider().isLoggedIn); // token has to come from backend :) so when stokholm fix his shit we can fix ours
-            //   print('Logged in: ${authProvider.isLoggedIn}');
-            //   print('User Role: ${authProvider.userRole}');
-            //   print('JWT Token: ${authProvider.jwtToken}');
-            // },
-            // child: const Text('Login TESTING TOKENS'),
-            // ),
             ElevatedButton(
               onPressed: () async {
                 final authProvider =

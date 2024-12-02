@@ -1,36 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:foodplanner/components/icon_button.dart';
-import 'package:foodplanner/models/ingredient.dart';
-import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/packed_ingredient.dart';
+import 'dart:convert';
+import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/pages/add_ingredient_page.dart';
+import 'package:foodplanner/pages/camera_page.dart';
+import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/services/meal_services.dart';
+import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
+import 'package:foodplanner/components/text_field.dart';
+import 'package:foodplanner/services/meal_notifier.dart';
+import 'package:foodplanner/services/food_image_service.dart';
 
 /// This class is used to create the meal page where the user can create an individual meal for their children.
 class MealFormPage extends StatefulWidget {
-  final List<Ingredient>? ingredients; // The list of ingredients available.
-  final List<PackedIngredient>
-      packedIngredients; // The meal being created or edited.
-  final TextEditingController mealTitleController;
-  final MultipartFile? image;
-  final VoidCallback onAddIngredients; // Callback for adding ingredients.
-  final Future<void> Function() onCamera; // Callback for opening the camera.
-  final Client client;
-  final Future<void> Function(http.Client, String) onCreateMeal;
-
   const MealFormPage({
-    super.key, // Key for the widget, maintaining state.
-    required this.ingredients, // Required parameter for the ingredients.
-    required this.packedIngredients, // Required parameter for the meal.
-    required this.mealTitleController,
-    required this.image,
-    required this.onAddIngredients, // Callback for adding ingredients.
-    required this.onCamera, // Callback for accessing the camera.
-    required this.client,
-    required this.onCreateMeal,
+    super.key,
   });
 
   @override
@@ -39,134 +29,255 @@ class MealFormPage extends StatefulWidget {
 }
 
 class _MealFormPageState extends State<MealFormPage> {
+  final List<Map<String, dynamic>> selectedIngredients = [];
+  late String mealTitle;
+  int? foodImageId;
+  DateTime? date;
+  late List<int> selectedIngredientsIds;
+  final TextEditingController mealNameController = TextEditingController();
+  String baseUrl = ApiConfig.baseUrl;
+  int mealId = 0;
+  http.MultipartFile? image;
+
+  @override
+  void initState() {
+    super.initState(); // Call the superclass initState method.
+    foodImageId = retrieveFoodImageId();
+    _initializeDate();
+    selectedIngredientsIds = retrieveSelectedIngredients();
+  }
+
+  Future<void> _initializeDate() async {
+    final mealNotifier = MealNotifier();
+    date = await mealNotifier.retrieveDate();
+    setState(() {});
+  }
+
   // Method for deleting the controllers when they are done being used.
+  String retrieveMealName() {
+    print('Retrieving meal name ${mealNameController.text}');
+    if (mealNameController.text.isEmpty) {
+      return 'Madpakke';
+    } else {
+      return mealNameController.text;
+    }
+  }
+
+  int? retrieveFoodImageId() {
+    // Logic to retrieve the food image ID
+    return 1;
+  }
+
+  List<int> retrieveSelectedIngredients() {
+    return selectedIngredients
+        .map((ingredient) => ingredient['id'] as int)
+        .toList();
+  }
+
+  Future<void> createMealWithIngredients() async {
+    final selectedIngredientsIds = retrieveSelectedIngredients();
+    final mealTitle = retrieveMealName();
+    final authProvider =
+        AuthProvider(); // Ensure you have an instance of AuthProvider
+
+    final response = await createMeal(
+      authProvider,
+      mealTitle,
+      foodImageId,
+      date,
+    );
+
+    final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+    if (responseData.containsKey('id')) {
+      print('Meal created with ID: ${responseData['id']}');
+
+      if (selectedIngredientsIds.isNotEmpty) {
+        for (var ingredientId in selectedIngredientsIds) {
+          try {
+            final packedIngredientResponse = await createPackedIngredient(
+              authProvider,
+              responseData['id'],
+              ingredientId,
+            );
+          } catch (e) {
+            print(
+                'Failed to create packed ingredient for ID: $ingredientId - $e');
+          }
+        }
+      }
+    }
+  }
 
   @override
   void dispose() {
+    mealNameController.dispose(); // Dispose of the controller.
     super.dispose(); // Call the superclass dispose method.
   }
 
   @override
   Widget build(BuildContext context) {
-    int maxTextLength =
-        20; // The max number of characters that can be inputted into the textfield.
-
     return Scaffold(
-      // Scaffold to set the layout structure for the page.
-      body: Padding(
-        // Padding around the body content.
-        padding: const EdgeInsets.only(
-            top: 10.0,
-            bottom: 10.0,
-            right: 16.0,
-            left: 16.0), // Specify padding values.
-        child: Column(
-          // Vertical layout for the content.
-          children: [
-            // Textfield for the title of the meal.
-            Text(
-              'Start med at give madpakken en titel', // Hint text for title input.
-              style: TextStyle(
-                  color: AppColors.textFieldHint), // Style for hint text.
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Row(
+              children: [
+                SFIcon(SFIcons.sf_chevron_backward),
+                SizedBox(width: 10),
+                Text(
+                  'Tilbage',
+                  style: AppTextStyles.headline4,
+                  textAlign: TextAlign.left,
+                ),
+              ],
             ),
-            Container(
-              padding: const EdgeInsets.only(
-                  left: 50.0,
-                  right: 50.0), // Padding for the text field container.
-              child: TextField(
-                // Text field for entering the meal title.
-                controller: widget
-                    .mealTitleController, // Controller for managing the inputted text.
-                maxLength:
-                    maxTextLength, // Maximum length of characters allowed.
-                inputFormatters: <TextInputFormatter>[
-                  // Input formatters to restrict input.
-                  FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z ]")),
-                ], // Only alphanumeric characters can be entered
-                decoration: InputDecoration(
-                  // Input decoration for the text
-                  counterText:
-                      '', // No counter text shown for the character limit.
-                  hintText:
-                      'Skriv her...', // Placeholder text for the text filed.
-                  hintStyle: TextStyle(
-                    color: AppColors
-                        .textFieldHint, // Style for the hint text color.
-                  ),
-                  // border: UnderlineInputBorder(),
+          ),
+        ),
+        leadingWidth: 200,
+        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
+      ),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SettingsWidget(
+              leftIcon: SFIcons.sf_fork_knife,
+              title: 'Opret madpakke',
+              subTitle: 'Her kan du oprette en madpakke til dit barn',
+              type: SettingsType.header,
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Card(
+                elevation: 2,
+                color: AppColors.background,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text('Navn på madpakke',
+                          style: AppTextStyles.headline3),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomTextField(
+                        controller: mealNameController,
+                        errorText: "",
+                        hintText: 'Navn fx. "Rugbrød med ost og grønt"',
+                        color: Colors.white,
+                      ),
+                    ),
+
+                    const SizedBox(height: 50), // Spacer for vertical layout.
+
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: selectedIngredients.length,
+                        itemBuilder: (BuildContext context, index) {
+                          final ingredient = selectedIngredients[index];
+                          return SettingsWidget(
+                            leftIcon: SFIcons
+                                .sf_person_crop_circle_fill_badge_checkmark,
+                            title: ingredient['name'],
+                            type: SettingsType.items,
+                          );
+                        },
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomButton(
+                        onTab: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddIngredientPage(),
+                            ),
+                          );
+                          if (result != null) {
+                            setState(() {
+                              if (result is List<Map<String, dynamic>>) {
+                                selectedIngredients.addAll(result);
+                              } else if (result is Map<String, dynamic>) {
+                                selectedIngredients.add(result);
+                              }
+                            });
+                          }
+                        },
+                        text: 'Tilføj ingredienser',
+                        size: ButtonSize.medium,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                  ],
                 ),
               ),
             ),
-
-            const SizedBox(height: 50), // Spacer for vertical layout.
-
-            // Add Ingredient button
-            Text(
-              'Tilføj ingredienser', // Header for the ingredients section.
-              style: TextStyle(
-                  color: AppColors
-                      .textFieldHint), // Style for the ingredients text.
-            ),
-            CustomElevatedButton(
-              // Custom button for adding ingredients.
-              onTab: () {
-                // context.go(ADD_INGREDIENT_PAGE);
-                widget.onAddIngredients(); // Calls the callback to add
-              },
-              widget: Icon(Icons.add,
-                  color:
-                      AppColors.textSecondary), // Icon displayed on the button.
-              backgroundColor:
-                  AppColors.tertiary, // Background color of the button.
-              width: MediaQuery.sizeOf(context).width /
-                  2, // Width of the button is half of the screen width.
-            ),
-            Spacer(), // Flexible space to push the next button down.
-
-            // Create meal button
-            CustomElevatedButton(
-              onTab: () {
-                showCupertinoDialog(
-                  // If not, it opens a pop-up window.
-                  context: context,
-                  builder: (BuildContext context) => CupertinoAlertDialog(
-                    // Create a Cupertino alert dialog.
-                    title: Text(
-                        'Vil du tilføje et billede af madpakken?  '), // Title of the dialog.
-                    actions: <CupertinoDialogAction>[
-                      // Actions for the alert dialog.
-                      CupertinoDialogAction(
-                        isDefaultAction: true, // Highlight the default action.
-                        onPressed: () async {
-                          // Leads the user to the camera page.
-                          Navigator.pop(context);
-                          await widget.onCamera(); // Calls the camera callback.
-                          widget.onCreateMeal(
-                              widget.client, widget.mealTitleController.text);
-                          //context.pop();
-                        },
-                        child: const Text("Ja"), // Button text for "Yes".
-                      ),
-                      CupertinoDialogAction(
-                        isDestructiveAction:
-                            true, // Mark as a destructive action.
-                        onPressed: () {
-                          Navigator.pop(context);
-                          widget.onCreateMeal(
-                              widget.client, widget.mealTitleController.text);
-                          //context.pop();
-                        },
-                        child: const Text('Nej'), // Button text for "No".
-                      ),
-                    ],
-                  ),
-                );
-              },
-              width: MediaQuery.sizeOf(context).width /
-                  2, // Width of the button is half of the screen width.
-              widget: const Text(
-                'Opret madpakke', // Text displayed on the button for creating the meal.
-                style: AppTextStyles.buttonText, // Text style for the button.
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: CustomButton(
+                onTab: () {
+                  showCupertinoDialog(
+                    context: context,
+                    builder: (BuildContext context) => CupertinoAlertDialog(
+                      title: Text(
+                          'Vil du tilføje et billede af madpakken?'), // Title of the dialog.
+                      actions: <CupertinoDialogAction>[
+                        CupertinoDialogAction(
+                          isDefaultAction:
+                              true, // Highlight the default action.
+                          onPressed: () async {
+                            final image = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CameraPage(),
+                              ),
+                            );
+                            if (image != null) {
+                              final imageResponse = await UploadFoodImage(
+                                  image); // Ensure this method is defined.
+                              final int responseData =
+                                  jsonDecode(imageResponse.body);
+                              setState(() {
+                                foodImageId = responseData;
+                              });
+                            }
+                            createMealWithIngredients();
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Ja"), // Button text for "Yes".
+                        ),
+                        CupertinoDialogAction(
+                          isDestructiveAction:
+                              true, // Mark as a destructive action.
+                          onPressed: () async {
+                            await createMealWithIngredients();
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Nej'), // Button text for "No".
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                text: 'Opret madpakke',
+                size: ButtonSize.medium,
               ),
             ),
           ],

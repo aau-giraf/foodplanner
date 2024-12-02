@@ -140,8 +140,6 @@ class _EditMealElement extends State<EditMealElement> {
                         _isEditing =
                             !_isEditing; // Changes whether the TextField is editable to the opposite.
                       });
-                      print(
-                          '${widget.meal.name} is set to: ${widget.editTitleController.text}');
                     },
                     child:
                         Text("Redigér tekst"), // Button text for editing title

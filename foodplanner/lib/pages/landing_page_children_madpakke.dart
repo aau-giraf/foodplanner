@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/components/meal_box.dart';
-import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/mealBox.dart';
+import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/pages/pin_code.dart';
@@ -10,7 +11,6 @@ import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
-import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +20,7 @@ class ChildLandingPageMadpakke extends StatefulWidget {
       {super.key, /* required Map<String, String> */ required this.student});
 
   @override
-  _ChildLandingPageMadpakkeState createState() =>
+  State<ChildLandingPageMadpakke> createState() =>
       _ChildLandingPageMadpakkeState();
 }
 
@@ -90,7 +90,6 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
         scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
-      bottomNavigationBar: NavBar(),
       body: Center(
         child: Column(
           children: [
@@ -100,7 +99,16 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ReusableMealBox(size: size),
+                    child: FutureBuilder(
+                      future: MealNotifier().updateDate(DateTime.now()),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return ReusableMealBox();
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      },
+                    ),
                   ), // Use the reusable widget
                   SizedBox(height: 20),
                 ],

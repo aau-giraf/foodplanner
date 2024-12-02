@@ -25,21 +25,6 @@ class Meal {
 
   // Factory constructor to create a Meal instance from a JSON map
   factory Meal.fromJson(Map<String, dynamic> json) {
-    print(json);
-    int id = json['id'] != null ? json['id'] as int : 0;
-    print(id);
-    String name = json['name'] != null ? json['name'] as String : '';
-    print(name);
-    int? foodImageId =
-        json['food_image_id'] != null ? json['food_image_id'] as int : null;
-    print(foodImageId);
-    DateTime? date = json['date'] != null ? DateTime.parse(json['date']) : null;
-    print(date);
-    List<PackedIngredient> ingredients = (json['ingredients'] as List)
-        .map((e) => PackedIngredient.fromJson(e))
-        .toList();
-    print(ingredients);
-
     return Meal(
       id: json['id'] != null ? json['id'] as int : 0,
       name: json['name'] != null ? json['name'] as String : '',
