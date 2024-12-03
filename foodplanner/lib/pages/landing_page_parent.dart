@@ -14,6 +14,7 @@ import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart'; // Import the reusable widget
+import 'package:go_router/go_router.dart'; // Import GoRouter
 
 class ParentLandingPageMadpakke extends StatefulWidget {
   const ParentLandingPageMadpakke({super.key});
