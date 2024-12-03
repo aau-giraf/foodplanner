@@ -7,6 +7,7 @@ import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
+import 'package:foodplanner/routes/paths.dart';
 
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -65,11 +66,8 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
               IconButton(
                   onPressed: () async {
                     await AuthProvider().setRole(ROLES.student);
-                    print('Role set to student');
                     await AuthProvider().loadFromStorage();
-                    print(AuthProvider().userRole);
                     GoRouter.of(context).go('/');
-                    print('Navigated to landing page');
                   },
                   icon: SFIcon(SFIcons.sf_lock_open_fill)),
             ],
@@ -103,7 +101,6 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                                 MaterialPageRoute(
                                     builder: (context) => const MealFormPage()),
                               ).then((_) {
-                                print('Fetching meal data');
                                 mealNotifier.fetchMealData();
                               });
                             },
@@ -117,11 +114,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: CustomButton(
                             onTab: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FeedbackChatPage()),
-                              );
+                              GoRouter.of(context).go(FEEDBACK_Page);
                             },
                             text: 'Se Feedback',
                             //fontSize: 16,

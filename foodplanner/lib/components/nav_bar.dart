@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
 
 class NavBar extends StatefulWidget {
@@ -12,71 +14,103 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> {
+  final List<Widget> _destinations = [
+    NavigationDestination(
+      selectedIcon: SFIcon(
+        SFIcons.sf_message_fill,
+        color: Colors.white,
+      ),
+      icon: SFIcon(SFIcons.sf_message),
+      label: 'Feedback',
+    ),
+    NavigationDestination(
+      selectedIcon: SFIcon(
+        SFIcons.sf_gift_fill,
+        color: Colors.white,
+      ),
+      icon: SFIcon(SFIcons.sf_gift),
+      label: 'Madpakke',
+    ),
+    NavigationDestination(
+      selectedIcon: SFIcon(
+        SFIcons.sf_person_fill,
+        color: Colors.white,
+      ),
+      icon: SFIcon(SFIcons.sf_person),
+      label: 'Profil',
+    ),
+    NavigationDestination(
+      selectedIcon: SFIcon(
+        SFIcons.sf_gearshape_fill,
+        color: Colors.white,
+      ),
+      icon: SFIcon(SFIcons.sf_gearshape),
+      label: 'Indstillinger',
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(30),
-        topRight: Radius.circular(30),
-      ),
-      child: NavigationBar(
-        backgroundColor: AppColors.background,
-        onDestinationSelected: (int index) {
-          setState(() {
-            widget.currentPageIndex = index;
-          });
-          switch (index) {
-            case 0:
-              GoRouter.of(context).go('/feedback');
-              break;
-            case 1:
-              GoRouter.of(context).go('/');
-              break;
-            case 2:
-              GoRouter.of(context).go('/profile');
-              break;
-            case 3:
-              GoRouter.of(context).go('/settings');
-              break;
-          }
-        },
-        indicatorColor: AppColors.primary,
-        selectedIndex: widget.currentPageIndex,
-        destinations: [
-          NavigationDestination(
-            selectedIcon: SFIcon(
-              SFIcons.sf_message_fill,
-              color: Colors.white,
-            ),
-            icon: SFIcon(SFIcons.sf_message),
-            label: 'Feedback',
-          ),
-          NavigationDestination(
-            selectedIcon: SFIcon(
-              SFIcons.sf_gift_fill,
-              color: Colors.white,
-            ),
-            icon: SFIcon(SFIcons.sf_gift),
-            label: 'Madpakke',
-          ),
-          NavigationDestination(
-            selectedIcon: SFIcon(
-              SFIcons.sf_person_fill,
-              color: Colors.white,
-            ),
-            icon: SFIcon(SFIcons.sf_person),
-            label: 'Profil',
-          ),
-          NavigationDestination(
-            selectedIcon: SFIcon(
-              SFIcons.sf_gearshape_fill,
-              color: Colors.white,
-            ),
-            icon: SFIcon(SFIcons.sf_gearshape),
-            label: 'Indstillinger',
-          ),
-        ],
-      ),
+    return FutureBuilder(
+      future: AuthProvider().retrieveRole(),
+      builder: (context, snapshot) => snapshot.hasData
+          ? ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30),
+              ),
+              child: NavigationBar(
+                backgroundColor: AppColors.background,
+                onDestinationSelected: (int index) {
+                  setState(() {
+                    widget.currentPageIndex = index;
+                  });
+                  switch (index) {
+                    case 0:
+                      if (snapshot.data != ROLES.teacher) {
+                        GoRouter.of(context).go('/feedback');
+                        break;
+                      } else {
+                        GoRouter.of(context).go('/');
+                        break;
+                      }
+                    case 1:
+                      if (snapshot.data != ROLES.teacher) {
+                        GoRouter.of(context).go('/');
+                        break;
+                      } else {
+                        GoRouter.of(context).go('/profile');
+                        break;
+                      }
+                    case 2:
+                      if (snapshot.data != ROLES.teacher) {
+                        GoRouter.of(context).go('/profile');
+                        break;
+                      } else {
+                        GoRouter.of(context).go('/settings');
+                        break;
+                      }
+                    case 3:
+                      GoRouter.of(context).go('/settings');
+                      break;
+                  }
+                },
+                indicatorColor: AppColors.primary,
+                selectedIndex: snapshot.data != ROLES.teacher
+                    ? widget
+                        .currentPageIndex // If user not teacher use as normal
+                    : widget.currentPageIndex ==
+                            0 // If user is teacher and on first page
+                        ? widget
+                            .currentPageIndex // then we want to stay on first page
+                        : widget.currentPageIndex -
+                            1, // else we want to shift the index to account for the missing page
+                destinations: snapshot.data != ROLES.teacher
+                    ? _destinations
+                    : _destinations.sublist(1), // Remove the first page
+              ),
+            )
+          : SizedBox.shrink(),
     );
   }
 }

@@ -31,7 +31,6 @@ class _ReusableMealBoxState extends State<ReusableMealBox> {
 
   @override
   Widget build(BuildContext context) {
-    print('mealNotifier.meal: ${mealNotifier.meal}');
     return Card(
       color: AppColors.background,
       surfaceTintColor: AppColors.background,

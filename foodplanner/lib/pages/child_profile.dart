@@ -85,7 +85,6 @@ class ChildProfileState extends State<ChildProfile>
 
   void fetchParent() {
     ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
-      print(result);
       setState(() {
         parent = result;
         selectedParent = result;

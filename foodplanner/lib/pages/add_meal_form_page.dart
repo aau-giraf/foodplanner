@@ -55,7 +55,6 @@ class _MealFormPageState extends State<MealFormPage> {
 
   // Method for deleting the controllers when they are done being used.
   String retrieveMealName() {
-    print('Retrieving meal name ${mealNameController.text}');
     if (mealNameController.text.isEmpty) {
       return 'Madpakke';
     } else {
@@ -90,8 +89,6 @@ class _MealFormPageState extends State<MealFormPage> {
     final Map<String, dynamic> responseData = jsonDecode(response.body);
 
     if (responseData.containsKey('id')) {
-      print('Meal created with ID: ${responseData['id']}');
-
       if (selectedIngredientsIds.isNotEmpty) {
         for (var ingredientId in selectedIngredientsIds) {
           try {

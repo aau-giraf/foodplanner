@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ChildLandingPageSeMadpakke extends StatefulWidget {
@@ -99,7 +96,6 @@ class _ChildLandingPageSeMadpakkeState
             for (int i = 0; i < packedIngredients.length; i++) {
               packedIngredients[i].orderNumber = i;
             }
-            print(packedIngredients.toString());
             updatePackedIngredientOrder(packedIngredients);
           });
         },

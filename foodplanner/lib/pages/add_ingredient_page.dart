@@ -44,9 +44,6 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
             ingredients.map((e) => {'id': e.id, 'name': e.name}).toList());
         _controllers.addAll(List.generate(_ingredients.length, (index) {
           final controller = ValueNotifier<bool>(false);
-          controller.addListener(() {
-            print('Toggled ingredient ID: ${_ingredients[index]['id']}');
-          });
           return controller;
         }));
       });

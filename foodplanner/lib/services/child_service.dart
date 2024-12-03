@@ -40,7 +40,6 @@ class ChildService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print('API Response: ${response.body}');
       return Child.fromJson(data);
     } else {
       throw Exception('Failed to load child data');
@@ -50,7 +49,6 @@ class ChildService {
   Future<http.Response> createChild(
       String firstName, String lastName, int classId) async {
     final jwtToken = await AuthProvider().retrieveToken();
-    print(jwtToken);
     final response = await http.post(
       Uri.parse('$apiUrl/api/Childrens/Create'),
       headers: <String, String>{

@@ -58,7 +58,6 @@ class LoginPageState extends State<LoginPage> {
     try {
       final role = await LoginPage.authService
           .fetchAuthData(usernameController.text, passwordController.text);
-      print(role);
       switch (role) {
         case ROLES.teacher || ROLES.admin:
           GoRouter.of(context).go(TEACHER_ROOT);

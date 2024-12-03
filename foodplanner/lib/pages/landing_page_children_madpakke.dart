@@ -6,6 +6,7 @@ import 'package:foodplanner/components/meal_box.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/landing_page_teacher.dart';
 
 import 'package:foodplanner/pages/pin_code.dart';
@@ -55,14 +56,12 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
       final childData = await childService.fetchChildById();
       setState(() {
         _child = childData;
-        print(_child!.firstName);
       });
     } else if (authProvider.userRole == ROLES.teacher) {
       int TempChildId = int.parse(widget.student['id']!);
       final childData = await childService.GetByChildId(TempChildId);
       setState(() {
         _child = childData;
-        print(_child!.firstName);
       });
     }
 
@@ -93,7 +92,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
           style: AppTextStyles.headline4,
         ),
         centerTitle: true,
-        actions: userRole != ROLES.teacher || userRole != ROLES.admin
+        actions: userRole != ROLES.teacher && userRole != ROLES.admin
             ? [
                 IconButton(
                   onPressed: () {
@@ -131,6 +130,23 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                     ),
                   ), // Use the reusable widget
                   SizedBox(height: 20),
+                  if (userRole == ROLES.teacher || userRole == ROLES.admin)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomButton(
+                        onTab: () {
+                          GoRouter.of(context).go(
+                            FEEDBACK_Page,
+                            extra: {
+                              'from': TEACHER_ROOT,
+                              'childId': _child!.childId.toString()
+                            },
+                          );
+                        },
+                        text: 'Se Feedback',
+                        //fontSize: 16,
+                      ),
+                    ),
                 ],
               ),
             ),

@@ -137,7 +137,6 @@ class HomePage extends StatelessWidget {
                 final authProvider =
                     Provider.of<AuthProvider>(context, listen: false);
                 final token = await authProvider.retrieveToken();
-                print('Retrieved JWT Token: $token');
               },
               child: const Text('Retrieve Token'),
             ),
