@@ -4,7 +4,6 @@ import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
-import 'package:foodplanner/pages/edit_meal_page.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
@@ -89,13 +88,7 @@ final router = GoRouter(
       path: '/home',
       builder: (context, state) => HomePage(),
     ),
-    GoRoute(
-      path: '/edit/:mealID',
-      builder: (context, state) {
-        final mealID = int.parse(state.pathParameters['mealID']!);
-        return EditMealPage(mealID: mealID);
-      },
-    ),
+  
     GoRoute(
       path: '/empty',
       builder: (context, state) => MealListPage(),
