@@ -32,6 +32,29 @@ class UserService {
     }
   }
 
+  Future<User> fetchLoggedInUser() async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.get(Uri.parse('$apiUrl/api/Users/GetLoggedIn'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $jwtToken',
+        });
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      final filteredJson = {
+        'id': json['id'],
+        'first_name': json['first_name'],
+        'last_name': json['last_name'],
+        'email': json['email'],
+        'role': json['role'],
+        'archived': json['archived'],
+      };
+      return User.fromJson(filteredJson);
+    } else {
+      throw Exception('Kunne ikke hente bruger');
+    }
+  }
+
   Future<List<User>> fetchApproveUsers() async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(
@@ -174,5 +197,82 @@ class UserService {
     if (response.statusCode != 200) {
       return {'Message': 'Kunne ikke opdatere brugeren'};
     }
+  }
+
+  Future<dynamic> userInfo(int id) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.get(
+      Uri.parse('$apiUrl/api/Users/GetLoggedIn'),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      final filteredJson = {
+        'id': json['id'],
+        'first_name': json['first_name'],
+        'last_name': json['last_name'],
+        'email': json['email'],
+        'role': json['role'],
+        'archived': json['archived'],
+      };
+      return User.fromJson(filteredJson);
+    } else {
+      throw Exception('Kunne ikke hente bruger');
+    }
+  }
+
+  Future<dynamic> updatePincode(String updatedPincode) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response =
+        await http.put(Uri.parse('$apiUrl/api/Users/UpdatePinCode'),
+            headers: {
+              'Authorization': 'Bearer $jwtToken',
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode({
+              'PinCode': updatedPincode,
+            }));
+    if (response.statusCode != 200) {
+      return {'Message': 'Kunne ikke opdatere brugerens pinkode'};
+    }
+  }
+
+  Future<dynamic> updatePassword(String updatedPassword) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response =
+        await http.put(Uri.parse('$apiUrl/api/Users/UpdatePassword'),
+            headers: {
+              'Authorization': 'Bearer $jwtToken',
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode({
+              'password': updatedPassword,
+            }));
+
+    return response;
+  }
+
+  Future<http.Response> updateUser(
+      int id, String firstName, String lastName, String email) async {
+    print("Knapp trykket på");
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.put(
+      Uri.parse('$apiUrl/api/Users/UpdateLoggedIn'),
+      headers: {
+        'Authorization': 'Bearer $jwtToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+      }),
+    );
+
+    return response;
   }
 }

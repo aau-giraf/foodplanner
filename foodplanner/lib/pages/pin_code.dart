@@ -93,18 +93,10 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
       error = "";
     });
     if (pin.length == 4) {
-      print("Pin: ${pin.join()}");
-
       var error = await PinCode.pinService.checkPin(pin);
       await Future.delayed(Duration(milliseconds: 300));
-      print(error);
       if (error == null) {
-        // TODO fix so its all GoRouter
         GoRouter.of(context).go(PARENT_ROOT);
-        /*Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ParentLandingPageMadpakke()),
-        );*/
       } else {
         setState(() {
           pin = [];
@@ -118,20 +110,13 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
     setState(() {
       if (type == "create") {
         createPinCode.add(number);
-        print("Create: ${createPinCode.join()}");
       } else {
         confirmPinCode.add(number);
-        print("Confirm: ${confirmPinCode.join()}");
       }
       error = "";
     });
     if (confirmPinCode.length == 4) {
-      print("Create: ${createPinCode.join()}");
-      print("Confirm: ${confirmPinCode.join()}");
-
       if (createPinCode.join() == confirmPinCode.join()) {
-        print("Pins match");
-
         var error = await PinCode.pinService.updatePin(confirmPinCode);
         if (error == null) {
           Navigator.of(context).pop();

@@ -50,8 +50,6 @@ class LandingPageState extends State<LandingPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await authProvider.loadFromStorage();
-      print("Auth: ${authProvider.isLoggedIn}");
-      print("Approved: ${authProvider.isApproved}");
       if (!authProvider.isLoggedIn) {
         context.go(LOGIN_PAGE);
       } else if (authProvider.isApproved != true) {

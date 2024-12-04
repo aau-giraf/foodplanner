@@ -1,80 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/image.dart';
-import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/landing_page_children_se_madpakke.dart'; // Update with the correct import
+import 'package:foodplanner/pages/landing_page_children_se_madpakke.dart';
+import 'package:foodplanner/services/meal_notifier.dart';
+import 'package:provider/provider.dart'; // Update with the correct import
 
-class MealBoxContent extends StatelessWidget {
-  final Size size;
-  final String caption;
-
-  const MealBoxContent(
-      {Key? key, required this.size, this.caption = 'Madpakke Text'})
-      : super(key: key);
+class Mealboxcontent extends StatelessWidget {
+  const Mealboxcontent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(height: size.height * 0.02),
-        Text(
-          caption,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: size.height * 0.02),
-        Column(
-          children: [
-            Container(
-              width: size.width * 0.6,
-              height: size.width * 0.6, // 40% of the screen height
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(20),
+    return Consumer<MealNotifier>(
+      builder: (context, mealNotifier, child) {
+        if (mealNotifier.meal == null) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              // sabrina carpenter tho :flushedEmoj:
+              const Text(
+                'ingen madpakke at vise',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: FoodImage(foodImageId: 1),
-                // child: Image.network(
-                //   imageUrl,
-                //   fit: BoxFit.cover,
-                //   width: double.infinity,
-                //   height: double.infinity,
-                //   errorBuilder: (context, error, stackTrace) {
-                //     return const Center(child: Text('Image not available'));
-                //   },
-                //   loadingBuilder: (context, child, loadingProgress) {
-                //     if (loadingProgress == null) return child;
-                //     return const Center(child: CircularProgressIndicator());
-                //   },
+            ],
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(
+                mealNotifier.meal!.name,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(height: size.height * 0.05),
-            Center(
-              child: SizedBox(
-                width: size.width * 0.6, // Set the desired width
-                height: 50, // Set the desired height
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ChildLandingPageSeMadpakke()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shadowColor: Colors.black, // Set the shadow color to black
-                    elevation: 5, // Set the elevation to create a shadow effect
-                  ),
-                  child: const Text('Se madpakke',
-                      style: AppTextStyles.buttonText),
-                ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: FoodImage(foodImageId: mealNotifier.meal!.foodImageId),
+              ),
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40),
+              child: CustomButton(
+                onTab: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChildLandingPageSeMadpakke()),
+                  );
+                },
+                text: 'Se madpakke',
+                size: ButtonSize.medium,
               ),
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }

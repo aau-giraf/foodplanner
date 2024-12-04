@@ -1,29 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:http/http.dart' as http;
 
 class FoodImage extends StatelessWidget {
-  final int foodImageId;
+  final int? foodImageId;
+  final imageUrl = 'https://cdn-icons-png.flaticon.com/512/739/739249.png';
 
   FoodImage({required this.foodImageId});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String?>(
+    return FutureBuilder<ImageProvider>(
         future: loadImageAndToken(),
-        builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
-          if (snapshot.hasData && snapshot.data != null) {
+        builder: (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
+          if (!snapshot.hasError && snapshot.hasData) {
+            return ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image(
+                  image: snapshot.data!,
+                  width: 250,
+                  height: 250,
+                  fit: BoxFit.cover,
+                ));
+          } else {
             return ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.network(snapshot.data!),
+              child: Image.network(imageUrl),
             );
-          } else {
-            return Text("Image not found");
           }
         });
   }
 
-  Future<String?> loadImageAndToken() async {
+  Future<ImageProvider> loadImageAndToken() async {
     String? jwtToken = await AuthProvider().retrieveToken();
 
     var apiClient = ApiClient();
@@ -31,6 +40,26 @@ class FoodImage extends StatelessWidget {
 
     var imagesApi = ImagesApi(apiClient);
 
-    return await imagesApi.apiImagesGetPresignedImageLinkGet(foodImageId: foodImageId);
+    if (foodImageId == null) {
+      return NetworkImage(imageUrl);
+    }
+
+    try {
+      String? tempImageUrl = await imagesApi.apiImagesGetPresignedImageLinkGet(
+          foodImageId: foodImageId);
+
+      /* tempImageUrl = tempImageUrl?.replaceFirst(
+          'http://localhost:9000', '<link her>'); */
+
+      final response = await http.get(Uri.parse(tempImageUrl!));
+      if (response.statusCode == 200) {
+        return NetworkImage(tempImageUrl);
+      } else {
+        return NetworkImage(imageUrl);
+      }
+    } catch (e) {
+      print("error");
+      return NetworkImage(imageUrl);
+    }
   }
 }
