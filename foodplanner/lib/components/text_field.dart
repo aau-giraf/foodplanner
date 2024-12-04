@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
@@ -12,6 +13,7 @@ class CustomTextField extends StatelessWidget {
   final dynamic color;
   final TextFieldType type;
   final Function(String)? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CustomTextField({
     super.key,
@@ -20,8 +22,9 @@ class CustomTextField extends StatelessWidget {
     required this.hintText,
     this.obscureText = false, // default value
     this.color = AppColors.textFieldBackground, // default color
-      this.type = TextFieldType.defaultTextField, // default type
+    this.type = TextFieldType.defaultTextField, // default type
     this.onChanged,
+    this.inputFormatters,
   });
 
   Widget defaultTextField() {
@@ -33,6 +36,7 @@ class CustomTextField extends StatelessWidget {
           textAlign: TextAlign.center,
           cursorColor: AppColors.primary,
           cursorErrorColor: AppColors.errorText,
+          inputFormatters: inputFormatters,
           decoration: InputDecoration(
             fillColor: color,
             filled: true,
@@ -79,6 +83,7 @@ class CustomTextField extends StatelessWidget {
       onTapOutside: (event) {
         FocusManager.instance.primaryFocus?.unfocus();
       },
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         fillColor: color,
         filled: true,

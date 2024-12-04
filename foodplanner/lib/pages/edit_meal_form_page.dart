@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/edit_meal_element.dart';
@@ -9,11 +7,8 @@ import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
-import 'package:foodplanner/services/food_image_service.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
-import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 /// This class is used to create the page for editing an already existing meal.
@@ -95,35 +90,30 @@ class EditMealFormPage extends StatelessWidget {
           CustomElevatedButton(
             onTab: () async {
               final authProvider = AuthProvider();
-              int? imageId = this.image != null
-                  ? int.parse(
-                      (await UploadFoodImage(http.Client(), this.image!)).body)
-                  : null;
               updateMeal(
                   client,
                   authProvider,
                   Meal(
                     id: meal.id,
                     name: editTitleController.text,
-                    foodImageId: imageId,
+                    foodImageId: 1,
                     date: meal.date,
                     ingredients: [],
                   ));
               final ingredientsToAdd =
                   packedIngredients.where((element) => element.id == 0);
-              ingredientsToAdd.forEach((ingredientToAdd) {
+              for (var ingredientToAdd in ingredientsToAdd) {
                 createPackedIngredient(
-                  client,
                   authProvider,
                   meal.id,
                   ingredientToAdd.ingredient.id,
                 );
-              });
+              }
               final ingredientsToRemove = packedIngredients
                   .where((element) => meal.ingredients.contains(element));
-              ingredientsToRemove.forEach((ingredientToRemove) {
-                deletePackedIngredient(client, authProvider, meal.id);
-              });
+              for (var ingredientToRemove in ingredientsToRemove) {
+                deletePackedIngredient(authProvider, meal.id);
+              }
 
               // context.pop(); // Goes back to the previous page.
             },

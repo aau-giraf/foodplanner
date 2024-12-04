@@ -230,21 +230,6 @@ class _SettingsPage extends State<Settings> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: CustomButton(
-                  onTab: () async {
-                    final authProvider =
-                        Provider.of<AuthProvider>(context, listen: false);
-                    await authProvider.logout();
-                    context.go('/login');
-                  },
-                  text: "Log ud",
-                  foregroundColor: Colors.white,
-                  backgroundColor: AppColors.errorText,
-                  size: ButtonSize.medium,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: CustomButton(
                   onTab: null,
                   text: "Slet konto",
                   foregroundColor: AppColors.errorText,

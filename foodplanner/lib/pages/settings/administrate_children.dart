@@ -8,10 +8,8 @@ import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/components/settings_header.dart';
 import 'package:foodplanner/pages/child_profile.dart';
 import 'package:foodplanner/components/search_field.dart';
-
 
 class AdministrateChildren extends StatefulWidget {
   const AdministrateChildren({super.key});
@@ -105,7 +103,6 @@ class AdministrateChildrenState extends State<AdministrateChildren>
     );
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

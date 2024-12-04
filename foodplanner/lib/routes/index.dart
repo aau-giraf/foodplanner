@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/nav_bar.dart';
-import 'package:foodplanner/pages/add_meal_page.dart';
-import 'package:foodplanner/pages/landing_page_parent.dart';
+import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
-import 'package:foodplanner/pages/create_meal_page.dart';
-import 'package:foodplanner/pages/edit_meal_page.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
@@ -15,7 +13,6 @@ import 'package:foodplanner/pages/landing_page_teacher.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/pages/profile_page.dart';
-import 'package:foodplanner/pages/settings_page.dart';
 import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
@@ -34,8 +31,12 @@ final router = GoRouter(
       redirect: (context, state) async {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         final role = await authProvider.retrieveRole();
+        final isLoggedIn = authProvider.isLoggedIn;
+        if (!isLoggedIn) {
+          return '/login';
+        }
         switch (role) {
-          case ROLES.teacher:
+          case ROLES.teacher || ROLES.admin:
             return TEACHER_ROOT;
           case ROLES.parent:
             return PARENT_ROOT;
@@ -80,27 +81,25 @@ final router = GoRouter(
 
     GoRoute(
       path: '/create-meal',
-      builder: (context, state) => AddMealPage(),
+      builder: (context, state) => MealFormPage(),
     ),
 
     GoRoute(
       path: '/home',
       builder: (context, state) => HomePage(),
     ),
-    GoRoute(
-      path: '/create',
-      builder: (context, state) => AddMealPage(),
-    ),
-    GoRoute(
-      path: '/edit/:mealID',
-      builder: (context, state) {
-        final mealID = int.parse(state.pathParameters['mealID']!);
-        return EditMealPage(mealID: mealID);
-      },
-    ),
+
     GoRoute(
       path: '/empty',
       builder: (context, state) => MealListPage(),
+    ),
+    GoRoute(
+      path: '/student-details',
+      builder: (context, state) {
+        final student = state.extra as Map<String, String?>;
+        return ChildLandingPageMadpakke(
+            student: student.cast<String, String>());
+      },
     ),
 
     //no need for wildcard handling as flutter already does it
@@ -113,7 +112,13 @@ final router = GoRouter(
           future: authProvider.hasRoles([ROLES.teacher, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+              return const Center(
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const TeacherLandingPage();
             } else {
@@ -131,7 +136,13 @@ final router = GoRouter(
           future: authProvider.hasRoles([ROLES.student, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+              return const Center(
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const ChildLandingPageMadpakke(
                 student: {},
@@ -151,7 +162,13 @@ final router = GoRouter(
           future: authProvider.hasRolesUnapproved([ROLES.student]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+              return const Center(
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const CreateChildPage(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
@@ -170,7 +187,13 @@ final router = GoRouter(
               authProvider.hasRoles([ROLES.parent, ROLES.teacher, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+              return const Center(
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const Settings(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
@@ -189,9 +212,15 @@ final router = GoRouter(
               authProvider.hasRoles([ROLES.parent, ROLES.teacher, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+              return const Center(
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const ProfilePage(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const ParentProfile();
             } else {
               return const UnauthorizedPage();
             }
@@ -208,7 +237,13 @@ final router = GoRouter(
               authProvider.hasRoles([ROLES.parent, ROLES.teacher, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+              return const Center(
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const FeedbackChatPage(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
@@ -226,9 +261,20 @@ final router = GoRouter(
           future: authProvider.hasRoles([ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator(); // Show loading while waiting
+              return const Center(
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return NavBar(); // another dummy page, I think Dressi is making a new one TODO
+              return Column(
+                children: [
+                  const Text('Admin Page'),
+                  NavBar(),
+                ],
+              ); // another dummy page, I think Dressi is making a new one TODO
             } else {
               return const UnauthorizedPage();
             }
@@ -245,7 +291,13 @@ final router = GoRouter(
             future: authProvider.hasRoles([ROLES.parent, ROLES.admin]),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator(); // Show loading while waiting
+                return const Center(
+                  child: LoadingAnimation(
+                    imagePath:
+                        'assets/images/logo.png', // Replace with your image path
+                    size: 50.0,
+                  ),
+                ); // Show loading while waiting
               } else if (snapshot.hasData && snapshot.data == true) {
                 return const ParentLandingPageMadpakke(); // This should be fine
               } else {

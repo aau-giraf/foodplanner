@@ -32,11 +32,11 @@ Future<Meal> fetchMeal(
 // Creates a new meal on the server.
 // Takes an HTTP client, meal title, optional image URL, optional date, and a list of ingredients.
 // Returns the server's response.
-Future<http.Response> createMeal(http.Client client, AuthProvider authProvider,
-    final String name, final int? foodImageId, final DateTime? date) async {
+Future<http.Response> createMeal(AuthProvider authProvider, final String name,
+    final int? foodImageId, final DateTime? date) async {
   final jwtToken = await authProvider.retrieveToken();
   // Sending a POST request to the API endpoint to create a new meal.
-  final response = await client.post(
+  final response = await http.post(
     Uri.parse(
         '${ApiConfig.baseUrl}/api/Meals/Create'), // Specify the API endpoint for meal creation.
     headers: <String, String>{
@@ -48,8 +48,7 @@ Future<http.Response> createMeal(http.Client client, AuthProvider authProvider,
     body: jsonEncode({
       'id': 0,
       'name': name, // Meal title.
-      'food_image_id':
-          foodImageId, //image_ref, // Meal image URL (ensured to be a string).
+      'food_image_id': foodImageId,
       'date':
           DateFormat('yyyy-MM-dd').format(date!), // Optional date for the meal.
     }),
@@ -65,7 +64,6 @@ Future<http.Response> updateMeal(
     http.Client client, AuthProvider authProvider, final Meal meal) async {
   final jwtToken = await authProvider.retrieveToken();
   // Sending a POST request to the API endpoint to create a new meal.
-  print("Meal is ${meal.id}");
   final response = await client.put(
     Uri.parse(
         '${ApiConfig.baseUrl}/api/Meals/Update/${meal.id}'), // Specify the API endpoint for meal creation.
