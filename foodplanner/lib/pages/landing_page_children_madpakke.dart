@@ -143,7 +143,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                             },
                           );
                         },
-                        text: 'Se Feedback',
+                        text: 'Giv Feedback',
                         //fontSize: 16,
                       ),
                     ),
