@@ -147,7 +147,7 @@ class ParentProfileState extends State<ParentProfile>
     if (updatedFirstName.isNotEmpty ||
         updatedLastName.isNotEmpty ||
         updatedEmail.isNotEmpty) {
-      final response = await ParentProfile.userService.updateUser(
+      await ParentProfile.userService.updateUser(
         parent.id,
         updatedFirstName.isNotEmpty ? updatedFirstName : parent.firstName,
         updatedLastName.isNotEmpty ? updatedLastName : parent.lastName,
@@ -555,7 +555,7 @@ class ParentProfileState extends State<ParentProfile>
                     ),
                   ),
                   SizedBox(height: 20),
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     child: CustomButton(
                       text: 'Log ud',

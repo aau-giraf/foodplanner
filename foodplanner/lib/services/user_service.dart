@@ -152,9 +152,7 @@ class UserService {
         .get(Uri.parse('$apiUrl/api/Admin/GetAll'), headers: <String, String>{
       'Authorization': 'Bearer $jwtToken',
     });
-    print("hej med dig ${response.body}");
     if (response.statusCode == 200) {
-      print(response.body);
       final List<dynamic> usersJson = jsonDecode(response.body);
 
       return usersJson

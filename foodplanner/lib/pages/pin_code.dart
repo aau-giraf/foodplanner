@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/pin_code.dart';

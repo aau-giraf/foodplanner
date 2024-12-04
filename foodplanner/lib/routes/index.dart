@@ -88,7 +88,7 @@ final router = GoRouter(
       path: '/home',
       builder: (context, state) => HomePage(),
     ),
-  
+
     GoRoute(
       path: '/empty',
       builder: (context, state) => MealListPage(),
@@ -113,11 +113,12 @@ final router = GoRouter(
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-            child: LoadingAnimation(
-              imagePath: 'assets/images/logo.png', // Replace with your image path
-              size: 50.0,
-            ),
-          );  // Show loading while waiting
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const TeacherLandingPage();
             } else {
@@ -135,12 +136,13 @@ final router = GoRouter(
           future: authProvider.hasRoles([ROLES.student, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-               return const Center(
-            child: LoadingAnimation(
-              imagePath: 'assets/images/logo.png', // Replace with your image path
-              size: 50.0,
-            ),
-          );  // Show loading while waiting
+              return const Center(
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const ChildLandingPageMadpakke(
                 student: {},
@@ -161,11 +163,12 @@ final router = GoRouter(
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-            child: LoadingAnimation(
-              imagePath: 'assets/images/logo.png', // Replace with your image path
-              size: 50.0,
-            ),
-          );  // Show loading while waiting
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const CreateChildPage(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
@@ -185,11 +188,12 @@ final router = GoRouter(
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-            child: LoadingAnimation(
-              imagePath: 'assets/images/logo.png', // Replace with your image path
-              size: 50.0,
-            ),
-          );  // Show loading while waiting
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const Settings(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
@@ -209,11 +213,12 @@ final router = GoRouter(
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-            child: LoadingAnimation(
-              imagePath: 'assets/images/logo.png', // Replace with your image path
-              size: 50.0,
-            ),
-          );  // Show loading while waiting
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const ParentProfile();
             } else {
@@ -233,11 +238,12 @@ final router = GoRouter(
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
-            child: LoadingAnimation(
-              imagePath: 'assets/images/logo.png', // Replace with your image path
-              size: 50.0,
-            ),
-          ); // Show loading while waiting
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return const FeedbackChatPage(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
@@ -255,12 +261,13 @@ final router = GoRouter(
           future: authProvider.hasRoles([ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-             return const Center(
-            child: LoadingAnimation(
-              imagePath: 'assets/images/logo.png', // Replace with your image path
-              size: 50.0,
-            ),
-          );  // Show loading while waiting
+              return const Center(
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
               return Column(
                 children: [
@@ -285,11 +292,12 @@ final router = GoRouter(
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
-            child: LoadingAnimation(
-              imagePath: 'assets/images/logo.png', // Replace with your image path
-              size: 50.0,
-            ),
-          );  // Show loading while waiting
+                  child: LoadingAnimation(
+                    imagePath:
+                        'assets/images/logo.png', // Replace with your image path
+                    size: 50.0,
+                  ),
+                ); // Show loading while waiting
               } else if (snapshot.hasData && snapshot.data == true) {
                 return const ParentLandingPageMadpakke(); // This should be fine
               } else {

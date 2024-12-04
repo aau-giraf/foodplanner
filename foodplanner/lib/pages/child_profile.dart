@@ -10,7 +10,6 @@ import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
-import 'package:foodplanner/components/settings_header.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:foodplanner/pages/choose_parent.dart';
@@ -44,13 +43,17 @@ class ChildProfileState extends State<ChildProfile>
   bool isEditingFirstName = false;
   bool isEditingLastName = false;
   bool isEditingClass = false;
+  bool isEditingParents = false;
   bool hasChanges = false;
+  bool classChanges = false;
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   String? selectedClassId;
+  String? initialClassId;
   String updatedFirstName = '';
   String updatedLastName = '';
   int? selectedParentId;
+  int? initialParentId;
   User? selectedParent;
 
   void onFieldChanged() {
@@ -70,9 +73,11 @@ class ChildProfileState extends State<ChildProfile>
     updatedFirstName = widget.child.firstName;
     updatedLastName = widget.child.lastName;
     selectedClassId = widget.child.classId.toString();
+    initialClassId = widget.child.classId.toString();
     fetchParent();
     selectedParent = parent;
     selectedParentId = widget.child.parentId;
+    initialParentId = widget.child.parentId;
 
     ChildProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
@@ -120,22 +125,16 @@ class ChildProfileState extends State<ChildProfile>
                   child: isEditingFirstName
                       ? Padding(
                           padding: const EdgeInsets.only(left: 10.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: CustomTextField(
-                              controller: firstNameController,
-                              errorText: '',
-                              hintText: 'Fornavn',
-                              obscureText: false,
-                              color: Colors.transparent,
-                              onChanged: (value) {
-                                updatedFirstName = value;
-                                onFieldChanged();
-                              },
-                            ),
+                          child: CustomTextField(
+                            controller: firstNameController,
+                            errorText: '',
+                            hintText: 'Fornavn',
+                            obscureText: false,
+                            color: Colors.white,
+                            onChanged: (value) {
+                              updatedLastName = value;
+                              onFieldChanged();
+                            },
                           ),
                         )
                       : Row(
@@ -155,9 +154,21 @@ class ChildProfileState extends State<ChildProfile>
                     fontSize: 28,
                   ),
                   onPressed: () {
-                    setState(() {
-                      isEditingFirstName = true;
-                    });
+                    if (isEditingFirstName) {
+                      setState(() {
+                        isEditingFirstName = false;
+                        firstNameController.text = widget.child.firstName;
+                        if (!isEditingLastName &&
+                            !isEditingClass &&
+                            !classChanges) {
+                          hasChanges = false;
+                        }
+                      });
+                    } else {
+                      setState(() {
+                        isEditingFirstName = true;
+                      });
+                    }
                   },
                 ),
               ],
@@ -205,9 +216,22 @@ class ChildProfileState extends State<ChildProfile>
                     fontSize: 28,
                   ),
                   onPressed: () {
-                    setState(() {
-                      isEditingLastName = true;
-                    });
+                    if (isEditingLastName) {
+                      setState(() {
+                        isEditingLastName = false;
+                        lastNameController.text = widget.child.lastName;
+                        if (!isEditingFirstName &&
+                            !isEditingLastName &&
+                            !isEditingClass &&
+                            !classChanges) {
+                          hasChanges = false;
+                        }
+                      });
+                    } else {
+                      setState(() {
+                        isEditingLastName = true;
+                      });
+                    }
                   },
                 ),
               ],
@@ -256,8 +280,21 @@ class ChildProfileState extends State<ChildProfile>
                 value: selectedClassId,
                 onChanged: (String? value) {
                   setState(() {
+                    if (value == initialClassId) {
+                      isEditingClass = false;
+                      classChanges = false;
+                      if (!isEditingFirstName &&
+                          !isEditingLastName &&
+                          !isEditingClass &&
+                          !classChanges) {
+                        hasChanges = false;
+                      }
+                      selectedClassId = value;
+                      return;
+                    }
                     selectedClassId = value;
                     onFieldChanged();
+                    classChanges = true;
                   });
                 },
                 selectedItemBuilder: (BuildContext context) {
@@ -357,6 +394,18 @@ class ChildProfileState extends State<ChildProfile>
               final selectedParent =
                   await ChildProfile.userService.fetchUser(selectedParentId);
               setState(() {
+                if (selectedParentId == initialParentId) {
+                  isEditingParents = false;
+                  if (!isEditingFirstName &&
+                      !isEditingLastName &&
+                      !isEditingClass &&
+                      !classChanges) {
+                    hasChanges = false;
+                  }
+                  this.selectedParentId = selectedParentId;
+                  this.selectedParent = selectedParent;
+                  return;
+                }
                 this.selectedParentId = selectedParentId;
                 this.selectedParent = selectedParent;
                 onFieldChanged();
@@ -383,11 +432,15 @@ class ChildProfileState extends State<ChildProfile>
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          SettingsHeader(
-            icon: SFIcons.sf_figure_and_child_holdinghands,
-            title: '${widget.child.firstName}s',
-            subtitle:
-                'Her kan du redigere ${widget.child.firstName}s profil og klasse. ',
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: SettingsWidget(
+              leftIcon: SFIcons.sf_figure_and_child_holdinghands,
+              title: '${widget.child.firstName}s',
+              subTitle:
+                  'Her kan du redigere ${widget.child.firstName}s profil og klasse. ',
+              type: SettingsType.header,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -428,9 +481,7 @@ class ChildProfileState extends State<ChildProfile>
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: CustomButton(
                     text: 'Slet barn',
-                    onTab: () => {
-                      print(widget.child.childId),
-                    },
+                    onTab: null,
                     backgroundColor: Colors.red,
                   ),
                 ),
@@ -461,7 +512,6 @@ class ChildProfileState extends State<ChildProfile>
                               int.parse(selectedClassId!))
                           .then((response) {
                         if (response.statusCode == 204) {
-                          print('successfullyupdated');
                           Navigator.pop(context);
                         } else {
                           throw Exception('Der skete en fejl');
@@ -477,7 +527,13 @@ class ChildProfileState extends State<ChildProfile>
                         isEditingFirstName = false;
                         isEditingLastName = false;
                         isEditingClass = false;
+                        classChanges = false;
                         hasChanges = false;
+                        selectedClassId = initialClassId;
+                        selectedParentId = initialParentId;
+                        selectedParent = parent;
+                        firstNameController.text = widget.child.firstName;
+                        lastNameController.text = widget.child.lastName;
                       }),
                     },
                     backgroundColor: Colors.white,

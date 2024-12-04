@@ -60,7 +60,6 @@ class _MealPageState extends State<CameraPage> {
     if (pickedFile != null) {
       return File(pickedFile.path);
     } else {
-      print('No image selected.');
       return null;
     }
   }
@@ -281,7 +280,6 @@ Future<Uint8List> cropImageToSquare(XFile image) async {
       contentType: MediaType('image', 'jpeg'),
     ).finalize().toBytes();
   } else {
-    print('Error decoding image');
     return multipartFile.finalize().toBytes();
   }
 }

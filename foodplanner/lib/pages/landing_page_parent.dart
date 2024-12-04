@@ -3,7 +3,6 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/meal_box.dart';
-import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
@@ -14,8 +13,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart'; // Import the reusable widget
-import 'package:go_router/go_router.dart'; // Import GoRouter
+import 'package:provider/provider.dart';
 
 class ParentLandingPageMadpakke extends StatefulWidget {
   const ParentLandingPageMadpakke({super.key});
@@ -29,6 +27,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   dynamic _user;
 
+  @override
   void initState() {
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);

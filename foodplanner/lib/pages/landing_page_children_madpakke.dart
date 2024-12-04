@@ -3,11 +3,8 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/meal_box.dart';
-import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child.dart';
-import 'package:foodplanner/pages/feedback_chat_page.dart';
-import 'package:foodplanner/pages/landing_page_teacher.dart';
 
 import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/routes/paths.dart';
@@ -17,7 +14,6 @@ import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:foodplanner/auth/auth_provider.dart';
 
 class ChildLandingPageMadpakke extends StatefulWidget {
   final Map<String, String> student;
@@ -58,8 +54,8 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
         _child = childData;
       });
     } else if (authProvider.userRole == ROLES.teacher) {
-      int TempChildId = int.parse(widget.student['id']!);
-      final childData = await childService.GetByChildId(TempChildId);
+      int tempChildId = int.parse(widget.student['id']!);
+      final childData = await childService.GetByChildId(tempChildId);
       setState(() {
         _child = childData;
       });

@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:camera/camera.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/services/api_config.dart';

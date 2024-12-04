@@ -92,7 +92,7 @@ class _MealFormPageState extends State<MealFormPage> {
       if (selectedIngredientsIds.isNotEmpty) {
         for (var ingredientId in selectedIngredientsIds) {
           try {
-            final packedIngredientResponse = await createPackedIngredient(
+            await createPackedIngredient(
               authProvider,
               responseData['id'],
               ingredientId,

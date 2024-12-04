@@ -1,14 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/components/icon_button.dart';
 import 'package:foodplanner/components/text_field.dart';
-import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -23,7 +19,7 @@ class CreateIngredientPage extends StatefulWidget {
   });
 
   @override
-  _CreateIngredientPageState createState() => _CreateIngredientPageState();
+  State<CreateIngredientPage> createState() => _CreateIngredientPageState();
 }
 
 /// The state of the page, which contains all the front-end elements,
@@ -63,7 +59,7 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
           padding: const EdgeInsets.only(left: 20),
           child: InkWell(
             onTap: () {
-              Navigator.pop(context, null); // TODO: tilføj noget her.
+              Navigator.pop(context, null);
             },
             child: Row(
               children: [
@@ -144,21 +140,15 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
                                       );
                                       Navigator.pop(context, null);
                                       Navigator.pop(context, newIngredient);
-                                      /* widget.onCreatedIngredient(
-                                            newIngredient); // Calls the camera callback.
-                                        //context.pop(); */
                                     },
-                                    child: const Text(
-                                        "Ja"), // Button text for "Yes".
+                                    child: const Text("Ja"),
                                   ),
                                   CupertinoDialogAction(
-                                    isDestructiveAction:
-                                        true, // Mark as a destructive action.
+                                    isDestructiveAction: true,
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
-                                    child: const Text(
-                                        'Nej'), // Button text for "No".
+                                    child: const Text('Nej'),
                                   ),
                                 ],
                               ),

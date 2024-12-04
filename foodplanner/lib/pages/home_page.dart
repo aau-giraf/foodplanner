@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/pages/login_page.dart';
-import 'package:foodplanner/pages/meal_list_page.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
@@ -94,13 +92,7 @@ class HomePage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                final authProvider =
-                    Provider.of<AuthProvider>(context, listen: false);
-                if (true) {
-                  context.go(ADMIN_ROOT);
-                } else {
-                  context.go('/unauthorized');
-                }
+                context.go(ADMIN_ROOT);
               },
               child: const Text('Go to Admin Page'),
             ),
@@ -128,15 +120,12 @@ class HomePage extends StatelessWidget {
                     Provider.of<AuthProvider>(context, listen: false);
                 await authProvider
                     .logout(); // Just call it; don't try to store a result
-                print('Logged out'); // For debugging purposes
               },
               child: const Text('Logout'),
             ),
             ElevatedButton(
               onPressed: () async {
-                final authProvider =
-                    Provider.of<AuthProvider>(context, listen: false);
-                final token = await authProvider.retrieveToken();
+                await AuthProvider().retrieveToken();
               },
               child: const Text('Retrieve Token'),
             ),
