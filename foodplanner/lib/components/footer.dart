@@ -6,7 +6,7 @@ import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/pages/profile.dart';
 import 'package:foodplanner/pages/profilePage.dart';
-import 'package:foodplanner/pages/settingsPage.dart';
+//import 'package:foodplanner/pages/settingsPage.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:go_router/go_router.dart';
 

@@ -391,6 +391,15 @@ class MockAuthProvider extends _i1.Mock implements _i7.AuthProvider {
       ) as _i3.Future<String?>);
 
   @override
+  _i3.Future<_i8.ROLES?> retrieveRole() => (super.noSuchMethod(
+        Invocation.method(
+          #retrieveRole,
+          [],
+        ),
+        returnValue: _i3.Future<_i8.ROLES?>.value(),
+      ) as _i3.Future<_i8.ROLES?>);
+
+  @override
   void addListener(_i9.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,

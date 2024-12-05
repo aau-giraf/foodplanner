@@ -99,7 +99,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                       future: MealNotifier().updateDate(DateTime.now()),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
-                          return ReusableMealBox();
+                          return ReusableMealBox(size: MediaQuery.of(context).size);
                         } else {
                           return CircularProgressIndicator();
                         }

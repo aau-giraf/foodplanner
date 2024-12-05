@@ -76,7 +76,7 @@ class _TeacherMealPageState extends State<TeacherMealPage> {
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: size.height * 0.05),
-                        ReusableMealBox(size: size),
+                        ReusableMealBox(size :size),
                         SizedBox(height: size.height * 0.02),
 
 

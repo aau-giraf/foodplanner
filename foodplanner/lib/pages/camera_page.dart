@@ -250,38 +250,28 @@ class DisplayPictureScreen extends StatelessWidget {
 
 // A method for cropping the inputted image's size.
 Future<Uint8List> cropImageToSquare(XFile image) async {
-  var multipartFile = MultipartFile.fromBytes(
-    'imageFile',
-    await image.readAsBytes(),
-    filename: 'image.png',
-    contentType: MediaType('image', 'png'),
-  );
-
-  final img.Image? decodedImage =
-      img.decodeImage(await multipartFile.finalize().toBytes());
+  var imageBytes = await image.readAsBytes();
+  final decodedImage = img.decodeImage(imageBytes);
 
   if (decodedImage != null) {
     final width = decodedImage.width;
     final height = decodedImage.height;
     final squareSize = width < height ? width : height;
+
+    // Use named parameters for copyCrop
     final croppedImage = img.copyCrop(
       decodedImage,
-      (width - squareSize) ~/ 2,
-      (height - squareSize) ~/ 2,
-      squareSize,
-      squareSize,
+      x: (width - squareSize) ~/ 2,
+      y: (height - squareSize) ~/ 2,
+      width: squareSize,
+      height: squareSize,
     );
-    final croppedBytes = img.encodeJpg(croppedImage);
 
-    // Updates the state.
-    return await MultipartFile.fromBytes(
-      'imageFile',
-      croppedBytes,
-      filename: 'image.png',
-      contentType: MediaType('image', 'jpeg'),
-    ).finalize().toBytes();
+    // Encode the cropped image to bytes
+    final croppedBytes = img.encodeJpg(croppedImage);
+    return Uint8List.fromList(croppedBytes);
   } else {
-    print('Error decoding image');
-    return multipartFile.finalize().toBytes();
+    throw Exception('Error decoding image');
   }
 }
+

@@ -9,7 +9,9 @@ import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:provider/provider.dart';
 
 class ReusableMealBox extends StatefulWidget {
-  const ReusableMealBox({super.key});
+  final Size size;
+  const ReusableMealBox({super.key, required this.size});
+  
 
   @override
   State<ReusableMealBox> createState() => _ReusableMealBoxState();

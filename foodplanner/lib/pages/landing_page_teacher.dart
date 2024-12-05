@@ -87,7 +87,8 @@ print(filteredStudent);
       context,
       MaterialPageRoute(
         builder: (context) =>
-            TeacherMealPage(student: filteredStudent),
+            ChildLandingPageMadpakke(student: filteredStudent),
+            //ChildLandingPageMadpakke
             
       ),
     );
