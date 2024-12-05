@@ -14,12 +14,15 @@ GIRAF Foodplanner is a Flutter-based application designed to streamline meal pla
 - **Frontend**: Flutter
 - **Backend**: ASP.NET
 - **Database**: PostgreSQL
+- **Image Database**: Minio
 - **Build Tools**: Xcode (for iOS development)
 
 ## Project Structure
 
 ```plaintext
 lib/
+├── api/          	 # Auto generated Endpoints
+├── auth/          	 # Authentication components
 ├── components/          # Reusable UI components
 ├── config/              # Default design variables including colors and Text formats.
 ├── models/              # Data models and domain entities
@@ -33,45 +36,43 @@ lib/
 ### Prerequisites
 
 Ensure you have the following installed:
-	•	Flutter SDK
-	•	Xcode (for iOS development)
-	•	ASP.NET Core SDK
-	•	PostgreSQL
+- [Flutter SDK](https://docs.flutter.dev/get-started/install)
+- [Xcode](https://developer.apple.com/xcode/) (for iOS development)
+- [ASP.NET Core SDK](https://dotnet.microsoft.com/en-us/download)
+- [PostgreSQL](https://www.postgresql.org/download/)
 
 ### Installation
 
 1.	Clone the repository:
 ```bash
-git clone https://github.com/your-username/giraf-foodplanner.git
+git clone https://github.com/aau-giraf/foodplanner.git
 ```
 2. Navigate to the project directory:
 ```bash
-cd giraf-foodplanner
+cd foodplanner/foodplanner
 ```
 3. Install dependencies
 ```bash
 flutter pub get
+```
+4. Generate API endpoints
+```bash
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 ## Setting Up the Backend
 Follow the setup information in the ASP.NET backend repository: [foodplanner-api](https://github.com/aau-giraf/foodplanner-api).
 
 ## Running the App for the First Time
-1.	Connect your iOS device or start an iOS simulator.
+1.	Connect your iOS device, start an iOS simulator, or run it in Chrome.
 2.	Configure the API base URL in the ```lib/services/api_service.dart``` file to point to your running backend.
 3.	Run the app using Flutter:
 ```bash
 flutter run
 ```
-For IOS-specific builds:
-```bash
-flutter build ios
-open ios/Runner.xcworkspace
-```
-Then build and run using Xcode.
 
 ## Troubleshooting
-- <b>Missing Dependencies:</b> Ensure you’ve run ```flutter pub get``.
+- <b>Missing Dependencies:</b> Ensure you’ve run ```flutter pub get```.
 - <b>Backend Not Connecting:</b> Verify the API URL and ensure the backend service is running.
 - <b>iOS Build Issues:</b> Open the project in Xcode and ensure signing and team credentials are correctly configured.
 
@@ -90,6 +91,6 @@ git commit -m "Add feature name"
 ```bash
 git push origin feature-name
 ```
-5. Open a pull request to staging, test it out, and then create a new one for the main.
+5. Open a pull request to the staging branch, test it, and then create a new pull request for main.
 
 
