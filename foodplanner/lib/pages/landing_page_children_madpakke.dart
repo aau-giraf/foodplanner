@@ -3,6 +3,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/meal_box.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child.dart';
 
@@ -26,7 +27,6 @@ class ChildLandingPageMadpakke extends StatefulWidget {
 }
 
 class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
-  late Future<bool> _hasRolesFuture;
   Child? _child;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
   ROLES? userRole;
@@ -43,8 +43,6 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
     final role = await authProvider.retrieveRole();
     setState(() {
       userRole = role;
-      _hasRolesFuture =
-          authProvider.hasRoles([ROLES.parent, ROLES.student, ROLES.teacher]);
     });
 
     if (authProvider.userRole == ROLES.student ||
@@ -53,7 +51,8 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
       setState(() {
         _child = childData;
       });
-    } else if (authProvider.userRole == ROLES.teacher) {
+    } else if (authProvider.userRole == ROLES.teacher ||
+        authProvider.userRole == ROLES.admin) {
       int tempChildId = int.parse(widget.student['id']!);
       final childData = await childService.GetByChildId(tempChildId);
       setState(() {
@@ -104,6 +103,9 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
       ),
+      bottomNavigationBar: userRole == ROLES.teacher || userRole == ROLES.admin
+          ? NavBar()
+          : null,
       backgroundColor: Colors.white,
       body: Center(
         child: Column(

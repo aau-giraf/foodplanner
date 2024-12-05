@@ -49,7 +49,7 @@ class FoodImage extends StatelessWidget {
           foodImageId: foodImageId);
 
       tempImageUrl = tempImageUrl?.replaceFirst(
-          'http://localhost:9000', 'https://0812sjhc-9000.euw.devtunnels.ms');
+          'http://localhost:9000', 'http://10.92.0.69:9000');
 
       final response = await http.get(Uri.parse(tempImageUrl!));
       if (response.statusCode == 200) {

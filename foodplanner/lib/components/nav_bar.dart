@@ -67,7 +67,8 @@ class _NavBarState extends State<NavBar> {
                   });
                   switch (index) {
                     case 0:
-                      if (snapshot.data != ROLES.teacher) {
+                      if (snapshot.data != ROLES.teacher &&
+                          snapshot.data != ROLES.admin) {
                         GoRouter.of(context).go('/feedback');
                         break;
                       } else {
@@ -75,7 +76,8 @@ class _NavBarState extends State<NavBar> {
                         break;
                       }
                     case 1:
-                      if (snapshot.data != ROLES.teacher) {
+                      if (snapshot.data != ROLES.teacher &&
+                          snapshot.data != ROLES.admin) {
                         GoRouter.of(context).go('/');
                         break;
                       } else {
@@ -83,7 +85,8 @@ class _NavBarState extends State<NavBar> {
                         break;
                       }
                     case 2:
-                      if (snapshot.data != ROLES.teacher) {
+                      if (snapshot.data != ROLES.teacher &&
+                          snapshot.data != ROLES.admin) {
                         GoRouter.of(context).go('/profile');
                         break;
                       } else {
@@ -96,7 +99,8 @@ class _NavBarState extends State<NavBar> {
                   }
                 },
                 indicatorColor: AppColors.primary,
-                selectedIndex: snapshot.data != ROLES.teacher
+                selectedIndex: snapshot.data != ROLES.teacher &&
+                        snapshot.data != ROLES.admin
                     ? widget
                         .currentPageIndex // If user not teacher use as normal
                     : widget.currentPageIndex ==
@@ -105,7 +109,8 @@ class _NavBarState extends State<NavBar> {
                             .currentPageIndex // then we want to stay on first page
                         : widget.currentPageIndex -
                             1, // else we want to shift the index to account for the missing page
-                destinations: snapshot.data != ROLES.teacher
+                destinations: snapshot.data != ROLES.teacher &&
+                        snapshot.data != ROLES.admin
                     ? _destinations
                     : _destinations.sublist(1), // Remove the first page
               ),
