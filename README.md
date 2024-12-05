@@ -28,7 +28,7 @@ lib/
 ├── models/              # Data models and domain entities
 ├── pages/               # Application screens (pages)
 ├── routes/              # Route handling by GoRouter
-├── services/            # API and database interaction
+└── services/            # API and database interaction
 ```
 
 ## Getting Started
