@@ -11,6 +11,7 @@ import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/pages/create_ingredient_page.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
+import 'package:foodplanner/components/custom_checkbox.dart';
 
 class AddIngredientPage extends StatefulWidget {
   const AddIngredientPage({super.key});
@@ -146,10 +147,10 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                   leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
                   title: _ingredients[index]['name'],
                   type: SettingsType.items,
-                  cta: AdvancedSwitch(
+                  cta: CustomCheckbox(
                     controller: _controllers[index],
-                    activeColor: AppColors.primary,
-                    width: 60,
+                    activeColor: AppColors.background,
+                    size: 40,
                   ),
                 );
               },
