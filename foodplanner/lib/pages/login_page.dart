@@ -150,13 +150,13 @@ class LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 30),
                       Text(
-                        'Brugernavn',
+                        'Email',
                         style: AppTextStyles.headline4.copyWith(fontSize: 18),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: CustomTextField(
-                            hintText: "Brugernavn",
+                            hintText: "Email",
                             controller: usernameController,
                             errorText: emailError),
                       ),
