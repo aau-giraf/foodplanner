@@ -37,6 +37,10 @@ class _SignupState extends State<SignupPage> {
   String passwordError = '';
   String confirmPasswordError = '';
 
+  // Password error messages
+  List<String> passwordErrors = [];
+  String formattedPasswordErrors = '';
+
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
   final RegExp emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
@@ -64,7 +68,7 @@ class _SignupState extends State<SignupPage> {
     firstNameController.addListener(_updateButtonState);
     lastNameController.addListener(_updateButtonState);
     emailController.addListener(_updateButtonState);
-    passwordController.addListener(_updateButtonState);
+    passwordController.addListener(validatePassword);
     confirmPasswordController.addListener(_updateButtonState);
   }
 
@@ -120,6 +124,41 @@ class _SignupState extends State<SignupPage> {
     setState(() {
       role = value;
     });
+  }
+
+  // new method for validating passwords differently from validating other inputs
+  void validatePassword(){
+    String password = passwordController.text.trim();
+    bool hasUpperCase = password.contains(RegExp(r'[A-ZÆØÅ]'));
+    bool hasLowerCase = password.contains(RegExp(r'[a-zæøå]'));
+    bool hasDigit = password.contains(RegExp(r'\d'));
+    bool hasMinLength = password.length >= 8;
+    bool hasMaxLength = password.length <= 30;
+
+    //Specific error messages for each requirement
+    String capitalLetterMessage = 'Adgangskoden skal indeholde mindst et stort bogstav.';
+    String lowerCaseLetterMessage = 'Adgangskoden skal indeholde mindst et lille bogstav.';
+    String digitMessage = 'Adgangskoden skal indeholde mindst et tal.';
+    String minLengthMessage = 'Adgangskoden skal være mindst 8 tegn lang.';
+    String maxLengthMessage = 'Adgangskoden skal være højst 30 tegn lang.';
+
+    
+    if (!hasUpperCase) {
+      passwordErrors.add(capitalLetterMessage);
+    } if (!hasLowerCase) {
+      passwordErrors.add(lowerCaseLetterMessage);
+    } if (!hasDigit) {
+      passwordErrors.add(digitMessage);
+    } if (!hasMinLength) {
+      passwordErrors.add(minLengthMessage);
+    } if (!hasMaxLength) {
+      passwordErrors.add(maxLengthMessage);
+    }
+
+    setState(() {
+      formattedPasswordErrors = passwordErrors.join('\n');
+    });
+
   }
 
   //Function to validate form inputs
@@ -182,28 +221,10 @@ class _SignupState extends State<SignupPage> {
     }
 
     //Step 4: Password Validation
-    bool hasUpperCase = password.contains(RegExp(r'[A-ZÆØÅ]'));
-    bool hasLowerCase = password.contains(RegExp(r'[a-zæøå]'));
-    bool hasDigit = password.contains(RegExp(r'\d'));
-    bool hasMinLength = password.length >= 8;
-    bool hasMaxLength = password.length <= 30;
+    validatePassword();
 
-    setState(() {
-      passwordError = '';
-      if (!hasUpperCase) {
-        passwordError = 'Adgangskoden skal indeholde mindst et stort bogstav.';
-      } else if (!hasLowerCase) {
-        passwordError = 'Adgangskoden skal indeholde mindst et lille bogstav.';
-      } else if (!hasDigit) {
-        passwordError = 'Adgangskoden skal indeholde mindst et tal.';
-      } else if (!hasMinLength) {
-        passwordError = 'Adgangskoden skal være mindst 8 tegn lang.';
-      } else if (!hasMaxLength) {
-        passwordError = 'Adgangskoden skal være højst 30 tegn lang.';
-      }
-    });
-
-    if (passwordError.isNotEmpty) {
+    //return if there are errors
+    if (passwordErrors.isNotEmpty) {
       return;
     }
 
@@ -379,7 +400,7 @@ class _SignupState extends State<SignupPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: CustomTextField(
                           controller: passwordController,
-                          errorText: passwordError,
+                          errorText: formattedPasswordErrors,
                           hintText: "Adgangskode",
                           obscureText: true)),
                   SizedBox(height: 15),
