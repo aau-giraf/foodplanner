@@ -13,6 +13,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:foodplanner/components/password_requirements.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -39,7 +40,20 @@ class _SignupState extends State<SignupPage> {
 
   // Password error messages
   List<String> passwordErrors = [];
-  String formattedPasswordErrors = '';
+  
+  // Map for keeping track of password requirements
+  Map<String, bool> passwordValidationStatus = {
+  'hasUpperCase': false,
+  'hasLowerCase': false,
+  'hasDigit': false,
+  'hasMinLength': false,
+  'hasMaxLength': false,
+  };
+
+  // Regular expressions for password requirements
+  final RegExp upperCase = RegExp(r'[A-ZÆØÅ]');
+  final RegExp lowerCase = RegExp(r'[a-zæøå]');
+  final RegExp digit = RegExp(r'\d');
 
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
@@ -68,7 +82,7 @@ class _SignupState extends State<SignupPage> {
     firstNameController.addListener(_updateButtonState);
     lastNameController.addListener(_updateButtonState);
     emailController.addListener(_updateButtonState);
-    passwordController.addListener(validatePassword);
+    passwordController.addListener(_updateButtonState);
     confirmPasswordController.addListener(_updateButtonState);
   }
 
@@ -127,38 +141,14 @@ class _SignupState extends State<SignupPage> {
   }
 
   // new method for validating passwords differently from validating other inputs
-  void validatePassword(){
-    String password = passwordController.text.trim();
-    bool hasUpperCase = password.contains(RegExp(r'[A-ZÆØÅ]'));
-    bool hasLowerCase = password.contains(RegExp(r'[a-zæøå]'));
-    bool hasDigit = password.contains(RegExp(r'\d'));
-    bool hasMinLength = password.length >= 8;
-    bool hasMaxLength = password.length <= 30;
-
-    //Specific error messages for each requirement
-    String capitalLetterMessage = 'Adgangskoden skal indeholde mindst et stort bogstav.';
-    String lowerCaseLetterMessage = 'Adgangskoden skal indeholde mindst et lille bogstav.';
-    String digitMessage = 'Adgangskoden skal indeholde mindst et tal.';
-    String minLengthMessage = 'Adgangskoden skal være mindst 8 tegn lang.';
-    String maxLengthMessage = 'Adgangskoden skal være højst 30 tegn lang.';
-
-    
-    if (!hasUpperCase) {
-      passwordErrors.add(capitalLetterMessage);
-    } if (!hasLowerCase) {
-      passwordErrors.add(lowerCaseLetterMessage);
-    } if (!hasDigit) {
-      passwordErrors.add(digitMessage);
-    } if (!hasMinLength) {
-      passwordErrors.add(minLengthMessage);
-    } if (!hasMaxLength) {
-      passwordErrors.add(maxLengthMessage);
-    }
-
+  void validatePassword(String password){
     setState(() {
-      formattedPasswordErrors = passwordErrors.join('\n');
+      passwordValidationStatus['hasUpperCase'] = password.contains(upperCase);
+      passwordValidationStatus['hasLowerCase'] = password.contains(lowerCase);
+      passwordValidationStatus['hasDigit'] = password.contains(digit);
+      passwordValidationStatus['hasMinLength'] = password.length >= 8;
+      passwordValidationStatus['hasMaxLength'] = password.length <= 30;
     });
-
   }
 
   //Function to validate form inputs
@@ -220,12 +210,18 @@ class _SignupState extends State<SignupPage> {
       });
     }
 
-    //Step 4: Password Validation
-    validatePassword();
-
-    //return if there are errors
-    if (passwordErrors.isNotEmpty) {
+    //Step 4: Password Validation -- changed to just return if any of the requirements are not met
+    if (!password.contains(upperCase) || !password.contains(lowerCase) ||
+        !password.contains(digit) || password.length >= 8 ||
+        password.length <= 30) {
+      setState(() {
+        passwordError = ' ';
+      });
       return;
+    } else {
+      setState(() {
+        passwordError = '';
+      });
     }
 
     //Step 5: Confirm Password Validation
@@ -397,12 +393,23 @@ class _SignupState extends State<SignupPage> {
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
                   Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: CustomTextField(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column( // A column holding both the text field and the list of requirements
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CustomTextField(
                           controller: passwordController,
-                          errorText: formattedPasswordErrors,
+                          errorText: passwordError, 
                           hintText: "Adgangskode",
-                          obscureText: true)),
+                          obscureText: true, 
+                          onChanged: (input) => validatePassword(passwordController.text), // onChanged ensures the check is performed with every input
+                        ),
+                        PasswordRequirements(
+                          validationStatus: passwordValidationStatus,
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(height: 15),
                   Text(
                     'Bekræft adgangskode',
