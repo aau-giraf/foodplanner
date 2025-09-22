@@ -37,9 +37,6 @@ class _SignupState extends State<SignupPage> {
   String emailError = '';
   String passwordError = '';
   String confirmPasswordError = '';
-
-  // Password error messages
-  List<String> passwordErrors = [];
   
   // Map for keeping track of password requirements
   Map<String, bool> passwordValidationStatus = {
@@ -212,8 +209,8 @@ class _SignupState extends State<SignupPage> {
 
     //Step 4: Password Validation -- changed to just return if any of the requirements are not met
     if (!password.contains(upperCase) || !password.contains(lowerCase) ||
-        !password.contains(digit) || password.length >= 8 ||
-        password.length <= 30) {
+        !password.contains(digit) || password.length < 8 ||
+        password.length > 30) {
       setState(() {
         passwordError = ' ';
       });
