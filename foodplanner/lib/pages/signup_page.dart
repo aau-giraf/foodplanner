@@ -107,13 +107,20 @@ class _SignupState extends State<SignupPage> {
   }
 
   void handleErrors(Map<String, dynamic> error) {
-    updateErrorState('First_name',
+   setState(() {
+    firstNameError = error['First_name'] != null ? error['First_name'][0] : '';
+    lastNameError = error['Last_name'] != null ? error['Last_name'][0] : '';
+    emailError = error['Email'] != null ? error['Email'][0] : '';
+    passwordError = error['Password'] != null ? error['Password'][0] : '';
+   });
+   
+    /*updateErrorState('First_name',
         error['First_name'] != null ? error['First_name'][0] : '');
     updateErrorState(
         'Last_name', error['Last_name'] != null ? error['Last_name'][0] : '');
     updateErrorState('Email', error['Email'] != null ? error['Email'][0] : '');
     updateErrorState(
-        'Password', error['Password'] != null ? error['Password'][0] : '');
+        'Password', error['Password'] != null ? error['Password'][0] : '');*/
   }
 
   void roleChange(Set<String> value) {
@@ -130,6 +137,8 @@ class _SignupState extends State<SignupPage> {
     String confirmPassword = confirmPasswordController.text.trim();
     String email = emailController.text.trim();
 
+    bool hasError = false;
+
     //Step 1: Check om alle felter er udfyldt
     if (firstName.isEmpty ||
         lastName.isEmpty ||
@@ -144,6 +153,7 @@ class _SignupState extends State<SignupPage> {
           duration: Duration(seconds: 5),
         ),
       );
+      hasError = true;
     }
 
     //Step 2: Full Name Validation
@@ -151,7 +161,7 @@ class _SignupState extends State<SignupPage> {
       setState(() {
         firstNameError = 'Dit navn må kun indholde bogstaver';
       });
-      return;
+      hasError = true;
     } else {
       setState(() {
         firstNameError = '';
@@ -162,7 +172,7 @@ class _SignupState extends State<SignupPage> {
       setState(() {
         lastNameError = 'Dit navn må kun indholde bogstaver';
       });
-      return;
+      hasError = true;
     } else {
       setState(() {
         lastNameError = '';
@@ -174,7 +184,7 @@ class _SignupState extends State<SignupPage> {
       setState(() {
         emailError = 'Det er ikke en gyldig email';
       });
-      return;
+      hasError = true;
     } else {
       setState(() {
         emailError = '';
@@ -204,7 +214,7 @@ class _SignupState extends State<SignupPage> {
     });
 
     if (passwordError.isNotEmpty) {
-      return;
+      hasError = true;
     }
 
     //Step 5: Confirm Password Validation
@@ -212,7 +222,7 @@ class _SignupState extends State<SignupPage> {
       setState(() {
         confirmPasswordError = 'Adgangskoderne passer ikke';
       });
-      return;
+      hasError = true;
     } else {
       setState(() {
         confirmPasswordError = '';
@@ -220,9 +230,11 @@ class _SignupState extends State<SignupPage> {
     }
 
     //proceed with sign-up logic if everything is correct
-    signUserUp(
+    if(!hasError) {
+      signUserUp(
         context, firstName, lastName, email, password, confirmPassword, role);
-  }
+      }
+    }
 
   //Placeholder function for sign-up logic
   void signUserUp(
