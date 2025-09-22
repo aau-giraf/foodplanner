@@ -108,7 +108,7 @@ class _CustomCheckboxState extends State<CustomCheckbox>
                         child: CustomPaint(
                           size: Size(widget.size * 0.6, widget.size * 0.6),
                           painter: CheckmarkPainter(
-                            color: AppColors.primary,
+                            color: AppColors.background,
                             strokeWidth: 3.0,
                           ),
                         ),

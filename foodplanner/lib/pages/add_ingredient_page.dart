@@ -149,7 +149,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                   type: SettingsType.items,
                   cta: CustomCheckbox(
                     controller: _controllers[index],
-                    activeColor: AppColors.background,
+                    activeColor: AppColors.primary,
                     size: 40,
                   ),
                 );
