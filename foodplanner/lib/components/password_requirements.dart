@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/config/colors.dart';
 
 // New class for text indicating whether the requirements for a password is met when creating a user
 
@@ -41,11 +42,20 @@ class PasswordRequirements extends StatelessWidget{
     );
   }
 
-  // Helper method returning a 'Text'-widget with a color based on whether the requirement is met or not
+  // Helper method returning a 'Row'-widget containing text and icon
   Widget _buildRequirementText(String message, bool isMet){
-    return Text(
-      message,
-      style : isMet ? AppTextStyles.successText : AppTextStyles.errorText // determining style, both defined in text_styles.dart
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          isMet ? Icons.check : Icons.clear,
+          color: isMet ? AppColors.successText : AppColors.errorText,
+        ),
+        Text(
+          message,
+          style : isMet ? AppTextStyles.successText : AppTextStyles.errorText // determining style, both defined in text_styles.dart
+        ),
+      ],
     );
   }
 }
