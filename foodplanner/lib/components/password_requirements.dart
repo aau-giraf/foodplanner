@@ -18,9 +18,12 @@ class PasswordRequirements extends StatelessWidget{
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Adgangskoden skal indeholde:',
-          style: AppTextStyles.mediumTextWithoutColor,
+        Padding (
+          padding: EdgeInsets.only(top: 2.0),
+          child: Text(
+            'Adgangskoden skal indeholde:',
+            style: AppTextStyles.mediumTextWithoutColor,
+          ),
         ),
         _buildRequirementText(
           'Mindst ét stort og ét lille bogstav.',
@@ -43,13 +46,20 @@ class PasswordRequirements extends StatelessWidget{
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          isMet ? Icons.check : Icons.clear,
-          color: isMet ? Colors.green : AppColors.errorText,
+        Padding(
+          padding: EdgeInsets.only(left: 10.0),
+          child: Icon(
+            isMet ? Icons.check : Icons.clear,
+            color: isMet ? Colors.green : AppColors.errorText,
+            size: 16,
+          ), 
         ),
-        Text(
-          message,
-          style : isMet ? AppTextStyles.requirementTextGreen : AppTextStyles.requirementTextRed // determining style, both defined in text_styles.dart
+        Padding(
+          padding: EdgeInsets.only(left: 4.0),
+          child: Text(
+            message,
+            style : isMet ? AppTextStyles.requirementTextGreen : AppTextStyles.requirementTextRed // determining style, both defined in text_styles.dart
+          ),
         ),
       ],
     );
