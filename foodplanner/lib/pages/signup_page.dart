@@ -13,6 +13,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:foodplanner/components/password_requirements.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -30,12 +31,28 @@ class _SignupState extends State<SignupPage> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
+  // Variables for checking if the user is active in the password text field
+  late FocusNode _passwordFocusNode = FocusNode();
+  bool isPasswordFocused = false;
+
   // Text error messages
   String firstNameError = '';
   String lastNameError = '';
   String emailError = '';
   String passwordError = '';
   String confirmPasswordError = '';
+  
+  // Map for keeping track of password requirements
+  Map<String, bool> passwordValidationStatus = {
+  'hasUpperAndLowerCase': false,
+  'hasDigit': false,
+  'hasLength': false,
+  };
+
+  // Regular expressions for password requirements
+  final RegExp upperCase = RegExp(r'[A-ZÆØÅ]');
+  final RegExp lowerCase = RegExp(r'[a-zæøå]');
+  final RegExp digit = RegExp(r'\d');
 
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
@@ -66,6 +83,9 @@ class _SignupState extends State<SignupPage> {
     emailController.addListener(_updateButtonState);
     passwordController.addListener(_updateButtonState);
     confirmPasswordController.addListener(_updateButtonState);
+
+    //Added node and listener for checking when the user is active in the password field
+    _passwordFocusNode.addListener(_onFocusChange);
   }
 
   @override
@@ -75,16 +95,24 @@ class _SignupState extends State<SignupPage> {
     emailController.removeListener(_updateButtonState);
     passwordController.removeListener(_updateButtonState);
     confirmPasswordController.removeListener(_updateButtonState);
+    _passwordFocusNode.removeListener(_onFocusChange);
     firstNameController.dispose();
     lastNameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
   void _updateButtonState() {
     setState(() {});
+  }
+
+  void _onFocusChange() {
+    setState(() {
+      isPasswordFocused = _passwordFocusNode.hasFocus;
+    });
   }
 
   void updateErrorState(String field, String error) {
@@ -126,6 +154,15 @@ class _SignupState extends State<SignupPage> {
   void roleChange(Set<String> value) {
     setState(() {
       role = value;
+    });
+  }
+
+  // new method for validating passwords differently from validating other inputs
+  void validatePassword(String password){
+    setState(() {
+      passwordValidationStatus['hasUpperAndLowerCase'] = (password.contains(upperCase) && password.contains(lowerCase));
+      passwordValidationStatus['hasDigit'] = password.contains(digit);
+      passwordValidationStatus['hasLength'] = (password.length > 7 && password.length < 31);
     });
   }
 
@@ -191,30 +228,18 @@ class _SignupState extends State<SignupPage> {
       });
     }
 
-    //Step 4: Password Validation
-    bool hasUpperCase = password.contains(RegExp(r'[A-ZÆØÅ]'));
-    bool hasLowerCase = password.contains(RegExp(r'[a-zæøå]'));
-    bool hasDigit = password.contains(RegExp(r'\d'));
-    bool hasMinLength = password.length >= 8;
-    bool hasMaxLength = password.length <= 30;
-
-    setState(() {
-      passwordError = '';
-      if (!hasUpperCase) {
-        passwordError = 'Adgangskoden skal indeholde mindst et stort bogstav.';
-      } else if (!hasLowerCase) {
-        passwordError = 'Adgangskoden skal indeholde mindst et lille bogstav.';
-      } else if (!hasDigit) {
-        passwordError = 'Adgangskoden skal indeholde mindst et tal.';
-      } else if (!hasMinLength) {
-        passwordError = 'Adgangskoden skal være mindst 8 tegn lang.';
-      } else if (!hasMaxLength) {
-        passwordError = 'Adgangskoden skal være højst 30 tegn lang.';
-      }
-    });
-
-    if (passwordError.isNotEmpty) {
-      hasError = true;
+    //Step 4: Password Validation -- changed to just return if any of the requirements are not met
+    if (!password.contains(upperCase) || !password.contains(lowerCase) ||
+        !password.contains(digit) || password.length < 8 ||
+        password.length > 30) {
+      setState(() {
+        passwordError = ' ';
+      });
+      hasError = true;;
+    } else {
+      setState(() {
+        passwordError = '';
+      });
     }
 
     //Step 5: Confirm Password Validation
@@ -388,12 +413,25 @@ class _SignupState extends State<SignupPage> {
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
                   Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: CustomTextField(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column( // A column holding both the text field and the list of requirements
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CustomTextField(
                           controller: passwordController,
-                          errorText: passwordError,
+                          errorText: passwordError, 
                           hintText: "Adgangskode",
-                          obscureText: true)),
+                          obscureText: true, 
+                          focusNode: _passwordFocusNode,
+                          onChanged: (input) => validatePassword(passwordController.text), // onChanged ensures the check is performed with every input
+                        ),
+                        if (isPasswordFocused)
+                          PasswordRequirements(
+                            validationStatus: passwordValidationStatus,
+                          ),  
+                      ],
+                    ),
+                  ),
                   SizedBox(height: 15),
                   Text(
                     'Bekræft adgangskode',

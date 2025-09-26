@@ -12,6 +12,8 @@ class CustomTextField extends StatelessWidget {
   final dynamic color;
   final TextFieldType type;
   final Function(String)? onChanged;
+  final FocusNode? focusNode;
+
 
   const CustomTextField({
     super.key,
@@ -22,6 +24,7 @@ class CustomTextField extends StatelessWidget {
     this.color = AppColors.textFieldBackground, // default color
       this.type = TextFieldType.defaultTextField, // default type
     this.onChanged,
+    this.focusNode,
   });
 
   Widget defaultTextField() {
@@ -55,6 +58,7 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
           onChanged: onChanged,
+          focusNode: focusNode,
         ),
         errorText.isNotEmpty && errorText != ' '
             ? Padding(
