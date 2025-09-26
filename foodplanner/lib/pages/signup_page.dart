@@ -155,7 +155,7 @@ class _SignupState extends State<SignupPage> {
     setState(() {
       passwordValidationStatus['hasUpperAndLowerCase'] = (password.contains(upperCase) && password.contains(lowerCase));
       passwordValidationStatus['hasDigit'] = password.contains(digit);
-      passwordValidationStatus['hasLength'] = (password.length >= 8 && password.length <= 30);
+      passwordValidationStatus['hasLength'] = (password.length > 7 && password.length < 31);
     });
   }
 
