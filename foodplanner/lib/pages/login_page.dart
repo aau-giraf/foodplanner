@@ -109,7 +109,7 @@ class LoginPageState extends State<LoginPage> {
         SnackBar(
           content: Text('Der opstod et problem ved login: ${e.message}'),
           backgroundColor: Colors.red,
-          duration: Duration(seconds: 7),
+          duration: Duration(seconds: 6),
         ),
       );
     } else {
@@ -117,7 +117,7 @@ class LoginPageState extends State<LoginPage> {
         SnackBar(
           content: Text('Der opstod et ukendt problem ved login: $e'),
           backgroundColor: Colors.red,
-          duration: Duration(seconds: 7),
+          duration: Duration(seconds: 6),
         ),
       );
       
