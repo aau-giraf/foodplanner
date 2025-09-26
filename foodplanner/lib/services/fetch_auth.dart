@@ -57,7 +57,7 @@ Future<ROLES> fetchAuthData(String email, String password) async {
     }
   } catch (e) {
     print('Error fetching auth data: $e');
-    throw NetworkException('Error fetching auth data: $e');
+    throw NetworkException('Forkert email eller adgangskode.');
   }
 }
 
