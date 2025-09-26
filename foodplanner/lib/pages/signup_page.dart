@@ -31,6 +31,10 @@ class _SignupState extends State<SignupPage> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
+  // Variables for checking if the user is active in the password text field
+  late FocusNode _passwordFocusNode = FocusNode();
+  bool isPasswordFocused = false;
+
   // Text error messages
   String firstNameError = '';
   String lastNameError = '';
@@ -40,11 +44,9 @@ class _SignupState extends State<SignupPage> {
   
   // Map for keeping track of password requirements
   Map<String, bool> passwordValidationStatus = {
-  'hasUpperCase': false,
-  'hasLowerCase': false,
+  'hasUpperAndLowerCase': false,
   'hasDigit': false,
-  'hasMinLength': false,
-  'hasMaxLength': false,
+  'hasLength': false,
   };
 
   // Regular expressions for password requirements
@@ -81,6 +83,9 @@ class _SignupState extends State<SignupPage> {
     emailController.addListener(_updateButtonState);
     passwordController.addListener(_updateButtonState);
     confirmPasswordController.addListener(_updateButtonState);
+
+    //Added node and listener for checking when the user is active in the password field
+    _passwordFocusNode.addListener(_onFocusChange);
   }
 
   @override
@@ -90,16 +95,24 @@ class _SignupState extends State<SignupPage> {
     emailController.removeListener(_updateButtonState);
     passwordController.removeListener(_updateButtonState);
     confirmPasswordController.removeListener(_updateButtonState);
+    _passwordFocusNode.removeListener(_onFocusChange);
     firstNameController.dispose();
     lastNameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
   void _updateButtonState() {
     setState(() {});
+  }
+
+  void _onFocusChange() {
+    setState(() {
+      isPasswordFocused = _passwordFocusNode.hasFocus;
+    });
   }
 
   void updateErrorState(String field, String error) {
@@ -140,11 +153,9 @@ class _SignupState extends State<SignupPage> {
   // new method for validating passwords differently from validating other inputs
   void validatePassword(String password){
     setState(() {
-      passwordValidationStatus['hasUpperCase'] = password.contains(upperCase);
-      passwordValidationStatus['hasLowerCase'] = password.contains(lowerCase);
+      passwordValidationStatus['hasUpperAndLowerCase'] = (password.contains(upperCase) && password.contains(lowerCase));
       passwordValidationStatus['hasDigit'] = password.contains(digit);
-      passwordValidationStatus['hasMinLength'] = password.length >= 8;
-      passwordValidationStatus['hasMaxLength'] = password.length <= 30;
+      passwordValidationStatus['hasLength'] = (password.length >= 8 && password.length <= 30);
     });
   }
 
@@ -399,11 +410,13 @@ class _SignupState extends State<SignupPage> {
                           errorText: passwordError, 
                           hintText: "Adgangskode",
                           obscureText: true, 
+                          focusNode: _passwordFocusNode,
                           onChanged: (input) => validatePassword(passwordController.text), // onChanged ensures the check is performed with every input
                         ),
-                        PasswordRequirements(
-                          validationStatus: passwordValidationStatus,
-                        ),
+                        if (isPasswordFocused)
+                          PasswordRequirements(
+                            validationStatus: passwordValidationStatus,
+                          ),  
                       ],
                     ),
                   ),

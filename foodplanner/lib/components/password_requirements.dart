@@ -18,25 +18,21 @@ class PasswordRequirements extends StatelessWidget{
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildRequirementText(
-          'Adgangskoden skal indeholde mindst et stort bogstav.',
-          validationStatus['hasUpperCase']!,
+        Text(
+          'Adgangskoden skal indeholde:',
+          style: AppTextStyles.mediumTextWithoutColor,
         ),
         _buildRequirementText(
-          'Adgangskoden skal indeholde mindst et lille bogstav.',
-          validationStatus['hasLowerCase']!,
+          'Mindst ét stort og ét lille bogstav.',
+          validationStatus['hasUpperAndLowerCase']!,
         ),
         _buildRequirementText(
-          'Adgangskoden skal indeholde mindst et tal.',
+          'Mindst et tal.',
           validationStatus['hasDigit']!,
         ),
         _buildRequirementText(
-          'Adgangskoden skal være mindst otte tegn lang.',
-          validationStatus['hasMinLength']!,
-        ),
-        _buildRequirementText(
-          'Adgangskoden skal være højst 30 tegn lang.',
-          validationStatus['hasMaxLength']!,
+          '8-30 tegn.',
+          validationStatus['hasLength']!,
         ),
       ],
     );
@@ -49,11 +45,11 @@ class PasswordRequirements extends StatelessWidget{
       children: [
         Icon(
           isMet ? Icons.check : Icons.clear,
-          color: isMet ? AppColors.successText : AppColors.errorText,
+          color: isMet ? Colors.green : AppColors.errorText,
         ),
         Text(
           message,
-          style : isMet ? AppTextStyles.successText : AppTextStyles.errorText // determining style, both defined in text_styles.dart
+          style : isMet ? AppTextStyles.requirementTextGreen : AppTextStyles.requirementTextRed // determining style, both defined in text_styles.dart
         ),
       ],
     );
