@@ -104,19 +104,6 @@ void main() {
       test('return with 201 response when a meal is added to the database', () async {
         final client = MockClient();
         // Arrange: Set up the stub to mock the post call
-        /*when(client.post(
-          Uri.parse('${ApiConfig.baseUrl}/api/Meals/Create'),
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer mocked_token_value',
-          },
-          body: jsonEncode({
-            'food_image_id': meal.foodImageId,
-            'name': meal.name,
-            // 'food_image_id': meal.foodImageId,
-            'date': meal.date?.toIso8601String(),
-          }),
-        ))*/
         when(client.post(
           Uri.parse('${ApiConfig.baseUrl}/api/Meals/Create'),
           headers: anyNamed('headers'),
