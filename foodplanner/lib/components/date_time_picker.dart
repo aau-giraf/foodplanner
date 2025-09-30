@@ -14,7 +14,7 @@ class DateTimePickerWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-          'Madpakke i dag d. $formattedDate',
+          'Madpakke for d. $formattedDate',
           style: TextStyle(fontSize: 16),
         ),
         mealNotifier.mealImageRef.isNotEmpty
