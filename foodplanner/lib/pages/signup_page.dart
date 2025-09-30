@@ -114,7 +114,7 @@ class _SignupState extends State<SignupPage> {
       isPasswordFocused = _passwordFocusNode.hasFocus;
     });
   }
-
+/*
   void updateErrorState(String field, String error) {
     setState(() {
       switch (field) {
@@ -132,7 +132,7 @@ class _SignupState extends State<SignupPage> {
           break;
       }
     });
-  }
+  }*/
 
   void handleErrors(Map<String, dynamic> error) {
    setState(() {
