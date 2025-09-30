@@ -18,7 +18,7 @@ class Mealboxcontent extends StatelessWidget {
             children: [
               // sabrina carpenter tho :flushedEmoj:
               const Text(
-                'ingen madpakke at vise',
+                'Ingen madpakke at vise',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ],
