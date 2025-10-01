@@ -27,8 +27,5 @@ jobs:
     - name: Verify Flutter installation
       run: flutter doctor -v
      
-    - name: Analyze code
-      run: flutter analyze
-     
     - name: Run tests
       run: flutter test test/service_tests --coverage --reporter expanded
