@@ -11,6 +11,8 @@ import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/pages/create_ingredient_page.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 class AddIngredientPage extends StatefulWidget {
   const AddIngredientPage({super.key});
@@ -23,6 +25,8 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
   final List<Map<String, dynamic>> _ingredients = [];
   final TextEditingController _controller = TextEditingController();
   final List<ValueNotifier<bool>> _controllers = [];
+  Client? client;
+  bool _isEditMode = false;
 
   final ingredientServices = IngredientServices(
     apiUrl: ApiConfig.baseUrl,
@@ -31,6 +35,8 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
   @override
   void initState() {
     super.initState();
+    client = http.Client();
+
     _getIngredients();
   }
 
@@ -63,6 +69,25 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     return selectedIngredients;
   }
 
+  Future<void> _deleteIngredient(int index) async {
+    try{
+      final id = _ingredients[index]["id"];
+      final authProvider = AuthProvider(); // Initialize your AuthProvider
+    final response =
+          await ingredientServices.deleteIngredient(client!, authProvider, id);
+    if (response.statusCode != 200){throw Error();}
+    setState(() {
+      _ingredients.removeAt(index);
+      _controllers[index].dispose(); // Clean up the controller
+      _controllers.removeAt(index);
+      
+    });
+    }
+    catch (e){
+      print('Failed to delete ingredient: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,6 +112,24 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
           ),
         ),
         leadingWidth: 200,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _isEditMode = !_isEditMode;
+                });
+              },
+              child: Text(
+                _isEditMode ? 'Færdig' : 'Rediger',
+                style: AppTextStyles.headline4.copyWith(
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ),
+        ],
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
       ),
@@ -146,11 +189,20 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                   leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
                   title: _ingredients[index]['name'],
                   type: SettingsType.items,
-                  cta: AdvancedSwitch(
-                    controller: _controllers[index],
-                    activeColor: AppColors.primary,
-                    width: 60,
-                  ),
+                  cta: _isEditMode
+                    ? InkWell(
+                        onTap: () => _deleteIngredient(index),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                          size: 45,
+                        ),
+                      )
+                    : AdvancedSwitch(
+                        controller: _controllers[index],
+                        activeColor: AppColors.primary,
+                        width: 60,
+                      ),
                 );
               },
             ),
