@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
@@ -9,11 +8,11 @@ class SettingsHeader extends StatelessWidget {
   final String subtitle;
 
   const SettingsHeader({
-    Key? key,
+    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,26 +23,26 @@ class SettingsHeader extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.background,
           borderRadius: BorderRadius.circular(12),
-        ), 
+        ),
         child: Row(
           children: [
             Expanded(
-              child : Column(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(8),
+              child: Column(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.orange,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      icon,
+                      color: Colors.white,
+                      size: 30,
+                    ),
                   ),
-                  child: Icon(
-                    icon,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                ),
-                SizedBox(height: 8),
+                  SizedBox(height: 8),
                   Text(
                     title,
                     style: AppTextStyles.headline4,

@@ -446,31 +446,59 @@ class _SignupState extends State<SignupPage> {
                       hintText: "Adgangskode",
                       obscureText: true,
                     ),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    'Jeg er',
-                    style: AppTextStyles.bigText
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: CustomSegmentButton(
-                      buttonSegments: segments,
-                      selected: role,
-                      onTab: roleChange,
+                    SizedBox(height: 15),
+                    Text(
+                      'Adgangskode',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  SizedBox(height: 15),
-                ],
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: CustomTextField(
+                            controller: passwordController,
+                            errorText: passwordError,
+                            hintText: "Adgangskode",
+                            obscureText: true)),
+                    SizedBox(height: 15),
+                    Text(
+                      'Bekræft adgangskode',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomTextField(
+                        controller: confirmPasswordController,
+                        errorText: confirmPasswordError,
+                        hintText: "Adgangskode",
+                        obscureText: true,
+                      ),
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      'Jeg er',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomSegmentButton(
+                        buttonSegments: segments,
+                        selected: role,
+                        onTab: roleChange,
+                      ),
+                    ),
+                    SizedBox(height: 15),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 10),
-            CustomButton(
-              text: 'Opret mig',
-              onTab: showButton() ? () => validateInputs(context) : null,
-            ),
-          ],
+              SizedBox(height: 10),
+              CustomButton(
+                text: 'Opret mig',
+                onTab: showButton() ? () => validateInputs(context) : null,
+              ),
+            ],
+          ),
         ),
       ),
     );

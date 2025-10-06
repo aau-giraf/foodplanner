@@ -34,7 +34,6 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
         _users = users;
         _isLoading = false;
       });
-      print('Users loaded: ${_users.length}');
     } catch (e) {
       print('Error loading users: $e');
       setState(() {
