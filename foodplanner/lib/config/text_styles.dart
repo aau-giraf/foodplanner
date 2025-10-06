@@ -86,17 +86,4 @@ class AppTextStyles {
     fontWeight: FontWeight.normal,
     color: AppColors.errorText,
   );
-
-  static const TextStyle requirementTextRed = TextStyle(
-    fontSize: 14.0,
-    fontWeight: FontWeight.normal,
-    color: AppColors.errorText,
-  );
-
-  // new style for password requirements
-  static const TextStyle requirementTextGreen =TextStyle(
-    fontSize: 14.0,
-    fontWeight: FontWeight.normal,
-    color: Colors.green,
-  );
 }
