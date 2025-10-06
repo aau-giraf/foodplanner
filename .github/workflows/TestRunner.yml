@@ -67,10 +67,11 @@ jobs:
     - name: Generate API client
       working-directory: ./foodplanner
       run: |
+        # Generate to the correct path that matches your imports
         openapi-generator generate \
           -i openapi.json \
           -g dart \
-          -o lib/generated \
+          -o lib/api/openapi \
           --additional-properties=pubName=foodplanner_api,pubAuthor=Giraf
        
     - name: Get dependencies
