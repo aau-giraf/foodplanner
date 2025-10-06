@@ -115,8 +115,7 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
                                   AuthProvider(),
                                   newIngredient.name,
                                   newIngredient.foodImageId,
-                                ))
-                                    .body,
+                                )).body,
                               ),
                             );
                             Navigator.pop(context, newIngredient);
