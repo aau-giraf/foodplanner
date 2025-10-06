@@ -20,12 +20,23 @@ jobs:
       with:
         channel: 'stable'
         cache: true
+    
+    - name: Download OpenAPI spec
+      run: |
+        curl -o openapi.json https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_BACKEND_REPO/main/path/to/openapi.json
+        # Or if it's private, use a GitHub token
+    
+    - name: Generate API client
+      run: |
+        # Install your OpenAPI generator (example with openapi-generator)
+        dart pub global activate openapi_generator_cli
+        openapi-generator generate -i openapi.json -g dart -o lib/generated
        
     - name: Get dependencies
       run: flutter pub get
      
-    - name: Verify Flutter installation
-      run: flutter doctor -v
+    - name: Analyze code
+      run: flutter analyze
      
     - name: Run tests
       run: flutter test test/service_tests --coverage --reporter expanded
