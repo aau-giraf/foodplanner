@@ -1,7 +1,5 @@
 name: Flutter Tests
 on:
-  push:
-    branches: ['**']
   pull_request:
     branches: ['**']
   workflow_dispatch:
@@ -22,13 +20,13 @@ jobs:
       with:
         channel: 'stable'
         cache: true
-    
+   
     # Download OpenAPI spec from GitHub artifact
     - name: Download OpenAPI spec from artifact
       run: |
         # Replace ARTIFACT_ID with your actual artifact ID (the number at the end of the URL)
         ARTIFACT_ID="4155999575"
-        
+       
         echo "Downloading artifact ID: $ARTIFACT_ID"
         curl -L \
           -H "Accept: application/vnd.github+json" \
@@ -36,11 +34,11 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           "https://api.github.com/repos/aau-giraf/foodplanner-api/actions/artifacts/$ARTIFACT_ID/zip" \
           -o openapi.zip
-        
+       
         echo "Extracting artifact..."
         unzip openapi.zip
         ls -lh openapi.json
-    
+   
     # Verify the OpenAPI file was downloaded
     - name: Verify OpenAPI file
       working-directory: ./foodplanner
@@ -56,13 +54,13 @@ jobs:
           ls -la
           exit 1
         fi
-    
+   
     # Install OpenAPI generator
     - name: Install OpenAPI Generator
       run: |
         dart pub global activate openapi_generator_cli
         echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
-    
+   
     # Generate API client from the downloaded OpenAPI spec
     - name: Generate API client
       working-directory: ./foodplanner
@@ -76,7 +74,7 @@ jobs:
        
     - name: Get dependencies
       run: flutter pub get
-
+    
     - name: Build project
       run: dart run build_runner build --delete-conflicting-outputs
      
