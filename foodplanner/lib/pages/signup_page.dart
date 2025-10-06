@@ -13,6 +13,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:foodplanner/components/password_requirements.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -30,12 +31,28 @@ class _SignupState extends State<SignupPage> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
+  // Variables for checking if the user is active in the password text field
+  late FocusNode _passwordFocusNode = FocusNode();
+  bool isPasswordFocused = false;
+
   // Text error messages
   String firstNameError = '';
   String lastNameError = '';
   String emailError = '';
   String passwordError = '';
   String confirmPasswordError = '';
+  
+  // Map for keeping track of password requirements
+  Map<String, bool> passwordValidationStatus = {
+  'hasUpperAndLowerCase': false,
+  'hasDigit': false,
+  'hasLength': false,
+  };
+
+  // Regular expressions for password requirements
+  final RegExp upperCase = RegExp(r'[A-ZÆØÅ]');
+  final RegExp lowerCase = RegExp(r'[a-zæøå]');
+  final RegExp digit = RegExp(r'\d');
 
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
@@ -66,6 +83,9 @@ class _SignupState extends State<SignupPage> {
     emailController.addListener(_updateButtonState);
     passwordController.addListener(_updateButtonState);
     confirmPasswordController.addListener(_updateButtonState);
+
+    //Added node and listener for checking when the user is active in the password field
+    _passwordFocusNode.addListener(_onFocusChange);
   }
 
   @override
@@ -75,11 +95,13 @@ class _SignupState extends State<SignupPage> {
     emailController.removeListener(_updateButtonState);
     passwordController.removeListener(_updateButtonState);
     confirmPasswordController.removeListener(_updateButtonState);
+    _passwordFocusNode.removeListener(_onFocusChange);
     firstNameController.dispose();
     lastNameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
@@ -87,6 +109,12 @@ class _SignupState extends State<SignupPage> {
     setState(() {});
   }
 
+  void _onFocusChange() {
+    setState(() {
+      isPasswordFocused = _passwordFocusNode.hasFocus;
+    });
+  }
+/*
   void updateErrorState(String field, String error) {
     setState(() {
       switch (field) {
@@ -104,21 +132,37 @@ class _SignupState extends State<SignupPage> {
           break;
       }
     });
-  }
+  }*/
 
   void handleErrors(Map<String, dynamic> error) {
-    updateErrorState('First_name',
+   setState(() {
+    firstNameError = error['First_name'] != null ? error['First_name'][0] : '';
+    lastNameError = error['Last_name'] != null ? error['Last_name'][0] : '';
+    emailError = error['Email'] != null ? error['Email'][0] : '';
+    passwordError = error['Password'] != null ? error['Password'][0] : '';
+   });
+   
+    /*updateErrorState('First_name',
         error['First_name'] != null ? error['First_name'][0] : '');
     updateErrorState(
         'Last_name', error['Last_name'] != null ? error['Last_name'][0] : '');
     updateErrorState('Email', error['Email'] != null ? error['Email'][0] : '');
     updateErrorState(
-        'Password', error['Password'] != null ? error['Password'][0] : '');
+        'Password', error['Password'] != null ? error['Password'][0] : '');*/
   }
 
   void roleChange(Set<String> value) {
     setState(() {
       role = value;
+    });
+  }
+
+  // new method for validating passwords differently from validating other inputs
+  void validatePassword(String password){
+    setState(() {
+      passwordValidationStatus['hasUpperAndLowerCase'] = (password.contains(upperCase) && password.contains(lowerCase));
+      passwordValidationStatus['hasDigit'] = password.contains(digit);
+      passwordValidationStatus['hasLength'] = (password.length > 7 && password.length < 31);
     });
   }
 
@@ -129,6 +173,8 @@ class _SignupState extends State<SignupPage> {
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String email = emailController.text.trim();
+
+    bool hasError = false;
 
     //Step 1: Check om alle felter er udfyldt
     if (firstName.isEmpty ||
@@ -144,6 +190,7 @@ class _SignupState extends State<SignupPage> {
           duration: Duration(seconds: 5),
         ),
       );
+      hasError = true;
     }
 
     //Step 2: Full Name Validation
@@ -151,7 +198,7 @@ class _SignupState extends State<SignupPage> {
       setState(() {
         firstNameError = 'Dit navn må kun indholde bogstaver';
       });
-      return;
+      hasError = true;
     } else {
       setState(() {
         firstNameError = '';
@@ -162,7 +209,7 @@ class _SignupState extends State<SignupPage> {
       setState(() {
         lastNameError = 'Dit navn må kun indholde bogstaver';
       });
-      return;
+      hasError = true;
     } else {
       setState(() {
         lastNameError = '';
@@ -174,37 +221,25 @@ class _SignupState extends State<SignupPage> {
       setState(() {
         emailError = 'Det er ikke en gyldig email';
       });
-      return;
+      hasError = true;
     } else {
       setState(() {
         emailError = '';
       });
     }
 
-    //Step 4: Password Validation
-    bool hasUpperCase = password.contains(RegExp(r'[A-ZÆØÅ]'));
-    bool hasLowerCase = password.contains(RegExp(r'[a-zæøå]'));
-    bool hasDigit = password.contains(RegExp(r'\d'));
-    bool hasMinLength = password.length >= 8;
-    bool hasMaxLength = password.length <= 30;
-
-    setState(() {
-      passwordError = '';
-      if (!hasUpperCase) {
-        passwordError = 'Adgangskoden skal indeholde mindst et stort bogstav.';
-      } else if (!hasLowerCase) {
-        passwordError = 'Adgangskoden skal indeholde mindst et lille bogstav.';
-      } else if (!hasDigit) {
-        passwordError = 'Adgangskoden skal indeholde mindst et tal.';
-      } else if (!hasMinLength) {
-        passwordError = 'Adgangskoden skal være mindst 8 tegn lang.';
-      } else if (!hasMaxLength) {
-        passwordError = 'Adgangskoden skal være højst 30 tegn lang.';
-      }
-    });
-
-    if (passwordError.isNotEmpty) {
-      return;
+    //Step 4: Password Validation -- changed to just return if any of the requirements are not met
+    if (!password.contains(upperCase) || !password.contains(lowerCase) ||
+        !password.contains(digit) || password.length < 8 ||
+        password.length > 30) {
+      setState(() {
+        passwordError = ' ';
+      });
+      hasError = true;;
+    } else {
+      setState(() {
+        passwordError = '';
+      });
     }
 
     //Step 5: Confirm Password Validation
@@ -212,7 +247,7 @@ class _SignupState extends State<SignupPage> {
       setState(() {
         confirmPasswordError = 'Adgangskoderne passer ikke';
       });
-      return;
+      hasError = true;
     } else {
       setState(() {
         confirmPasswordError = '';
@@ -220,9 +255,11 @@ class _SignupState extends State<SignupPage> {
     }
 
     //proceed with sign-up logic if everything is correct
-    signUserUp(
+    if(!hasError) {
+      signUserUp(
         context, firstName, lastName, email, password, confirmPassword, role);
-  }
+      }
+    }
 
   //Placeholder function for sign-up logic
   void signUserUp(
@@ -314,61 +351,100 @@ class _SignupState extends State<SignupPage> {
           textAlign: TextAlign.center,
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            children: [
-              SizedBox(height: 10),
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                color: AppColors.background,
-                surfaceTintColor: AppColors.background,
-                elevation: 3,
-                child: Column(
-                  children: [
-                    SizedBox(height: 10),
-                    Text('Opret mig', style: AppTextStyles.title),
-                    SizedBox(height: 10),
-                    Text(
-                      'Fornavn',
-                      style: AppTextStyles.bigText
-                          .copyWith(fontWeight: FontWeight.bold),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          children: [
+            SizedBox(height: 10),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              color: AppColors.background,
+              surfaceTintColor: AppColors.background,
+              elevation: 3,
+              child: Column(
+                children: [
+                  SizedBox(height: 10),
+                  Text('Opret mig', style: AppTextStyles.title),
+                  SizedBox(height: 10),
+                  Text(
+                    'Fornavn',
+                    style: AppTextStyles.bigText
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomTextField(
+                        controller: firstNameController,
+                        errorText: firstNameError,
+                        hintText: "Fornavn"),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    'Efternavn',
+                    style: AppTextStyles.bigText
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomTextField(
+                        controller: lastNameController,
+                        errorText: lastNameError,
+                        hintText: "Efternavn"),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    'Email',
+                    style: AppTextStyles.bigText
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomTextField(
+                        controller: emailController,
+                        errorText: emailError,
+                        hintText: "Email"),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    'Adgangskode',
+                    style: AppTextStyles.bigText
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column( // A column holding both the text field and the list of requirements
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CustomTextField(
+                          controller: passwordController,
+                          errorText: passwordError, 
+                          hintText: "Adgangskode",
+                          obscureText: true, 
+                          focusNode: _passwordFocusNode,
+                          onChanged: (input) => validatePassword(passwordController.text), // onChanged ensures the check is performed with every input
+                        ),
+                        if (isPasswordFocused)
+                          PasswordRequirements(
+                            validationStatus: passwordValidationStatus,
+                          ),  
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: CustomTextField(
-                          controller: firstNameController,
-                          errorText: firstNameError,
-                          hintText: "Fornavn"),
-                    ),
-                    SizedBox(height: 15),
-                    Text(
-                      'Efternavn',
-                      style: AppTextStyles.bigText
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: CustomTextField(
-                          controller: lastNameController,
-                          errorText: lastNameError,
-                          hintText: "Efternavn"),
-                    ),
-                    SizedBox(height: 15),
-                    Text(
-                      'Email',
-                      style: AppTextStyles.bigText
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: CustomTextField(
-                          controller: emailController,
-                          errorText: emailError,
-                          hintText: "Email"),
+                  ),
+                  SizedBox(height: 15),
+                  Text(
+                    'Bekræft adgangskode',
+                    style: AppTextStyles.bigText
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: CustomTextField(
+                      controller: confirmPasswordController,
+                      errorText: confirmPasswordError,
+                      hintText: "Adgangskode",
+                      obscureText: true,
                     ),
                     SizedBox(height: 15),
                     Text(
