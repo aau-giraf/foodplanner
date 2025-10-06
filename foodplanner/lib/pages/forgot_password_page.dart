@@ -79,7 +79,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             SizedBox(height: 10),
             CustomButton(
               onTab: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
               },
               text: 'Tilbage til login',
               backgroundColor: AppColors.secondary,

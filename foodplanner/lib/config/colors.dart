@@ -17,5 +17,4 @@ class AppColors {
   static const Color textFieldBorderFocus = Color(0xFF000000);
   static const Color textFieldHint = Color(0xFF9E9E9E);
   static const Color errorText = Color(0xFFD32F2F);
-  static const Color successText = Color(0xFF00FF00);  // added color for indicating that a password requirement has been fulfilled
 }
