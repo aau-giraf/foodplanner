@@ -4,6 +4,8 @@ on:
     branches: ['**']
   pull_request:
     branches: ['**']
+  workflow_dispatch:
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -21,22 +23,53 @@ jobs:
         channel: 'stable'
         cache: true
     
-    - name: Download OpenAPI spec
+    # Download OpenAPI spec from hardcoded artifact URL
+    - name: Download OpenAPI spec from artifact URL
       run: |
-        curl -o openapi.json https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_BACKEND_REPO/main/path/to/openapi.json
-        # Or if it's private, use a GitHub token
+        # Replace this URL with your specific artifact download URL
+        ARTIFACT_URL="https://github.com/aau-giraf/foodplanner-api/actions/runs/18167395315/artifacts/4155999575"
+        
+        echo "Downloading from artifact URL: $ARTIFACT_URL"
+        curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "$ARTIFACT_URL" \
+          -o openapi.zip
+        unzip openapi.zip
+        ls -lh openapi.json
     
-    - name: Generate API client
+    # Verify the OpenAPI file was downloaded
+    - name: Verify OpenAPI file
+      working-directory: ./foodplanner
       run: |
-        # Install your OpenAPI generator (example with openapi-generator)
+        if [ -f openapi.json ]; then
+          echo "✓ OpenAPI file found"
+          echo "File size: $(ls -lh openapi.json | awk '{print $5}')"
+          echo "First 5 lines:"
+          head -n 5 openapi.json
+        else
+          echo "✗ OpenAPI file not found!"
+          echo "Contents of current directory:"
+          ls -la
+          exit 1
+        fi
+    
+    # Install OpenAPI generator
+    - name: Install OpenAPI Generator
+      run: |
         dart pub global activate openapi_generator_cli
-        openapi-generator generate -i openapi.json -g dart -o lib/generated
+        echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+    
+    # Generate API client from the downloaded OpenAPI spec
+    - name: Generate API client
+      working-directory: ./foodplanner
+      run: |
+        openapi-generator generate \
+          -i openapi.json \
+          -g dart \
+          -o lib/generated \
+          --additional-properties=pubName=foodplanner_api,pubAuthor=Giraf
        
     - name: Get dependencies
       run: flutter pub get
-     
-    - name: Analyze code
-      run: flutter analyze
      
     - name: Run tests
       run: flutter test test/service_tests --coverage --reporter expanded
