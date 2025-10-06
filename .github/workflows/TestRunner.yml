@@ -23,16 +23,21 @@ jobs:
         channel: 'stable'
         cache: true
     
-    # Download OpenAPI spec from hardcoded artifact URL
-    - name: Download OpenAPI spec from artifact URL
+    # Download OpenAPI spec from GitHub artifact
+    - name: Download OpenAPI spec from artifact
       run: |
-        # Replace this URL with your specific artifact download URL
-        ARTIFACT_URL="https://github.com/aau-giraf/foodplanner-api/actions/runs/18167395315/artifacts/4155999575"
+        # Replace ARTIFACT_ID with your actual artifact ID (the number at the end of the URL)
+        ARTIFACT_ID="4155999575"
         
-        echo "Downloading from artifact URL: $ARTIFACT_URL"
-        curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "$ARTIFACT_URL" \
+        echo "Downloading artifact ID: $ARTIFACT_ID"
+        curl -L \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          "https://api.github.com/repos/aau-giraf/foodplanner-api/actions/artifacts/$ARTIFACT_ID/zip" \
           -o openapi.zip
+        
+        echo "Extracting artifact..."
         unzip openapi.zip
         ls -lh openapi.json
     
@@ -70,6 +75,9 @@ jobs:
        
     - name: Get dependencies
       run: flutter pub get
+     
+    - name: Analyze code
+      run: flutter analyze
      
     - name: Run tests
       run: flutter test test/service_tests --coverage --reporter expanded
