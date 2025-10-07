@@ -25,22 +25,41 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupState extends State<SignupPage> {
-  final firstNameController = TextEditingController();
-  final lastNameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
 
-  // Variables for checking if the user is active in the password text field
-  late FocusNode _passwordFocusNode = FocusNode();
-  bool isPasswordFocused = false;
+  // Variables for text field controllers 
+  final firstNameController = TextEditingController(), 
+        lastNameController = TextEditingController(),
+        emailController = TextEditingController(),
+        passwordController = TextEditingController(),
+        confirmPasswordController = TextEditingController();
+
+  // Focus nodes for each input field
+  final FocusNode _firstNameFocus = FocusNode(),
+                  _lastNameFocus = FocusNode(),
+                  _emailFocus = FocusNode(),
+                  _passwordFocus = FocusNode(),
+                  _confirmPasswordFocus = FocusNode();
+
+  // Boolean values for checking if text fields are active
+  bool isFirstNameFocused = false,
+       isLastNameFocused = false,
+       isEmailFocused = false,
+       isPasswordFocused = false,
+       isConfirmPasswordFocused = false;
 
   // Text error messages
-  String firstNameError = '';
-  String lastNameError = '';
-  String emailError = '';
-  String passwordError = '';
-  String confirmPasswordError = '';
+  String firstNameError = '',
+        lastNameError = '',
+        emailError = '',
+        passwordError = '',
+        confirmPasswordError = '';
+      
+  bool hasError = false;
+
+  // Regular expressions for password requirements
+  final RegExp upperCase = RegExp(r'[A-ZÆØÅ]');
+  final RegExp lowerCase = RegExp(r'[a-zæøå]');
+  final RegExp digit = RegExp(r'\d');
   
   // Map for keeping track of password requirements
   Map<String, bool> passwordValidationStatus = {
@@ -49,12 +68,7 @@ class _SignupState extends State<SignupPage> {
   'hasLength': false,
   };
 
-  // Regular expressions for password requirements
-  final RegExp upperCase = RegExp(r'[A-ZÆØÅ]');
-  final RegExp lowerCase = RegExp(r'[a-zæøå]');
-  final RegExp digit = RegExp(r'\d');
-
-  //Regular expression for vildationg full name, Email, password¨
+  // Regular expressions for validating full name, email, and password
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
   final RegExp emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
   final RegExp passwordRegExp =
@@ -78,77 +92,40 @@ class _SignupState extends State<SignupPage> {
   @override
   void initState() {
     super.initState();
-    firstNameController.addListener(_updateButtonState);
-    lastNameController.addListener(_updateButtonState);
-    emailController.addListener(_updateButtonState);
-    passwordController.addListener(_updateButtonState);
-    confirmPasswordController.addListener(_updateButtonState);
 
-    //Added node and listener for checking when the user is active in the password field
-    _passwordFocusNode.addListener(_onFocusChange);
+    //Added listener for checking if the user is active in input fields
+    _firstNameFocus.addListener(_onFocusChange);
+    _lastNameFocus.addListener(_onFocusChange);
+    _emailFocus.addListener(_onFocusChange);
+    _passwordFocus.addListener(_onFocusChange);
+    _confirmPasswordFocus.addListener(_onFocusChange);
   }
 
   @override
   void dispose() {
-    firstNameController.removeListener(_updateButtonState);
-    lastNameController.removeListener(_updateButtonState);
-    emailController.removeListener(_updateButtonState);
-    passwordController.removeListener(_updateButtonState);
-    confirmPasswordController.removeListener(_updateButtonState);
-    _passwordFocusNode.removeListener(_onFocusChange);
-    firstNameController.dispose();
-    lastNameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-    _passwordFocusNode.dispose();
+    _firstNameFocus.removeListener(_onFocusChange);
+    _lastNameFocus.removeListener(_onFocusChange);
+    _emailFocus.removeListener(_onFocusChange);
+    _passwordFocus.removeListener(_onFocusChange);
+    _confirmPasswordFocus.removeListener(_onFocusChange);
+
+    _firstNameFocus.dispose();
+    _lastNameFocus.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
+    _confirmPasswordFocus.dispose();
     super.dispose();
   }
 
-  void _updateButtonState() {
-    setState(() {});
-  }
-
+  // changing current state based on which input field is active
   void _onFocusChange() {
     setState(() {
-      isPasswordFocused = _passwordFocusNode.hasFocus;
+      isFirstNameFocused = _firstNameFocus.hasFocus;
+      isLastNameFocused = _lastNameFocus.hasFocus;
+      isEmailFocused = _emailFocus.hasFocus;
+      isPasswordFocused = _passwordFocus.hasFocus;
+      isConfirmPasswordFocused = _confirmPasswordFocus.hasFocus;
     });
-  }
-/*
-  void updateErrorState(String field, String error) {
-    setState(() {
-      switch (field) {
-        case 'First_name':
-          firstNameError = error;
-          break;
-        case 'Last_name':
-          lastNameError = error;
-          break;
-        case 'Email':
-          emailError = error;
-          break;
-        case 'Password':
-          passwordError = error;
-          break;
-      }
-    });
-  }*/
-
-  void handleErrors(Map<String, dynamic> error) {
-   setState(() {
-    firstNameError = error['First_name'] != null ? error['First_name'][0] : '';
-    lastNameError = error['Last_name'] != null ? error['Last_name'][0] : '';
-    emailError = error['Email'] != null ? error['Email'][0] : '';
-    passwordError = error['Password'] != null ? error['Password'][0] : '';
-   });
-   
-    /*updateErrorState('First_name',
-        error['First_name'] != null ? error['First_name'][0] : '');
-    updateErrorState(
-        'Last_name', error['Last_name'] != null ? error['Last_name'][0] : '');
-    updateErrorState('Email', error['Email'] != null ? error['Email'][0] : '');
-    updateErrorState(
-        'Password', error['Password'] != null ? error['Password'][0] : '');*/
   }
 
   void roleChange(Set<String> value) {
@@ -157,44 +134,9 @@ class _SignupState extends State<SignupPage> {
     });
   }
 
-  // new method for validating passwords differently from validating other inputs
-  void validatePassword(String password){
-    setState(() {
-      passwordValidationStatus['hasUpperAndLowerCase'] = (password.contains(upperCase) && password.contains(lowerCase));
-      passwordValidationStatus['hasDigit'] = password.contains(digit);
-      passwordValidationStatus['hasLength'] = (password.length > 7 && password.length < 31);
-    });
-  }
-
-  //Function to validate form inputs
-  void validateInputs(BuildContext context) {
-    String firstName = firstNameController.text.trim();
-    String lastName = lastNameController.text.trim();
-    String password = passwordController.text.trim();
-    String confirmPassword = confirmPasswordController.text.trim();
-    String email = emailController.text.trim();
-
-    bool hasError = false;
-
-    //Step 1: Check om alle felter er udfyldt
-    if (firstName.isEmpty ||
-        lastName.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty) {
-      // Show an error message if any field is empty
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Alle felter skal være udfyldt.'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
-        ),
-      );
-      hasError = true;
-    }
-
-    //Step 2: Full Name Validation
-    if (!nameRegExp.hasMatch(firstName)) {
+  // Methods for validating if name complies with regular expression
+  void validateFirstName(String name){
+    if (!nameRegExp.hasMatch(name) && name.isNotEmpty) {
       setState(() {
         firstNameError = 'Dit navn må kun indholde bogstaver';
       });
@@ -204,8 +146,10 @@ class _SignupState extends State<SignupPage> {
         firstNameError = '';
       });
     }
+  }
 
-    if (!nameRegExp.hasMatch(lastName)) {
+  void validateLastName(String name){
+    if (!nameRegExp.hasMatch(name) && name.isNotEmpty) {
       setState(() {
         lastNameError = 'Dit navn må kun indholde bogstaver';
       });
@@ -215,9 +159,11 @@ class _SignupState extends State<SignupPage> {
         lastNameError = '';
       });
     }
+  }
 
-    //Step 3: Email Validation
-    if (!emailRegExp.hasMatch(email)) {
+  // Validating if email complies with regular expression
+  void validateEmail(String email){
+    if (!emailRegExp.hasMatch(email) && email.isNotEmpty) {
       setState(() {
         emailError = 'Det er ikke en gyldig email';
       });
@@ -226,40 +172,92 @@ class _SignupState extends State<SignupPage> {
       setState(() {
         emailError = '';
       });
+      hasError = false;
     }
+  }
 
-    //Step 4: Password Validation -- changed to just return if any of the requirements are not met
-    if (!password.contains(upperCase) || !password.contains(lowerCase) ||
+  // Validate if content in password complies with requirements
+  void validatePasswordRequirements(String password){
+    // Initialization of variables for dynamic update of requirements in list
+    setState(() {
+      passwordValidationStatus['hasUpperAndLowerCase'] = (password.contains(upperCase) && password.contains(lowerCase));
+      passwordValidationStatus['hasDigit'] = password.contains(digit);
+      passwordValidationStatus['hasLength'] = (password.length > 7 && password.length < 31);
+    });
+    
+    // Logic for handling error
+    if (password.isNotEmpty && (!password.contains(upperCase) || !password.contains(lowerCase) ||
         !password.contains(digit) || password.length < 8 ||
-        password.length > 30) {
+        password.length > 30)) {
       setState(() {
-        passwordError = ' ';
+        passwordError = 'Adgangskoden overholder ikke alle krav.';
       });
-      hasError = true;;
+      hasError = true;
     } else {
       setState(() {
         passwordError = '';
       });
+      hasError = false;
     }
+  }
 
-    //Step 5: Confirm Password Validation
-    if (password != confirmPassword) {
+  // Validate the input field for confirming password
+  void validateConfirmPassword(String password, String confirmPassword){
+    if (password != confirmPassword && confirmPassword.isNotEmpty) {
       setState(() {
-        confirmPasswordError = 'Adgangskoderne passer ikke';
+        confirmPasswordError = 'Adgangskoderne passer ikke.';
       });
       hasError = true;
     } else {
       setState(() {
         confirmPasswordError = '';
       });
+      hasError = false;
     }
+  }
 
-    //proceed with sign-up logic if everything is correct
+  // method for updating error message for password and confirm password dynamically 
+  void validatePassword(String password, String confirmPassword){
+    validatePasswordRequirements(password);
+    validateConfirmPassword(password, confirmPassword);
+  }
+
+  //Function to validate form inputs before signing user up
+  void validateInputs(BuildContext context) {
+    String firstName = firstNameController.text.trim();
+    String lastName = lastNameController.text.trim();
+    String password = passwordController.text.trim();
+    String confirmPassword = confirmPasswordController.text.trim();
+    String email = emailController.text.trim();
+
+    //Step 1: Full Name Validation
+    validateFirstName(firstName);
+    validateLastName(lastName);
+
+    //Step 2: Email Validation
+    validateEmail(email);
+
+    //Step 3: Password Validation -- changed to just return if any of the requirements are not met
+    validatePasswordRequirements(password);
+
+    //Step 4: Confirm Password Validation
+    validateConfirmPassword(password, confirmPassword);
+
+    // Proceed with sign-up logic if information is validated
     if(!hasError) {
       signUserUp(
         context, firstName, lastName, email, password, confirmPassword, role);
-      }
     }
+  }
+
+  void handleErrors(Map<String, dynamic> error) {
+   setState(() {
+    firstNameError = error['First_name'] != null ? error['First_name'][0] : '';
+    lastNameError = error['Last_name'] != null ? error['Last_name'][0] : '';
+    emailError = error['Email'] != null ? error['Email'][0] : '';
+    passwordError = error['Password'] != null ? error['Password'][0] : '';
+   });
+  }
 
   //Placeholder function for sign-up logic
   void signUserUp(
@@ -331,7 +329,8 @@ class _SignupState extends State<SignupPage> {
     }
   }
 
-  bool showButton() {
+  // 
+  bool fieldsNotEmpty() {
     return firstNameController.text.isNotEmpty &&
         lastNameController.text.isNotEmpty &&
         emailController.text.isNotEmpty &&
@@ -376,9 +375,12 @@ class _SignupState extends State<SignupPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: CustomTextField(
-                        controller: firstNameController,
-                        errorText: firstNameError,
-                        hintText: "Fornavn"),
+                      controller: firstNameController,
+                      errorText: firstNameError,
+                      hintText: "Fornavn",
+                      focusNode: _firstNameFocus,
+                      onChanged: (input) => validateFirstName(firstNameController.text) // validate with every input change for dynamic error message
+                    ),
                   ),
                   SizedBox(height: 15),
                   Text(
@@ -389,9 +391,12 @@ class _SignupState extends State<SignupPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: CustomTextField(
-                        controller: lastNameController,
-                        errorText: lastNameError,
-                        hintText: "Efternavn"),
+                      controller: lastNameController,
+                      errorText: lastNameError,
+                      hintText: "Efternavn",
+                      focusNode: _lastNameFocus,
+                      onChanged: (input) => validateLastName(lastNameController.text) // validate with every input change for dynamic error message
+                    ),
                   ),
                   SizedBox(height: 15),
                   Text(
@@ -402,9 +407,12 @@ class _SignupState extends State<SignupPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: CustomTextField(
-                        controller: emailController,
-                        errorText: emailError,
-                        hintText: "Email"),
+                      controller: emailController,
+                      errorText: isEmailFocused ? '' : emailError, // only show error when user is not active in field
+                      hintText: "Email",
+                      focusNode: _emailFocus,
+                      onChanged: (input) => validateEmail(emailController.text) 
+                    ),
                   ),
                   SizedBox(height: 15),
                   Text(
@@ -414,18 +422,18 @@ class _SignupState extends State<SignupPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column( // A column holding both the text field and the list of requirements
+                    child: Column( // A column holding both the text field and the list of requirements for password
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CustomTextField(
                           controller: passwordController,
-                          errorText: passwordError, 
+                          errorText: isPasswordFocused ? '' : passwordError, // hide error message if user is active in password field
                           hintText: "Adgangskode",
                           obscureText: true, 
-                          focusNode: _passwordFocusNode,
-                          onChanged: (input) => validatePassword(passwordController.text), // onChanged ensures the check is performed with every input
+                          focusNode: _passwordFocus,
+                          onChanged: (input) => validatePassword(passwordController.text, confirmPasswordController.text) /// validate with every input change for dynamic error message
                         ),
-                        if (isPasswordFocused)
+                        if (isPasswordFocused) // only show list of password requirements if user is active in password field
                           PasswordRequirements(
                             validationStatus: passwordValidationStatus,
                           ),  
@@ -442,9 +450,11 @@ class _SignupState extends State<SignupPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: CustomTextField(
                       controller: confirmPasswordController,
-                      errorText: confirmPasswordError,
+                      errorText: confirmPasswordController.text.isEmpty ? '' : confirmPasswordError, // only show error if field is not empty
                       hintText: "Adgangskode",
                       obscureText: true,
+                      focusNode: _confirmPasswordFocus,
+                      onChanged: (input) => validatePassword(passwordController.text, confirmPasswordController.text) // validate with every input change for dynamic error message
                     ),
                   ),
                   SizedBox(height: 15),
@@ -468,7 +478,7 @@ class _SignupState extends State<SignupPage> {
             SizedBox(height: 10),
             CustomButton(
               text: 'Opret mig',
-              onTab: showButton() ? () => validateInputs(context) : null,
+              onTab: fieldsNotEmpty() && !hasError ? () => validateInputs(context) : null, // button for signing up is only active if there is no error and none of the fields are empty
             ),
           ],
         ),

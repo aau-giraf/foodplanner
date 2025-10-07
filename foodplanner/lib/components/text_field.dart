@@ -60,6 +60,7 @@ class CustomTextField extends StatelessWidget {
           onChanged: onChanged,
           focusNode: focusNode,
         ),
+        
         errorText.isNotEmpty && errorText != ' '
             ? Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
