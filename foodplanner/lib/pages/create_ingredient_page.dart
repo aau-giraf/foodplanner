@@ -102,57 +102,23 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: CustomButton(
                     onTab: isEnabled
-                        ? () {
-                            // If the controller is not empty.
-                            showCupertinoDialog(
-                              // Opens a pop-up for confirming the creation.
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  CupertinoAlertDialog(
-                                // Create a Cupertino alert dialog.
-                                title: Text(
-                                    'Er du sikker på du vil tilføje denne madvare?'), // Title of the dialog.
-                                actions: <CupertinoDialogAction>[
-                                  // Actions for the alert dialog.
-                                  CupertinoDialogAction(
-                                    isDefaultAction:
-                                        true, // Highlight the default action.
-                                    onPressed: () async {
-                                      // Leads the user to the camera page.
-                                      Ingredient newIngredient = Ingredient(
-                                        // The new ingredient.
-                                        id: 0,
-                                        name: ingredientNameController
-                                            .text, // The name recieved from the controller.
-                                        foodImageId: null,
-                                      );
-                                      newIngredient = Ingredient.fromJson(
-                                        jsonDecode(
-                                          (await ingredientServices
-                                                  .createIngredient(
-                                            client!,
-                                            AuthProvider(),
-                                            newIngredient.name,
-                                            newIngredient.foodImageId,
-                                          ))
-                                              .body,
-                                        ),
-                                      );
-                                      Navigator.pop(context, null);
-                                      Navigator.pop(context, newIngredient);
-                                    },
-                                    child: const Text("Ja"),
-                                  ),
-                                  CupertinoDialogAction(
-                                    isDestructiveAction: true,
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('Nej'),
-                                  ),
-                                ],
+                        ? () async {
+                            Ingredient newIngredient = Ingredient(
+                              id: 0,
+                              name: ingredientNameController.text,
+                              foodImageId: null,
+                            );
+                            newIngredient = Ingredient.fromJson(
+                              jsonDecode(
+                                (await ingredientServices.createIngredient(
+                                  client!,
+                                  AuthProvider(),
+                                  newIngredient.name,
+                                  newIngredient.foodImageId,
+                                )).body,
                               ),
                             );
+                            Navigator.pop(context, newIngredient);
                           }
                         : null,
                     text: 'Opret madvare',
