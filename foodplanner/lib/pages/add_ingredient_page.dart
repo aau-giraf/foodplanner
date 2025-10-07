@@ -70,22 +70,47 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
   }
 
   Future<void> _deleteIngredient(int index) async {
-    try{
-      final id = _ingredients[index]["id"];
-      final authProvider = AuthProvider(); // Initialize your AuthProvider
-    final response =
-          await ingredientServices.deleteIngredient(client!, authProvider, id);
-    if (response.statusCode != 200){throw Error();}
-    setState(() {
-      _ingredients.removeAt(index);
-      _controllers[index].dispose(); // Clean up the controller
-      _controllers.removeAt(index);
-      
-    });
+     try {
+    final id = _ingredients[index]["id"];
+    final authProvider = AuthProvider();
+    final response = await ingredientServices.deleteIngredient(client!, authProvider, id);
+    
+    if (response.statusCode == 500) {
+      // Handle 500 error specifically
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Ingredient kan ikke slettes, da den er brugt i mindst en madpakke'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    } else if (response.statusCode != 200) {
+      // Handle other non-200 status codes
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Der opstod et ukendt problem ved fjernelsen af en ingredient: ${response.statusCode}'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    } else {
+      // Success - remove from list
+      setState(() {
+        _ingredients.removeAt(index);
+        _controllers[index].dispose();
+        _controllers.removeAt(index);
+      });
     }
-    catch (e){
-      print('Failed to delete ingredient: $e');
-    }
+  } catch (e) {
+    // Handle network errors or exceptions
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Der opstod et ukendt problem ved fjernelsen af en ingredient: $e'),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 5),
+      ),
+    );
+  }
   }
 
   @override
