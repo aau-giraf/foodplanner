@@ -33,15 +33,19 @@ Future<Meal> fetchMeal(
 // Takes an HTTP client, meal title, optional image URL, optional date, and a list of ingredients.
 // Returns the server's response.
 Future<http.Response> createMeal(AuthProvider authProvider, final String name,
-    final int? foodImageId, final DateTime? date) async {
+    final int? foodImageId, final DateTime? date, {http.Client? client}) async {
+      
+  // Optional client for tests
+  client ??= http.Client();
+
   final jwtToken = await authProvider.retrieveToken();
   // Sending a POST request to the API endpoint to create a new meal.
-  final response = await http.post(
+  final response = await client.post(
     Uri.parse(
         '${ApiConfig.baseUrl}/api/Meals/Create'), // Specify the API endpoint for meal creation.
     headers: <String, String>{
       'Content-Type':
-          'application/json; charset=UTF-8', // Specify that the content is JSON.
+      'application/json; charset=UTF-8', // Specify that the content is JSON.
       'Authorization': 'Bearer $jwtToken'
     },
     // Encode the meal data as JSON for the request body.

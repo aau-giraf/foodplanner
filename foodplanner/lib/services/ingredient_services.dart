@@ -30,10 +30,14 @@ class IngredientServices {
 
 // Fetch all ingredients for a specific user by their user ID.
   Future<List<Ingredient>> fetchIngredientsByUserID(
-      AuthProvider authProvider) async {
+      AuthProvider authProvider, {http.Client? client}) async {
+
+    // Optional client for tests
+    client ??= http.Client();
+
     final jwtToken = await authProvider.retrieveToken();
     // Make a GET request to the API to retrieve ingredients by user ID.
-    final response = await http.get(
+    final response = await client.get(
       Uri.parse('${ApiConfig.baseUrl}/api/Ingredients/GetAllByUser'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
@@ -41,22 +45,20 @@ class IngredientServices {
       },
     );
 
-    // Check if the request was successful (status code 200).
-    if (response.statusCode == 200) {
-      // Decode the response body directly into a list.
-      List<dynamic> jsonResponse = jsonDecode(response.body);
-
-      // Map the JSON list to a List<Ingredient>
-      List<Ingredient> ingredients = jsonResponse.map((ingredientJson) {
-        return Ingredient.fromJson(ingredientJson as Map<String, dynamic>);
-      }).toList();
-
-      return ingredients;
-    } else {
-      // If the request failed, throw an exception with an error message.
-      throw Exception(
-          'Kunne ikke hente ingredienser'); // "Could not fetch ingredients"
+    // If the request failed, throw an exception with an error message.
+    if(response.statusCode != 200) {
+      throw Exception('Kunne ikke hente ingredienser'); // "Could not fetch ingredients"
     }
+
+    // Decode the response body directly into a list.
+    List<dynamic> jsonResponse = jsonDecode(response.body);
+
+    // Map the JSON list to a List<Ingredient>
+    List<Ingredient> ingredients = jsonResponse.map((ingredientJson) {
+      return Ingredient.fromJson(ingredientJson as Map<String, dynamic>);
+    }).toList();
+
+    return ingredients;
   }
 
 // Create a new ingredient via a POST request to the API.
@@ -72,7 +74,7 @@ class IngredientServices {
         'Content-Type':
             'application/json; charset=UTF-8', // Specify the content type as JSON.
         'Authorization':
-            'Bearer $jwtToken', // Include the authorization token for authentication.
+            'Bearer $jwtToken', // Include  the authorization token for authentication.
       },
       body: jsonEncode(<String, dynamic>{
         // Encode the request body as JSON.
