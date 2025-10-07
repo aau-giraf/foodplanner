@@ -8,10 +8,14 @@ import 'package:foodplanner/services/api_config.dart';
 // Takes an HTTP client and the packed ingredient ID as parameters.
 // Returns a PackedIngredient object if the request is successful, or throws an exception if the request fails.
 Future<PackedIngredient> fetchPackedIngredient(
-    AuthProvider authProvider, int id) async {
+    AuthProvider authProvider, int id, {http.Client? client}) async {
+
+  // Optional client for tests
+  client ??= http.Client();
+
   final jwtToken = await authProvider.retrieveToken();
   // Sending a GET request to the API endpoint to retrieve a packed ingredient by the specified ID.
-  final response = await http.get(
+  final response = await client.get(
     Uri.parse('${ApiConfig.baseUrl}/api/PackedIngredient/Get/$id'),
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -19,15 +23,13 @@ Future<PackedIngredient> fetchPackedIngredient(
     },
   );
 
-  // Check if the server returned a successful response (status code 200).
-  if (response.statusCode == 200) {
-    // If successful, decode the JSON response and create a PackedIngredient object from it.
-    return PackedIngredient.fromJson(
-        jsonDecode(response.body) as Map<String, dynamic>);
-  } else {
+  if (response.statusCode != 200) {
     // If the response is not successful, throw error message.
     throw Exception('Kunne ikke hente ingrediens');
   }
+
+  // Decode the JSON response and create a PackedIngredient object from it.
+  return PackedIngredient.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
 }
 
 // Creates a new PackedIngredient on the server.
@@ -35,10 +37,14 @@ Future<PackedIngredient> fetchPackedIngredient(
 // and the packed ingredient ID as parameters.
 // Returns the server's response after attempting to create the packed
 Future<http.Response> createPackedIngredient(
-    AuthProvider authProvider, int mealId, int ingredientId) async {
+    AuthProvider authProvider, int mealId, int ingredientId, {http.Client? client}) async {
+
+  // Optional client for tests
+  client ??= http.Client();
+
   final jwtToken = await authProvider.retrieveToken();
   // Sending a POST request to the API endpoint to create a new packed ingredient.
-  final response = await http.post(
+  final response = await client.post(
     Uri.parse(
         '${ApiConfig.baseUrl}/api/PackedIngredient/Create'), // Specify the API endpoint for creating packed ingredients.
     headers: <String, String>{
@@ -54,8 +60,7 @@ Future<http.Response> createPackedIngredient(
     }),
   );
   if (response.statusCode != 201) {
-    throw Exception(
-        'Failed to create packed ingredient: ${response.statusCode} - ${response.body}');
+    throw Exception('Failed to create packed ingredient: ${response.statusCode} - ${response.body}');
   }
   return response; // Return the response from the server.
 }
@@ -64,10 +69,14 @@ Future<http.Response> createPackedIngredient(
 // Takes an HTTP client and the packed ingredient ID as parameters.
 // Returns the server's response after attempting to delete the packed ingredient.
 Future<http.Response> deletePackedIngredient(
-    AuthProvider authProvider, int id) async {
+    AuthProvider authProvider, int id, {http.Client? client}) async {
+  
+  // Optional client for tests
+  client ??= http.Client();
+  
   final jwtToken = await authProvider.retrieveToken();
   // Sending a DELETE request to the API endpoint to remove a packed ingredient by ID.
-  final response = await http.delete(
+  final response = await client.delete(
     Uri.parse(
         '${ApiConfig.baseUrl}/api/PackedIngredient/Delete/$id'), // Specify the API endpoint for deleting packed ingredients.
     headers: <String, String>{
