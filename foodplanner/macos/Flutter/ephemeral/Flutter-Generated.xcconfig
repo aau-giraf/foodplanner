@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=/Users/dressi/Development/flutter
-FLUTTER_APPLICATION_PATH=/Users/dressi/Desktop/github/foodplanner/foodplanner
+FLUTTER_ROOT=C:\dev\flutter
+FLUTTER_APPLICATION_PATH=C:\Users\peter\Documents\GitHub\foodplanner\foodplanner
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_BUILD_DIR=build
 FLUTTER_BUILD_NAME=1.0.0

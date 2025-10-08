@@ -17,11 +17,11 @@ dependencies:
     gal: ^2.3.0
     image_picker: ^1.1.2
     flutter_sficon: ^1.1.2
-    webview_flutter: ^2.0.10
+    webview_flutter: ^4.9.0
     http: ^1.2.2
     jwt_decoder: ^2.0.1
     auto_size_text: ^3.0.0
-    permission_handler: ^10.2.0
+    permission_handler: ^11.0.0
 
     flutter:
         sdk: flutter
