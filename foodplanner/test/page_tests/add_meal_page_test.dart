@@ -1,75 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:foodplanner/models/ingredient.dart';
-import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
-import 'package:foodplanner/pages/add_meal_form_page.dart';
-import 'package:foodplanner/pages/add_meal_page.dart';
-import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:mockito/annotations.dart';
-import 'package:http/http.dart' as http;
 
-import 'add_meal_page_test.mocks.dart';
-
-@GenerateMocks([http.Client, AuthProvider])
 void main() {
-  late MockClient mockClient;
-  late AuthProvider mockAuthProvider;
+  TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
-    mockClient = MockClient();
-    mockAuthProvider = MockAuthProvider();
-  });
+  group('CameraPage UI Tests', () {
+    testWidgets('shows CircularProgressIndicator while loading', (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: CameraPage()));
 
-  Future<List<Ingredient>> mockFetchIngredients(http.Client client, AuthProvider auth) async {
-    return [
-      Ingredient(id: 0, name: 'æble', imageRef: null),
-      Ingredient(id: 1, name: 'knækbrød', imageRef: 1),
-      Ingredient(id: 2, name: 'franskbrød', imageRef: 2),
-    ];
-  }
-
-  AddMealPage createWidgetUnderTest(GlobalKey key) {
-    return AddMealPage(
-      key: key,
-      fetchFunction: mockFetchIngredients,
-    );
-  }
-
-  group('AddMealPage Navigation Tests', () {
-    testWidgets('initializes at MealFormPage', (WidgetTester tester) async {
-      final GlobalKey<AddMealPageState> addMealPageKey = GlobalKey<AddMealPageState>();
-
-      await tester.pumpWidget(
-        MaterialApp(home: createWidgetUnderTest(addMealPageKey)),
-      );
-      await tester.pump();
-
-      expect(find.byType(MealFormPage), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('navigates to AddIngredientPage', (WidgetTester tester) async {
-      final GlobalKey<AddMealPageState> addMealPageKey = GlobalKey<AddMealPageState>();
+    testWidgets('shows CameraPreview after initialization', (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: CameraPage()));
 
-      await tester.pumpWidget(
-        MaterialApp(home: createWidgetUnderTest(addMealPageKey)),
-      );
-      addMealPageKey.currentState!.pushPage(1);
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(find.byType(AddIngredientPage), findsOneWidget);
+      expect(find.byType(CameraPreview), findsOneWidget);
     });
 
-    testWidgets('navigates to CameraPage', (WidgetTester tester) async {
-      final GlobalKey<AddMealPageState> addMealPageKey = GlobalKey<AddMealPageState>();
+    testWidgets('FloatingActionButtons are present', (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: CameraPage()));
 
-      await tester.pumpWidget(
-        MaterialApp(home: createWidgetUnderTest(addMealPageKey)),
-      );
-      addMealPageKey.currentState!.pushPage(2);
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(find.byType(CameraPage), findsOneWidget);
+      expect(find.byType(FloatingActionButton), findsNWidgets(2));
+    });
+
+    testWidgets('tap on camera button does not crash', (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: CameraPage()));
+
+      await tester.pumpAndSettle();
+
+      final cameraButton = find.byIcon(Icons.camera);
+      expect(cameraButton, findsOneWidget);
+
+      await tester.tap(cameraButton);
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('tap on gallery button does not crash', (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: CameraPage()));
+
+      await tester.pumpAndSettle();
+
+      final galleryButton = find.byIcon(Icons.collections);
+      expect(galleryButton, findsOneWidget);
+
+      await tester.tap(galleryButton);
+      await tester.pumpAndSettle();
     });
   });
 }

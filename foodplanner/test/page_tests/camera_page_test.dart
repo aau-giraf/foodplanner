@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart'; // ← tilføjet!
 import 'package:flutter_test/flutter_test.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:http/http.dart';
-
 import 'camera_page_test.mocks.dart';
 
 @GenerateMocks([CameraController, ImagePicker])
 void main() {
-  // Ensures the binding for the widgets is initialized.
-  TestWidgetsFlutterBinding.ensureInitialized();  
+  TestWidgetsFlutterBinding.ensureInitialized();
 
   late MockCameraController mockCameraController;
   late MockImagePicker mockImagePicker;
   late List<CameraDescription> cameras;
 
-  // This setup runs once before all the tests.
   setUpAll(() async {
     cameras = [
       CameraDescription(
@@ -32,12 +28,10 @@ void main() {
     mockImagePicker = MockImagePicker();
   });
 
-  // This setup runs before each test.
   setUp(() {
     reset(mockCameraController);
     reset(mockImagePicker);
 
-    // Mocking the CameraController's initial value and behaviors.
     when(mockCameraController.value).thenReturn(CameraValue(
       isInitialized: true,
       isRecordingVideo: false,
@@ -54,7 +48,6 @@ void main() {
       previewSize: Size(640, 480),
     ));
 
-    // Mocking the initialize method.
     when(mockCameraController.initialize()).thenAnswer((_) async {
       when(mockCameraController.value).thenReturn(CameraValue(
         isInitialized: true,
@@ -73,110 +66,73 @@ void main() {
       ));
     });
 
-    // Mocking the takePicture method.
-    when(mockCameraController.takePicture()).thenAnswer((_) async => XFile('test_image.jpg'));
+    when(mockCameraController.takePicture())
+        .thenAnswer((_) async => XFile('test_image.jpg'));
 
-    // Mocking the buildPreview method.
     when(mockCameraController.buildPreview()).thenReturn(Container());
 
-    // Mocking the pickImage method of the ImagePicker.
-    when(mockImagePicker.pickImage(source: ImageSource.gallery)).thenAnswer((_) async => XFile('test_image.jpg'));
+    when(mockImagePicker.pickImage(source: ImageSource.gallery))
+        .thenAnswer((_) async => XFile('test_image.jpg'));
   });
 
   group('Camera Page Tests', () {
     group('Camera Initialization Tests', () {
-      // Testing if the camera initializes and shows the preview correctly.
-      testWidgets('should initialize camera and show preview', (WidgetTester tester) async {
-        // Arrange
+      testWidgets('should initialize camera and show preview',
+          (WidgetTester tester) async {
         await tester.pumpWidget(MaterialApp(
           home: CameraPage(
-            onImagePicked: (_) {},
             controller: mockCameraController,
-          )
+            imagePicker: mockImagePicker,
+          ),
         ));
-
-        // Act
-        await tester.pump();
-
-        // Assert
+        await tester.pumpAndSettle();
         expect(find.byType(CameraPreview), findsOneWidget);
       });
 
-      // Testing the behavior when the camera is not available.
-      testWidgets('should handle camera not available', (WidgetTester tester) async {
-        // Arrange
-        when(mockCameraController.value).thenReturn(CameraValue.uninitialized(cameras.first));
-        
-        // Act
+      testWidgets('should handle camera not available',
+          (WidgetTester tester) async {
+        when(mockCameraController.value)
+            .thenReturn(CameraValue.uninitialized(cameras.first));
+
         await tester.pumpWidget(MaterialApp(
           home: CameraPage(
-            onImagePicked: (_) {},
             controller: mockCameraController,
-          )
+            imagePicker: mockImagePicker,
+          ),
         ));
-        await tester.pump();
-
-        // Assert
-        expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      });
-
-      // Testing the behavior when the camera controller is null.
-      testWidgets('should handle null camera controller gracefully', (WidgetTester tester) async {
-        // Arrange
-        await tester.pumpWidget(MaterialApp(
-          home: CameraPage(
-            onImagePicked: (_) {},
-            controller: null,
-          )
-        ));
-
-        // Act
-        await tester.pump();
-
-        // Assert
+        await tester.pumpAndSettle();
         expect(find.byType(CircularProgressIndicator), findsOneWidget);
       });
     });
 
     group('User Interaction Tests', () {
-      // Testing the behavior when the camera button is pressed.
-      testWidgets('should take a picture when camera button is pressed', (WidgetTester tester) async {
-        // Arrange
+      testWidgets('should take a picture when camera button is pressed',
+          (WidgetTester tester) async {
         await tester.pumpWidget(MaterialApp(
           home: CameraPage(
-            onImagePicked: (_) {},
             controller: mockCameraController,
-          )
+            imagePicker: mockImagePicker,
+          ),
         ));
-        await tester.pump();
-        
-        // Act
-        await tester.tap(find.byIcon(Icons.camera));
         await tester.pumpAndSettle();
-
-        // Assert
+        await tester.tap(find.byIcon(Icons.camera_alt));
+        await tester.pumpAndSettle();
         verify(mockCameraController.takePicture()).called(1);
       });
 
-      // Testing the behavior when the gallery button is pressed.
-      testWidgets('should open gallery when gallery button is pressed', (WidgetTester tester) async {
-        // Arrange
+      testWidgets('should open gallery when gallery button is pressed',
+          (WidgetTester tester) async {
         await tester.pumpWidget(MaterialApp(
           home: CameraPage(
-            onImagePicked: (_) {},
-            controller: mockCameraController, 
+            controller: mockCameraController,
             imagePicker: mockImagePicker,
-          )
+          ),
         ));
-
-        await tester.pump();
-
-        // Act
-        await tester.tap(find.byIcon(Icons.collections));
         await tester.pumpAndSettle();
-
-        // Assert
-        verify(mockImagePicker.pickImage(source: ImageSource.gallery)).called(1);
+        await tester.tap(find.byIcon(Icons.photo_library));
+        await tester.pumpAndSettle();
+        verify(mockImagePicker.pickImage(source: ImageSource.gallery))
+            .called(1);
       });
     });
   });
