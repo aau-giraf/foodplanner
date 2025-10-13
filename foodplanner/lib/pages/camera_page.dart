@@ -9,6 +9,7 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:http/http.dart';
 import 'package:image/image.dart' as img;
 import 'package:http_parser/http_parser.dart';
+import 'package:foodplanner/components/custom_square_camera_overlay.dart';
 
 import 'package:foodplanner/config/colors.dart';
 import 'package:image_picker/image_picker.dart';
@@ -97,7 +98,24 @@ class _MealPageState extends State<CameraPage> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return CameraPreview(_controller);
+            final size = MediaQuery.of(context).size;
+            final deviceRatio = size.width / size.height;
+
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                Center(
+                  child: AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: CameraPreview(_controller),
+                  ),
+                ),
+                CustomPaint(
+                  painter: CustomSquareCameraOverlay(),
+                  child: Container(),
+                ),
+              ],
+            );
           } else {
             return Center(child: CircularProgressIndicator());
           }
