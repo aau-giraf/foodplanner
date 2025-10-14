@@ -14,6 +14,7 @@ class CustomTextField extends StatelessWidget {
   final TextFieldType type;
   final Function(String)? onChanged;
   final List<TextInputFormatter>? inputFormatters;
+  final FocusNode? focusNode;
 
   const CustomTextField({
     super.key,
@@ -25,6 +26,7 @@ class CustomTextField extends StatelessWidget {
     this.type = TextFieldType.defaultTextField, // default type
     this.onChanged,
     this.inputFormatters,
+    this.focusNode,
   });
 
   Widget defaultTextField() {
@@ -59,6 +61,7 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
           onChanged: onChanged,
+          focusNode: focusNode,
         ),
         
         errorText.isNotEmpty && errorText != ' '
