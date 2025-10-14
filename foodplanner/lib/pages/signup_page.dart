@@ -13,7 +13,6 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
-import 'package:foodplanner/components/password_requirements.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -220,7 +219,16 @@ class _SignupState extends State<SignupPage> {
     if(!hasError) {
       signUserUp(
         context, firstName, lastName, email, password, confirmPassword, role);
+      }
     }
+
+  void handleErrors(Map<String, dynamic> error) {
+   setState(() {
+    firstNameError = error['First_name'] != null ? error['First_name'][0] : '';
+    lastNameError = error['Last_name'] != null ? error['Last_name'][0] : '';
+    emailError = error['Email'] != null ? error['Email'][0] : '';
+    passwordError = error['Password'] != null ? error['Password'][0] : '';
+   });
   }
 
   void handleErrors(Map<String, dynamic> error) {
