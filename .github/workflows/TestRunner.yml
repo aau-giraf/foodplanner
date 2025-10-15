@@ -1,0 +1,83 @@
+name: Flutter Tests
+on:
+  pull_request:
+    branches: ['**']
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./foodplanner
+   
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+     
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+        cache: true
+   
+    # Download OpenAPI spec from GitHub artifact
+    - name: Download OpenAPI spec from artifact
+      run: |
+        # Replace ARTIFACT_ID with your actual artifact ID (the number at the end of the URL)
+        ARTIFACT_ID="4155999575"
+       
+        echo "Downloading artifact ID: $ARTIFACT_ID"
+        curl -L \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          "https://api.github.com/repos/aau-giraf/foodplanner-api/actions/artifacts/$ARTIFACT_ID/zip" \
+          -o openapi.zip
+       
+        echo "Extracting artifact..."
+        unzip openapi.zip
+        ls -lh openapi.json
+   
+    # Verify the OpenAPI file was downloaded
+    - name: Verify OpenAPI file
+      working-directory: ./foodplanner
+      run: |
+        if [ -f openapi.json ]; then
+          echo "✓ OpenAPI file found"
+          echo "File size: $(ls -lh openapi.json | awk '{print $5}')"
+          echo "First 5 lines:"
+          head -n 5 openapi.json
+        else
+          echo "✗ OpenAPI file not found!"
+          echo "Contents of current directory:"
+          ls -la
+          exit 1
+        fi
+   
+    # Install OpenAPI generator
+    - name: Install OpenAPI Generator
+      run: |
+        dart pub global activate openapi_generator_cli
+        echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+   
+    # Generate API client from the downloaded OpenAPI spec
+    - name: Generate API client
+      working-directory: ./foodplanner
+      run: |
+        # Generate to the correct path that matches your imports
+        openapi-generator generate \
+          -i openapi.json \
+          -g dart \
+          -o lib/api/openapi \
+          --additional-properties=pubName=foodplanner_api,pubAuthor=Giraf
+       
+    - name: Get dependencies
+      run: flutter pub get
+      
+    # Needs a new test_build_runner that assumes openAPI code has been generated already
+    #- name: Build project
+      #run: dart run build_runner build --delete-conflicting-outputs
+     
+    - name: Run tests
+      run: flutter test test/service_tests --coverage --reporter expanded

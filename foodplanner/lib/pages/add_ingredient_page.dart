@@ -43,6 +43,8 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
       setState(() {
         _ingredients.addAll(
             ingredients.map((e) => {'id': e.id, 'name': e.name}).toList());
+
+             _ingredients.sort((a, b ) => (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
         _controllers.addAll(List.generate(_ingredients.length, (index) {
           final controller = ValueNotifier<bool>(false);
           return controller;
@@ -128,6 +130,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                           'id': tempIngredient.id,
                           'name': tempIngredient.name
                         });
+                        _ingredients.sort((a, b) =>  (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
                         _controllers.add(ValueNotifier<bool>(false));
                       });
                     }

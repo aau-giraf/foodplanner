@@ -11,9 +11,9 @@ import 'add_ingredient_page_test.mocks.dart';
 @GenerateMocks([http.Client])
 void main() {
   final List<Ingredient> ingredients = [
-    Ingredient(id: 0, name: 'æble', imageRef: null),
-    Ingredient(id: 1, name: 'knækbrød', imageRef: 1),
-    Ingredient(id: 2, name: 'franskbrød', imageRef: 2),
+    Ingredient(id: 0, name: 'æble', foodImageId: null),
+    Ingredient(id: 1, name: 'knækbrød', foodImageId: 1),
+    Ingredient(id: 2, name: 'franskbrød', foodImageId: 2),
   ];
 
   late bool cameraNavigated;
@@ -27,15 +27,16 @@ void main() {
   });
 
   AddIngredientPage createWidgetUnderTest() {
-    return AddIngredientPage(
-      ingredients: ingredients,
-      image: null,
-      onIngredientsUpdated: (_) {},
-      onCreateIngredient: () => ingredientCreated = true,
-      onCamera: () => cameraNavigated = true,
-      onIngredientAdded: (_) => ingredientAdded = true,
-      client: MockClient(),
-    );
+    // return AddIngredientPage(
+    //   ingredients: ingredients,
+    //   image: null,
+    //   onIngredientsUpdated: (_) {},
+    //   onCreateIngredient: () => ingredientCreated = true,
+    //   onCamera: () => cameraNavigated = true,
+    //   onIngredientAdded: (_) => ingredientAdded = true,
+    //   client: MockClient(),
+    // );
+    return AddIngredientPage();
   }
 
   group('AddIngredientPage ', () {

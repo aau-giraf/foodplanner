@@ -23,9 +23,8 @@ class MockAuthProvider extends AuthProvider {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  final ingredient = Ingredient(id: 0, name: 'ingredient', imageRef: 0);
-  final packed = PackedIngredient(mealRef: 0, ingredientRef: ingredient);
-
+  final ingredient = Ingredient(id: 0, name: "ingredient", foodImageId: 0);
+  final packed = PackedIngredient(mealId: 0, ingredient: ingredient, id: 0, orderNumber: 0);
   late AuthProvider authProvider;
 
   group('PackedIngredientServices tests',() {
@@ -36,7 +35,7 @@ void main() {
 
     group('fetchPackedIngredient tests', () {
       test('return a packed ingredient instance on a successful fetch call', () async {
-        final client = MyMockClient();
+        final client = MockClient();
 
         // Arrange: Set up the stub for GET
         when(client.get(
@@ -44,15 +43,15 @@ void main() {
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer mocked_token_value',
-          }))
-        .thenAnswer((_) async => http.Response(
-          '{ "id": ${packed.id}, "meal_ref": ${packed.mealRef}, "ingredient_ref": { "id": ${packed.ingredientRef.id}, "name": "${packed.ingredientRef.name}", "image_ref": ${packed.ingredientRef.imageRef}}}', 200));
+          })).thenAnswer((_) async => http.Response(
+            '''{"id":${packed.id},"meal_id":${packed.mealId},"ingredient_id":${jsonEncode(packed.ingredient.toJson())},"order_number":${0}}''', 
+          200));
 
-        expect(await fetchPackedIngredient(client, authProvider, packed.id), isA<PackedIngredient>());
+        expect(await fetchPackedIngredient(authProvider, packed.id, client: client), isA<PackedIngredient>());
       });
 
       test('throw an exception when encountering an error', () async {
-        final client = MyMockClient();
+        final client = MockClient();
 
         // Arrange: Set up the stub for GET to simulate failure (404)
         when(client.get(
@@ -60,17 +59,16 @@ void main() {
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer mocked_token_value',
-          }))
-        .thenAnswer((_) async => http.Response('Not Found', 404));
+          })).thenAnswer((_) async => http.Response('Not Found', 404));
 
         // Expect that an exception is thrown when the call is made
-        expect(fetchPackedIngredient(client, authProvider, packed.id), throwsException);
+        expect(fetchPackedIngredient(authProvider, packed.id, client: client), throwsException);
       });
     });
 
     group('createPackedIngredient tests', () {
       test('return with 201 response when a packed ingredient is added to the database', () async {
-        final client = MyMockClient();
+        final client = MockClient();
 
         // Arrange: Set up the stub for POST
         when(client.post(
@@ -80,14 +78,15 @@ void main() {
             'Authorization': 'Bearer mocked_token_value',
           },
           body: jsonEncode({
-            'meal_ref': packed.mealRef,
-            'ingredient_ref': packed.ingredientRef.id,
+            'meal_id': packed.mealId,
+            'ingredient_id': packed.ingredient.id,
           }),
         ))
         .thenAnswer((_) async => http.Response(
-          '{"id": ${packed.id}, "meal_ref": ${packed.mealRef}, "ingredient_ref": ${packed.ingredientRef.id}}', 201));
+          '''{"id":${packed.id},"ingredient_id":${jsonEncode(packed.ingredient.toJson())},"meal_id":${packed.mealId},"order_number":${packed.orderNumber}}''',
+        201));
 
-        final response = await createPackedIngredient(client, authProvider, packed.mealRef, packed.ingredientRef.id);
+        final response = await createPackedIngredient(authProvider, packed.mealId, packed.ingredient.id, client: client);
         
         expect(response.statusCode, 201);
       });
@@ -95,7 +94,7 @@ void main() {
 
     group('deletePackedIngredient tests', () {
       test('return with 200 response when a packed ingredient is removed from the database', () async {
-        final client = MyMockClient();
+        final client = MockClient();
 
         // Arrange: Set up the stub for DELETE
         when(client.delete(
@@ -105,9 +104,10 @@ void main() {
             'Authorization': 'Bearer mocked_token_value',
           }))
         .thenAnswer((_) async => http.Response(
-          '{"id": ${packed.id}, "meal_ref": ${packed.mealRef}, "ingredient_ref": {"id": ${packed.ingredientRef.id}, "name": "${packed.ingredientRef.name}", "image_ref": ${packed.ingredientRef.imageRef}}}', 200));
-
-        final response = await deletePackedIngredient(client, authProvider, packed.id);
+          '''{"id":${packed.id},"ingredient_id":${jsonEncode(packed.ingredient.toJson())},"meal_id":${packed.mealId},"order_number":${packed.orderNumber}}''', 
+        200));
+        
+        final response = await deletePackedIngredient(authProvider, packed.id, client: client);
 
         expect(response.statusCode, 200);
       });
