@@ -209,14 +209,87 @@ class _SignupState extends State<SignupPage> {
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String email = emailController.text.trim();
-    
-    validateName(firstName, 'first');
-    validateName(lastName, 'last');
-    validateEmail(email);
-    validatePasswordRequirements(password);
-    validateConfirmPassword(password, confirmPassword);
+    bool hasError = false;
 
-    // Proceed with sign-up logic if information is validated
+    //Step 1: Check om alle felter er udfyldt
+    if (firstName.isEmpty ||
+        lastName.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      // Show an error message if any field is empty
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Alle felter skal være udfyldt.'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+      hasError = true;
+    }
+
+    //Step 2: Full Name Validation
+    if (!nameRegExp.hasMatch(firstName)) {
+      setState(() {
+        firstNameError = 'Dit navn må kun indholde bogstaver';
+      });
+      hasError = true;
+    } else {
+      setState(() {
+        firstNameError = '';
+      });
+    }
+
+    if (!nameRegExp.hasMatch(lastName)) {
+      setState(() {
+        lastNameError = 'Dit navn må kun indholde bogstaver';
+      });
+      hasError = true;
+    } else {
+      setState(() {
+        lastNameError = '';
+      });
+    }
+
+    //Step 3: Email Validation
+    if (!emailRegExp.hasMatch(email)) {
+      setState(() {
+        emailError = 'Det er ikke en gyldig email';
+      });
+      hasError = true;
+    } else {
+      setState(() {
+        emailError = '';
+      });
+    }
+
+    //Step 4: Password Validation -- changed to just return if any of the requirements are not met
+    if (!password.contains(upperCase) || !password.contains(lowerCase) ||
+        !password.contains(digit) || password.length < 8 ||
+        password.length > 30) {
+      setState(() {
+        passwordError = ' ';
+      });
+      hasError = true;
+    } else {
+      setState(() {
+        passwordError = '';
+      });
+    }
+
+    //Step 5: Confirm Password Validation
+    if (password != confirmPassword) {
+      setState(() {
+        confirmPasswordError = 'Adgangskoderne passer ikke';
+      });
+      hasError = true;
+    } else {
+      setState(() {
+        confirmPasswordError = '';
+      });
+    }
+
+    //proceed with sign-up logic if everything is correct
     if(!hasError) {
       signUserUp(
         context, firstName, lastName, email, password, confirmPassword, role);
