@@ -6,17 +6,19 @@ import 'package:foodplanner/config/text_styles.dart';
 class SearchField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
+  final ValueChanged<String>? onChanged;
 
   const SearchField({
     super.key,
     required this.controller,
     this.hintText = 'Søg...',
+    this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
       child: SizedBox(
         width: double.infinity,
         child: Card(
@@ -25,7 +27,7 @@ class SearchField extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
             decoration: BoxDecoration(
               color: AppColors.background,
             ),
@@ -44,6 +46,7 @@ class SearchField extends StatelessWidget {
                       border: InputBorder.none,
                     ),
                     style: AppTextStyles.bigText,
+                    onChanged: onChanged,
                   ),
                 ),
               ],

@@ -22,7 +22,7 @@ class PasswordRequirements extends StatelessWidget{
           padding: EdgeInsets.only(top: 2.0),
           child: Text(
             'Adgangskoden skal indeholde:',
-            style: AppTextStyles.mediumTextWithoutColor,
+            style: AppTextStyles.bigText,
           ),
         ),
         _buildRequirementText(
