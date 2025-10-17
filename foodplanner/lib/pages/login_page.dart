@@ -121,82 +121,80 @@ class LoginPageState extends State<LoginPage> {
           textAlign: TextAlign.center,
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            children: [
-              const SizedBox(height: 35),
-              Image(
-                image: AssetImage('assets/images/logo.png'),
-                height: 160,
-              ),
-              const SizedBox(height: 35),
-              Column(
-                children: [
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    color: AppColors.background,
-                    surfaceTintColor: AppColors.background,
-                    elevation: 3,
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 15),
-                        Text(
-                          'Log ind',
-                          style: AppTextStyles.headline3.copyWith(fontSize: 22),
-                        ),
-                        const SizedBox(height: 30),
-                        Text(
-                          'Brugernavn',
-                          style: AppTextStyles.headline4.copyWith(fontSize: 18),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: CustomTextField(
-                              hintText: "Brugernavn",
-                              controller: usernameController,
-                              errorText: emailError),
-                        ),
-                        const SizedBox(height: 50),
-                        Text(
-                          'Adgangskode',
-                          style: AppTextStyles.headline4.copyWith(fontSize: 18),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: CustomTextField(
-                              hintText: "Adgangskode",
-                              obscureText: true,
-                              controller: passwordController,
-                              errorText: passwordError),
-                        ),
-                        const SizedBox(height: 25),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Flexible(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ForgotPasswordPage()),
-                                    );
-                                  },
-                                  child: Text(
-                                    "Glemt adgangskode?",
-                                    style: AppTextStyles.standard.copyWith(
-                                      color: AppColors.secondary,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: AppColors.secondary,
-                                      fontSize: 14,
-                                    ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          children: [
+            const SizedBox(height: 35),
+            Image(
+              image: AssetImage('assets/images/logo.png'),
+              height: 160,
+            ),
+            const SizedBox(height: 35),
+            Column(
+              children: [
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  color: AppColors.background,
+                  surfaceTintColor: AppColors.background,
+                  elevation: 3,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 15),
+                      Text(
+                        'Log ind',
+                        style: AppTextStyles.headline3.copyWith(fontSize: 22),
+                      ),
+                      const SizedBox(height: 30),
+                      Text(
+                        'Email',
+                        style: AppTextStyles.headline4.copyWith(fontSize: 18),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: CustomTextField(
+                            hintText: "Email",
+                            controller: usernameController,
+                            errorText: emailError),
+                      ),
+                      const SizedBox(height: 50),
+                      Text(
+                        'Adgangskode',
+                        style: AppTextStyles.headline4.copyWith(fontSize: 18),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: CustomTextField(
+                            hintText: "Adgangskode",
+                            obscureText: true,
+                            controller: passwordController,
+                            errorText: passwordError),
+                      ),
+                      const SizedBox(height: 25),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Flexible(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ForgotPasswordPage()),
+                                  );
+                                },
+                                child: Text(
+                                  "Glemt adgangskode?",
+                                  style: AppTextStyles.standard.copyWith(
+                                    color: AppColors.secondary,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: AppColors.secondary,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),
