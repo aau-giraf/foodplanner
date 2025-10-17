@@ -82,8 +82,6 @@ class LoginPageState extends State<LoginPage> {
     try {
       final role = await LoginPage.authService
           .fetchAuthData(usernameController.text, passwordController.text);
-      print(role);
-      print(role);
       switch (role) {
       case ROLES.teacher:
         GoRouter.of(context).go(TEACHER_ROOT);
@@ -122,7 +120,6 @@ class LoginPageState extends State<LoginPage> {
       );
     }
   }
-}
 
   void loginInpage() {}
 
@@ -140,6 +137,7 @@ class LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: Colors.white,
         title: Text(
           'Egebakkeskolen\nFoodplanner',
@@ -224,37 +222,37 @@ class LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 25),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: CustomButton(
+                          onTab: () => directSignUpPage(context),
+                          text: 'Opret',
+                          backgroundColor: AppColors.secondary,
                         ),
                       ),
-                      const SizedBox(height: 25),
+                      SizedBox(width: 15),
+                      Expanded(
+                        child: CustomButton(
+                          text: "Login",
+                          onTab: () => signUserIn(context),
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: CustomButton(
-                        onTab: () => directSignUpPage(context),
-                        text: 'Opret',
-                        backgroundColor: AppColors.secondary,
-                      ),
-                    ),
-                    SizedBox(width: 15),
-                    Expanded(
-                      child: CustomButton(
-                        text: "Login",
-                        onTab: () => signUserIn(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

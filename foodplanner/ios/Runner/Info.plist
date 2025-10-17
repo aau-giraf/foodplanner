@@ -4,6 +4,13 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Foodplanner vil have adgang til dit foto galleri</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Foodplanner vil have adgang til dit foto galleri</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Foodplanner vil have adgang til dit kamera</string>
+	
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

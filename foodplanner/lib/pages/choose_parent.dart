@@ -7,7 +7,6 @@ import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/settings_header.dart';
-import 'package:foodplanner/pages/child_profile.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/models/user.dart';
 
@@ -37,7 +36,6 @@ class ChooseParentState extends State<ChooseParent>
     ChooseParent.userService.fetchAllParents().then((result) {
       setState(() {
         parents = result;
-        print(result);
       });
     }).catchError((error) {
       throw (error);
