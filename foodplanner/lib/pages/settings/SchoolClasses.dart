@@ -214,7 +214,7 @@ class _SchoolClasses extends State<SchoolClasses> {
         child: Column(
           children: [
             SettingsWidget(
-              title: 'Adminstrer klasser',
+              title: 'Administrer klasser',
               type: SettingsType.header,
               leftIcon: SFIcons.sf_figure_2,
               subTitle: 'Tilføj, rediger og slet klasser',
