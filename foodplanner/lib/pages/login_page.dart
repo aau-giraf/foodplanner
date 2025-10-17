@@ -3,6 +3,7 @@ import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
@@ -10,6 +11,7 @@ import 'signup_page.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:go_router/go_router.dart';
 import '../routes/user_roles.dart';
+
 //test push
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -54,6 +56,29 @@ class LoginPageState extends State<LoginPage> {
   }
 
   void signUserIn(BuildContext context) async {
+    if(usernameController.text.isEmpty && passwordController.text.isEmpty){
+      setState(() {
+        emailError = 'Email mangler';
+        passwordError = 'Adgangskode mangler';
+      });
+
+    } else if (usernameController.text.isEmpty){
+      setState(() {
+        emailError  = 'Email mangler';
+        passwordError = '';
+      });
+
+    }else if(passwordController.text.isEmpty){
+      setState(() {
+        emailError = '';
+        passwordError = 'Adgangskode mangler';
+      });
+    } else {
+      setState(() {
+        emailError = '';
+        passwordError = '';
+      });
+    }
     try {
       final role = await LoginPage.authService
           .fetchAuthData(usernameController.text, passwordController.text);
@@ -84,7 +109,7 @@ class LoginPageState extends State<LoginPage> {
         SnackBar(
           content: Text('Der opstod et problem ved login: ${e.message}'),
           backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
+          duration: Duration(seconds: 6),
         ),
       );
     } else {
@@ -92,7 +117,7 @@ class LoginPageState extends State<LoginPage> {
         SnackBar(
           content: Text('Der opstod et ukendt problem ved login: $e'),
           backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
+          duration: Duration(seconds: 6),
         ),
       );
     }
@@ -122,7 +147,7 @@ class LoginPageState extends State<LoginPage> {
           textAlign: TextAlign.center,
         ),
       ),
-      body: Padding(
+       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           children: [

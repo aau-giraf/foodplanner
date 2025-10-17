@@ -235,7 +235,7 @@ class _SignupState extends State<SignupPage> {
       setState(() {
         passwordError = ' ';
       });
-      hasError = true;;
+      hasError = true;
     } else {
       setState(() {
         passwordError = '';
