@@ -186,157 +186,160 @@ class _SignupChildState extends State<CreateChildPage> {
           textAlign: TextAlign.center,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          children: [
-            SizedBox(height: 10),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              color: AppColors.background,
-              surfaceTintColor: AppColors.background,
-              elevation: 3,
-              child: Column(
-                children: [
-                  SizedBox(height: 10),
-                  Text('Registrer barn', style: AppTextStyles.title),
-                  SizedBox(height: 10),
-                  Text(
-                    'Fornavn',
-                    style: AppTextStyles.bigText
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: CustomTextField(
-                        controller: firstNameController,
-                        errorText: firstNameError,
-                        hintText: "Fornavn"),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    'Efternavn',
-                    style: AppTextStyles.bigText
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: CustomTextField(
-                        controller: lastNameController,
-                        errorText: lastNameError,
-                        hintText: "Efternavn"),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    'Klasse',
-                    style: AppTextStyles.bigText
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2<String>(
-                        isExpanded: true,
-                        hint: Text(
-                          'Vælg klasse',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textSecondary,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              SizedBox(height: 10),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                color: AppColors.background,
+                surfaceTintColor: AppColors.background,
+                elevation: 3,
+                child: Column(
+                  children: [
+                    SizedBox(height: 10),
+                    Text('Registrer barn', style: AppTextStyles.title),
+                    SizedBox(height: 10),
+                    Text(
+                      'Fornavn',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomTextField(
+                          controller: firstNameController,
+                          errorText: firstNameError,
+                          hintText: "Fornavn"),
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      'Efternavn',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomTextField(
+                          controller: lastNameController,
+                          errorText: lastNameError,
+                          hintText: "Efternavn"),
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      'Klasse',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Text(
+                            'Vælg klasse',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textSecondary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        items: classes
-                            .map((SchoolClass schoolClass) =>
-                                DropdownMenuItem<String>(
-                                  value: schoolClass.classId.toString(),
-                                  child: Text(
-                                    schoolClass.className,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
+                          items: classes
+                              .map((SchoolClass schoolClass) =>
+                                  DropdownMenuItem<String>(
+                                    value: schoolClass.classId.toString(),
+                                    child: Text(
+                                      schoolClass.className,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
+                                  ))
+                              .toList(),
+                          value: selectedValue,
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedValue = value;
+                            });
+                          },
+                          selectedItemBuilder: (BuildContext context) {
+                            return classes.map((SchoolClass schoolClass) {
+                              return Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  schoolClass.className,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
                                   ),
-                                ))
-                            .toList(),
-                        value: selectedValue,
-                        onChanged: (String? value) {
-                          setState(() {
-                            selectedValue = value;
-                          });
-                        },
-                        selectedItemBuilder: (BuildContext context) {
-                          return classes.map((SchoolClass schoolClass) {
-                            return Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                schoolClass.className,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            );
-                          }).toList();
-                        },
-                        buttonStyleData: ButtonStyleData(
-                          height: 50,
-                          width: 200,
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: AppColors.primary,
+                              );
+                            }).toList();
+                          },
+                          buttonStyleData: ButtonStyleData(
+                            height: 50,
+                            width: 200,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              color: AppColors.primary,
+                            ),
+                            elevation: 2,
                           ),
-                          elevation: 2,
-                        ),
-                        iconStyleData: const IconStyleData(
-                          icon: SFIcon(
-                            SFIcons.sf_chevron_forward,
+                          iconStyleData: const IconStyleData(
+                            icon: SFIcon(
+                              SFIcons.sf_chevron_forward,
+                            ),
+                            openMenuIcon: SFIcon(
+                              SFIcons.sf_chevron_down,
+                            ),
+                            iconSize: 16,
+                            iconEnabledColor: AppColors.textSecondary,
+                            iconDisabledColor: Colors.grey,
                           ),
-                          openMenuIcon: SFIcon(
-                            SFIcons.sf_chevron_down,
+                          dropdownStyleData: DropdownStyleData(
+                            maxHeight: 200,
+                            width: 200,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              color: AppColors.background,
+                            ),
+                            scrollbarTheme: ScrollbarThemeData(
+                              radius: const Radius.circular(40),
+                              thickness: WidgetStatePropertyAll<double>(6),
+                              thumbVisibility:
+                                  WidgetStatePropertyAll<bool>(true),
+                            ),
                           ),
-                          iconSize: 16,
-                          iconEnabledColor: AppColors.textSecondary,
-                          iconDisabledColor: Colors.grey,
-                        ),
-                        dropdownStyleData: DropdownStyleData(
-                          maxHeight: 200,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: AppColors.background,
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(horizontal: 20),
                           ),
-                          scrollbarTheme: ScrollbarThemeData(
-                            radius: const Radius.circular(40),
-                            thickness: WidgetStatePropertyAll<double>(6),
-                            thumbVisibility: WidgetStatePropertyAll<bool>(true),
-                          ),
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                          padding: EdgeInsets.symmetric(horizontal: 20),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                ],
+                    SizedBox(height: 20),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 15),
-            CustomButton(
-              text: 'Registrer barn',
-              onTab: showButton() ? () => validateInputs(context) : null,
-            ),
-          ],
+              SizedBox(height: 15),
+              CustomButton(
+                text: 'Registrer barn',
+                onTab: showButton() ? () => validateInputs(context) : null,
+              ),
+            ],
+          ),
         ),
       ),
     );

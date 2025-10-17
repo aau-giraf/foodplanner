@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/api/openapi/lib/api.dart';
-import 'package:foodplanner/pages/feedbackChatPage.dart';
-import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
-import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/login_page.dart';
-import 'package:foodplanner/pages/profile.dart';
-import 'package:foodplanner/pages/profilePage.dart';
-import 'package:foodplanner/pages/settingsPage.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:go_router/go_router.dart';
-
 
 class FooterBar extends StatefulWidget {
   @override
@@ -22,23 +14,21 @@ class _FooterBarState extends State<FooterBar> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-
     });
-  
 
-  Widget page;
+    Widget page;
     switch (index) {
       case 0:
-              GoRouter.of(context).go(FEEDBACK_Page);
+        GoRouter.of(context).go(FEEDBACK_Page);
         break;
       case 1:
-              GoRouter.of(context).go(PARENT_ROOT);
+        GoRouter.of(context).go(PARENT_ROOT);
         break;
       case 2:
-              GoRouter.of(context).go(PROFILE_PAGE);
+        GoRouter.of(context).go(PROFILE_PAGE);
         break;
       case 3:
-              GoRouter.of(context).go(SETTINGS_PAGE);
+        GoRouter.of(context).go(SETTINGS_PAGE);
         break;
       default:
         page = LoginPage();
@@ -72,8 +62,8 @@ class _FooterBarState extends State<FooterBar> {
         ),
       ],
       //TODO when group10 is done we can implement colour change upon click
-      selectedItemColor: Colors.black,  // Set color for the selected icon
-      unselectedItemColor: Colors.black,  // Set color for unselected icons
+      selectedItemColor: Colors.black, // Set color for the selected icon
+      unselectedItemColor: Colors.black, // Set color for unselected icons
     );
   }
 }

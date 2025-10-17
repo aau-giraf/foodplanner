@@ -5,6 +5,7 @@ class AppColors {
   static const Color primary = Color(0xFFF0942B);
   static const Color secondary = Color(0xFF8E8E93);
   static Color lightSecondary = Colors.grey.shade300;
+  static const Color tertiary = Color(0xffFBC477);
   static const Color background = Color(0xFFF5F5F5);
   //static const Color accent = Color(0xFF03A9F4);
   static const Color textPrimary = Color(0xFF000000);
@@ -16,5 +17,4 @@ class AppColors {
   static const Color textFieldBorderFocus = Color(0xFF000000);
   static const Color textFieldHint = Color(0xFF9E9E9E);
   static const Color errorText = Color(0xFFD32F2F);
-  static const Color successText = Color(0xFF00FF00);  // added color for indicating that a password requirement has been fulfilled
 }
