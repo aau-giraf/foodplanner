@@ -99,25 +99,27 @@ class LoginPageState extends State<LoginPage> {
         GoRouter.of(context).go(LOGIN_PAGE);
         break;
     }
-  } catch (e) {
-    if (e is AuthException) {
-      handleErrors({'Message': [e.message]});
-    } else if (e is NetworkException) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Der opstod et problem ved login: ${e.message}'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 6),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Der opstod et ukendt problem ved login: $e'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 6),
-        ),
-      );
+  }
+    catch (e) {
+      if (e is AuthException) {
+        handleErrors({'Message': [e.message]});
+      } else if (e is NetworkException) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Der opstod et problem ved login: ${e.message}'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 6),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Der opstod et ukendt problem ved login: $e'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 6),
+          ),
+        );
+      }
     }
   }
 
@@ -222,37 +224,37 @@ class LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 25),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: CustomButton(
-                          onTab: () => directSignUpPage(context),
-                          text: 'Opret',
-                          backgroundColor: AppColors.secondary,
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(width: 15),
-                      Expanded(
-                        child: CustomButton(
-                          text: "Login",
-                          onTab: () => signUserIn(context),
-                        ),
-                      ),
+                      const SizedBox(height: 25),
                     ],
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: CustomButton(
+                        onTab: () => directSignUpPage(context),
+                        text: 'Opret',
+                        backgroundColor: AppColors.secondary,
+                      ),
+                    ),
+                    SizedBox(width: 15),
+                    Expanded(
+                      child: CustomButton(
+                        text: "Login",
+                        onTab: () => signUserIn(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

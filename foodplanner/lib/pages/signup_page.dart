@@ -49,8 +49,7 @@ class _SignupState extends State<SignupPage> {
 
   // Regular expressions for validating full name, email, and password
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$'),
-              emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$'),
-              passwordRegExp = RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
+              emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
 
   // Regular expressions for password requirements
   final RegExp upperCase = RegExp(r'[A-ZÆØÅ]'),
@@ -144,7 +143,7 @@ class _SignupState extends State<SignupPage> {
   void validateName(String name, String field){
     String errorMessage = '';
     if (!nameRegExp.hasMatch(name) && name.isNotEmpty) {
-      errorMessage = 'Dit navn må kun indholde bogstaver';
+      errorMessage = 'Dit navn må kun indholde bogstaver.';
     }
     setState(() {
       if (field == 'first'){
@@ -159,7 +158,7 @@ class _SignupState extends State<SignupPage> {
   void validateEmail(String email){
     setState(() {
       if (!emailRegExp.hasMatch(email) && email.isNotEmpty) {
-        emailError = 'Det er ikke en gyldig email';
+        emailError = 'Det er ikke en gyldig email.';
       } else {
         emailError = '';
       }
@@ -189,7 +188,7 @@ class _SignupState extends State<SignupPage> {
   void validateConfirmPassword(String password, String confirmPassword){
     setState(() {
       if (password != confirmPassword && confirmPassword.isNotEmpty) {
-        confirmPasswordError = 'Adgangskoderne passer ikke.';
+        confirmPasswordError = 'Adgangskoderne matcher ikke.';
       } else {
         confirmPasswordError = '';
       }
@@ -206,95 +205,22 @@ class _SignupState extends State<SignupPage> {
   void validateAllInputs(BuildContext context) {
     String firstName = firstNameController.text.trim();
     String lastName = lastNameController.text.trim();
+    String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
-    String email = emailController.text.trim();
     bool hasError = false;
 
-    //Step 1: Check om alle felter er udfyldt
-    if (firstName.isEmpty ||
-        lastName.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty) {
-      // Show an error message if any field is empty
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Alle felter skal være udfyldt.'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
-        ),
-      );
-      hasError = true;
-    }
+    validateName(firstName, 'first');
+    validateName(lastName, 'last');
+    validateEmail(email);
+    validatePassword(password, confirmPassword);
 
-    //Step 2: Full Name Validation
-    if (!nameRegExp.hasMatch(firstName)) {
-      setState(() {
-        firstNameError = 'Dit navn må kun indholde bogstaver';
-      });
-      hasError = true;
-    } else {
-      setState(() {
-        firstNameError = '';
-      });
-    }
-
-    if (!nameRegExp.hasMatch(lastName)) {
-      setState(() {
-        lastNameError = 'Dit navn må kun indholde bogstaver';
-      });
-      hasError = true;
-    } else {
-      setState(() {
-        lastNameError = '';
-      });
-    }
-
-    //Step 3: Email Validation
-    if (!emailRegExp.hasMatch(email)) {
-      setState(() {
-        emailError = 'Det er ikke en gyldig email';
-      });
-      hasError = true;
-    } else {
-      setState(() {
-        emailError = '';
-      });
-    }
-
-    //Step 4: Password Validation -- changed to just return if any of the requirements are not met
-    if (!password.contains(upperCase) || !password.contains(lowerCase) ||
-        !password.contains(digit) || password.length < 8 ||
-        password.length > 30) {
-      setState(() {
-        passwordError = ' ';
-      });
-      hasError = true;
-    } else {
-      setState(() {
-        passwordError = '';
-      });
-    }
-
-    //Step 5: Confirm Password Validation
-    if (password != confirmPassword) {
-      setState(() {
-        confirmPasswordError = 'Adgangskoderne passer ikke';
-      });
-      hasError = true;
-    } else {
-      setState(() {
-        confirmPasswordError = '';
-      });
-    }
-
-    //proceed with sign-up logic if everything is correct
+    //proceed with sign-up logic if every input is validated
     if(!hasError) {
       signUserUp(
         context, firstName, lastName, email, password, confirmPassword, role);
-      }
     }
+  }
 
   void handleErrors(Map<String, dynamic> error) {
    setState(() {
