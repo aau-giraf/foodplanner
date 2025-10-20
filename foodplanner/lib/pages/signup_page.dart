@@ -208,14 +208,13 @@ class _SignupState extends State<SignupPage> {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
-    bool hasError = false;
 
     validateName(firstName, 'first');
     validateName(lastName, 'last');
     validateEmail(email);
     validatePassword(password, confirmPassword);
 
-    //proceed with sign-up logic if every input is validated
+    // Proceed with sign-up logic if every input is validated
     if(!hasError) {
       signUserUp(
         context, firstName, lastName, email, password, confirmPassword, role);
