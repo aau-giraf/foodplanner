@@ -14,7 +14,9 @@ import 'package:foodplanner/services/ingredient_services.dart';
 import 'package:foodplanner/components/custom_checkbox.dart';
 
 class AddIngredientPage extends StatefulWidget {
-  const AddIngredientPage({super.key});
+  final List<Map<String, dynamic>>? preSelectedIngredients;
+
+  const AddIngredientPage({super.key, this.preSelectedIngredients});
 
   @override
   State<AddIngredientPage> createState() => _AddIngredientPageState();
@@ -44,10 +46,18 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
         _ingredients.addAll(
             ingredients.map((e) => {'id': e.id, 'name': e.name}).toList());
 
-             _ingredients.sort((a, b ) => (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
+        _ingredients.sort((a, b) => (a['name'] as String)
+            .toLowerCase()
+            .compareTo((b['name'] as String).toLowerCase()));
+
+        // Create controllers for each ingredient
         _controllers.addAll(List.generate(_ingredients.length, (index) {
-          final controller = ValueNotifier<bool>(false);
-          return controller;
+          // Pre-check if ingredient was already selected
+          final isPreSelected = widget.preSelectedIngredients?.any(
+                  (selected) => selected['id'] == _ingredients[index]['id']) ??
+              false;
+
+          return ValueNotifier<bool>(isPreSelected); // Set initial state
         }));
       });
     } catch (e) {
@@ -130,7 +140,9 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                           'id': tempIngredient.id,
                           'name': tempIngredient.name
                         });
-                        _ingredients.sort((a, b) =>  (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
+                        _ingredients.sort((a, b) => (a['name'] as String)
+                            .toLowerCase()
+                            .compareTo((b['name'] as String).toLowerCase()));
                         _controllers.add(ValueNotifier<bool>(false));
                       });
                     }

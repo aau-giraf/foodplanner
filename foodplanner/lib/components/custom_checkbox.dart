@@ -60,7 +60,7 @@ class _CustomCheckboxState extends State<CustomCheckbox>
     _animationController = AnimationController(
       vsync: this,
       duration: _duration,
-      value: _controller.value ? 1.0 : 0.0, // Use _controller.value
+      value: _valueController.value ? 1.0 : 0.0, // Use _controller.value
     );
     _initAnimation();
   }
