@@ -1,8 +1,6 @@
 import 'package:foodplanner/services/fetch_auth.dart';
 
 class ApiConfig {
-
-  static final AuthService authService = AuthService(apiUrl: 'http://localhost:8080');
-  static const String baseUrl = 'http://localhost:8080'; 
-
+  static final AuthService authService = AuthService(apiUrl: 'https://0812sjhc-8080.euw.devtunnels.ms');
+  static const String baseUrl = 'https://0812sjhc-8080.euw.devtunnels.ms';
 }
