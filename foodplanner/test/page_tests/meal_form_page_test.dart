@@ -6,7 +6,6 @@ import 'package:foodplanner/models/ingredient.dart';
 import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
 import 'package:foodplanner/components/button.dart';
-import 'meal_form_page_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
@@ -46,14 +45,6 @@ void main() {
         );
         expect(find.text('Tilføj ingredienser'), findsOneWidget);
       });
-      //THIS TEST BELOW CHECKS IF THE ADD INGREDIENT BUTTON EXISTS BY LOOKING FOR THE ICON, BUT THERE CURRENTLY IS NO ICON SO IT ALWAYS FAILS,
-      //THE TEST ABOVE ALSO LOOKS FOR THE SAME BUTTON, SO IT IS REDUNDANT
-      // testWidgets('add ingredient button', (WidgetTester tester) async {
-      //   await tester.pumpWidget(
-      //     MaterialApp(home: createWidgetUnderTest()),
-      //   );
-      //   expect(find.byIcon(Icons.add), findsOneWidget);
-      // });
       testWidgets('create meal button', (WidgetTester tester) async {
         await tester.pumpWidget(
           MaterialApp(home: createWidgetUnderTest()),

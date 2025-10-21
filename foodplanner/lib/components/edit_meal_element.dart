@@ -81,14 +81,16 @@ class _EditMealElement extends State<EditMealElement> {
                 flex: 2,
                 child: Column(
                   children: [
-                    AspectRatio(
-                      aspectRatio: 1.0,
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: 100,
-                          maxWidth: 100,
+                    Expanded(
+                      child: AspectRatio(
+                        aspectRatio: 1.0,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 100,
+                            maxWidth: 100,
+                          ),
+                          child: FoodImage(foodImageId: widget.meal.foodImageId!),
                         ),
-                        child: FoodImage(foodImageId: widget.meal.foodImageId!),
                       ),
                     ),
                     TextButton(

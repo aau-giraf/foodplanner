@@ -7,7 +7,7 @@ import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/pages/edit_meal_form_page.dart';
 import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:network_image_mock/network_image_mock.dart';
 import 'edit_meal_form_page_test.mocks.dart';
 
 @GenerateMocks([http.Client])
@@ -48,27 +48,34 @@ void main() {
       onCamera: () => cameraNavigated = true,
       client: MockClient(),
       image: null,
+      // testFoodImage: FoodImage(foodImageId: 0, imageUrl: 'assets/logo.png',),
     );
   }
   group('EditMealFormPage ', () {
     group('contains widget: ', () {
       testWidgets('edit meal element', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          MaterialApp(home: createWidgetUnderTest()),
-        );
+        await mockNetworkImagesFor(() async {
+          await tester.pumpWidget(
+            MaterialApp(home: createWidgetUnderTest()),
+          );
+        });
         expect(find.byType(EditMealElement), findsOneWidget);
       });
       
       testWidgets('add ingredient button', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          MaterialApp(home: createWidgetUnderTest()),
-        );
+        await mockNetworkImagesFor(() async {
+          await tester.pumpWidget(
+            MaterialApp(home: createWidgetUnderTest()),
+          );
+        });
         expect(find.byIcon(Icons.add), findsOneWidget);
       });
       testWidgets('save changes button', (WidgetTester tester) async {
-        await tester.pumpWidget(
-          MaterialApp(home: createWidgetUnderTest()),
-        );
+        await mockNetworkImagesFor(() async {
+          await tester.pumpWidget(
+            MaterialApp(home: createWidgetUnderTest()),
+          );
+        });
         expect(find.text('Gem ændringer'), findsOneWidget);
       });
     });
@@ -76,9 +83,11 @@ void main() {
 
   group('navigates to:', () {
     testWidgets('CameraPage', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(home: createWidgetUnderTest()),
-      );
+      await mockNetworkImagesFor(() async {
+        await tester.pumpWidget(
+          MaterialApp(home: createWidgetUnderTest()),
+        );
+      });
 
       await tester.tap(find.text('Redigér billede'));
       await tester.pumpAndSettle();
@@ -86,9 +95,11 @@ void main() {
       expect(cameraNavigated, isTrue);
     });
     testWidgets('AddIngredientPage', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(home: createWidgetUnderTest()),
-      );
+      await mockNetworkImagesFor(() async {
+        await tester.pumpWidget(
+          MaterialApp(home: createWidgetUnderTest()),
+        );
+      });
 
       await tester.tap(find.byIcon(Icons.add));
       await tester.pumpAndSettle();
