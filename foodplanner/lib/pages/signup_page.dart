@@ -49,8 +49,7 @@ class _SignupState extends State<SignupPage> {
 
   // Regular expressions for validating full name, email, and password
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$'),
-              emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$'),
-              passwordRegExp = RegExp(r'^(?=.*[a-zæøå])(?=.*[A-ZÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,30}$');
+              emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
 
   // Regular expressions for password requirements
   final RegExp upperCase = RegExp(r'[A-ZÆØÅ]'),
@@ -144,7 +143,7 @@ class _SignupState extends State<SignupPage> {
   void validateName(String name, String field){
     String errorMessage = '';
     if (!nameRegExp.hasMatch(name) && name.isNotEmpty) {
-      errorMessage = 'Dit navn må kun indholde bogstaver';
+      errorMessage = 'Dit navn må kun indholde bogstaver.';
     }
     setState(() {
       if (field == 'first'){
@@ -159,7 +158,7 @@ class _SignupState extends State<SignupPage> {
   void validateEmail(String email){
     setState(() {
       if (!emailRegExp.hasMatch(email) && email.isNotEmpty) {
-        emailError = 'Det er ikke en gyldig email';
+        emailError = 'Det er ikke en gyldig email.';
       } else {
         emailError = '';
       }
@@ -189,7 +188,7 @@ class _SignupState extends State<SignupPage> {
   void validateConfirmPassword(String password, String confirmPassword){
     setState(() {
       if (password != confirmPassword && confirmPassword.isNotEmpty) {
-        confirmPasswordError = 'Adgangskoderne passer ikke.';
+        confirmPasswordError = 'Adgangskoderne matcher ikke.';
       } else {
         confirmPasswordError = '';
       }
@@ -206,22 +205,21 @@ class _SignupState extends State<SignupPage> {
   void validateAllInputs(BuildContext context) {
     String firstName = firstNameController.text.trim();
     String lastName = lastNameController.text.trim();
+    String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
-    String email = emailController.text.trim();
-    
+
     validateName(firstName, 'first');
     validateName(lastName, 'last');
     validateEmail(email);
-    validatePasswordRequirements(password);
-    validateConfirmPassword(password, confirmPassword);
+    validatePassword(password, confirmPassword);
 
-    // Proceed with sign-up logic if information is validated
+    // Proceed with sign-up logic if every input is validated
     if(!hasError) {
       signUserUp(
         context, firstName, lastName, email, password, confirmPassword, role);
-      }
     }
+  }
 
   void handleErrors(Map<String, dynamic> error) {
    setState(() {
