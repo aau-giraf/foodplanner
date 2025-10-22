@@ -14,30 +14,42 @@ import 'package:foodplanner/services/ingredient_services.dart';
 import 'package:foodplanner/components/custom_checkbox.dart';
 
 class AddIngredientPage extends StatefulWidget {
-  const AddIngredientPage({super.key});
+  final IngredientServices? ingredientServices;
+  final AuthProvider? authProvider;
+
+  const AddIngredientPage({
+    super.key,
+    this.ingredientServices,
+    this.authProvider,
+  });
 
   @override
   State<AddIngredientPage> createState() => _AddIngredientPageState();
 }
 
 class _AddIngredientPageState extends State<AddIngredientPage> {
+  late final IngredientServices ingredientServices;
+  late final AuthProvider authProvider;
+
   final List<Map<String, dynamic>> _ingredients = [];
   final TextEditingController _controller = TextEditingController();
   final List<ValueNotifier<bool>> _controllers = [];
 
-  final ingredientServices = IngredientServices(
-    apiUrl: ApiConfig.baseUrl,
-  );
-
   @override
   void initState() {
-    super.initState();
+    super.initState(); 
+
+    ingredientServices = widget.ingredientServices ?? IngredientServices(
+      apiUrl: ApiConfig.baseUrl,
+    );
+    authProvider = widget.authProvider ?? AuthProvider();
+
     _getIngredients();
   }
 
   Future<void> _getIngredients() async {
     try {
-      final authProvider = AuthProvider(); // Initialize your AuthProvider
+      // final authProvider = AuthProvider(); // Initialize your AuthProvider
       final ingredients =
           await ingredientServices.fetchIngredientsByUserID(authProvider);
       setState(() {

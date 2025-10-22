@@ -13,9 +13,9 @@ void main() {
 
     Future<List<Ingredient>> mockFetchIngredients(http.Client client, AuthProvider auth) async {
     return [
-      Ingredient(id: 0, name: 'æble', imageRef: null),
-      Ingredient(id: 1, name: 'knækbrød', imageRef: 1),
-      Ingredient(id: 2, name: 'franskbrød', imageRef: 2),
+      Ingredient(id: 0, name: 'æble', foodImageId: null),
+      Ingredient(id: 1, name: 'knækbrød', foodImageId: 1),
+      Ingredient(id: 2, name: 'franskbrød', foodImageId: 2),
     ];
   }
 
@@ -29,7 +29,7 @@ void main() {
             builder: (context, state) => const MealListPage(),
           ),
           GoRoute(
-            path: '/add_meal_page',
+            path: '/create',
             builder: (context, state) {mealPageNavigated = true; return Container();},
           ),
         ],
