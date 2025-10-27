@@ -53,27 +53,6 @@ class Mealboxcontent extends StatelessWidget {
                 
               ),
             ),
-            SizedBox(height: size.height * 0.05),
-            Center(
-              child: SizedBox(
-                width: size.width * 0.6, // Set the desired width
-                height: 50, // Set the desired height
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ChildLandingPageSeMadpakke()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shadowColor: Colors.black, // Set the shadow color to black
-                    elevation: 5, // Set the elevation to create a shadow effect
-                  ),
-                  child: const Text('Se madpakke', style: AppTextStyles.buttonText),
-                ),
-              ),
-            ),
           ],
         ),
       ],
