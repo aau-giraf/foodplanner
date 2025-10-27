@@ -184,15 +184,15 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
 
                     if (ingredient != null) {
                       final tempIngredient = ingredient as Ingredient;
-                      setState(() {
-                        _ingredients.add({
-                          'id': tempIngredient.id,
-                          'name': tempIngredient.name
+                        setState(() {
+                          _ingredients.add({
+                            'id': tempIngredient.id,
+                            'name': tempIngredient.name
+                          });
+                          _ingredients.sort((a, b) =>  (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
+                          _controllersById[tempIngredient.id] = ValueNotifier<bool>(false);
                         });
-                        _ingredients.sort((a, b) =>  (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
-                        // Create a controller for the new ingredient (keyed by id)
-                        _controllersById[tempIngredient.id] = ValueNotifier<bool>(false);
-                      });
+                        _runFilter(_controller.text);
                     }
                   },
                   text: 'Tilføj',
