@@ -65,7 +65,7 @@ dart pub get
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-## Running the App for the First Time
+### Running the App for the First Time
 1.  Connect your iOS device, start an iOS simulator, or run it in Chrome.
 2.  Configure the API base URL in the ```lib/services/api_service.dart``` file to point to your running backend.
 3.  Configure the image API hardcoded URL in the ```lib/components/image.dart``` file to point to your Minio instance (as described in foodplanner-api).
@@ -78,10 +78,22 @@ To run the app in Chrome
 flutter run -d chrome --web-port=8081
 ```
 
-## Troubleshooting
+#### Troubleshooting
 - <b>Missing Dependencies:</b> Ensure you’ve run ```flutter pub get```.
 - <b>Backend Not Connecting:</b> Verify the API URL and ensure the backend service is running.
 - <b>iOS Build Issues:</b> Open the project in Xcode and ensure signing and team credentials are correctly configured.
+
+### Running tests
+Tests are found under the test folder. You can run them in vscode by right clicking a folder with tests in it and clicking 'Run Tests' in vscode.
+Or use your terminal.
+
+To run **all** tests, run this command
+`flutter test test`
+To run **page_tests**
+`flutter test test/page_tests`
+To run **service_tests** run
+`flutter test test/service_tests`
+
 
 # Contributing
 Contributions are welcome! Follow these steps:
@@ -98,5 +110,3 @@ git commit -m "Add feature name"
 git push origin feature-name
 ```
 5. Open a pull request to the staging branch, test it, and then create a new pull request for main.
-
-
