@@ -61,6 +61,7 @@ cd foodplanner/foodplanner
 dart pub get
 ```
 4. Generate API endpoints
+(This step requires a locally running foodplanner-api to serve the OpenAPI spec)
 ```bash
 dart run build_runner build --delete-conflicting-outputs
 ```
