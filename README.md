@@ -97,15 +97,25 @@ To run **service_tests** run
 
 # Contributing
 Contributions are welcome! Follow these steps:
-1. Create a branch for your feature or bugfix:
+1. Make sure you are on `staging` and it is up to date.
 ```bash
-git checkout -b feature-name
+git switch staging
+git pull
 ```
-2. Commit your changes:
+
+2. Create a branch for your feature or bugfix:
 ```bash
-git commit -m "Add feature name"
+git switch -c feat/group-name/feature-name
+git switch -c bugfix/group-name/bug-name
 ```
-3. Push to the branch:
+
+3. Commit your changes:
+```bash
+git commit
+# Write commit message in opened editor, save and exit editor
+```
+
+4. Push local branch to remote:
 ```bash
 git push origin feature-name
 ```
