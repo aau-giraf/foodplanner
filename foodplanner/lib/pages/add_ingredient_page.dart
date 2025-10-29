@@ -12,7 +12,8 @@ import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/pages/create_ingredient_page.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
-import 'package:foodplanner/components/custom_checkbox.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 class AddIngredientPage extends StatefulWidget {
   final IngredientServices? ingredientServices;
@@ -29,21 +30,23 @@ class AddIngredientPage extends StatefulWidget {
 }
 
 class _AddIngredientPageState extends State<AddIngredientPage> {
-  late final IngredientServices ingredientServices;
+  
   late final AuthProvider authProvider;
 
   final List<Map<String, dynamic>> _ingredients = [];
   final TextEditingController _controller = TextEditingController();
   final List<ValueNotifier<bool>> _controllers = [];
+  Client? client;
+  bool _isEditMode = false;
+
+  final ingredientServices = IngredientServices(
+    apiUrl: ApiConfig.baseUrl,
+  );
 
   @override
   void initState() {
-    super.initState(); 
-
-    ingredientServices = widget.ingredientServices ?? IngredientServices(
-      apiUrl: ApiConfig.baseUrl,
-    );
-    authProvider = widget.authProvider ?? AuthProvider();
+    super.initState();
+    client = http.Client();
 
     _getIngredients();
   }
@@ -78,6 +81,50 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     return selectedIngredients;
   }
 
+  Future<void> _deleteIngredient(int index) async {
+     try {
+    final id = _ingredients[index]["id"];
+    final authProvider = AuthProvider();
+    final response = await ingredientServices.deleteIngredient(client!, authProvider, id);
+    
+    if (response.statusCode == 500) {
+      // Handle 500 error specifically
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Ingredient kan ikke slettes, da den er brugt i mindst en madpakke'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    } else if (response.statusCode != 200) {
+      // Handle other non-200 status codes
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Der opstod et ukendt problem ved fjernelsen af en ingredient: ${response.statusCode}'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    } else {
+      // Success - remove from list
+      setState(() {
+        _ingredients.removeAt(index);
+        _controllers[index].dispose();
+        _controllers.removeAt(index);
+      });
+    }
+  } catch (e) {
+    // Handle network errors or exceptions
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Der opstod et ukendt problem ved fjernelsen af en ingredient: $e'),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 5),
+      ),
+    );
+  }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,6 +149,24 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
           ),
         ),
         leadingWidth: 200,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _isEditMode = !_isEditMode;
+                });
+              },
+              child: Text(
+                _isEditMode ? 'Færdig' : 'Rediger',
+                style: AppTextStyles.headline4.copyWith(
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ),
+        ],
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
       ),
@@ -168,11 +233,20 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                   ),
                   title: _ingredients[index]['name'],
                   type: SettingsType.items,
-                  cta: CustomCheckbox(
-                    controller: _controllers[index],
-                    activeColor: AppColors.primary,
-                    size: 40,
-                  ),
+                  cta: _isEditMode
+                    ? InkWell(
+                        onTap: () => _deleteIngredient(index),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                          size: 45,
+                        ),
+                      )
+                    : AdvancedSwitch(
+                        controller: _controllers[index],
+                        activeColor: AppColors.primary,
+                        width: 60,
+                      ),
                 );
               },
             ),
