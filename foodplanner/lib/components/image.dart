@@ -5,9 +5,17 @@ import 'package:http/http.dart' as http;
 
 class FoodImage extends StatelessWidget {
   final int? foodImageId;
+  final double width;
+  final double height;
+  final double borderRadius;
   final imageUrl = 'https://cdn-icons-png.flaticon.com/512/739/739249.png';
 
-  FoodImage({required this.foodImageId});
+  FoodImage({
+    required this.foodImageId,
+    this.width = 250,
+    this.height = 250,
+    this.borderRadius = 20,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,17 +24,22 @@ class FoodImage extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
           if (!snapshot.hasError && snapshot.hasData) {
             return ClipRRect(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(borderRadius),
                 child: Image(
                   image: snapshot.data!,
-                  width: 250,
-                  height: 250,
+                  width: width,
+                  height: height,
                   fit: BoxFit.cover,
                 ));
           } else {
             return ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.network(imageUrl),
+              borderRadius: BorderRadius.circular(borderRadius),
+              child: Image.network(
+                imageUrl,
+                width: width,
+                height: height,
+                fit: BoxFit.cover,
+              ),
             );
           }
         });
@@ -49,7 +62,7 @@ class FoodImage extends StatelessWidget {
           foodImageId: foodImageId);
 
       tempImageUrl = tempImageUrl?.replaceFirst(
-          'http://localhost:9000', 'https://0812sjhc-9000.euw.devtunnels.ms');
+          'http://localhost:9000', 'http://localhost:9000');
 
       final response = await http.get(Uri.parse(tempImageUrl!));
       if (response.statusCode == 200) {

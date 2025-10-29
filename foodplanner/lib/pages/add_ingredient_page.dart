@@ -3,6 +3,7 @@ import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
@@ -41,7 +42,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
           await ingredientServices.fetchIngredientsByUserID(authProvider);
       setState(() {
         _ingredients.addAll(
-            ingredients.map((e) => {'id': e.id, 'name': e.name}).toList());
+            ingredients.map((e) => {'id': e.id, 'name': e.name, 'foodImageId': e.foodImageId}).toList());
         _controllers.addAll(List.generate(_ingredients.length, (index) {
           final controller = ValueNotifier<bool>(false);
           return controller;
@@ -125,7 +126,8 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                       setState(() {
                         _ingredients.add({
                           'id': tempIngredient.id,
-                          'name': tempIngredient.name
+                          'name': tempIngredient.name,
+                          'foodImageId': tempIngredient.foodImageId
                         });
                         _controllers.add(ValueNotifier<bool>(false));
                       });
@@ -143,7 +145,12 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
               itemCount: _ingredients.length,
               itemBuilder: (BuildContext context, index) {
                 return SettingsWidget(
-                  leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
+                  leftWidget: FoodImage(
+                    foodImageId: _ingredients[index]['foodImageId'],
+                    width: 50,
+                    height: 50,
+                    borderRadius: 8.0,
+                  ),
                   title: _ingredients[index]['name'],
                   type: SettingsType.items,
                   cta: AdvancedSwitch(
