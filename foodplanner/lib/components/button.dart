@@ -106,6 +106,7 @@ class CustomButton extends StatelessWidget {
             Text(
               text,
               style: buttonTextStyle, // Use the determined text style
+              textAlign: TextAlign.center,
             ),
       ),
     );
