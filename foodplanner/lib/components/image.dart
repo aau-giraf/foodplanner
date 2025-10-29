@@ -71,7 +71,6 @@ class FoodImage extends StatelessWidget {
         return NetworkImage(imageUrl);
       }
     } catch (e) {
-      print("error");
       return NetworkImage(imageUrl);
     }
   }
