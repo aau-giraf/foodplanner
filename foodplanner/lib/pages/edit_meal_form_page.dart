@@ -66,10 +66,11 @@ class EditMealFormPage extends StatelessWidget {
         // Vertical layout for the page.
         children: [
           EditMealElement(
-              meal: meal,
-              onCamera: onCamera,
-              editTitleController: editTitleController),
-
+            meal: meal,
+            onCamera: onCamera,
+            editTitleController: editTitleController
+          ),
+          
           // The button for adding a new ingredient to the meal.
           CustomElevatedButton(
             onTab: () {

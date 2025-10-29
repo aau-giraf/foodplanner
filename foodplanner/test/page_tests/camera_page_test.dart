@@ -6,8 +6,6 @@ import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:http/http.dart';
-
 import 'camera_page_test.mocks.dart';
 
 @GenerateMocks([CameraController, ImagePicker])
@@ -89,10 +87,7 @@ void main() {
       testWidgets('should initialize camera and show preview', (WidgetTester tester) async {
         // Arrange
         await tester.pumpWidget(MaterialApp(
-          home: CameraPage(
-            onImagePicked: (_) {},
-            controller: mockCameraController,
-          )
+          home: CameraPage(mockController: mockCameraController)
         ));
 
         // Act
@@ -109,29 +104,20 @@ void main() {
         
         // Act
         await tester.pumpWidget(MaterialApp(
-          home: CameraPage(
-            onImagePicked: (_) {},
-            controller: mockCameraController,
-          )
+          home: CameraPage(mockController: mockCameraController)
         ));
-        await tester.pump();
 
         // Assert
         expect(find.byType(CircularProgressIndicator), findsOneWidget);
       });
+      
 
       // Testing the behavior when the camera controller is null.
       testWidgets('should handle null camera controller gracefully', (WidgetTester tester) async {
         // Arrange
         await tester.pumpWidget(MaterialApp(
-          home: CameraPage(
-            onImagePicked: (_) {},
-            controller: null,
-          )
+          home: CameraPage(mockController: mockCameraController)
         ));
-
-        // Act
-        await tester.pump();
 
         // Assert
         expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -143,16 +129,15 @@ void main() {
       testWidgets('should take a picture when camera button is pressed', (WidgetTester tester) async {
         // Arrange
         await tester.pumpWidget(MaterialApp(
-          home: CameraPage(
-            onImagePicked: (_) {},
-            controller: mockCameraController,
-          )
+          home: CameraPage(mockController: mockCameraController)
         ));
         await tester.pump();
         
         // Act
-        await tester.tap(find.byIcon(Icons.camera));
-        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(Key("cameraButton")));
+
+        await tester.pump(Duration(milliseconds: 500));
 
         // Assert
         verify(mockCameraController.takePicture()).called(1);
@@ -162,18 +147,13 @@ void main() {
       testWidgets('should open gallery when gallery button is pressed', (WidgetTester tester) async {
         // Arrange
         await tester.pumpWidget(MaterialApp(
-          home: CameraPage(
-            onImagePicked: (_) {},
-            controller: mockCameraController, 
-            imagePicker: mockImagePicker,
-          )
+          home: CameraPage(mockController: mockCameraController, mockImagePicker: mockImagePicker,)
         ));
-
         await tester.pump();
 
-        // Act
-        await tester.tap(find.byIcon(Icons.collections));
-        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(Key("galleryButton")));
+
+        await tester.pump(Duration(milliseconds: 500));
 
         // Assert
         verify(mockImagePicker.pickImage(source: ImageSource.gallery)).called(1);

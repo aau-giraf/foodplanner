@@ -216,6 +216,7 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
                                 ],
                               ),
                             );
+                            Navigator.pop(context, newIngredient);
                           }
                         : null,
                     text: 'Opret madvare',
