@@ -70,8 +70,8 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
       ),
     );
     
-    Navigator.pop(context, null); // Close confirmation dialog
-    Navigator.pop(context, newIngredient); // Return to previous page with new ingredient
+    
+    Navigator.pop(context, newIngredient);
   }
 
   @override
@@ -128,13 +128,15 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
                             // First dialog: Ask about adding an image
                             showCupertinoDialog(
                               context: context,
-                              builder: (BuildContext context) =>
+                              builder: (BuildContext alertContext) =>
                                   CupertinoAlertDialog(
                                 title: Text('Vil du tilføje et billede af madvaren?'),
                                 actions: <CupertinoDialogAction>[
                                   CupertinoDialogAction(
                                     isDefaultAction: true,
                                     onPressed: () async {
+                                      // Close dialog first
+                                      Navigator.pop(alertContext);
                                       // Navigate to camera page
                                       final image = await Navigator.push(
                                         context,
@@ -152,71 +154,24 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
                                         });
                                       }
                                       
-                                      Navigator.pop(context); // Close image dialog
-                                      
-                                      // Show confirmation dialog
-                                      showCupertinoDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            CupertinoAlertDialog(
-                                          title: Text('Er du sikker på du vil tilføje denne madvare?'),
-                                          actions: <CupertinoDialogAction>[
-                                            CupertinoDialogAction(
-                                              isDefaultAction: true,
-                                              onPressed: () async {
-                                                await createIngredient();
-                                              },
-                                              child: const Text("Ja"),
-                                            ),
-                                            CupertinoDialogAction(
-                                              isDestructiveAction: true,
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Nej'),
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                       await createIngredient();
                                     },
-                                    child: const Text("Ja"),
+                                    child: const Text("Ja"), 
                                   ),
                                   CupertinoDialogAction(
                                     isDestructiveAction: true,
-                                    onPressed: () {
-                                      Navigator.pop(context); // Close image dialog
-                                      
-                                      // Show confirmation dialog without image
-                                      showCupertinoDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            CupertinoAlertDialog(
-                                          title: Text('Er du sikker på du vil tilføje denne madvare?'),
-                                          actions: <CupertinoDialogAction>[
-                                            CupertinoDialogAction(
-                                              isDefaultAction: true,
-                                              onPressed: () async {
-                                                await createIngredient();
-                                              },
-                                              child: const Text("Ja"),
-                                            ),
-                                            CupertinoDialogAction(
-                                              isDestructiveAction: true,
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Nej'),
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                    onPressed: () async{
+                                       // Close image dialog
+                                      Navigator.pop(alertContext);
+                                      await createIngredient();
                                     },
                                     child: const Text('Nej'),
                                   ),
                                 ],
                               ),
                             );
-                            Navigator.pop(context, newIngredient);
+                           
+                          
                           }
                         : null,
                     text: 'Opret madvare',
