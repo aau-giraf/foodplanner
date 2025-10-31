@@ -10,7 +10,7 @@ class UserService {
 
   Future<User> fetchUser(int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
-    final response = await http.get(Uri.parse('$apiUrl/api/Admin/Get/${id}'),
+    final response = await http.get(Uri.parse('$apiUrl/api/Admin/Get/$id'),
         headers: <String, String>{
           'Authorization': 'Bearer $jwtToken',
         });
