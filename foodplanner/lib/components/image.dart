@@ -10,7 +10,7 @@ class FoodImage extends StatelessWidget {
   final double borderRadius;
   final imageUrl = 'https://cdn-icons-png.flaticon.com/512/739/739249.png';
 
-  FoodImage({
+  const FoodImage({
     required this.foodImageId,
     this.width = 250,
     this.height = 250,
