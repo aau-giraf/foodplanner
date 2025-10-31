@@ -75,7 +75,6 @@ class CustomElevatedButton extends StatelessWidget {
           ],
       ),
       child: ElevatedButton(
-        child: widget, // The child widget (e.g., text) inside the button
         onPressed: onTab, // Function to call on button press
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor, // Set background color of the 
@@ -84,6 +83,7 @@ class CustomElevatedButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(height/2)  // Rounded shape of the button
           ),
         ),
+        child: widget,
       ),
     );
   }
