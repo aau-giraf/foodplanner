@@ -1,8 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:foodplanner/pages/landing_page_teacher.dart';
-import 'package:foodplanner/routes/paths.dart';
-import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import '../auth/auth_provider.dart';
 import '../routes/user_roles.dart';
