@@ -8,7 +8,7 @@ import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
-import 'package:foodplanner/pages/landing_page_parent.dart';
+import 'package:foodplanner/pages/main_page_parent.dart';
 import 'package:foodplanner/pages/landing_page_teacher.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
@@ -299,7 +299,7 @@ final router = GoRouter(
                   ),
                 ); // Show loading while waiting
               } else if (snapshot.hasData && snapshot.data == true) {
-                return const ParentLandingPageMadpakke(); // This should be fine
+                return const ParentMainPage(); // This should be fine
               } else {
                 return const UnauthorizedPage();
               }
@@ -310,7 +310,7 @@ final router = GoRouter(
         routes: [
           GoRoute(
             path: MADPAKKE,
-            builder: (context, state) => ParentLandingPageMadpakke(),
+            builder: (context, state) => ParentMainPage(),
           )
         ]),
   ],
