@@ -3,7 +3,7 @@ import 'package:foodplanner/config/colors.dart';
 
 class CustomCheckbox extends StatefulWidget {
   const CustomCheckbox({
-    Key? key,
+    super.key,
     this.controller,
     this.activeColor = AppColors.background,
     this.inactiveColor = AppColors.background,
@@ -12,7 +12,7 @@ class CustomCheckbox extends StatefulWidget {
     this.disabledOpacity = 0.5,
     this.initialValue = false,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   /// Determines if widget is enabled
   final bool enabled;

@@ -50,7 +50,7 @@ class Message {
 }
 
 class FeedbackChatPage extends StatefulWidget {
-  const FeedbackChatPage({Key? key}) : super(key: key);
+  const FeedbackChatPage({super.key});
   static final FeedbackService feedbackService =
       FeedbackService(apiUrl: ApiConfig.baseUrl);
   static bool isEditing = false;
