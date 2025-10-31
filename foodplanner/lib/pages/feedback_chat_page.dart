@@ -169,20 +169,20 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
 
       try {
         // Send the message to the backend
-        int _chatThreadId = 0;
+        int chatThreadId = 0;
 
         if (_childId == null) {
           final Map<String, dynamic> chatThreadAndUserId =
               await FeedbackChatPage.feedbackService
                   .fetchGetChatThreadIdAndUserIdFromToken(AuthProvider());
-          _chatThreadId = chatThreadAndUserId['chatThreadId'];
+          chatThreadId = chatThreadAndUserId['chatThreadId'];
         } else {
-          _chatThreadId = await FeedbackChatPage.feedbackService
+          chatThreadId = await FeedbackChatPage.feedbackService
               .fetchGetChatThreadIdByChildId(_childId!, AuthProvider());
         }
 
         await FeedbackChatPage.feedbackService.fetchSendFeedbackMessage(
-          chatThreadId: _chatThreadId, // Replace with the actual chatThreadId
+          chatThreadId: chatThreadId, // Replace with the actual chatThreadId
           content: messageContent,
           authProvider: AuthProvider(),
         );
