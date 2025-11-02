@@ -85,7 +85,7 @@ Future<http.Response> updateMeal(
       'ingredients': meal.ingredients.map((e) => e.toJson()).toList(),
     }),
   );
- // print('Statuscode: ${response.statusCode} body:${response.body}');
+ print('Statuscode: ${response.statusCode} body:${response.body}');
   return response; // Return the response from the server.
 }
 
