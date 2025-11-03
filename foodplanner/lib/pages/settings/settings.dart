@@ -23,15 +23,37 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsPage extends State<Settings> {
-  Set<String> selectedSegment = {'daily'};
+  //Set<String> selectedSegment = {'daily'};
   bool notifications = true;
-  bool biometricLogin = true;
-  final showLunchBoxController = ValueNotifier<String>('daily');
+  //bool biometricLogin = true;
+  //final showLunchBoxController = ValueNotifier<String>('daily');
   final notificationsController = ValueNotifier<bool>(true);
-  final biometricLoginController = ValueNotifier<bool>(true);
+  //final biometricLoginController = ValueNotifier<bool>(true);
 
   List<Map<String, dynamic>> get generalSettings => [
         {
+          'title': "Fornavn:",
+          'rightIcon': SFIcons.sf_pencil,
+          'cta': AdvancedSwitch(
+            controller: notificationsController,
+            activeColor: AppColors.primary,
+            width: 60,
+            initialValue: true,
+          )
+        },
+        {
+          'title': "Efternavn:"
+        },
+        {
+          'title': "Email:"
+        },
+        {
+          'title': "Pin-kode:"
+        },
+        {
+          'title': "Kodeord:"
+        },
+        /*{
           'title': "Vis madpakke",
           'icon': SFIcons.sf_fork_knife,
           'cta': AdvancedSegment(
@@ -46,10 +68,10 @@ class _SettingsPage extends State<Settings> {
               sliderOffset: 0,
               borderRadius: BorderRadius.all(Radius.circular(12)),
               backgroundColor: AppColors.lightSecondary),
-        },
+        },*/
         {
           'title': "Notifikationer",
-          'icon': SFIcons.sf_bell_badge_fill,
+          'leftIcon': SFIcons.sf_bell_badge_fill,
           'cta': AdvancedSwitch(
             controller: notificationsController,
             activeColor: AppColors.primary,
@@ -57,7 +79,7 @@ class _SettingsPage extends State<Settings> {
             initialValue: true,
           )
         },
-        {
+        /*{
           'title': "Biometrisk login",
           'icon': SFIcons.sf_faceid,
           'cta': AdvancedSwitch(
@@ -67,13 +89,12 @@ class _SettingsPage extends State<Settings> {
             initialValue: true,
           ),
           'divider': false,
-        },
+        },*/
       ];
-
   List<Map<String, dynamic>> get adminSettings => [
         {
           'title': "Godkend profiler",
-          'icon': SFIcons.sf_person_crop_circle_badge_checkmark,
+          'leftIcon': SFIcons.sf_person_crop_circle_badge_checkmark,
           'cta': Row(
             children: [
               (SFIcon(SFIcons.sf_chevron_forward)),
@@ -89,7 +110,7 @@ class _SettingsPage extends State<Settings> {
         },
         {
           'title': "Deaktiver profiler",
-          'icon': SFIcons.sf_person_crop_circle_badge_minus,
+          'leftIcon': SFIcons.sf_person_crop_circle_badge_minus,
           'cta': Row(
             children: [
               SFIcon(SFIcons.sf_chevron_forward),
@@ -107,7 +128,7 @@ class _SettingsPage extends State<Settings> {
         },
         {
           'title': "Administrer børn",
-          'icon': SFIcons.sf_figure_and_child_holdinghands,
+          'leftIcon': SFIcons.sf_figure_and_child_holdinghands,
           'cta': Row(
             children: [
               SFIcon(SFIcons.sf_chevron_forward),
@@ -123,7 +144,7 @@ class _SettingsPage extends State<Settings> {
         },
         {
           'title': "Administrer klasser",
-          'icon': SFIcons.sf_figure_2,
+          'leftIcon': SFIcons.sf_figure_2,
           'cta': Row(
             children: [
               SFIcon(SFIcons.sf_chevron_forward),
@@ -178,7 +199,8 @@ class _SettingsPage extends State<Settings> {
                         SizedBox(height: 10),
                         ...generalSettings.map((setting) {
                           return SettingsWidget(
-                            leftIcon: setting['icon'],
+                            leftIcon: setting['leftIcon'],
+                            rightIcon : setting['rightIcon'],
                             title: setting['title'],
                             type: SettingsType.inlineItems,
                             cta: setting['cta'],
@@ -211,7 +233,8 @@ class _SettingsPage extends State<Settings> {
                           ...adminSettings.map(
                             (setting) {
                               return SettingsWidget(
-                                leftIcon: setting['icon'],
+                                leftIcon: setting['leftIcon'],
+                                rightIcon: setting['rightIcon'],
                                 title: setting['title'],
                                 type: SettingsType.inlineItems,
                                 cta: setting['cta'],
@@ -230,9 +253,18 @@ class _SettingsPage extends State<Settings> {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: CustomButton(
                   onTab: null,
+                  text: "Log ud",
+                  foregroundColor: AppColors.textFieldBorderFocus,
+                  size: ButtonSize.medium,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: CustomButton(
+                  onTab: null,
                   text: "Slet konto",
                   foregroundColor: AppColors.errorText,
-                  backgroundColor: AppColors.background,
+                  backgroundColor: Colors.white,
                   size: ButtonSize.medium,
                 ),
               ),

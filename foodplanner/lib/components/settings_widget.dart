@@ -9,6 +9,7 @@ enum SettingsType { items, header, inlineItems }
 class SettingsWidget extends StatefulWidget {
   final IconData? leftIcon;
   final Widget? leftWidget;
+  final IconData? rightIcon;
   final String title;
   final String subTitle;
   final dynamic cta;
@@ -24,6 +25,7 @@ class SettingsWidget extends StatefulWidget {
     super.key,
     this.leftIcon,
     this.leftWidget,
+    this.rightIcon,
     required this.title,
     this.subTitle = '',
     this.cta,
@@ -53,6 +55,27 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         surfaceTintColor: AppColors.background,
         child: Row(
           children: [
+            if (widget.rightIcon != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10.0, vertical: 15.0),
+                  child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(8.0), // Add rounded corners
+                  child: Container(
+                    color: AppColors.primary,
+                    width: 50,
+                    height: 50,
+                    child: Center(
+                      child: SFIcon(
+                        widget.leftIcon!,
+                        fontSize: 30,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             if (widget.showIcon)
             if (widget.leftWidget != null)
               Padding(
