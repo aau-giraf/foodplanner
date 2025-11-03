@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/custom_checkbox.dart';
+import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
@@ -10,7 +12,8 @@ import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/pages/create_ingredient_page.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/ingredient_services.dart';
-import 'package:foodplanner/components/custom_checkbox.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 class AddIngredientPage extends StatefulWidget {
   final IngredientServices? ingredientServices;
@@ -27,35 +30,42 @@ class AddIngredientPage extends StatefulWidget {
 }
 
 class _AddIngredientPageState extends State<AddIngredientPage> {
-  late final IngredientServices ingredientServices;
+  
   late final AuthProvider authProvider;
 
   final List<Map<String, dynamic>> _ingredients = [];
   final List<Map<String, dynamic>> _filteredIngredients = [];
   final TextEditingController _controller = TextEditingController();
+
   final Map<dynamic, ValueNotifier<bool>> _controllersById = {};
+
+  // final List<ValueNotifier<bool>> _controllers = [];
+  Client? client;
+  bool _isEditMode = false;
+
+  final ingredientServices = IngredientServices(
+    apiUrl: ApiConfig.baseUrl,
+  );
+
 
   @override
   void initState() {
-    super.initState(); 
+    super.initState();
+    client = http.Client();
 
-    ingredientServices = widget.ingredientServices ?? IngredientServices(
-      apiUrl: ApiConfig.baseUrl,
-    );
     authProvider = widget.authProvider ?? AuthProvider();
 
-  _getIngredients();
+    _getIngredients();
   }
 
   Future<void> _getIngredients() async {
     try {
-      // final authProvider = AuthProvider(); // Initialize your AuthProvider
+      // final authProvider = AuthProvider(); // This should be injected so we can test it
       final ingredients =
           await ingredientServices.fetchIngredientsByUserID(authProvider);
       setState(() {
         _ingredients.addAll(
-            ingredients.map((e) => {'id': e.id, 'name': e.name}).toList());
-
+            ingredients.map((e) => {'id': e.id, 'name': e.name, 'foodImageId': e.foodImageId}).toList());
              _ingredients.sort((a, b ) => (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
         // Preserve existing controllers where possible so selection isn't lost
         final Map<dynamic, ValueNotifier<bool>> newControllers = {};
@@ -121,6 +131,55 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     return selectedIngredients;
   }
 
+  Future<void> _deleteIngredient(int index) async {
+     try {
+    final id = _ingredients[index]["id"];
+    final authProvider = AuthProvider();
+    final response = await ingredientServices.deleteIngredient(client!, authProvider, id);
+    
+    if (response.statusCode == 500) {
+      // Handle 500 error specifically
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Ingredient kan ikke slettes, da den er brugt i mindst en madpakke'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    } else if (response.statusCode != 200) {
+      // Handle other non-200 status codes
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Der opstod et ukendt problem ved fjernelsen af en ingredient: ${response.statusCode}'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    } else {
+      // Success - remove from list
+      setState(() {
+        final id = _ingredients[index]['id'];
+        if (_controllersById.containsKey(id)) {
+          _controllersById[id]?.dispose();
+          _controllersById.remove(id);
+        }
+
+        _ingredients.removeAt(index);
+        _filteredIngredients.removeWhere((ing) => ing['id'] == id);
+      });
+    }
+  } catch (e) {
+    // Handle network errors or exceptions
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Der opstod et ukendt problem ved fjernelsen af en ingredient: $e'),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 5),
+      ),
+    );
+  }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -145,6 +204,24 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
           ),
         ),
         leadingWidth: 200,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _isEditMode = !_isEditMode;
+                });
+              },
+              child: Text(
+                _isEditMode ? 'Færdig' : 'Rediger',
+                style: AppTextStyles.headline4.copyWith(
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ),
+        ],
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
       ),
@@ -187,7 +264,8 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                         setState(() {
                           _ingredients.add({
                             'id': tempIngredient.id,
-                            'name': tempIngredient.name
+                            'name': tempIngredient.name,
+                            'foodImageId': tempIngredient.foodImageId
                           });
                           _ingredients.sort((a, b) =>  (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
                           _controllersById[tempIngredient.id] = ValueNotifier<bool>(false);
@@ -214,14 +292,28 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
 
                 return SettingsWidget(
                   key: ValueKey(id),
-                  leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
-                  title: filteredItem['name'],
-                  type: SettingsType.items,
-                  cta: CustomCheckbox(
-                    controller: controller,
-                    activeColor: AppColors.primary,
-                    size: 40,
+                  leftWidget: FoodImage(
+                    foodImageId: _filteredIngredients[index]['foodImageId'],
+                    width: 50,
+                    height: 50,
+                    borderRadius: 8.0,
                   ),
+                  title: _filteredIngredients[index]['name'],
+                  type: SettingsType.items,
+                  cta: _isEditMode
+                    ? InkWell(
+                        onTap: () => _deleteIngredient(index),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                          size: 45,
+                        ),
+                      )
+                    : CustomCheckbox(
+                        controller: controller,
+                        activeColor: AppColors.primary,
+                        size: 40,
+                    ),
                 );
               },
             ),
