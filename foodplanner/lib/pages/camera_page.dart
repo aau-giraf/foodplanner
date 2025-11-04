@@ -193,6 +193,7 @@ class _MealPageState extends State<CameraPage> {
 }
 
 // A widget that displays the picture taken by the user.
+// ignore: must_be_immutable
 class DisplayPictureScreen extends StatelessWidget {
   final XFile image;
   late MultipartFile croppedImage;
