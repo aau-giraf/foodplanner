@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomSquareCameraOverlay extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.black.withOpacity(0.5);
+    final paint = Paint()..color = Colors.black.withValues(alpha: 0.5);
 
     final double squareSize =
         size.width < size.height ? size.width : size.height;

@@ -26,6 +26,7 @@ class ChildLandingPageMadpakke extends StatefulWidget {
 }
 
 class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
+  //ignore: unused_field 
   late Future<bool> _hasRolesFuture;
   Child? _child;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
@@ -55,7 +56,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
       });
     } else if (authProvider.userRole == ROLES.teacher) {
       int tempChildId = int.parse(widget.student['id']!);
-      final childData = await childService.GetByChildId(tempChildId);
+      final childData = await childService.getByChildId(tempChildId);
       setState(() {
         _child = childData;
       });

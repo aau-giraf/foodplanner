@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:developer' as developer;
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,13 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CameraPage extends StatefulWidget {
+  final CameraController? mockController;
+    final ImagePicker? mockImagePicker;
+
   const CameraPage({
     super.key,
+    this.mockController,
+    this.mockImagePicker
   });
 
   @override
@@ -36,6 +42,11 @@ class _MealPageState extends State<CameraPage> {
   }
 
   Future<void> _initializeCamera() async {
+    if(widget.mockController != null) {
+      _controller = widget.mockController!;
+      return;
+    }
+
     final cameras = await availableCameras();
     final firstCamera = cameras.first;
 
@@ -56,7 +67,9 @@ class _MealPageState extends State<CameraPage> {
 
   //Image Picker function to get image from gallery
   Future<File?> getImageFromGallery() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final tempPicker = widget.mockImagePicker ?? picker;
+
+    final pickedFile = await tempPicker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       return File(pickedFile.path);
@@ -98,9 +111,6 @@ class _MealPageState extends State<CameraPage> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            final size = MediaQuery.of(context).size;
-            final deviceRatio = size.width / size.height;
-
             return Stack(
               fit: StackFit.expand,
               children: [
@@ -143,6 +153,7 @@ class _MealPageState extends State<CameraPage> {
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               heroTag: 'galleryButton',
+              key: const Key("galleryButton"),
               child: SFIcon(SFIcons.sf_photo_on_rectangle_angled),
             ),
           ),
@@ -164,12 +175,13 @@ class _MealPageState extends State<CameraPage> {
                     ),
                   );
                 } catch (e) {
-                  print('Error taking picture: $e');
+                 developer.log('Error taking picture: $e');
                 }
               },
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
               heroTag: 'cameraButton',
+              key: const Key("cameraButton"),
               child: SFIcon(SFIcons.sf_camera_fill),
             ),
           ),
@@ -181,6 +193,7 @@ class _MealPageState extends State<CameraPage> {
 }
 
 // A widget that displays the picture taken by the user.
+// ignore: must_be_immutable
 class DisplayPictureScreen extends StatelessWidget {
   final XFile image;
   late MultipartFile croppedImage;

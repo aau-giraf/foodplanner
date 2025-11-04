@@ -9,7 +9,7 @@ class IPhonePopupBox extends StatelessWidget {
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
-  IPhonePopupBox({
+  const IPhonePopupBox({
     required this.title,
     this.message = '',
     required this.confirmText,

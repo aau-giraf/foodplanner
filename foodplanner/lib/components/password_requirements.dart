@@ -9,10 +9,9 @@ class PasswordRequirements extends StatelessWidget{
 
   const PasswordRequirements({
     super.key,
-    required this.validationStatus, // 'required' ensures that validationStatus is provided
+    required this.validationStatus, // validationStatus must be provided
   });
 
-  // Building the widget consisting of the list of requirements
   @override
   Widget build(BuildContext context) {
     return Column(

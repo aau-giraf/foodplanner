@@ -1,23 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 
 void main() {
   group('MealListPage ', () {
     late GoRouter goRouter;
     late bool mealPageNavigated;
-
-    Future<List<Ingredient>> mockFetchIngredients(http.Client client, AuthProvider auth) async {
-    return [
-      Ingredient(id: 0, name: 'æble', imageRef: null),
-      Ingredient(id: 1, name: 'knækbrød', imageRef: 1),
-      Ingredient(id: 2, name: 'franskbrød', imageRef: 2),
-    ];
-  }
 
     setUp(() {
       mealPageNavigated = false;
@@ -29,7 +18,7 @@ void main() {
             builder: (context, state) => const MealListPage(),
           ),
           GoRoute(
-            path: '/add_meal_page',
+            path: '/create',
             builder: (context, state) {mealPageNavigated = true; return Container();},
           ),
         ],
