@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
@@ -35,7 +36,7 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
         _isLoading = false;
       });
     } catch (e) {
-      print('Error loading users: $e');
+     developer.log('Error loading users: $e');
       setState(() {
         _isLoading = false;
       });
@@ -55,7 +56,7 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
         });
       }
     } catch (e) {
-      print('Error approving user: $e');
+     developer.log('Error approving user: $e');
     }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -78,7 +79,7 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
         });
       }
     } catch (e) {
-      print('Error removing user: $e');
+     developer.log('Error removing user: $e');
     }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

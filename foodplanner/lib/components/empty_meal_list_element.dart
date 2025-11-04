@@ -23,7 +23,7 @@ class EmptyMealListElement extends StatelessWidget {
             boxShadow: [
               // Adding a shadow effect for a raised appearnce
               BoxShadow(
-                color: Colors.grey.withOpacity(0.5), // Shadow color with opacity
+                color: Colors.grey.withValues(alpha: 0.5), // Shadow color with opacity
                 spreadRadius: 1, // Spread amount of the shadow
                 blurRadius: 1, // Bkyr raduus fir siftening the shadow
                 offset: const Offset(0, 2), // Offset of the shadow

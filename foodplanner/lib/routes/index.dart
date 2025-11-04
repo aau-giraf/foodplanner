@@ -146,7 +146,7 @@ final router = GoRouter(
             } else if (snapshot.hasData && snapshot.data == true) {
               return const ChildLandingPageMadpakke(
                 student: {},
-              ); // im guessing this page, student_page is a dummy one it seems TODO
+              );
             } else {
               return const UnauthorizedPage();
             }
@@ -170,7 +170,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const CreateChildPage(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const CreateChildPage();
             } else {
               return const UnauthorizedPage();
             }
@@ -195,7 +195,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const Settings(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const Settings();
             } else {
               return const UnauthorizedPage();
             }
@@ -245,7 +245,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const FeedbackChatPage(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const FeedbackChatPage();
             } else {
               return const UnauthorizedPage();
             }
@@ -274,7 +274,7 @@ final router = GoRouter(
                   const Text('Admin Page'),
                   NavBar(),
                 ],
-              ); // another dummy page, I think Dressi is making a new one TODO
+              );
             } else {
               return const UnauthorizedPage();
             }

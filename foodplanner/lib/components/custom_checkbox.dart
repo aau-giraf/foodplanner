@@ -3,7 +3,7 @@ import 'package:foodplanner/config/colors.dart';
 
 class CustomCheckbox extends StatefulWidget {
   const CustomCheckbox({
-    Key? key,
+    super.key,
     this.controller,
     this.activeColor = AppColors.background,
     this.inactiveColor = AppColors.background,
@@ -12,7 +12,7 @@ class CustomCheckbox extends StatefulWidget {
     this.disabledOpacity = 0.5,
     this.initialValue = false,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   /// Determines if widget is enabled
   final bool enabled;
@@ -60,7 +60,7 @@ class _CustomCheckboxState extends State<CustomCheckbox>
     _animationController = AnimationController(
       vsync: this,
       duration: _duration,
-      value: _controller.value ? 1.0 : 0.0, // Use _controller.value
+      value: _valueController.value ? 1.0 : 0.0,
     );
     _initAnimation();
   }
@@ -69,10 +69,11 @@ class _CustomCheckboxState extends State<CustomCheckbox>
   void didUpdateWidget(covariant CustomCheckbox oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    oldWidget.controller?.removeListener(_handleControllerValueChanged);
-    _valueController
-      ..removeListener(_handleControllerValueChanged)
-      ..addListener(_handleControllerValueChanged);
+    // If the external controller instance changed, swap listeners
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?.removeListener(_handleControllerValueChanged);
+      widget.controller?.addListener(_handleControllerValueChanged);
+    }
 
     if (oldWidget.initialValue != widget.initialValue) {
       _valueController.value = widget.initialValue;

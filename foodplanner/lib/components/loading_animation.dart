@@ -4,7 +4,7 @@ class LoadingAnimation extends StatefulWidget {
   final String imagePath;
   final double size;
 
-  const LoadingAnimation({required this.imagePath, this.size = 50.0, Key? key}) : super(key: key);
+  const LoadingAnimation({required this.imagePath, this.size = 50.0, super.key});
 
   @override
   _RotatingImageState createState() => _RotatingImageState();

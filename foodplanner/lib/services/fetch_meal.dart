@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:convert';
 import 'package:foodplanner/models/meal.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +10,7 @@ class MealService {
   MealService({required this.apiUrl});
 
   Future<Meal?> fetchMealData(String date) async {
-    print("Fetching meal data for date: $date");
+   developer.log("Fetching meal data for date: $date");
     try {
       final jwtToken = await AuthProvider().retrieveToken();
       final response = await http.get(
@@ -31,13 +32,13 @@ class MealService {
         throw Exception('Failed to load meal data');
       }
     } catch (e) {
-      print('Error fetching meal data: $e');
+     developer.log('Error fetching meal data: $e');
       return null;
     }
   }
 
   Future<Meal?> fetchMealDataTeacher(String date, int id) async {
-    print("Fetching meal data for date: $date");
+   developer.log("Fetching meal data for date: $date");
     try {
       final jwtToken = await AuthProvider().retrieveToken();
       final response = await http.get(
@@ -59,7 +60,7 @@ class MealService {
         throw Exception('Failed to load meal data');
       }
     } catch (e) {
-      print('Error fetching meal data: $e');
+     developer.log('Error fetching meal data: $e');
       return null;
     }
   }
