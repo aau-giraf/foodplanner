@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
@@ -258,8 +259,10 @@ class _SignupState extends State<SignupPage> {
               await LoginPage.authService.fetchAuthData(email, password);
           switch (role) {
             case ROLES.student:
+            if(context.mounted){
               GoRouter.of(context).go(STUDENT_CREATE);
               break;
+            }
             default:
               GoRouter.of(context).go(UNAUTHORIZED);
               break;
@@ -269,19 +272,23 @@ class _SignupState extends State<SignupPage> {
             handleErrors({
               'Message': [e.message]
             });
-            ScaffoldMessenger.of(context).showSnackBar(
+            if(context.mounted){
+              ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Fejl ved login af bruger: ${e.message}'),
                 backgroundColor: Colors.red,
                 duration: Duration(seconds: 5),
               ),
             );
+            }else{developer.log("Context was unmounted when trying to display error message in snackbar");}
           } else {
-            if (role.first == 'Parent') {
-              context.go('/signup/create-child');
-            } else {
-              context.go('/');
-            }
+            if(context.mounted){
+              if (role.first == 'Parent') {
+                context.go('/signup/create-child');
+              } else {
+                context.go('/');
+              }
+            }else{developer.log("Context was unmounted when trying to reload page due to error");}
           }
         }
       } else {
