@@ -11,38 +11,38 @@ import 'package:foodplanner/services/fetch_feedbackMessages.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 
 class Message {
-  int MessageID;
-  String Content;
+  int messageID;
+  String content;
   String firstName;
-  DateTime Date;
-  int UserId;
-  int ChatThreadId;
-  bool Archived;
+  DateTime date;
+  int userID;
+  int chatThreadID;
+  bool archived;
   bool isSent;
   bool showDate;
   bool isEdited;
 
   Message(
-      {required this.Content,
+      {required this.content,
       required this.isSent,
-      required this.Date,
+      required this.date,
       required this.firstName,
       this.showDate = false,
-      this.MessageID = 0,
-      this.UserId = 0,
-      this.ChatThreadId = 0,
-      this.Archived = false,
+      this.messageID = 0,
+      this.userID = 0,
+      this.chatThreadID = 0,
+      this.archived = false,
       this.isEdited = false});
 
   factory Message.fromJson(Map<String, dynamic> json, int currentUserId) {
     return Message(
-      MessageID: json['messageID'],
-      Content: json['content'] ?? '',
+      messageID: json['messageID'],
+      content: json['content'] ?? '',
       firstName: json['firstName'] ?? '',
-      Date: DateTime.parse(json['date']),
-      UserId: json['userId'],
-      ChatThreadId: json['chatThreadId'],
-      Archived: json['archived'] ?? false,
+      date: DateTime.parse(json['date']),
+      userID: json['userId'],
+      chatThreadID: json['chatThreadId'],
+      archived: json['archived'] ?? false,
       // Check if the message was sent by the current user
       isSent: json['userId'] == currentUserId,
       isEdited: json['isEdited'] ?? false,
@@ -162,7 +162,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
       setState(() {
         if (_editingMessageIndex != null) {
           // Edit the message locally
-          _messages[_editingMessageIndex!].Content = messageContent;
+          _messages[_editingMessageIndex!].content = messageContent;
           _editingMessageIndex = null;
         }
         _controller.clear(); // Clear the input field
@@ -195,7 +195,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
         // Handle error by optionally showing a message to the user or retrying
         setState(() {
           _messages.removeWhere(
-              (msg) => msg.Content == messageContent && msg.isSent);
+              (msg) => msg.content == messageContent && msg.isSent);
         });
       }
     }
@@ -203,15 +203,15 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
 
   Future<void> _deleteMessage(int index) async {
     FeedbackChatPage.feedbackService.fetchArchieveMessageFromMessageID(
-        _messages[index].MessageID, AuthProvider());
+        _messages[index].messageID, AuthProvider());
     setState(() {
-      _messages[index].Content = "Denne besked er blevet slettet.";
+      _messages[index].content = "Denne besked er blevet slettet.";
     });
   }
 
   void _editMessage(int index) async {
     setState(() {
-      _controller.text = _messages[index].Content;
+      _controller.text = _messages[index].content;
       _editingMessageIndex = index;
     });
   }
@@ -219,7 +219,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
   void _sendEditMessage(int index) async {
     bool response = await FeedbackChatPage.feedbackService
         .fetchUpdateMessageFromMessageID(
-            _messages[index].MessageID, _controller.text, AuthProvider());
+            _messages[index].messageID, _controller.text, AuthProvider());
     if (response) {
       fetchMessages();
       _cancelEdit();
@@ -350,7 +350,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
                 final message = _messages[index];
                 final previousMessage = index > 0 ? _messages[index - 1] : null;
                 final isNewDate = previousMessage == null ||
-                    message.Date.day != previousMessage.Date.day;
+                    message.date.day != previousMessage.date.day;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -365,7 +365,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
-                                DateFormat('dd MMMM yyyy').format(message.Date),
+                                DateFormat('dd MMMM yyyy').format(message.date),
                                 style:
                                     TextStyle(fontSize: 12, color: Colors.grey),
                               ),
@@ -381,7 +381,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
                         });
                       },
                       onLongPress: () {
-                        if (message.isSent && !message.Archived) {
+                        if (message.isSent && !message.archived) {
                           _showEditDeleteDialog(index);
                         }
                       },
@@ -394,7 +394,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
                               ? CrossAxisAlignment.end
                               : CrossAxisAlignment.start,
                           children: [
-                            if (!message.isSent && !message.Archived)
+                            if (!message.isSent && !message.archived)
                               Padding(
                                 padding:
                                     const EdgeInsets.only(left: 12, bottom: 5),
@@ -420,7 +420,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
                                     right: 12, left: 12, bottom: 5),
                                 child: Text(
                                   DateFormat('dd MMMM yyyy, HH:mm')
-                                      .format(message.Date),
+                                      .format(message.date),
                                   style: TextStyle(
                                       fontSize: 10, color: Colors.grey),
                                 ),
@@ -436,7 +436,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
-                                message.Content,
+                                message.content,
                                 style: TextStyle(
                                     color: message.isSent
                                         ? Colors.white
