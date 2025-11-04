@@ -55,7 +55,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
       });
     } else if (authProvider.userRole == ROLES.teacher) {
       int tempChildId = int.parse(widget.student['id']!);
-      final childData = await childService.GetByChildId(tempChildId);
+      final childData = await childService.getByChildId(tempChildId);
       setState(() {
         _child = childData;
       });

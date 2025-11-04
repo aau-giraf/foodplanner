@@ -251,7 +251,7 @@ class _MealFormPageState extends State<MealFormPage> {
                               ),
                             );
                             if (image != null) {
-                              final imageResponse = await UploadFoodImage(
+                              final imageResponse = await uploadFoodImage(
                                   image); // Ensure this method is defined.
                               final int responseData =
                                   jsonDecode(imageResponse.body);
