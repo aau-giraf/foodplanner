@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/custom_checkbox.dart';
 import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
@@ -34,8 +34,10 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
   late final AuthProvider authProvider;
 
   final List<Map<String, dynamic>> _ingredients = [];
+  final List<Map<String, dynamic>> _filteredIngredients = [];
   final TextEditingController _controller = TextEditingController();
-  final List<ValueNotifier<bool>> _controllers = [];
+
+  final Map<dynamic, ValueNotifier<bool>> _controllersById = {};
   Client? client;
   bool _isEditMode = false;
 
@@ -43,27 +45,51 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     apiUrl: ApiConfig.baseUrl,
   );
 
+
   @override
   void initState() {
     super.initState();
     client = http.Client();
+
+    authProvider = widget.authProvider ?? AuthProvider();
 
     _getIngredients();
   }
 
   Future<void> _getIngredients() async {
     try {
-      // final authProvider = AuthProvider(); // Initialize your AuthProvider
+      // final authProvider = AuthProvider(); // This should be injected so we can test it
       final ingredients =
           await ingredientServices.fetchIngredientsByUserID(authProvider);
       setState(() {
         _ingredients.addAll(
             ingredients.map((e) => {'id': e.id, 'name': e.name, 'foodImageId': e.foodImageId}).toList());
              _ingredients.sort((a, b ) => (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
-        _controllers.addAll(List.generate(_ingredients.length, (index) {
-          final controller = ValueNotifier<bool>(false);
-          return controller;
-        }));
+        // Preserve existing controllers where possible so selection isn't lost
+        final Map<dynamic, ValueNotifier<bool>> newControllers = {};
+        for (final ing in _ingredients) {
+          final id = ing['id'];
+          if (_controllersById.containsKey(id)) {
+            newControllers[id] = _controllersById[id]!;
+          } else {
+            newControllers[id] = ValueNotifier<bool>(false);
+          }
+        }
+        // Dispose any controllers that no longer correspond to an ingredient
+        for (final id in _controllersById.keys) {
+          if (!newControllers.containsKey(id)) {
+            try {
+              _controllersById[id]?.dispose();
+            } catch (_) {}
+          }
+        }
+        _controllersById
+          ..clear()
+          ..addAll(newControllers);
+
+        // Initialize filtered list to show all ingredients initially
+        _filteredIngredients.clear();
+        _filteredIngredients.addAll(_ingredients);
       });
     } catch (e) {
       // Handle error
@@ -71,10 +97,32 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     }
   }
 
+  // Update filtered list based on entered keyword
+  void _runFilter(String enteredKeyword) {
+    List<Map<String, dynamic>> results = [];
+    if (enteredKeyword.isEmpty) {
+      results = _ingredients;
+    } else {
+      results = _ingredients
+          .where((ing) => (ing['name'] as String)
+              .toLowerCase()
+              .contains(enteredKeyword.toLowerCase()))
+          .toList();
+    }
+
+    setState(() {
+      _filteredIngredients
+        ..clear()
+        ..addAll(results);
+    });
+  }
+
   List<Map<String, dynamic>> _getSelectedIngredients() {
     List<Map<String, dynamic>> selectedIngredients = [];
     for (int i = 0; i < _ingredients.length; i++) {
-      if (_controllers[i].value) {
+      final id = _ingredients[i]['id'];
+      final controller = _controllersById[id];
+      if (controller != null && controller.value) {
         selectedIngredients.add(_ingredients[i]);
       }
     }
@@ -108,9 +156,14 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     } else {
       // Success - remove from list
       setState(() {
+        final id = _ingredients[index]['id'];
+        if (_controllersById.containsKey(id)) {
+          _controllersById[id]?.dispose();
+          _controllersById.remove(id);
+        }
+
         _ingredients.removeAt(index);
-        _controllers[index].dispose();
-        _controllers.removeAt(index);
+        _filteredIngredients.removeWhere((ing) => ing['id'] == id);
       });
     }
   } catch (e) {
@@ -186,12 +239,16 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                 child: SearchField(
                   controller: _controller,
                   hintText: 'Søg efter ingredienser',
+                  onChanged: _runFilter,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 20),
                 child: CustomButton(
                   onTab: () async {
+                    // Clear search input and show full list before navigating
+                    _controller.clear();
+                    _runFilter('');
                     // go to create ingredient page
                     final ingredient = await Navigator.push(
                       context,
@@ -202,36 +259,44 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
 
                     if (ingredient != null) {
                       final tempIngredient = ingredient as Ingredient;
-                      setState(() {
-                        _ingredients.add({
-                          'id': tempIngredient.id,
-                          'name': tempIngredient.name,
-                          'foodImageId': tempIngredient.foodImageId
+                        setState(() {
+                          _ingredients.add({
+                            'id': tempIngredient.id,
+                            'name': tempIngredient.name,
+                            'foodImageId': tempIngredient.foodImageId
+                          });
+                          _ingredients.sort((a, b) =>  (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
+                          _controllersById[tempIngredient.id] = ValueNotifier<bool>(false);
                         });
-                        _ingredients.sort((a, b) =>  (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
-                        _controllers.add(ValueNotifier<bool>(false));
-                      });
+                        _runFilter(_controller.text);
                     }
                   },
                   text: 'Tilføj',
                   customWidth: 100,
                 ),
-              ),
+              ), 
             ],
           ),
           SizedBox(height: 20),
           Expanded(
             child: ListView.builder(
-              itemCount: _ingredients.length,
+              itemCount: _filteredIngredients.length,
               itemBuilder: (BuildContext context, index) {
+                // Find the index of the filtered item in the original list to get the right controller
+                final filteredItem = _filteredIngredients[index];
+                final id = filteredItem['id'];
+                // Ensure a stable controller exists for this id (create if missing)
+                final controller = _controllersById.putIfAbsent(id, () => ValueNotifier<bool>(false));
+
                 return SettingsWidget(
+                  key: ValueKey(id),
                   leftWidget: FoodImage(
-                    foodImageId: _ingredients[index]['foodImageId'],
+                    foodImageId: _filteredIngredients[index]['foodImageId'],
                     width: 50,
                     height: 50,
                     borderRadius: 8.0,
                   ),
-                  title: _ingredients[index]['name'],
+                  title: _filteredIngredients[index]['name'],
                   type: SettingsType.items,
                   cta: _isEditMode
                     ? InkWell(
@@ -242,11 +307,11 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                           size: 45,
                         ),
                       )
-                    : AdvancedSwitch(
-                        controller: _controllers[index],
+                    : CustomCheckbox(
+                        controller: controller,
                         activeColor: AppColors.primary,
-                        width: 60,
-                      ),
+                        size: 40,
+                    ),
                 );
               },
             ),
@@ -254,5 +319,16 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    for (final c in _controllersById.values) {
+      try {
+        c.dispose();
+      } catch (_) {}
+    }
+    super.dispose();
   }
 }
