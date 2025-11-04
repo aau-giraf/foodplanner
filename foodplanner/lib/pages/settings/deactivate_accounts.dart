@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
@@ -54,6 +56,12 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
 
   void updateArchived(int id) async {
     var error = await DeactivateAccountsPage.userService.updateArchived(id);
+    
+    if (!context.mounted){
+      developer.log('buildcontext is not mounted, in $runtimeType');
+      return;
+    }
+
     if (error != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
