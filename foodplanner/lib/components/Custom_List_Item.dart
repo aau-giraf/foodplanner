@@ -13,7 +13,7 @@ class CustomListItem extends StatelessWidget {
   final bool isTapped;
 
   const CustomListItem({
-    super.key,
+    Key? key,
     this.leftIcon,
     this.leftIconStyle,
     required this.title,
@@ -21,7 +21,7 @@ class CustomListItem extends StatelessWidget {
     required this.isLastItem,
     required this.onTap,
     required this.isTapped,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

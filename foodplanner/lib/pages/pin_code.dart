@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
@@ -38,7 +37,7 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
           hasPinCode = hasPin;
         });
       } else {
-       developer.log("Error: $hasPin");
+        print("Error: $hasPin");
       }
     });
 

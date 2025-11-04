@@ -5,17 +5,9 @@ import 'package:http/http.dart' as http;
 
 class FoodImage extends StatelessWidget {
   final int? foodImageId;
-  final double width;
-  final double height;
-  final double borderRadius;
   final imageUrl = 'https://cdn-icons-png.flaticon.com/512/739/739249.png';
 
-  const FoodImage({super.key,
-    required this.foodImageId,
-    this.width = 250,
-    this.height = 250,
-    this.borderRadius = 20,
-  });
+  FoodImage({required this.foodImageId});
 
   @override
   Widget build(BuildContext context) {
@@ -24,22 +16,17 @@ class FoodImage extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
           if (!snapshot.hasError && snapshot.hasData) {
             return ClipRRect(
-                borderRadius: BorderRadius.circular(borderRadius),
+                borderRadius: BorderRadius.circular(20),
                 child: Image(
                   image: snapshot.data!,
-                  width: width,
-                  height: height,
+                  width: 250,
+                  height: 250,
                   fit: BoxFit.cover,
                 ));
           } else {
             return ClipRRect(
-              borderRadius: BorderRadius.circular(borderRadius),
-              child: Image.network(
-                imageUrl,
-                width: width,
-                height: height,
-                fit: BoxFit.cover,
-              ),
+              borderRadius: BorderRadius.circular(20),
+              child: Image.network(imageUrl),
             );
           }
         });
@@ -62,7 +49,7 @@ class FoodImage extends StatelessWidget {
           foodImageId: foodImageId);
 
       tempImageUrl = tempImageUrl?.replaceFirst(
-          'http://localhost:9000', 'http://localhost:9000');
+          'http://localhost:9000', 'https://0812sjhc-9000.euw.devtunnels.ms');
 
       final response = await http.get(Uri.parse(tempImageUrl!));
       if (response.statusCode == 200) {
@@ -71,6 +58,7 @@ class FoodImage extends StatelessWidget {
         return NetworkImage(imageUrl);
       }
     } catch (e) {
+      print("error");
       return NetworkImage(imageUrl);
     }
   }

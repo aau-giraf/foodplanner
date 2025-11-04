@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/pages/pin_code.dart';
@@ -77,7 +76,7 @@ class LandingPageState extends State<LandingPage> {
                       Provider.of<AuthProvider>(context, listen: false);
                   await authProvider
                       .logout(); // Just call it; don't try to store a result
-                 developer.log('Logged out'); // For debugging purposes
+                  print('Logged out'); // For debugging purposes
                   context.go(LOGIN_PAGE);
                 },
                 child: const Text('Logout'),

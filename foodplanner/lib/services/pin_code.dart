@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'dart:convert';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:http/http.dart' as http;
@@ -41,7 +40,7 @@ class PinService {
         //throw Exception('Failed to load pincode');
       }
     } catch (e) {
-     developer.log('Error checking pincode: $e');
+      print('Error checking pincode: $e');
     }
   }
  ROLES roleFromString(String role) {
@@ -80,7 +79,7 @@ class PinService {
         //throw Exception('Failed to load pincode');
       }
     } catch (e) {
-     developer.log('Error updating pincode: $e');
+      print('Error updating pincode: $e');
     }
   }
 
@@ -104,7 +103,7 @@ class PinService {
         //throw Exception('Failed to load pincode');
       }
     } catch (e) {
-     developer.log('Error updating pincode: $e');
+      print('Error updating pincode: $e');
     }
   }
 }
