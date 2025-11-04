@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
@@ -81,28 +83,40 @@ class LoginPageState extends State<LoginPage> {
     try {
       final role = await LoginPage.authService
           .fetchAuthData(usernameController.text, passwordController.text);
+      
+      if (!context.mounted){
+        developer.log('buildcontext is not mounted, in $runtimeType');
+        return;
+      }
+
       switch (role) {
-      case ROLES.teacher:
-        GoRouter.of(context).go(TEACHER_ROOT);
-        break;
-      case ROLES.student:
-        GoRouter.of(context).go(STUDENT_ROOT);
-        break;
-      case ROLES.admin:
-        GoRouter.of(context).go(ADMIN_ROOT);
-        break;
-      case ROLES.parent:
-        GoRouter.of(context).go(PARENT_ROOT);
-        break;
-      default:
-        GoRouter.of(context).go(LOGIN_PAGE);
-        break;
-    }
+        case ROLES.teacher:
+          GoRouter.of(context).go(TEACHER_ROOT);
+          break;
+        case ROLES.student:
+          GoRouter.of(context).go(STUDENT_ROOT);
+          break;
+        case ROLES.admin:
+          GoRouter.of(context).go(ADMIN_ROOT);
+          break;
+        case ROLES.parent:
+          GoRouter.of(context).go(PARENT_ROOT);
+          break;
+        default:
+          GoRouter.of(context).go(LOGIN_PAGE);
+          break;
+      }
+
   }
     catch (e) {
       if (e is AuthException) {
         handleErrors({'Message': [e.message]});
       } else if (e is NetworkException) {
+        if (!context.mounted){
+          developer.log('buildcontext is not mounted, in $runtimeType');
+          return;
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Der opstod et problem ved login: ${e.message}'),
@@ -111,6 +125,11 @@ class LoginPageState extends State<LoginPage> {
           ),
         );
       } else {
+        if (!context.mounted){
+          developer.log('buildcontext is not mounted, in $runtimeType');
+          return;
+        }
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Der opstod et ukendt problem ved login: $e'),
