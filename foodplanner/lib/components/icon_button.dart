@@ -67,7 +67,7 @@ class CustomElevatedButton extends StatelessWidget {
         boxShadow: [
             // Adding shadow effect to the button for a raised appearance
             BoxShadow(
-              color: Colors.grey.withOpacity(0.5), // Shadow color with opacity
+              color: Colors.grey.withValues(alpha: 0.5), // Shadow color with opacity
               spreadRadius: 1, // Spread of the shadow
               blurRadius: 1, // Blur radius for the shadow
               offset: Offset(0, 2), // changes position of shadow

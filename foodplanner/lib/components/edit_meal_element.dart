@@ -61,7 +61,7 @@ class _EditMealElement extends State<EditMealElement> {
         boxShadow: [
           BoxShadow(
             color: Colors.grey
-                .withOpacity(0.5), // Shadow color with partial transparency
+                .withValues(alpha: 0.5), // Shadow color with partial transparency
             spreadRadius: 1, // Shadow spread radius
             blurRadius: 1, // Shadow blur radius
             offset:
