@@ -26,6 +26,7 @@ class ChildLandingPageMadpakke extends StatefulWidget {
 }
 
 class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
+  //ignore: unused_field 
   late Future<bool> _hasRolesFuture;
   Child? _child;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
