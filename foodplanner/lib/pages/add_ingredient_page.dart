@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
@@ -93,7 +94,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
       });
     } catch (e) {
       // Handle error
-      print('Failed to fetch ingredients: $e');
+     developer.log('Failed to fetch ingredients: $e');
     }
   }
 

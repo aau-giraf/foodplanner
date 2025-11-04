@@ -6,7 +6,6 @@
 import 'dart:async' as _i4;
 import 'dart:convert' as _i5;
 import 'dart:typed_data' as _i7;
-import 'dart:ui' as _i11;
 
 import 'package:foodplanner/auth/auth_provider.dart' as _i9;
 import 'package:foodplanner/models/ingredient.dart' as _i3;
@@ -532,7 +531,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
       ) as _i4.Future<_i10.ROLES?>);
 
   @override
-  void addListener(_i11.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(dynamic listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -541,7 +540,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
       );
 
   @override
-  void removeListener(_i11.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(dynamic listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],

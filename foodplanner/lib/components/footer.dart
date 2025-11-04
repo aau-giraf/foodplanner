@@ -4,6 +4,8 @@ import 'package:foodplanner/routes/paths.dart';
 import 'package:go_router/go_router.dart';
 
 class FooterBar extends StatefulWidget {
+  const FooterBar({super.key});
+
   @override
   _FooterBarState createState() => _FooterBarState();
 }

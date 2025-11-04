@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:developer' as developer;
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -110,9 +111,6 @@ class _MealPageState extends State<CameraPage> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            final size = MediaQuery.of(context).size;
-            final deviceRatio = size.width / size.height;
-
             return Stack(
               fit: StackFit.expand,
               children: [
@@ -177,7 +175,7 @@ class _MealPageState extends State<CameraPage> {
                     ),
                   );
                 } catch (e) {
-                  print('Error taking picture: $e');
+                 developer.log('Error taking picture: $e');
                 }
               },
               backgroundColor: AppColors.primary,
@@ -195,6 +193,7 @@ class _MealPageState extends State<CameraPage> {
 }
 
 // A widget that displays the picture taken by the user.
+// ignore: must_be_immutable
 class DisplayPictureScreen extends StatelessWidget {
   final XFile image;
   late MultipartFile croppedImage;
