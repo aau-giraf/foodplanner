@@ -57,7 +57,7 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
   void updateArchived(int id) async {
     var error = await DeactivateAccountsPage.userService.updateArchived(id);
     
-    if (!context.mounted){
+    if (!mounted){
       developer.log('buildcontext is not mounted, in $runtimeType');
       return;
     }
