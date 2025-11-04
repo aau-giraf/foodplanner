@@ -38,8 +38,6 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
   final TextEditingController _controller = TextEditingController();
 
   final Map<dynamic, ValueNotifier<bool>> _controllersById = {};
-
-  // final List<ValueNotifier<bool>> _controllers = [];
   Client? client;
   bool _isEditMode = false;
 
