@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
@@ -89,7 +90,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
         throw Exception('Failed to load children data');
       }
     } catch (e) {
-      print('Error fetching children data: $e');
+     developer.log('Error fetching children data: $e');
     }
   }
 

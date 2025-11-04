@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../auth/auth_provider.dart';
@@ -52,7 +53,7 @@ Future<ROLES> fetchAuthData(String email, String password) async {
       throw AuthException(error['Message'] ?? 'Failed to load auth data');
     }
   } catch (e) {
-    print('Error fetching auth data: $e');
+   developer.log('Error fetching auth data: $e');
     throw NetworkException('Forkert email eller adgangskode');
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
@@ -127,7 +128,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
             .toList();
       });
     } catch (e) {
-      print('Error fetching messages: $e');
+     developer.log('Error fetching messages: $e');
     }
   }
 
@@ -149,7 +150,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
             .toList();
       });
     } catch (e) {
-      print('Error fetching messages: $e');
+     developer.log('Error fetching messages: $e');
     }
   }
 
@@ -190,7 +191,7 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
         // Optionally refresh messages from the server to reflect the updated state
         await fetchMessages();
       } catch (e) {
-        print('Error sending message: $e');
+       developer.log('Error sending message: $e');
         // Handle error by optionally showing a message to the user or retrying
         setState(() {
           _messages.removeWhere(

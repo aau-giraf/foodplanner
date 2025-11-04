@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:convert';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user.dart';
@@ -105,7 +106,7 @@ class UserService {
     if (response.statusCode == 204) {
       return true;
     } else {
-      print(
+     developer.log(
           'Failed to unapprove users: ${response.statusCode} ${response.body}');
       throw Exception('Failed to unapprove users');
     }
@@ -255,7 +256,7 @@ class UserService {
 
   Future<http.Response> updateUser(
       int id, String firstName, String lastName, String email) async {
-    print("Knapp trykket på");
+   developer.log("Knapp trykket på");
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
       Uri.parse('$apiUrl/api/Users/UpdateLoggedIn'),
