@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -100,7 +101,7 @@ class _MealFormPageState extends State<MealFormPage> {
               ingredientId,
             );
           } catch (e) {
-            print(
+           developer.log(
                 'Failed to create packed ingredient for ID: $ingredientId - $e');
           }
         }
@@ -251,7 +252,7 @@ class _MealFormPageState extends State<MealFormPage> {
                               ),
                             );
                             if (image != null) {
-                              final imageResponse = await UploadFoodImage(
+                              final imageResponse = await uploadFoodImage(
                                   image); // Ensure this method is defined.
                               final int responseData =
                                   jsonDecode(imageResponse.body);

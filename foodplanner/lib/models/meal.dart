@@ -20,7 +20,7 @@ class Meal {
 
   // Getter to retrieve the list of packed ingredient
   List<PackedIngredient> get getPackedIngredients {
-    return this.ingredients;
+    return ingredients;
   }
 
   // Factory constructor to create a Meal instance from a JSON map
