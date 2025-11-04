@@ -99,26 +99,25 @@ class LoginPageState extends State<LoginPage> {
         break;
     }
   }
-    catch (e) {
-      if (e is AuthException) {
+    on AuthException catch (e) {
         handleErrors({'Message': [e.message]});
-      } else if (e is NetworkException) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Der opstod et problem ved login: ${e.message}'),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 6),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Der opstod et ukendt problem ved login: $e'),
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 6),
-          ),
-        );
-      }
+    }
+    on NetworkException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Der opstod et problem ved login: ${e.message}'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 6),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Der opstod et ukendt problem ved login: $e'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 6),
+        ),
+      );
     }
   }
 
