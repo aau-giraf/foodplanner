@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
+import 'package:flutter/material.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/choose_child.dart';
+import 'package:foodplanner/pages/choose_child_parent.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/routes/paths.dart';
@@ -50,10 +52,10 @@ class ParentMainPageState extends State<ParentMainPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        toolbarHeight: 100,
+        toolbarHeight: 200,
         centerTitle: true,
         title: Padding(
-          padding: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.only(top: 70),
           child: Text(
             'Velkommen \n${_user?.firstName ?? 'Forældre'}',
             style: TextStyle(fontSize: 36),
@@ -69,12 +71,14 @@ class ParentMainPageState extends State<ParentMainPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
+              hoverColor: Colors.transparent,
               onTap: (){
                 Navigator.push(
                   context, 
-                  MaterialPageRoute(builder: (context) => ChooseChild())  
+                  MaterialPageRoute(builder: (context) => ChooseChildParent())  
                 );
               },
+              
               child: Container(
                 height: 59,
                 width: double.infinity,
@@ -93,10 +97,9 @@ class ParentMainPageState extends State<ParentMainPage> {
                       textAlign: TextAlign.center
                     ),
                     const Positioned(
-                      right: 10,
-                      child: SFIcon(
-                        SFIcons.sf_heart_fill,
-                        fontSize: 22
+                      right: 19,
+                      child: Icon(
+                        Icons.escalator_warning,
                       ),
                     ),
                   ]
@@ -106,6 +109,7 @@ class ParentMainPageState extends State<ParentMainPage> {
 
             SizedBox(height: 30),
             InkWell(
+              hoverColor: Colors.transparent,
               onTap: (){
                 Navigator.push(
                   context, 
@@ -131,10 +135,9 @@ class ParentMainPageState extends State<ParentMainPage> {
                       textAlign: TextAlign.center
                     ),
                     const Positioned(
-                      right: 0,
-                      child: SFIcon(
-                        SFIcons.sf_heart_fill,
-                        fontSize: 22
+                      right: 19,
+                      child: Icon(
+                        Icons.settings,
                       ),
                     ),
                   ]
@@ -144,6 +147,7 @@ class ParentMainPageState extends State<ParentMainPage> {
 
             SizedBox(height: 30),
             InkWell(
+              hoverColor: Colors.transparent,
               onTap: () async {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
                 await authProvider.logout();
@@ -167,10 +171,9 @@ class ParentMainPageState extends State<ParentMainPage> {
                       textAlign: TextAlign.center
                     ),
                     const Positioned(
-                      right: 0,
-                      child: SFIcon(
-                        SFIcons.sf_heart_fill,
-                        fontSize: 22
+                      right: 19,
+                      child: Icon(
+                        Icons.logout,
                       ),
                     ),
                   ]

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
-class ChooseChild extends StatelessWidget {
+class ChooseChildParent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        toolbarHeight: 200,
         centerTitle: true,
         title: Padding(
-          padding: const EdgeInsets.only(top: 15),
+          padding: const EdgeInsets.only(top: 25),
           child: Text(
             'Vælg barn',
             style: TextStyle(fontSize: 36),
