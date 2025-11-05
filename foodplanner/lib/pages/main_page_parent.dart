@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
@@ -69,7 +69,6 @@ class ParentMainPageState extends State<ParentMainPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
-              borderRadius: BorderRadius.circular(12),
               onTap: (){
                 Navigator.push(
                   context, 
@@ -78,23 +77,35 @@ class ParentMainPageState extends State<ParentMainPage> {
               },
               child: Container(
                 height: 59,
-                width: 362,
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(12)
+                  borderRadius: BorderRadius.circular(30)
                 ),
                 padding: const EdgeInsets.all(15),
-                child: Text(
-                  'Vælg barn',
-                  style: TextStyle(fontSize: 20),
-                  textAlign: TextAlign.center,
-                )
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Text(
+                      'Vælg barn',
+                      style: TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center
+                    ),
+                    const Positioned(
+                      right: 10,
+                      child: SFIcon(
+                        SFIcons.sf_heart_fill,
+                        fontSize: 22
+                      ),
+                    ),
+                  ]
+                ),
               ),
             ),
 
             SizedBox(height: 30),
             InkWell(
-              borderRadius: BorderRadius.circular(12),
               onTap: (){
                 Navigator.push(
                   context, 
@@ -103,40 +114,66 @@ class ParentMainPageState extends State<ParentMainPage> {
               },
               child: Container(
                 height: 59,
-                width: 362,
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(12)
+                  borderRadius: BorderRadius.circular(30),
+                  
                 ),
                 padding: const EdgeInsets.all(15),
-                child: Text(
-                  'Indstillinger',
-                  style: TextStyle(fontSize: 20),
-                  textAlign: TextAlign.center,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Text(
+                      'Indstillinger',
+                      style: TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center
+                    ),
+                    const Positioned(
+                      right: 0,
+                      child: SFIcon(
+                        SFIcons.sf_heart_fill,
+                        fontSize: 22
+                      ),
+                    ),
+                  ]
                 ),
               ),
             ),
 
             SizedBox(height: 30),
             InkWell(
-              borderRadius: BorderRadius.circular(12),  
-              /*onTab: () async {
+              onTap: () async {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
                 await authProvider.logout();
                 context.go(LOGIN_PAGE);
-              },*/
+              },
               child: Container(
                 height: 59,
-                width: 362,
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(12)
+                  borderRadius: BorderRadius.circular(30)
                 ),
                 padding: const EdgeInsets.all(15),
-                child: Text(
-                  'Log ud',
-                  style: TextStyle(fontSize: 20),
-                  textAlign: TextAlign.center,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Text(
+                      'Log ud',
+                      style: TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center
+                    ),
+                    const Positioned(
+                      right: 0,
+                      child: SFIcon(
+                        SFIcons.sf_heart_fill,
+                        fontSize: 22
+                      ),
+                    ),
+                  ]
                 ),
               ),
             ),
