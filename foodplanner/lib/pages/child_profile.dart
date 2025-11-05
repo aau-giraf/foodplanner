@@ -498,7 +498,8 @@ class ChildProfileState extends State<ChildProfile>
                 children: [
                   CustomButton(
                     text: 'Gem ændringer',
-                    onTab: () => {
+                    onTab: () {
+                      final navigator = Navigator.of(context); 
                       ChildProfile.childService
                           .updateChild(
                               widget.child.childId,
@@ -511,12 +512,13 @@ class ChildProfileState extends State<ChildProfile>
                               selectedParentId ?? widget.child.parentId,
                               int.parse(selectedClassId!))
                           .then((response) {
-                        if (response.statusCode == 204) {
-                          Navigator.pop(context);
+
+                        if (response.statusCode == 204) {  
+                          navigator.pop();
                         } else {
                           throw Exception('Der skete en fejl');
                         }
-                      }),
+                      });
                     },
                   ),
                   Padding(padding: EdgeInsets.symmetric(vertical: 10)),

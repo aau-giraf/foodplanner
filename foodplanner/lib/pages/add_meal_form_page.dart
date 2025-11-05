@@ -261,6 +261,10 @@ class _MealFormPageState extends State<MealFormPage> {
                               });
                             }
                             createMealWithIngredients();
+                            if (!context.mounted){
+                              developer.log('buildcontext was unmounted in $runtimeType');
+                              return;
+                            }
                             Navigator.pop(context);
                             Navigator.pop(context);
                           },
@@ -271,6 +275,10 @@ class _MealFormPageState extends State<MealFormPage> {
                               true, // Mark as a destructive action.
                           onPressed: () async {
                             await createMealWithIngredients();
+                            if (!context.mounted){
+                              developer.log('buildcontext was unmounted in $runtimeType');
+                              return;
+                            }
                             Navigator.pop(context);
                             Navigator.pop(context);
                           },

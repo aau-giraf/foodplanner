@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
@@ -66,6 +68,12 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                   onPressed: () async {
                     await AuthProvider().setRole(ROLES.student);
                     await AuthProvider().loadFromStorage();
+
+                    if (!context.mounted){
+                      developer.log('buildcontext is not mounted, in $runtimeType');
+                      return;
+                    }
+
                     GoRouter.of(context).go('/');
                   },
                   icon: SFIcon(SFIcons.sf_lock_open_fill)),
