@@ -132,13 +132,14 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
 
   Future<void> _deleteIngredient(int index) async {
      try {
+    final messenger = ScaffoldMessenger.of(context);
     final id = _ingredients[index]["id"];
     final authProvider = AuthProvider();
     final response = await ingredientServices.deleteIngredient(client!, authProvider, id);
     
     if (response.statusCode == 500) {
       // Handle 500 error specifically
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text('Ingredient kan ikke slettes, da den er brugt i mindst en madpakke'),
           backgroundColor: Colors.red,
@@ -147,7 +148,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
       );
     } else if (response.statusCode != 200) {
       // Handle other non-200 status codes
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text('Der opstod et ukendt problem ved fjernelsen af en ingredient: ${response.statusCode}'),
           backgroundColor: Colors.red,
@@ -169,6 +170,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     }
   } catch (e) {
     // Handle network errors or exceptions
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Der opstod et ukendt problem ved fjernelsen af en ingredient: $e'),
