@@ -18,7 +18,7 @@ import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
+import 'package:foodplanner/pages/landing_page_admin.dart';
 import '../pages/login_page.dart';
 import '../pages/unauthorized_page.dart';
 
@@ -269,12 +269,14 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return Column(
+              return const AdminLandingPage();
+              /*return Column(
                 children: [
                   const Text('Admin Page'),
                   NavBar(),
                 ],
-              ); // another dummy page, I think Dressi is making a new one TODO
+              ); // another dummy page, I think Dressi is making a new one TODO*/
+              
             } else {
               return const UnauthorizedPage();
             }
