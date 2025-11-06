@@ -76,14 +76,28 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
           }
         },
         {
-          'title': "Administrér Skole",
+          /*'title': "Administrér Skole",
           'cta': Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.school),
               SizedBox(width: 10),
             ],
+          ),*/
+          'title': "Skift Rolle",
+          'cta': Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.switch_account),
+              SizedBox(width: 10),
+            ],
           ),
+          'ctaFunction': () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const RoleSelectionPage()),
+            );
+          }
         },
         {
           'title': "Indstillinger",
@@ -134,32 +148,33 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
         },
       ];
 
-    @override
-  Widget build(BuildContext context){
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        toolbarHeight: 225,
-        centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 70),
+        title: Center(
           child: Text(
-            'Velkommen \n${admin.firstName ?? 'Admin'}',
-            style: TextStyle(fontSize: 36),
-            textAlign: TextAlign.center,
-          )
-        )
+            'Admin',
+            style: AppTextStyles.headline4,
+          ),
+        ),
+        backgroundColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-
       bottomNavigationBar: NavBar(),
       body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height
+              - kToolbarHeight
+              - MediaQuery.of(context).padding.top,
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 10),
+                const SizedBox(height: 40),
                 ...adminActions.map((action) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
@@ -174,10 +189,9 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
                           borderRadius: BorderRadius.circular(50),
                           boxShadow: [
                             BoxShadow(
-                              color: Color(0x3F000000),
-                      blurRadius: 4,
-                      offset: Offset(0, 4),
-                      spreadRadius: 0,
+                              color: Colors.black12,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
                             ),
                           ],
                         ),

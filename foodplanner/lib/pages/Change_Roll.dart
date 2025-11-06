@@ -8,8 +8,10 @@ import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/models/user.dart' as model;
 import 'package:foodplanner/services/user_service.dart';
-import 'package:provider/provider.dart';
-
+import 'package:go_router/go_router.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/routes/paths.dart';
 
 class RoleSelectionPage extends StatefulWidget {
   const RoleSelectionPage({super.key});
