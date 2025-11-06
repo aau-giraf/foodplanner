@@ -297,10 +297,10 @@ Future<Uint8List> cropImageToSquare(XFile image) async {
     final squareSize = width < height ? width : height;
     final croppedImage = img.copyCrop(
       decodedImage,
-      (width - squareSize) ~/ 2,
-      (height - squareSize) ~/ 2,
-      squareSize,
-      squareSize,
+      x: (width - squareSize) ~/ 2,
+      y: (height - squareSize) ~/ 2,
+      width: squareSize,
+      height: squareSize,
     );
     final croppedBytes = img.encodeJpg(croppedImage);
 
