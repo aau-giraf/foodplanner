@@ -130,7 +130,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
       appBar: AppBar(
         title: Center(
           child: Text(
-            'Admin',
+            'Velkommen ${admin.firstName}${admin.lastName.isNotEmpty ? ' ${admin.lastName}' : ''}',
             style: AppTextStyles.headline4,
           ),
         ),
