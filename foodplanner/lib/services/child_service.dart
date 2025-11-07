@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/services/api_config.dart';
 import 'package:http/http.dart' as http;
 
 class ChildService {
@@ -65,7 +67,7 @@ class ChildService {
   }
 
   Future<http.Response> updateChild(int id, String firstName, String lastName,
-      int parentId, int classId) async {
+      /*int parentId,*/ int classId) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
       Uri.parse('$apiUrl/api/Admin/UpdateChild'),
@@ -77,7 +79,7 @@ class ChildService {
         'ChildId': id,
         'firstName': firstName,
         'lastName': lastName,
-        'parentId': parentId,
+        /*'parentId': parentId,*/
         'classId': classId,
       }),
     );
@@ -109,6 +111,31 @@ class ChildService {
       return Child.fromJson(data);
     } else {
       throw Exception('Failed to load child data');
+    }
+  }
+
+  Future<List<Child>> fetchChildrenByParent() async {
+    List<dynamic> jsonList = [];
+    final jwtToken = await AuthProvider().retrieveToken();
+
+    var apiClient = ApiClient(basePath: ApiConfig.baseUrl);
+    apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
+    
+    final childrensApi = ChildrensApi(apiClient);
+    
+    final response = await childrensApi.apiChildrensGetChildrenByParentIdGetWithHttpInfo(
+      authorization: 'Bearer $jwtToken',
+      );
+
+    if (response.statusCode == 200) {
+        jsonList = response.body is List
+          ? response.body
+          : json.decode(response.body);
+
+        print(jsonList.toString()); // for debugging purposes
+      return jsonList.map((jsonItem) => Child.fromJson(jsonItem)).toList();
+    } else {
+      throw Exception('Failed to load children (status ${response.statusCode})');
     }
   }
 }
