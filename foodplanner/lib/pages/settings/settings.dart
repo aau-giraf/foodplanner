@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
@@ -19,8 +20,9 @@ import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/text_field.dart';
-
-// næste der skal kigge den igennem, så har jeg fået inspiration fra: profile_page
+import 'package:foodplanner/models/user.dart';
+import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/routes/paths.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -47,11 +49,6 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
       firstName: 'Unknown',
       lastName: 'Unknown',
       classId: 0);
-
-  // DB:
-  // child_relation:  user_id, child_id
-  // users:           id, first_name, last_name, email, password, role, pincode, role_approced, archived
-  // children:        child_id, first_name, last_name, class_id
 
   bool isEditingFirstName = false;
   bool isEditingLastName = false;
@@ -86,7 +83,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
     });
   }
   
-  fetchUser(){
+  Future<void> fetchUser() async {
     final userInfo = await Settings.userService.fetchLoggedInUser();
     setState(() {
       user = userInfo;
@@ -99,7 +96,8 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
     });
   }
 
-  fetchUserToChild(){
+  // Den her skal lige laves
+  Future<void> fetchUserToChild() async {
     final userInfo = await Settings.userService.userInfo(user.id);
     final fetchedChild = await Settings.childService.fetchChildById();
     setState(() {
@@ -108,13 +106,13 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
       firstNameController.text = user.firstName;
       lastNameController.text = user.lastName;
       emailController.text = user.email;
-      updatedFirstName = user.firstname;
+      updatedFirstName = user.firstName;
       updatedLastName = user.lastName;
       updatedEmail = user.email;
     });
   }
 
-  Future<void> updatedPassword() async {
+  Future<void> updatePassword() async {
     final userInfo = await Settings.userService.updatePassword(updatedPassword);
     setState(() {
       user = userInfo;
@@ -148,6 +146,23 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
   }
 
   Future<void> saveChanges() async {
+    await Settings.userService.updateUser(
+      user.id,
+      firstNameController.text.trim(),
+      lastNameController.text.trim(),
+      emailController.text.trim()
+    );
+
+    final futures = <Future<void>>[];
+
+    if(isEditingPassword && updatedPassword.trim().isNotEmpty) {
+      futures.add(updatePassword());
+    }
+
+    if(isEditingPincode && updatedPincode.trim().isNotEmpty){
+      futures.add(updatePincode());
+    }
+
     if(updatedFirstName.isNotEmpty ||
         updatedLastName.isNotEmpty ||
         updatedEmail.isNotEmpty){
@@ -158,6 +173,30 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
             updatedEmail.isNotEmpty ? updatedEmail : user.email,
           );
         }
+  }
+
+  Future<void> resetPage() async {
+    if (userRole == ROLES.parent){
+      await fetchUser();
+      setState(() {
+        isEditingFirstName = false;
+        isEditingLastName = false;
+        isEditingEmail = false;
+        isEditingPassword = false;
+        isEditingPincode = false;
+        hasChanges = false;
+      });
+      }
+    else if (userRole == ROLES.teacher || userRole == ROLES.admin) {
+      await fetchUser();
+      setState(() {
+        isEditingFirstName = false;
+        isEditingLastName = false;
+        isEditingEmail = false;
+        isEditingPassword = false;
+        hasChanges = false;
+      });
+    }
   }
 
   // These things are notifications and biometric, and they do not have some functions yet
@@ -218,6 +257,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                     setState(() {
                       isEditingFirstName = true;
                     });
+                    onFieldChanged();
                   },
                 ),
               ],
@@ -226,16 +266,235 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
           'showSpacer': false,
         },
         {
-          'title': "Efternavn:"
+          'title': "Efternavn:",
+          'showIcon': false,
+          'isEditable': isEditingLastName,
+          'cta': Expanded(
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: isEditingLastName ? Padding(
+                    padding: const EdgeInsets.only(left:10.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: CustomTextField(
+                        controller: lastNameController,
+                        errorText: '',
+                        hintText: 'Efternavn',
+                        obscureText: false,
+                        color: Colors.transparent,
+                        onChanged: (value){
+                          updatedLastName = value;
+                          onFieldChanged();
+                        },
+                      )
+                    )
+                  )
+                  : Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        user.lastName,
+                        style: AppTextStyles.bigText,
+                      )
+                    ]
+                  )
+                ),
+                IconButton(
+                  icon: SFIcon(
+                    SFIcons.sf_pencil,
+                    color: AppColors.textPrimary,
+                    fontSize: 28,
+                  ),
+                  onPressed: (){
+                    setState(() {
+                      isEditingLastName = true;
+                    });
+                    onFieldChanged();
+                  },
+                )
+              ]
+            )
+          ),
+          'showSpacer': false,
         },
         {
-          'title': "Email:"
+          'title': "Email:",
+          'showIcon': false,
+          'isEditable': isEditingEmail,
+          'cta': Expanded(
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: isEditingEmail ? Padding(
+                    padding: const EdgeInsets.only(left: 40.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: CustomTextField(
+                        controller: emailController,
+                        errorText: '',
+                        hintText: 'Email',
+                        obscureText: false,
+                        color: Colors.transparent,
+                        onChanged: (value) {
+                          updatedEmail = value;
+                          onFieldChanged();
+                        },
+                      )
+                    )
+                  )
+                  : Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        user.email,
+                        style:AppTextStyles.bigText,
+                      )
+                    ],
+                  )
+                ),
+                IconButton(
+                  icon: SFIcon (
+                    SFIcons.sf_pencil,
+                    color: AppColors.textPrimary,
+                    fontSize: 28,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isEditingEmail = true;
+                    });
+                    onFieldChanged();
+                  },
+                )
+              ],
+            )
+          ),
+          'showSpacer': false,
         },
         {
-          'title': "Pin-kode:"
+          'title': "Kodeord:",
+          'showIcon': false,
+          'isEditable': isEditingPassword,
+          'cta': Expanded(
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: isEditingPassword ? Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: CustomTextField(
+                        controller: passwordController,
+                        errorText: '',
+                        hintText: 'Adgangskode',
+                        obscureText: false,
+                        color: Colors.transparent,
+                        onChanged: (value) {
+                          updatedPassword = value;
+                          onFieldChanged();
+                        }
+                      )
+                    )
+                  )
+                  : Row (
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        '********',
+                        style: AppTextStyles.bigText,
+                      )
+                    ],
+                  )
+                ),
+                IconButton(
+                  icon: SFIcon(
+                    SFIcons.sf_pencil,
+                    color: AppColors.textPrimary,
+                    fontSize: 28,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isEditingPassword = true;
+                      passwordController.clear();
+                    });
+                    onFieldChanged();
+                  },
+                )
+              ]
+            )
+          ),
+          'showSpacer': false,
         },
         {
-          'title': "Kodeord:"
+          'title': "Pin-kode:",
+          'showIcon': false,
+          'isEditable': isEditingPincode,
+          'cta': Expanded(
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: isEditingPincode ? Padding(
+                    padding: const EdgeInsets.only(left: 17.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: CustomTextField(
+                        controller: pincodeController,
+                        errorText: '',
+                        hintText: 'Pinkode',
+                        obscureText: false,
+                        color: Colors.transparent,
+                        onChanged: (value) {
+                          updatedPincode = value;
+                          onFieldChanged();
+                        },
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(4)
+                        ],
+                      )
+                    )
+                  )
+                  : Row (
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        '****',
+                        style: AppTextStyles.bigText,
+                      )
+                    ]
+                  ),
+                ),
+                IconButton(
+                  icon: SFIcon(
+                    SFIcons.sf_pencil,
+                    color: AppColors.textPrimary,
+                    fontSize: 28,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isEditingPincode = true;
+                      pincodeController.clear();
+                    });
+                    onFieldChanged();
+                  },
+                )
+              ]
+            )
+          ),
+          'divider': false,
+          'showSpacer': false,
         },
         /*{
           'title': "Vis madpakke",
@@ -348,7 +607,6 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -365,36 +623,63 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Card(
-                elevation: 2,
-                color: AppColors.background,
-                surfaceTintColor: AppColors.background,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Column(
-                      children: [
-                        /*Text(
-                          "Generelt",
-                          style: AppTextStyles.bigText.copyWith(
-                            fontWeight: FontWeight.bold,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  children: [
+                    Card(
+                      elevation: 2,
+                      color: AppColors.background,
+                      surfaceTintColor: AppColors.background,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Column(
+                            children: [
+                              SizedBox(height: 10),
+                              ...generalSettings.map((setting) {
+                                return SettingsWidget(
+                                  leftIcon: setting['leftIcon'],
+                                  rightIcon : setting['rightIcon'],
+                                  title: setting['title'],
+                                  isEditable: setting['isEditable'],
+                                  cta: setting['cta'],
+                                  type: SettingsType.inlineItems,
+                                  divider: setting['divider'] ?? true,
+                                  showSpacer: setting['showSpacer'] ?? true,
+                                );
+                              }),
+                            ],
                           ),
-                        ),*/
-                        SizedBox(height: 10),
-                        ...generalSettings.map((setting) {
-                          return SettingsWidget(
-                            leftIcon: setting['leftIcon'],
-                            rightIcon : setting['rightIcon'],
-                            title: setting['title'],
-                            type: SettingsType.inlineItems,
-                            cta: setting['cta'],
-                            divider: setting['divider'] ?? true,
-                          );
-                        }),
-                      ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                    Visibility(
+                      visible: hasChanges,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 20),
+                          CustomButton(
+                            text: 'Gem ændringer',
+                            onTab: () async {
+                              await saveChanges();
+                              await resetPage();
+                            },
+                          ),
+                          SizedBox(height: 20),
+                          CustomButton(
+                            text: 'Fortryd',
+                            onTab: () {
+                              resetPage();
+                            },
+                            backgroundColor: AppColors.background,
+                            foregroundColor: Colors.black,
+                          )
+                        ]
+                      )
+                    ),
+                  ]
+                )
               ),
               SizedBox(height: 10),
               if (authProvider.userRole?.hasRole(Role.admin) ?? false)
@@ -436,10 +721,14 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: CustomButton(
-                  onTab: null,
                   text: "Log ud",
+                  onTab: () async {
+                    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                    await authProvider.logout();
+                    context.go(LOGIN_PAGE);
+                  },
                   foregroundColor: AppColors.textFieldBorderFocus,
-                  size: ButtonSize.medium,
+                  backgroundColor: AppColors.background,
                 ),
               ),
               Padding(
