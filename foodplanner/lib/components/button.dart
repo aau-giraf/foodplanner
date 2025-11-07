@@ -98,7 +98,7 @@ class CustomButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
-          disabledForegroundColor: foregroundColor.withValues(alpha: 0.5),
+          disabledForegroundColor: foregroundColor.withOpacity(0.5),
           elevation: 3,
           padding: buttonPadding, // Set the padding for the button
         ),

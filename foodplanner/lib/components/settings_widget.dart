@@ -8,7 +8,6 @@ enum SettingsType { items, header, inlineItems }
 
 class SettingsWidget extends StatefulWidget {
   final IconData? leftIcon;
-  final Widget? leftWidget;
   final String title;
   final String subTitle;
   final dynamic cta;
@@ -23,7 +22,6 @@ class SettingsWidget extends StatefulWidget {
   const SettingsWidget({
     super.key,
     this.leftIcon,
-    this.leftWidget,
     required this.title,
     this.subTitle = '',
     this.cta,
@@ -54,13 +52,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         child: Row(
           children: [
             if (widget.showIcon)
-            if (widget.leftWidget != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0, vertical: 15.0),
-                child: widget.leftWidget!,
-              )
-            else if (widget.leftIcon != null)
+            if (widget.leftIcon != null)
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 10.0, vertical: 15.0),

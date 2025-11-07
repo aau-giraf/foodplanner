@@ -8,7 +8,7 @@ import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
-import 'package:foodplanner/pages/landing_page_parent.dart';
+import 'package:foodplanner/pages/main_page_parent.dart';
 import 'package:foodplanner/pages/landing_page_teacher.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
@@ -146,7 +146,7 @@ final router = GoRouter(
             } else if (snapshot.hasData && snapshot.data == true) {
               return const ChildLandingPageMadpakke(
                 student: {},
-              );
+              ); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
               return const UnauthorizedPage();
             }
@@ -170,7 +170,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const CreateChildPage();
+              return const CreateChildPage(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
               return const UnauthorizedPage();
             }
@@ -195,7 +195,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const Settings();
+              return const Settings(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
               return const UnauthorizedPage();
             }
@@ -245,7 +245,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const FeedbackChatPage();
+              return const FeedbackChatPage(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
               return const UnauthorizedPage();
             }
@@ -274,7 +274,7 @@ final router = GoRouter(
                   const Text('Admin Page'),
                   NavBar(),
                 ],
-              );
+              ); // another dummy page, I think Dressi is making a new one TODO
             } else {
               return const UnauthorizedPage();
             }
@@ -299,7 +299,7 @@ final router = GoRouter(
                   ),
                 ); // Show loading while waiting
               } else if (snapshot.hasData && snapshot.data == true) {
-                return const ParentLandingPageMadpakke(); // This should be fine
+                return const ParentMainPage(); // This should be fine
               } else {
                 return const UnauthorizedPage();
               }
@@ -310,7 +310,7 @@ final router = GoRouter(
         routes: [
           GoRoute(
             path: MADPAKKE,
-            builder: (context, state) => ParentLandingPageMadpakke(),
+            builder: (context, state) => ParentMainPage(),
           )
         ]),
   ],

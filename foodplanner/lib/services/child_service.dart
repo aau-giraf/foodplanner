@@ -99,7 +99,7 @@ class ChildService {
     return response;
   }
 
-  Future<Child> getByChildId(int id) async {
+  Future<Child> GetByChildId(int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(
         Uri.parse('$apiUrl/api/Childrens/GetChildFromChildId/$id'),

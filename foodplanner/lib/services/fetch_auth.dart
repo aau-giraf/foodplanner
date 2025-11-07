@@ -1,5 +1,8 @@
-import 'dart:developer' as developer;
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:foodplanner/pages/landing_page_teacher.dart';
+import 'package:foodplanner/routes/paths.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import '../auth/auth_provider.dart';
 import '../routes/user_roles.dart';
@@ -53,7 +56,7 @@ Future<ROLES> fetchAuthData(String email, String password) async {
       throw AuthException(error['Message'] ?? 'Failed to load auth data');
     }
   } catch (e) {
-   developer.log('Error fetching auth data: $e');
+    print('Error fetching auth data: $e');
     throw NetworkException('Forkert email eller adgangskode');
   }
 }

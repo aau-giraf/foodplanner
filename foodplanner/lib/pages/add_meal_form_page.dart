@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -10,9 +9,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
-import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/ingredient_services.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:http/http.dart' as http;
@@ -101,7 +98,7 @@ class _MealFormPageState extends State<MealFormPage> {
               ingredientId,
             );
           } catch (e) {
-           developer.log(
+            print(
                 'Failed to create packed ingredient for ID: $ingredientId - $e');
           }
         }
@@ -189,12 +186,8 @@ class _MealFormPageState extends State<MealFormPage> {
                         itemBuilder: (BuildContext context, index) {
                           final ingredient = selectedIngredients[index];
                           return SettingsWidget(
-                            leftWidget: FoodImage(
-                              foodImageId: ingredient['foodImageId'],
-                              width: 50,
-                              height: 50,
-                              borderRadius: 8.0,
-                            ),
+                            leftIcon: SFIcons
+                                .sf_person_crop_circle_fill_badge_checkmark,
                             title: ingredient['name'],
                             type: SettingsType.items,
                           );
@@ -209,7 +202,7 @@ class _MealFormPageState extends State<MealFormPage> {
                           final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AddIngredientPage(authProvider: AuthProvider()),
+                              builder: (context) => AddIngredientPage(),
                             ),
                           );
                           if (result != null) {
@@ -252,7 +245,7 @@ class _MealFormPageState extends State<MealFormPage> {
                               ),
                             );
                             if (image != null) {
-                              final imageResponse = await uploadFoodImage(
+                              final imageResponse = await UploadFoodImage(
                                   image); // Ensure this method is defined.
                               final int responseData =
                                   jsonDecode(imageResponse.body);

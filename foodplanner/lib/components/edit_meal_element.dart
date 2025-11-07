@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:foodplanner/components/image.dart';
@@ -61,7 +63,7 @@ class _EditMealElement extends State<EditMealElement> {
         boxShadow: [
           BoxShadow(
             color: Colors.grey
-                .withValues(alpha: 0.5), // Shadow color with partial transparency
+                .withOpacity(0.5), // Shadow color with partial transparency
             spreadRadius: 1, // Shadow spread radius
             blurRadius: 1, // Shadow blur radius
             offset:
