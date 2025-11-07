@@ -6,7 +6,7 @@ import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'landing_page_teacher.dart';
+import 'package:foodplanner/pages/main_page_teacher.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -68,7 +68,7 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const TeacherLandingPage()),
+                      builder: (context) => const TeacherMainPage()),
                 );
               },
               child: const Text('Go to Teacher Landing Page'),

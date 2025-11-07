@@ -20,15 +20,15 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:validators/validators.dart';
 
-class ParentMainPage extends StatefulWidget {
-  const ParentMainPage({super.key});
+class TeacherMainPage extends StatefulWidget {
+  const TeacherMainPage({super.key});
 
   @override
-  State<ParentMainPage> createState() =>
-      ParentMainPageState();
+  State<TeacherMainPage> createState() =>
+      TeacherMainPageState();
 }
 
-class ParentMainPageState extends State<ParentMainPage> {
+class TeacherMainPageState extends State<TeacherMainPage> {
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   dynamic _user;
 
@@ -57,7 +57,7 @@ class ParentMainPageState extends State<ParentMainPage> {
         title: Padding(
           padding: const EdgeInsets.only(top: 70),
           child: Text(
-            'Velkommen \n${_user?.firstName ?? 'Forældre'}',
+            'Velkommen \n${_user?.firstName ?? 'Lærer'}',
             style: TextStyle(fontSize: 36),
             textAlign: TextAlign.center,
           )
