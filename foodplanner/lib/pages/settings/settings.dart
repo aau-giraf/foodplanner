@@ -4,6 +4,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
@@ -196,6 +197,15 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
         isEditingPassword = false;
         hasChanges = false;
       });
+    }
+  }
+
+  void deleteUser(int userId) async {
+    var error = await Settings.userService.deleteUser(userId);
+    if (error != null) {
+      print('Her');
+      // Her vi skal slette
+      context.go(LOGIN_PAGE);
     }
   }
 
@@ -734,13 +744,24 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: CustomButton(
-                  onTab: null,
                   text: "Slet konto",
-                  foregroundColor: AppColors.errorText,
-                  backgroundColor: Colors.white,
-                  size: ButtonSize.medium,
-                ),
-              ),
+                  onTab: () {
+                    showIPhonePopupBox(
+                      context: context,
+                      title: 'Slet bruger',
+                      message: 'Er du sikker på, at du vil slette din konto?',
+                      confirmText: 'Ja',
+                      cancelText: 'Nej',
+                      onConfirm: (){
+                        deleteUser(user.id);
+                        Navigator.of(context).pop();
+                      },
+                      onCancel: (){
+                        Navigator.of(context).pop();
+                      }
+                    );
+                })
+              )
             ],
           ),
         ),

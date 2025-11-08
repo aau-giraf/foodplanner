@@ -256,7 +256,7 @@ class UserService {
 
   Future<http.Response> updateUser(
       int id, String firstName, String lastName, String email) async {
-   developer.log("Knapp trykket på");
+   developer.log("Knap trykket på");
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
       Uri.parse('$apiUrl/api/Users/UpdateLoggedIn'),
@@ -272,5 +272,22 @@ class UserService {
     );
 
     return response;
+  }
+
+  Future<dynamic> deleteUser(int userId) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.delete(
+      Uri.parse('$apiUrl/api/Users/Delete/$userId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $jwtToken',
+      }
+    );
+
+    if (response.statusCode == 400){
+      return jsonDecode(response.body);
+    } else if (response.statusCode != 200){
+      return {'Message': 'Kunne ikke slette bruger'};
+    }
   }
 }
