@@ -126,6 +126,7 @@ class _SignupChildState extends State<CreateChildPage> {
 
     //proceed with sign-up logic if everything is correct
     createChildHandler(context, firstName, lastName, selectedClassId);
+    Navigator.pop(context);
   }
 
   //Placeholder function for sign-up logic

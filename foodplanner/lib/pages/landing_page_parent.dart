@@ -103,7 +103,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                                 mealNotifier.fetchMealData();
                               });
                             },
-                            icon: SFIcon(
+                            sfIcon: SFIcon(
                               SFIcons.sf_plus,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

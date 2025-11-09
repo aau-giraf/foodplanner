@@ -9,7 +9,8 @@ enum ButtonSize { small, medium, large }
 class CustomButton extends StatelessWidget {
   final Function()? onTab;
   final String text;
-  final SFIcon? icon;
+  final SFIcon? sfIcon;
+  final Icon? materialIcon;
   final Color backgroundColor;
   final Color foregroundColor;
   final ButtonSize? size; // Optional size parameter
@@ -20,7 +21,8 @@ class CustomButton extends StatelessWidget {
     super.key,
     required this.onTab,
     this.text = '',
-    this.icon,
+    this.sfIcon,
+    this.materialIcon,
     this.backgroundColor = AppColors.primary, // Default background color
     this.foregroundColor = AppColors.textSecondary, // Default foreground color
     this.size, // Size parameter
@@ -102,7 +104,7 @@ class CustomButton extends StatelessWidget {
           elevation: 3,
           padding: buttonPadding, // Set the padding for the button
         ),
-        child: icon ??
+        child: sfIcon ??
             Text(
               text,
               style: buttonTextStyle, // Use the determined text style
