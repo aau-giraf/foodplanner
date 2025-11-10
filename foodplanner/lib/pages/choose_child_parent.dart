@@ -1,5 +1,6 @@
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -20,10 +21,12 @@ class ChooseChildParent extends StatefulWidget {
 
 class ChooseChildParentState extends State<ChooseChildParent> {
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-  dynamic _user;
+  dynamic _user; 
 
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
   List<Child> children = [];
+
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -35,6 +38,8 @@ class ChooseChildParentState extends State<ChooseChildParent> {
   Future<void> _loadChildren() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
+    setState(() => isLoading = true);
+
     try {
       await authProvider.loadFromStorage();
       final userData = await userService.fetchLoggedInUser();
@@ -45,9 +50,12 @@ class ChooseChildParentState extends State<ChooseChildParent> {
         print('Could not fetch children: $e');
       }
 
+      await Future.delayed(Duration(milliseconds: 50));
+
       if (mounted) { // checks whether the object is part of a tree
         setState(() {
           _user = userData;
+          isLoading = false;
         });
       }
 
@@ -57,6 +65,7 @@ class ChooseChildParentState extends State<ChooseChildParent> {
   }
 
   Widget buildButton(StatefulWidget pageRoute, String buttonTxt, IconData icon, String iconType){
+    const double iconSize = 22;
     return CustomButton(
       onTab: (){
         Navigator.push(
@@ -65,8 +74,8 @@ class ChooseChildParentState extends State<ChooseChildParent> {
         );
       },
       text: buttonTxt,
-      sfIcon: iconType == 'SFicon' ? SFIcon(icon) : null,
-      materialIcon: iconType == 'Icon' ? Icon(icon) : null,
+      sfIcon: iconType == 'SFIcon' ? SFIcon(icon, fontSize: iconSize) : null,
+      materialIcon: iconType == 'Icon' ? Icon(icon, size: iconSize) : null,
       backgroundColor: AppColors.lightSecondary,
       foregroundColor: AppColors.textPrimary,
     );
@@ -74,12 +83,20 @@ class ChooseChildParentState extends State<ChooseChildParent> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Center(
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', 
+                  size: 50.0,
+                ));
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         toolbarHeight: 200,
         centerTitle: true,
-        title: Padding(
+        title: const Padding(
           padding: const EdgeInsets.only(top: 25),
           child: Text(
             'Vælg barn',
@@ -96,19 +113,51 @@ class ChooseChildParentState extends State<ChooseChildParent> {
             for (var child in children) 
               ExpansionTile(
                 title: Text(child.firstName),
-                tilePadding: EdgeInsets.all(15),
+                tilePadding: const EdgeInsets.all(15),
                 collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(30)),
                 children: [
                   Padding(padding: EdgeInsets.all(10)),
-                  buildButton(ChooseChildParent(), 'Feedback', SFIcons.sf_message, 'SFIcon'),
+                  Directionality(
+                    textDirection: TextDirection.rtl, 
+                    child: buildButton(
+                      ChooseChildParent(), // OBS: this needs to be changed to the correct page
+                      'Feedback', 
+                      SFIcons.sf_message, 
+                      'SFIcon'
+                    ),
+                  ),
                   Padding(padding: EdgeInsets.all(15)),
-                  buildButton(ChooseChildParent(), 'Madpakke', Icons.lunch_dining_outlined, 'Icon'),
+                  Directionality(
+                    textDirection: TextDirection.rtl, 
+                    child: buildButton(
+                      ChooseChildParent(), // OBS: this needs to be changed to the correct page
+                      'Madpakke', 
+                      Icons.lunch_dining_outlined, 
+                      'Icon'
+                    ),
+                  ),
                   Padding(padding: EdgeInsets.all(15)),
-                  buildButton(ChooseChildParent(), 'Indstillinger', Icons.settings_outlined, 'Icon'),
+                  Directionality(
+                    textDirection: TextDirection.rtl, 
+                    child: buildButton(
+                      ChooseChildParent(), // OBS: this needs to be changed to the correct page
+                      'Indstillinger', 
+                      Icons.settings_outlined, 
+                      'Icon'
+                    ),
+                  ),
                   Padding(padding: EdgeInsets.all(10)),
                 ],
               ),
-            buildButton(CreateChildPage(), 'Tilføj barn', Icons.add_reaction_outlined, 'Icon'),
+            Directionality(
+              textDirection: TextDirection.rtl, 
+              child: buildButton(
+                CreateChildPage(), 
+                'Tilføj barn', 
+                Icons.add_reaction_outlined, 
+                'Icon'
+              ),
+            ),
           ],
         ),
       ),

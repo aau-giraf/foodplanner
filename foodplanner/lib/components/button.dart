@@ -104,11 +104,20 @@ class CustomButton extends StatelessWidget {
           elevation: 3,
           padding: buttonPadding, // Set the padding for the button
         ),
-        child: sfIcon ??
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (sfIcon != null) sfIcon!,
+            if (materialIcon != null) materialIcon!,
+            if (sfIcon != null || materialIcon != null)
+              const SizedBox(width: 8),
             Text(
               text,
-              style: buttonTextStyle, // Use the determined text style
-            ),
+              style: buttonTextStyle,
+            )
+          ],
+        ),
       ),
     );
   }
