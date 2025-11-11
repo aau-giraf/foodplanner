@@ -21,18 +21,18 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/routes/paths.dart';
 
-class ParentProfile extends StatefulWidget {
-  const ParentProfile({super.key});
+class GuardianProfile extends StatefulWidget {
+  const GuardianProfile({super.key});
 
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   static final PupilService pupilService =
       PupilService(apiUrl: ApiConfig.baseUrl);
 
   @override
-  ParentProfileState createState() => ParentProfileState();
+  GuardianProfileState createState() => GuardianProfileState();
 }
 
-class ParentProfileState extends State<ParentProfile>
+class GuardianProfileState extends State<GuardianProfile>
     with SingleTickerProviderStateMixin {
   User parent = User(
       id: 0,
@@ -83,7 +83,7 @@ class ParentProfileState extends State<ParentProfile>
   }
 
   Future<void> fetchAdminAndTeacher() async {
-    final userInfo = await ParentProfile.userService.fetchLoggedInUser();
+    final userInfo = await GuardianProfile.userService.fetchLoggedInUser();
     setState(() {
       parent = userInfo;
       firstNameController.text = parent.firstName;
@@ -96,8 +96,8 @@ class ParentProfileState extends State<ParentProfile>
   }
 
   Future<void> fetchGuardianAndPupil() async {
-    final userInfo = await ParentProfile.userService.userInfo(parent.id);
-    final fetchedPupil = await ParentProfile.pupilService.fetchPupilById();
+    final userInfo = await GuardianProfile.userService.userInfo(parent.id);
+    final fetchedPupil = await GuardianProfile.pupilService.fetchPupilById();
     setState(() {
       parent = userInfo;
       pupil = fetchedPupil;
@@ -112,7 +112,7 @@ class ParentProfileState extends State<ParentProfile>
 
   Future<void> updatePassword() async {
     final userInfo =
-        await ParentProfile.userService.updatePassword(updatedPassword);
+        await GuardianProfile.userService.updatePassword(updatedPassword);
     setState(() {
       parent = userInfo;
       updatedPassword = passwordController.text;
@@ -121,7 +121,7 @@ class ParentProfileState extends State<ParentProfile>
 
   Future<void> updatePincode() async {
     final userInfo =
-        await ParentProfile.userService.updatePincode(updatedPincode);
+        await GuardianProfile.userService.updatePincode(updatedPincode);
     setState(() {
       parent = userInfo;
       updatedPincode = pincodeController.text;
@@ -149,7 +149,7 @@ class ParentProfileState extends State<ParentProfile>
     if (updatedFirstName.isNotEmpty ||
         updatedLastName.isNotEmpty ||
         updatedEmail.isNotEmpty) {
-      await ParentProfile.userService.updateUser(
+      await GuardianProfile.userService.updateUser(
         parent.id,
         updatedFirstName.isNotEmpty ? updatedFirstName : parent.firstName,
         updatedLastName.isNotEmpty ? updatedLastName : parent.lastName,

@@ -220,7 +220,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const ParentProfile();
+              return const GuardianProfile();
             } else {
               return const UnauthorizedPage();
             }
