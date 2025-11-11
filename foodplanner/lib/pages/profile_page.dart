@@ -25,7 +25,7 @@ class ParentProfile extends StatefulWidget {
   const ParentProfile({super.key});
 
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-  static final PupilService childService =
+  static final PupilService pupilService =
       PupilService(apiUrl: ApiConfig.baseUrl);
 
   @override
@@ -42,7 +42,7 @@ class ParentProfileState extends State<ParentProfile>
       role: 'Unknown',
       archived: false);
 
-  Pupil child = Pupil(
+  Pupil pupil = Pupil(
       childId: 0,
       firstName: 'Unknown',
       lastName: 'Unknown',
@@ -76,7 +76,7 @@ class ParentProfileState extends State<ParentProfile>
       if (role == ROLES.teacher || role == ROLES.admin) {
         fetchAdminAndTeacher();
       } else {
-        fetchParentAndChild();
+        fetchGuardianAndPupil();
       }
       userRole = role;
     });
@@ -95,12 +95,12 @@ class ParentProfileState extends State<ParentProfile>
     });
   }
 
-  Future<void> fetchParentAndChild() async {
+  Future<void> fetchGuardianAndPupil() async {
     final userInfo = await ParentProfile.userService.userInfo(parent.id);
-    final fetchedChild = await ParentProfile.childService.fetchPupilById();
+    final fetchedPupil = await ParentProfile.pupilService.fetchPupilById();
     setState(() {
       parent = userInfo;
-      child = fetchedChild;
+      pupil = fetchedPupil;
       firstNameController.text = parent.firstName;
       lastNameController.text = parent.lastName;
       emailController.text = parent.email;
@@ -160,7 +160,7 @@ class ParentProfileState extends State<ParentProfile>
 
   Future<void> resetPage() async {
     if (userRole == ROLES.parent) {
-      await fetchParentAndChild();
+      await fetchGuardianAndPupil();
       setState(() {
         isEditingFirstName = false;
         isEditingLastName = false;
@@ -471,7 +471,7 @@ class ParentProfileState extends State<ParentProfile>
           {
             'title': 'Barn',
             'isEditable': false,
-            'cta': Text('${child.firstName} ${child.lastName}'),
+            'cta': Text('${pupil.firstName} ${pupil.lastName}'),
             'divider': false,
           },
       ];
