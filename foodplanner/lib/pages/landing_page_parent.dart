@@ -52,7 +52,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -65,18 +65,19 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                 ),
               ),
               IconButton(
-                  onPressed: () async {
-                    await AuthProvider().setRole(ROLES.student);
-                    await AuthProvider().loadFromStorage();
+                onPressed: () async {
+                  await AuthProvider().setRole(ROLES.student);
+                  await AuthProvider().loadFromStorage();
 
-                    if (!context.mounted){
-                      developer.log('buildcontext is not mounted, in $runtimeType');
-                      return;
-                    }
+                  if (!context.mounted){
+                    developer.log('buildcontext is not mounted, in $runtimeType');
+                    return;
+                  }
 
-                    GoRouter.of(context).go('/');
-                  },
-                  icon: SFIcon(SFIcons.sf_lock_open_fill)),
+                  GoRouter.of(context).go('/');
+                },
+                icon: SFIcon(SFIcons.sf_lock_open_fill)
+              ),
             ],
           ),
         ),
@@ -86,52 +87,46 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
       ),
       bottomNavigationBar: NavBar(),
       backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ReusableMealBox(),
-                  ), // Use the reusable widget
-                  SizedBox(height: 20),
-                  mealNotifier.meal == null
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: CustomButton(
-                            onTab: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const MealFormPage()),
-                              ).then((_) {
-                                mealNotifier.fetchMealData();
-                              });
-                            },
-                            icon: SFIcon(
-                              SFIcons.sf_plus,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ))
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: CustomButton(
-                            onTab: () {
-                              GoRouter.of(context).go(FEEDBACK_Page);
-                            },
-                            text: 'Se Feedback',
-                            //fontSize: 16,
-                          ),
-                        ),
-                ],
-              ),
-            ),
-          ],
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: ReusableMealBox(),
+          ), // Use the reusable widget
+          SizedBox(height: 20),
+          mealNotifier.meal == null
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: CustomButton(
+                    onTab: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MealFormPage()),
+                      ).then((_) {
+                        mealNotifier.fetchMealData();
+                      });
+                    },
+                    icon: SFIcon(
+                      SFIcons.sf_plus,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: CustomButton(
+                    onTab: () {
+                      GoRouter.of(context).go(FEEDBACK_Page);
+                    },
+                    text: 'Se Feedback',
+                    //fontSize: 16,
+                  ),
+                ),
+        ],
       ),
     );
   }

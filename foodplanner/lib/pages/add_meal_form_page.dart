@@ -12,7 +12,6 @@ import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/ingredient_services.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:http/http.dart' as http;
