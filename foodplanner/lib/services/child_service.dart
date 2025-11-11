@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 import 'package:http/http.dart' as http;
 
 class ChildService {
@@ -8,7 +8,7 @@ class ChildService {
 
   ChildService({required this.apiUrl});
 
-  Future<List<Child>> fetchChild() async {
+  Future<List<Pupil>> fetchChild() async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(
         Uri.parse('$apiUrl/api/Admin/GetAllChildren'),
@@ -19,7 +19,7 @@ class ChildService {
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = jsonDecode(response.body) as List<dynamic>;
       var responseList = jsonResponse
-          .map((child) => Child.fromJson(child as Map<String, dynamic>))
+          .map((child) => Pupil.fromJson(child as Map<String, dynamic>))
           .toList();
       return responseList;
     } else if (response.statusCode == 403) {
@@ -29,7 +29,7 @@ class ChildService {
     }
   }
 
-  Future<Child> fetchChildById() async {
+  Future<Pupil> fetchChildById() async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(
       Uri.parse('$apiUrl/api/Childrens/GetChildrenByParentId'),
@@ -40,7 +40,7 @@ class ChildService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return Child.fromJson(data);
+      return Pupil.fromJson(data);
     } else {
       throw Exception('Failed to load child data');
     }
@@ -97,7 +97,7 @@ class ChildService {
     return response;
   }
 
-  Future<Child> getByChildId(int id) async {
+  Future<Pupil> getByChildId(int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(
         Uri.parse('$apiUrl/api/Childrens/GetChildFromChildId/$id'),
@@ -106,7 +106,7 @@ class ChildService {
         });
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return Child.fromJson(data);
+      return Pupil.fromJson(data);
     } else {
       throw Exception('Failed to load child data');
     }

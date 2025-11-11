@@ -3,7 +3,7 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
-import 'package:foodplanner/pages/create_child_page.dart';
+import 'package:foodplanner/pages/create_pupil_page.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
@@ -55,7 +55,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/signup/create-child',
-      builder: (context, state) => CreateChildPage(),
+      builder: (context, state) => CreatePupilPage(),
     ),
     GoRoute(
       path: '/unauthorized',
@@ -170,7 +170,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const CreateChildPage();
+              return const CreatePupilPage();
             } else {
               return const UnauthorizedPage();
             }

@@ -1,11 +1,11 @@
-class Child {
+class Pupil {
   final int childId;
   final String firstName;
   final String lastName;
   final int parentId;
   final int classId;
 
-  const Child({
+  const Pupil({
     required this.childId,
     required this.firstName,
     required this.lastName,
@@ -13,7 +13,7 @@ class Child {
     required this.classId,
   });
 
-  factory Child.fromJson(Map<String, dynamic> json) {
+  factory Pupil.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
         'childId': int childId,
@@ -22,7 +22,7 @@ class Child {
         'parentId': int parentId,
         'classId': int classId,
       } =>
-        Child(
+        Pupil(
           childId: childId,
           firstName: firstName,
           lastName: lastName,

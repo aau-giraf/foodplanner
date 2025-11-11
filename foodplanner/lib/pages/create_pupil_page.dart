@@ -12,18 +12,18 @@ import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:go_router/go_router.dart';
 
-class CreateChildPage extends StatefulWidget {
-  const CreateChildPage({super.key});
+class CreatePupilPage extends StatefulWidget {
+  const CreatePupilPage({super.key});
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
   static final ChildService childService =
       ChildService(apiUrl: ApiConfig.baseUrl);
 
   @override
-  State<CreateChildPage> createState() => _SignupChildState();
+  State<CreatePupilPage> createState() => _SignupChildState();
 }
 
-class _SignupChildState extends State<CreateChildPage> {
+class _SignupChildState extends State<CreatePupilPage> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
 
@@ -35,7 +35,7 @@ class _SignupChildState extends State<CreateChildPage> {
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
 
   Future<List<SchoolClass>> classesFuture =
-      CreateChildPage.schoolClassService.fetchAllClasses();
+      CreatePupilPage.schoolClassService.fetchAllClasses();
   List<SchoolClass> classes = [];
 
   @override
@@ -136,7 +136,7 @@ class _SignupChildState extends State<CreateChildPage> {
     int classId,
   ) async {
     try {
-      final response = await CreateChildPage.childService
+      final response = await CreatePupilPage.childService
           .createChild(firstName, lastName, classId);
 
       if (!context.mounted) return;

@@ -3,7 +3,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/services/child_service.dart';
@@ -15,10 +15,10 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:foodplanner/pages/choose_parent.dart';
 import 'package:foodplanner/components/button.dart';
 
-class ChildProfile extends StatefulWidget {
-  final Child child;
+class PupilProfile extends StatefulWidget {
+  final Pupil child;
   final VoidCallback? onChildChanged;
-  const ChildProfile({super.key, required this.child, this.onChildChanged});
+  const PupilProfile({super.key, required this.child, this.onChildChanged});
 
   static final ChildService childService =
       ChildService(apiUrl: ApiConfig.baseUrl);
@@ -27,10 +27,10 @@ class ChildProfile extends StatefulWidget {
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
   @override
-  ChildProfileState createState() => ChildProfileState();
+  PupilProfileState createState() => PupilProfileState();
 }
 
-class ChildProfileState extends State<ChildProfile>
+class PupilProfileState extends State<PupilProfile>
     with SingleTickerProviderStateMixin {
   List<SchoolClass> schoolClasses = [];
   User parent = User(
@@ -79,7 +79,7 @@ class ChildProfileState extends State<ChildProfile>
     selectedParentId = widget.child.parentId;
     initialParentId = widget.child.parentId;
 
-    ChildProfile.schoolClassService.fetchAllClasses().then((result) {
+    PupilProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
         schoolClasses = result;
       });
@@ -89,7 +89,7 @@ class ChildProfileState extends State<ChildProfile>
   }
 
   void fetchParent() {
-    ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
+    PupilProfile.userService.fetchUser(widget.child.parentId).then((result) {
       setState(() {
         parent = result;
         selectedParent = result;
@@ -392,7 +392,7 @@ class ChildProfileState extends State<ChildProfile>
                         )));
             if (selectedParentId != null) {
               final selectedParent =
-                  await ChildProfile.userService.fetchUser(selectedParentId);
+                  await PupilProfile.userService.fetchUser(selectedParentId);
               setState(() {
                 if (selectedParentId == initialParentId) {
                   isEditingParents = false;
@@ -500,7 +500,7 @@ class ChildProfileState extends State<ChildProfile>
                     text: 'Gem ændringer',
                     onTab: () {
                       final navigator = Navigator.of(context); 
-                      ChildProfile.childService
+                      PupilProfile.childService
                           .updateChild(
                               widget.child.childId,
                               updatedFirstName.isNotEmpty

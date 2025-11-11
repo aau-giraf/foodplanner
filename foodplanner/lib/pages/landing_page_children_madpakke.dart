@@ -4,7 +4,7 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/meal_box.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 
 import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/routes/paths.dart';
@@ -28,7 +28,7 @@ class ChildLandingPageMadpakke extends StatefulWidget {
 class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   //ignore: unused_field 
   late Future<bool> _hasRolesFuture;
-  Child? _child;
+  Pupil? _child;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
   ROLES? userRole;
   Future<void>? _callerFuture;
