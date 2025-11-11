@@ -27,7 +27,7 @@ class PinService {
           final String jwt = data['jwt'];
           final bool roleApproved = data['roleApproved'];
           String role = data['role'];
-          if (role == "Child"){
+          if (role == "Pupil"){
           role = "Student";
         }
 

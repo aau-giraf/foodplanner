@@ -40,7 +40,7 @@ Future<ROLES> fetchAuthData(String email, String password) async {
       final bool roleApproved = data['roleApproved'];
       String role = data['role'];
 
-     if (role == "Child"){
+     if (role == "Pupil"){
        role = "Student";
      }
 
