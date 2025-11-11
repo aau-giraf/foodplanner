@@ -17,15 +17,15 @@ import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class ParentLandingPageMadpakke extends StatefulWidget {
-  const ParentLandingPageMadpakke({super.key});
+class GuardianLandingPageMadpakke extends StatefulWidget {
+  const GuardianLandingPageMadpakke({super.key});
 
   @override
-  State<ParentLandingPageMadpakke> createState() =>
-      ParentLandingPageMadpakkeState();
+  State<GuardianLandingPageMadpakke> createState() =>
+      GuardianLandingPageMadpakkeState();
 }
 
-class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
+class GuardianLandingPageMadpakkeState extends State<GuardianLandingPageMadpakke> {
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   dynamic _user;
 

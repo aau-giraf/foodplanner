@@ -10,19 +10,19 @@ import 'package:foodplanner/components/settings_header.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/models/user.dart';
 
-class ChooseParent extends StatefulWidget {
-  final Pupil child;
-  final VoidCallback? onChildChanged;
-  const ChooseParent({super.key, required this.child, this.onChildChanged});
-  static final PupilService childService =
+class ChooseGuardian extends StatefulWidget {
+  final Pupil pupil;
+  final VoidCallback? onPupilChanged;
+  const ChooseGuardian({super.key, required this.pupil, this.onPupilChanged});
+  static final PupilService pupilService =
       PupilService(apiUrl: ApiConfig.baseUrl);
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
   @override
-  ChooseParentState createState() => ChooseParentState();
+  ChooseGuardianState createState() => ChooseGuardianState();
 }
 
-class ChooseParentState extends State<ChooseParent>
+class ChooseGuardianState extends State<ChooseGuardian>
     with SingleTickerProviderStateMixin {
   List<User> parents = [];
 
@@ -33,7 +33,7 @@ class ChooseParentState extends State<ChooseParent>
   }
 
   void fetchParents() {
-    ChooseParent.userService.fetchAllParents().then((result) {
+    ChooseGuardian.userService.fetchAllGuardians().then((result) {
       setState(() {
         parents = result;
       });
@@ -78,7 +78,7 @@ class ChooseParentState extends State<ChooseParent>
             icon: SFIcons.sf_figure_and_child_holdinghands,
             title: 'Vælg Forældre',
             subtitle:
-                'Her kan du vælge den forældre som er tilknyttet til ${widget.child.firstName}. ',
+                'Her kan du vælge den forældre som er tilknyttet til ${widget.pupil.firstName}. ',
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
