@@ -77,6 +77,7 @@ class _ReusableMealBoxState extends State<ReusableMealBox> {
                     }
                   }),
             ),
+            SizedBox(height: 20),
             Mealboxcontent()
           ],
         ),
