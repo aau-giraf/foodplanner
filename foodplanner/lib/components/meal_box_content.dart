@@ -49,7 +49,7 @@ class Mealboxcontent extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ChildLandingPageSeMadpakke()),
+                        builder: (context) => PupilLandingPageSeMadpakke()),
                   );
                 },
                 text: 'Se madpakke',

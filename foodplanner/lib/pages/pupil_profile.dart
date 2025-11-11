@@ -33,7 +33,7 @@ class PupilProfile extends StatefulWidget {
 class PupilProfileState extends State<PupilProfile>
     with SingleTickerProviderStateMixin {
   List<SchoolClass> schoolClasses = [];
-  User parent = User(
+  User guardian = User(
       id: 0,
       email: 'Unknown',
       firstName: 'Unknown',
@@ -43,7 +43,7 @@ class PupilProfileState extends State<PupilProfile>
   bool isEditingFirstName = false;
   bool isEditingLastName = false;
   bool isEditingClass = false;
-  bool isEditingParents = false;
+  bool isEditingGuardians = false;
   bool hasChanges = false;
   bool classChanges = false;
   TextEditingController firstNameController = TextEditingController();
@@ -52,9 +52,9 @@ class PupilProfileState extends State<PupilProfile>
   String? initialClassId;
   String updatedFirstName = '';
   String updatedLastName = '';
-  int? selectedParentId;
-  int? initialParentId;
-  User? selectedParent;
+  int? selectedGuardianId;
+  int? initialGuardianId;
+  User? selectedGuardian;
 
   void onFieldChanged() {
     setState(() {
@@ -74,10 +74,10 @@ class PupilProfileState extends State<PupilProfile>
     updatedLastName = widget.child.lastName;
     selectedClassId = widget.child.classId.toString();
     initialClassId = widget.child.classId.toString();
-    fetchParent();
-    selectedParent = parent;
-    selectedParentId = widget.child.parentId;
-    initialParentId = widget.child.parentId;
+    fetchGuardian();
+    selectedGuardian = guardian;
+    selectedGuardianId = widget.child.parentId;
+    initialGuardianId = widget.child.parentId;
 
     PupilProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
@@ -88,11 +88,11 @@ class PupilProfileState extends State<PupilProfile>
     });
   }
 
-  void fetchParent() {
+  void fetchGuardian() {
     PupilProfile.userService.fetchUser(widget.child.parentId).then((result) {
       setState(() {
-        parent = result;
-        selectedParent = result;
+        guardian = result;
+        selectedGuardian = result;
       });
     }).catchError((error) {
       throw (error);
@@ -370,9 +370,9 @@ class PupilProfileState extends State<PupilProfile>
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          selectedParent != null
-              ? '${selectedParent!.firstName} ${selectedParent!.lastName}'
-              : '${parent.firstName} ${parent.lastName}',
+          selectedGuardian != null
+              ? '${selectedGuardian!.firstName} ${selectedGuardian!.lastName}'
+              : '${guardian.firstName} ${guardian.lastName}',
           style: AppTextStyles.bigText,
         ),
         IconButton(
@@ -383,31 +383,31 @@ class PupilProfileState extends State<PupilProfile>
             fontSize: 28,
           ),
           onPressed: () async {
-            final selectedParentId = await Navigator.push<int>(
+            final selectedGuardianId = await Navigator.push<int>(
                 context,
                 MaterialPageRoute(
                     builder: (context) => ChooseGuardian(
                           pupil: widget.child,
                           onPupilChanged: widget.onChildChanged,
                         )));
-            if (selectedParentId != null) {
-              final selectedParent =
-                  await PupilProfile.userService.fetchUser(selectedParentId);
+            if (selectedGuardianId != null) {
+              final selectedGuardian =
+                  await PupilProfile.userService.fetchUser(selectedGuardianId);
               setState(() {
-                if (selectedParentId == initialParentId) {
-                  isEditingParents = false;
+                if (selectedGuardianId == initialGuardianId) {
+                  isEditingGuardians = false;
                   if (!isEditingFirstName &&
                       !isEditingLastName &&
                       !isEditingClass &&
                       !classChanges) {
                     hasChanges = false;
                   }
-                  this.selectedParentId = selectedParentId;
-                  this.selectedParent = selectedParent;
+                  this.selectedGuardianId = selectedGuardianId;
+                  this.selectedGuardian = selectedGuardian;
                   return;
                 }
-                this.selectedParentId = selectedParentId;
-                this.selectedParent = selectedParent;
+                this.selectedGuardianId = selectedGuardianId;
+                this.selectedGuardian = selectedGuardian;
                 onFieldChanged();
               });
             }
@@ -509,7 +509,7 @@ class PupilProfileState extends State<PupilProfile>
                               updatedLastName.isNotEmpty
                                   ? updatedLastName
                                   : widget.child.lastName,
-                              selectedParentId ?? widget.child.parentId,
+                              selectedGuardianId ?? widget.child.parentId,
                               int.parse(selectedClassId!))
                           .then((response) {
 
@@ -532,8 +532,8 @@ class PupilProfileState extends State<PupilProfile>
                         classChanges = false;
                         hasChanges = false;
                         selectedClassId = initialClassId;
-                        selectedParentId = initialParentId;
-                        selectedParent = parent;
+                        selectedGuardianId = initialGuardianId;
+                        selectedGuardian = guardian;
                         firstNameController.text = widget.child.firstName;
                         lastNameController.text = widget.child.lastName;
                       }),

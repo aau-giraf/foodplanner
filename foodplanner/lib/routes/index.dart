@@ -69,8 +69,8 @@ final router = GoRouter(
 
     GoRoute(
       path: '/children_se_madpakke',
-      builder: (context, state) => ChildLandingPageMadpakke(
-        student: {},
+      builder: (context, state) => PupilLandingPageMadpakke(
+        pupil: {},
       ),
     ),
 
@@ -97,8 +97,8 @@ final router = GoRouter(
       path: '/student-details',
       builder: (context, state) {
         final student = state.extra as Map<String, String?>;
-        return ChildLandingPageMadpakke(
-            student: student.cast<String, String>());
+        return PupilLandingPageMadpakke(
+            pupil: student.cast<String, String>());
       },
     ),
 
@@ -144,8 +144,8 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const ChildLandingPageMadpakke(
-                student: {},
+              return const PupilLandingPageMadpakke(
+                pupil: {},
               );
             } else {
               return const UnauthorizedPage();

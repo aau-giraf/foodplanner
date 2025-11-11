@@ -15,21 +15,21 @@ import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class ChildLandingPageMadpakke extends StatefulWidget {
-  final Map<String, String> student;
-  const ChildLandingPageMadpakke(
-      {super.key, /* required Map<String, String> */ required this.student});
+class PupilLandingPageMadpakke extends StatefulWidget {
+  final Map<String, String> pupil;
+  const PupilLandingPageMadpakke(
+      {super.key, /* required Map<String, String> */ required this.pupil});
 
   @override
-  State<ChildLandingPageMadpakke> createState() =>
-      _ChildLandingPageMadpakkeState();
+  State<PupilLandingPageMadpakke> createState() =>
+      _PupilLandingPageMadpakkeState();
 }
 
-class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
+class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
   //ignore: unused_field 
   late Future<bool> _hasRolesFuture;
-  Pupil? _child;
-  final PupilService childService = PupilService(apiUrl: ApiConfig.baseUrl);
+  Pupil? _pupil;
+  final PupilService pupilService = PupilService(apiUrl: ApiConfig.baseUrl);
   ROLES? userRole;
   Future<void>? _callerFuture;
 
@@ -50,15 +50,15 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
 
     if (authProvider.userRole == ROLES.student ||
         authProvider.userRole == ROLES.parent) {
-      final childData = await childService.fetchPupilById();
+      final childData = await pupilService.fetchPupilById();
       setState(() {
-        _child = childData;
+        _pupil = childData;
       });
     } else if (authProvider.userRole == ROLES.teacher) {
-      int tempChildId = int.parse(widget.student['id']!);
-      final childData = await childService.getByPupilId(tempChildId);
+      int tempChildId = int.parse(widget.pupil['id']!);
+      final childData = await pupilService.getByPupilId(tempChildId);
       setState(() {
-        _child = childData;
+        _pupil = childData;
       });
     }
 
@@ -68,7 +68,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   }
 
   Future<void> caller() async {
-    await MealNotifier().teacherUpdateChildId(_child!.parentId);
+    await MealNotifier().teacherUpdateChildId(_pupil!.parentId);
     await MealNotifier().updateDate(DateTime.now());
   }
 
@@ -85,7 +85,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
               )
             : null,
         title: Text(
-          '${_child?.firstName} ${_child?.lastName}',
+          '${_pupil?.firstName} ${_pupil?.lastName}',
           style: AppTextStyles.headline4,
         ),
         centerTitle: true,
@@ -136,7 +136,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                             FEEDBACK_Page,
                             extra: {
                               'from': TEACHER_ROOT,
-                              'childId': _child!.childId.toString()
+                              'childId': _pupil!.childId.toString()
                             },
                           );
                         },

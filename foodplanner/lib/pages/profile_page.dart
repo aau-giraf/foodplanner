@@ -34,7 +34,7 @@ class GuardianProfile extends StatefulWidget {
 
 class GuardianProfileState extends State<GuardianProfile>
     with SingleTickerProviderStateMixin {
-  User parent = User(
+  User guardian = User(
       id: 0,
       email: 'Unknown',
       firstName: 'Unknown',
@@ -85,28 +85,28 @@ class GuardianProfileState extends State<GuardianProfile>
   Future<void> fetchAdminAndTeacher() async {
     final userInfo = await GuardianProfile.userService.fetchLoggedInUser();
     setState(() {
-      parent = userInfo;
-      firstNameController.text = parent.firstName;
-      lastNameController.text = parent.lastName;
-      emailController.text = parent.email;
-      updatedFirstName = parent.firstName;
-      updatedLastName = parent.lastName;
-      updatedEmail = parent.email;
+      guardian = userInfo;
+      firstNameController.text = guardian.firstName;
+      lastNameController.text = guardian.lastName;
+      emailController.text = guardian.email;
+      updatedFirstName = guardian.firstName;
+      updatedLastName = guardian.lastName;
+      updatedEmail = guardian.email;
     });
   }
 
   Future<void> fetchGuardianAndPupil() async {
-    final userInfo = await GuardianProfile.userService.userInfo(parent.id);
+    final userInfo = await GuardianProfile.userService.userInfo(guardian.id);
     final fetchedPupil = await GuardianProfile.pupilService.fetchPupilById();
     setState(() {
-      parent = userInfo;
+      guardian = userInfo;
       pupil = fetchedPupil;
-      firstNameController.text = parent.firstName;
-      lastNameController.text = parent.lastName;
-      emailController.text = parent.email;
-      updatedFirstName = parent.firstName;
-      updatedLastName = parent.lastName;
-      updatedEmail = parent.email;
+      firstNameController.text = guardian.firstName;
+      lastNameController.text = guardian.lastName;
+      emailController.text = guardian.email;
+      updatedFirstName = guardian.firstName;
+      updatedLastName = guardian.lastName;
+      updatedEmail = guardian.email;
     });
   }
 
@@ -114,7 +114,7 @@ class GuardianProfileState extends State<GuardianProfile>
     final userInfo =
         await GuardianProfile.userService.updatePassword(updatedPassword);
     setState(() {
-      parent = userInfo;
+      guardian = userInfo;
       updatedPassword = passwordController.text;
     });
   }
@@ -123,7 +123,7 @@ class GuardianProfileState extends State<GuardianProfile>
     final userInfo =
         await GuardianProfile.userService.updatePincode(updatedPincode);
     setState(() {
-      parent = userInfo;
+      guardian = userInfo;
       updatedPincode = pincodeController.text;
     });
   }
@@ -150,10 +150,10 @@ class GuardianProfileState extends State<GuardianProfile>
         updatedLastName.isNotEmpty ||
         updatedEmail.isNotEmpty) {
       await GuardianProfile.userService.updateUser(
-        parent.id,
-        updatedFirstName.isNotEmpty ? updatedFirstName : parent.firstName,
-        updatedLastName.isNotEmpty ? updatedLastName : parent.lastName,
-        updatedEmail.isNotEmpty ? updatedEmail : parent.email,
+        guardian.id,
+        updatedFirstName.isNotEmpty ? updatedFirstName : guardian.firstName,
+        updatedLastName.isNotEmpty ? updatedLastName : guardian.lastName,
+        updatedEmail.isNotEmpty ? updatedEmail : guardian.email,
       );
     }
   }
@@ -181,7 +181,7 @@ class GuardianProfileState extends State<GuardianProfile>
     }
   }
 
-  List<Map<String, dynamic>> get parentProfileItems => [
+  List<Map<String, dynamic>> get guardianProfileItems => [
         {
           'title': 'Fornavn: ',
           'showIcon': false,
@@ -215,7 +215,7 @@ class GuardianProfileState extends State<GuardianProfile>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              parent.firstName,
+                              guardian.firstName,
                               style: AppTextStyles.bigText,
                             ),
                           ],
@@ -271,7 +271,7 @@ class GuardianProfileState extends State<GuardianProfile>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              parent.lastName,
+                              guardian.lastName,
                               style: AppTextStyles.bigText,
                             ),
                           ],
@@ -327,7 +327,7 @@ class GuardianProfileState extends State<GuardianProfile>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              parent.email,
+                              guardian.email,
                               style: AppTextStyles.bigText,
                             ),
                           ],
@@ -494,7 +494,7 @@ class GuardianProfileState extends State<GuardianProfile>
           children: [
             SettingsHeader(
               icon: SFIcons.sf_person_fill,
-              title: '${parent.firstName} ${parent.lastName}',
+              title: '${guardian.firstName} ${guardian.lastName}',
               subtitle: 'Her kan du redigere dine oplysninger.',
             ),
             Padding(
@@ -511,7 +511,7 @@ class GuardianProfileState extends State<GuardianProfile>
                         child: Column(
                           children: [
                             SizedBox(height: 10),
-                            ...parentProfileItems.map((item) {
+                            ...guardianProfileItems.map((item) {
                               return SettingsWidget(
                                 title: item['title'],
                                 isEditable: item['isEditable'],

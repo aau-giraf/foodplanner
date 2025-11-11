@@ -24,30 +24,30 @@ class ChooseGuardian extends StatefulWidget {
 
 class ChooseGuardianState extends State<ChooseGuardian>
     with SingleTickerProviderStateMixin {
-  List<User> parents = [];
+  List<User> guardians = [];
 
   @override
   void initState() {
     super.initState();
-    fetchParents();
+    fetchGuardians();
   }
 
-  void fetchParents() {
+  void fetchGuardians() {
     ChooseGuardian.userService.fetchAllGuardians().then((result) {
       setState(() {
-        parents = result;
+        guardians = result;
       });
     }).catchError((error) {
       throw (error);
     });
   }
 
-  Widget ctaButtons(User parent) {
+  Widget ctaButtons(User guardian) {
     return Row(
       children: [
         TextButton(
             onPressed: () {
-              Navigator.pop(context, parent.id);
+              Navigator.pop(context, guardian.id);
             },
             child: Text(
               'Vælg',
@@ -111,13 +111,13 @@ class ChooseGuardianState extends State<ChooseGuardian>
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: parents.length,
+              itemCount: guardians.length,
               itemBuilder: (context, index) {
-                final parent = parents[index];
+                final guardian = guardians[index];
                 return SettingsWidget(
                   leftIcon: SFIcons.sf_figure_child,
-                  title: '${parent.firstName} ${parent.lastName}',
-                  cta: ctaButtons(parent),
+                  title: '${guardian.firstName} ${guardian.lastName}',
+                  cta: ctaButtons(guardian),
                   type: SettingsType.items,
                 );
               },
