@@ -9,16 +9,12 @@ import 'package:foodplanner/pages/choose_child_parent.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/routes/paths.dart';
-
-
-
 import 'package:foodplanner/services/api_config.dart';
-
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:provider/provider.dart';
 import 'package:validators/validators.dart';
+import 'package:foodplanner/config/colors.dart';
 
 class ParentMainPage extends StatefulWidget {
   const ParentMainPage({super.key});
@@ -84,8 +80,16 @@ class ParentMainPageState extends State<ParentMainPage> {
                 width: double.infinity,
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(30)
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow:[
+                    BoxShadow(
+                      color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 4),
+                      spreadRadius: 0,
+                    )
+                  ]
                 ),
                 padding: const EdgeInsets.all(15),
                 child: Stack(
@@ -121,9 +125,16 @@ class ParentMainPageState extends State<ParentMainPage> {
                 width: double.infinity,
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: AppColors.background,
                   borderRadius: BorderRadius.circular(30),
-                  
+                  boxShadow:[
+                    BoxShadow(
+                      color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 4),
+                      spreadRadius: 0,
+                    )
+                  ]
                 ),
                 padding: const EdgeInsets.all(15),
                 child: Stack(
@@ -158,8 +169,16 @@ class ParentMainPageState extends State<ParentMainPage> {
                 width: double.infinity,
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(30)
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow:[
+                    BoxShadow(
+                      color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 4),
+                      spreadRadius: 0,
+                    )
+                  ]
                 ),
                 padding: const EdgeInsets.all(15),
                 child: Stack(
