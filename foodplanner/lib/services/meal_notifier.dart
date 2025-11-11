@@ -41,7 +41,7 @@ class MealNotifier with ChangeNotifier {
     final mealService = MealService(apiUrl: baseUrl);
     final role = await AuthProvider().retrieveRole();
     Meal? mealData;
-    if (role == ROLES.student || role == ROLES.parent) {
+    if (role == ROLES.student || role == ROLES.guardian) {
       mealData = await mealService
           .fetchMealData(DateFormat('yyyy-MM-dd').format(selectedDate));
     } else {

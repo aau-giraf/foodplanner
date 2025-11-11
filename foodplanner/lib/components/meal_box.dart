@@ -47,7 +47,7 @@ class _ReusableMealBoxState extends State<ReusableMealBox> {
               child: FutureBuilder(
                   future: _retrieveRole(),
                   builder: (context, snapshot) {
-                    if (snapshot.hasData && snapshot.data == ROLES.parent) {
+                    if (snapshot.hasData && snapshot.data == ROLES.guardian) {
                       return InkWell(
                         onTap: () => mealNotifier.selectDate(context),
                         overlayColor: WidgetStatePropertyAll(AppColors.primary),

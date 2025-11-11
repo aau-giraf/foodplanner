@@ -159,7 +159,7 @@ class GuardianProfileState extends State<GuardianProfile>
   }
 
   Future<void> resetPage() async {
-    if (userRole == ROLES.parent) {
+    if (userRole == ROLES.guardian) {
       await fetchGuardianAndPupil();
       setState(() {
         isEditingFirstName = false;
@@ -467,7 +467,7 @@ class GuardianProfileState extends State<GuardianProfile>
           ),
           'showSpacer': false,
         },
-        if (userRole == ROLES.parent)
+        if (userRole == ROLES.guardian)
           {
             'title': 'Barn',
             'isEditable': false,

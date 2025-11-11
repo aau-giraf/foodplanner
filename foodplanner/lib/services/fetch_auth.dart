@@ -67,9 +67,9 @@ Future<ROLES> fetchAuthData(String email, String password) async {
       case 'admin':
         return ROLES.admin;
       case 'parent':
-        return ROLES.parent;
+        return ROLES.guardian;
       case 'child':
-        return ROLES.child;
+        return ROLES.pupil;
       default:
         throw Exception('Unknown role: $role');
     }

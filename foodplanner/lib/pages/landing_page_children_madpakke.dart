@@ -45,11 +45,11 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
     setState(() {
       userRole = role;
       _hasRolesFuture =
-          authProvider.hasRoles([ROLES.parent, ROLES.student, ROLES.teacher]);
+          authProvider.hasRoles([ROLES.guardian, ROLES.student, ROLES.teacher]);
     });
 
     if (authProvider.userRole == ROLES.student ||
-        authProvider.userRole == ROLES.parent) {
+        authProvider.userRole == ROLES.guardian) {
       final childData = await pupilService.fetchPupilById();
       setState(() {
         _pupil = childData;

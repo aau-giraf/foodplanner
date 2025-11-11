@@ -38,7 +38,7 @@ final router = GoRouter(
         switch (role) {
           case ROLES.teacher || ROLES.admin:
             return TEACHER_ROOT;
-          case ROLES.parent:
+          case ROLES.guardian:
             return PARENT_ROOT;
           default:
             return STUDENT_ROOT;
@@ -184,7 +184,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
           future:
-              authProvider.hasRoles([ROLES.parent, ROLES.teacher, ROLES.admin]),
+              authProvider.hasRoles([ROLES.guardian, ROLES.teacher, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -209,7 +209,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
           future:
-              authProvider.hasRoles([ROLES.parent, ROLES.teacher, ROLES.admin]),
+              authProvider.hasRoles([ROLES.guardian, ROLES.teacher, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -234,7 +234,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
           future:
-              authProvider.hasRoles([ROLES.parent, ROLES.teacher, ROLES.admin]),
+              authProvider.hasRoles([ROLES.guardian, ROLES.teacher, ROLES.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -288,7 +288,7 @@ final router = GoRouter(
           final authProvider =
               Provider.of<AuthProvider>(context, listen: false);
           return FutureBuilder<bool>(
-            future: authProvider.hasRoles([ROLES.parent, ROLES.admin]),
+            future: authProvider.hasRoles([ROLES.guardian, ROLES.admin]),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(

@@ -86,7 +86,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 final authProvider =
                     Provider.of<AuthProvider>(context, listen: false);
-                authProvider.setRole(ROLES.parent);
+                authProvider.setRole(ROLES.guardian);
               },
               child: const Text('Set role to parent'),
             ),
@@ -100,7 +100,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 final authProvider =
                     Provider.of<AuthProvider>(context, listen: false);
-                if (authProvider.hasRole([ROLES.parent])) {
+                if (authProvider.hasRole([ROLES.guardian])) {
                   context.go(NO_MEAL);
                 } else {
                   context.go('/unauthorized');
