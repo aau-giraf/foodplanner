@@ -10,7 +10,7 @@ import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';

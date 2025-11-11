@@ -8,7 +8,7 @@ class PupilService {
 
   PupilService({required this.apiUrl});
 
-  Future<List<Pupil>> fetchChild() async {
+  Future<List<Pupil>> fetchPupil() async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(
         Uri.parse('$apiUrl/api/Admin/GetAllChildren'),

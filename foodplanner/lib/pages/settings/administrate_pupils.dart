@@ -5,37 +5,37 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/schoolClass.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/pupil_profile.dart';
 import 'package:foodplanner/components/search_field.dart';
 
-class AdministrateChildren extends StatefulWidget {
-  const AdministrateChildren({super.key});
+class AdministratePupils extends StatefulWidget {
+  const AdministratePupils({super.key});
 
-  static final PupilService childService =
+  static final PupilService pupilService =
       PupilService(apiUrl: ApiConfig.baseUrl);
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
 
   @override
-  AdministrateChildrenState createState() => AdministrateChildrenState();
+  AdministratePupilsState createState() => AdministratePupilsState();
 }
 
-class AdministrateChildrenState extends State<AdministrateChildren>
+class AdministratePupilsState extends State<AdministratePupils>
     with SingleTickerProviderStateMixin {
-  List<Pupil> children = [];
+  List<Pupil> pupils = [];
   List<SchoolClass> schoolClasses = [];
-  List<Pupil> filteredChildren = [];
+  List<Pupil> filteredPupils = [];
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    fetchChildren();
+    fetchPupils();
 
-    AdministrateChildren.schoolClassService.fetchAllClasses().then((result) {
+    AdministratePupils.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
         schoolClasses = result;
       });
@@ -46,11 +46,11 @@ class AdministrateChildrenState extends State<AdministrateChildren>
     searchController.addListener(_filterChildren);
   }
 
-  void fetchChildren() {
-    AdministrateChildren.childService.fetchChild().then((result) {
+  void fetchPupils() {
+    AdministratePupils.pupilService.fetchPupil().then((result) {
       setState(() {
-        children = result;
-        filteredChildren = result;
+        pupils = result;
+        filteredPupils = result;
       });
     }).catchError((error) {
       throw (error);
@@ -67,15 +67,15 @@ class AdministrateChildrenState extends State<AdministrateChildren>
   void _filterChildren() {
     final query = searchController.text.toLowerCase();
     setState(() {
-      filteredChildren = children.where((child) {
-        final name = '${child.firstName} ${child.lastName}'.toLowerCase();
-        final className = getClassName(child.classId).toLowerCase();
+      filteredPupils = pupils.where((pupil) {
+        final name = '${pupil.firstName} ${pupil.lastName}'.toLowerCase();
+        final className = getClassName(pupil.classId).toLowerCase();
         return name.contains(query) || className.contains(query);
       }).toList();
     });
   }
 
-  Widget ctaButtons(Pupil child) {
+  Widget ctaButtons(Pupil pupil) {
     return Row(
       children: [
         IconButton(
@@ -90,12 +90,12 @@ class AdministrateChildrenState extends State<AdministrateChildren>
               context,
               MaterialPageRoute(
                 builder: (context) => PupilProfile(
-                  child: child,
-                  onChildChanged: fetchChildren,
+                  child: pupil,
+                  onChildChanged: fetchPupils,
                 ),
               ),
             ).then((_) {
-              fetchChildren();
+              fetchPupils();
             });
           },
         ),
@@ -150,13 +150,13 @@ class AdministrateChildrenState extends State<AdministrateChildren>
               controller: searchController,
               hintText: 'Søg efter bruger',
             ),
-            ...filteredChildren.map(
-              (child) {
+            ...filteredPupils.map(
+              (pupil) {
                 return SettingsWidget(
                   leftIcon: SFIcons.sf_figure_child,
                   title:
-                      '${child.firstName} ${child.lastName} - ${getClassName(child.classId)}',
-                  cta: ctaButtons(child),
+                      '${pupil.firstName} ${pupil.lastName} - ${getClassName(pupil.classId)}',
+                  cta: ctaButtons(pupil),
                   type: SettingsType.items,
                 );
               },

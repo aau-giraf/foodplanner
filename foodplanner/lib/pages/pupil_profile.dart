@@ -6,7 +6,7 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/models/user.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
