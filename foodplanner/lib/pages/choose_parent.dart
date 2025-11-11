@@ -14,8 +14,8 @@ class ChooseParent extends StatefulWidget {
   final Pupil child;
   final VoidCallback? onChildChanged;
   const ChooseParent({super.key, required this.child, this.onChildChanged});
-  static final ChildService childService =
-      ChildService(apiUrl: ApiConfig.baseUrl);
+  static final PupilService childService =
+      PupilService(apiUrl: ApiConfig.baseUrl);
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
   @override

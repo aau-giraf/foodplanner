@@ -25,8 +25,8 @@ class ParentProfile extends StatefulWidget {
   const ParentProfile({super.key});
 
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-  static final ChildService childService =
-      ChildService(apiUrl: ApiConfig.baseUrl);
+  static final PupilService childService =
+      PupilService(apiUrl: ApiConfig.baseUrl);
 
   @override
   ParentProfileState createState() => ParentProfileState();
@@ -97,7 +97,7 @@ class ParentProfileState extends State<ParentProfile>
 
   Future<void> fetchParentAndChild() async {
     final userInfo = await ParentProfile.userService.userInfo(parent.id);
-    final fetchedChild = await ParentProfile.childService.fetchChildById();
+    final fetchedChild = await ParentProfile.childService.fetchPupilById();
     setState(() {
       parent = userInfo;
       child = fetchedChild;

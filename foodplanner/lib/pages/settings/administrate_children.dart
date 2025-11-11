@@ -14,8 +14,8 @@ import 'package:foodplanner/components/search_field.dart';
 class AdministrateChildren extends StatefulWidget {
   const AdministrateChildren({super.key});
 
-  static final ChildService childService =
-      ChildService(apiUrl: ApiConfig.baseUrl);
+  static final PupilService childService =
+      PupilService(apiUrl: ApiConfig.baseUrl);
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
 
