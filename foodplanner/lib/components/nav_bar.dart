@@ -31,10 +31,10 @@ class _NavBarState extends State<NavBar> {
     //  widget.currentPageIndex = index;
     //});
 
-    if(role == ROLES.teacher || role == ROLES.parent) {
+    if(role == ROLES.teacher || role == ROLES.guardian) {
       switch(index) {
         case 0:
-          GoRouter.of(context).go(PARENT_MAIN);
+          GoRouter.of(context).go(GUARDIAN_MAIN);
           break;
         case 1:
           GoRouter.of(context).go(CHOOSE_CHILD);
@@ -62,7 +62,7 @@ class _NavBarState extends State<NavBar> {
           GoRouter.of(context).go(SETTINGS_PAGE);
           break;
       }
-    }
+    } 
   }
 
   @override

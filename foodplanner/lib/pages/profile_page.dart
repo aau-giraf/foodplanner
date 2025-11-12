@@ -157,7 +157,7 @@ class ParentProfileState extends State<ParentProfile>
   }
 
   Future<void> resetPage() async {
-    if (userRole == ROLES.parent) {
+    if (userRole == ROLES.guardian) {
       await fetchParentAndChild();
       setState(() {
         isEditingFirstName = false;
@@ -465,7 +465,7 @@ class ParentProfileState extends State<ParentProfile>
           ),
           'showSpacer': false,
         },
-        if (userRole == ROLES.parent)
+        if (userRole == ROLES.guardian)
           {
             'title': 'Barn',
             'isEditable': false,

@@ -52,7 +52,7 @@ class PinService {
       case 'admin':
         return ROLES.admin;
       case 'parent':
-        return ROLES.parent;
+        return ROLES.guardian;
       default:
         throw Exception('Unknown role: $role');
     }

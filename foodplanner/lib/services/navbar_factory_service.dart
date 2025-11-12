@@ -4,7 +4,7 @@ import 'package:foodplanner/routes/user_roles.dart';
 
 class NavBarDestinationFactory {
   static List<NavigationDestination> getNavBarDestinations(ROLES role) {
-    if(role == ROLES.teacher || role == ROLES.parent) {
+    if(role == ROLES.teacher || role == ROLES.guardian) {
       return _teacherParentDestination();
     } else if (role == ROLES.student){
       return _studentDestination();

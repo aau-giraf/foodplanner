@@ -92,7 +92,7 @@ class LoginPageState extends State<LoginPage> {
       case ROLES.admin:
         GoRouter.of(context).go(ADMIN_ROOT);
         break;
-      case ROLES.parent:
+      case ROLES.guardian:
         GoRouter.of(context).go(PARENT_ROOT);
         break;
       default:

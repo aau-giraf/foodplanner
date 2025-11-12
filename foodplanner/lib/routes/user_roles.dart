@@ -1,1 +1,1 @@
-enum ROLES { admin, teacher, parent, student, child }
+enum ROLES { admin, teacher, guardian, student, child }

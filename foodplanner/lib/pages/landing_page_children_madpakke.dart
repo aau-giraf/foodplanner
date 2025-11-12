@@ -44,11 +44,11 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
     setState(() {
       userRole = role;
       _hasRolesFuture =
-          authProvider.hasRoles([ROLES.parent, ROLES.student, ROLES.teacher]);
+          authProvider.hasRoles([ROLES.guardian, ROLES.student, ROLES.teacher]);
     });
 
     if (authProvider.userRole == ROLES.student ||
-        authProvider.userRole == ROLES.parent) {
+        authProvider.userRole == ROLES.guardian) {
       final childData = await childService.fetchChildById();
       setState(() {
         _child = childData;
