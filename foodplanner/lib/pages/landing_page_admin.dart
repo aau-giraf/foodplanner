@@ -188,9 +188,10 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
                           borderRadius: BorderRadius.circular(50),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black12,
+                              color: Color(0x3F000000),
                               blurRadius: 4,
-                              offset: Offset(0, 2),
+                              offset: Offset(0, 4),
+                              spreadRadius: 0,
                             ),
                           ],
                         ),
