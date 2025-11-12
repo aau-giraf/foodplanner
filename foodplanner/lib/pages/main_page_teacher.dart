@@ -61,7 +61,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
       ),
       backgroundColor: Colors.white,
       
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(vertical: 181),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -78,7 +78,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
               child: Container(
                 height: 59,
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: AppColors.background,
                   borderRadius: BorderRadius.circular(30),
@@ -123,7 +123,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
               child: Container(
                 height: 59,
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: AppColors.background,
                   borderRadius: BorderRadius.circular(30),
@@ -167,7 +167,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
               child: Container(
                 height: 59,
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: AppColors.background,
                   borderRadius: BorderRadius.circular(30),
