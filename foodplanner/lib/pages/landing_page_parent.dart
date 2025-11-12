@@ -123,7 +123,9 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                     onTab: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => EditMealPage()));
                             },
-                            text: 'Se og Redigér\nMadpakke',
+
+                          // Burde nok alignes center i fremtiden
+                            text: 'Se og Redigér\n   Madpakke',
                     //fontSize: 16,
                   ),
                 ),

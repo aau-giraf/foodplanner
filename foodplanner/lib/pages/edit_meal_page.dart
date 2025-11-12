@@ -13,8 +13,8 @@ import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
-import 'package:foodplanner/routes/paths.dart';
+/* import 'package:go_router/go_router.dart';
+import 'package:foodplanner/routes/paths.dart'; */
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
 
@@ -323,7 +323,7 @@ class _EditMealPageState extends State<EditMealPage> {
                    Text('Ingredienser', style: AppTextStyles.headline4,),
                    TextButton.icon(
                      onPressed: () async {
-                    /*    final meal = context.read<MealNotifier>().meal;
+                       final meal = context.read<MealNotifier>().meal;
                        final preSelected = meal == null
                            ? <Map<String, dynamic>>[]
                            : meal.ingredients
@@ -344,7 +344,7 @@ class _EditMealPageState extends State<EditMealPage> {
 
                        if (result != null) {
                          await _updateIngredients(result as List<Map<String, dynamic>>);
-                       } */
+                       }
                      },
                      icon: const Icon(Icons.edit_note_sharp),
                      label: const Text('Redigér', ),
