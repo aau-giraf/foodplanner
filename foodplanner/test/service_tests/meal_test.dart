@@ -144,39 +144,41 @@ void main() {
     });
 
 
-  group('updateMeal tests', () {
-    test('return with 200 response when a meal is updated in the database', () async {
-      final client = MockClient();
+    group('updateMeal tests', () {
+      test('return with 200 response when a meal is updated in the database', () async {
+        final client = MockClient();
 
-      // Use argument matchers to match any parameters
-      when(client.put(
-        Uri.parse('${ApiConfig.baseUrl}/api/Meals/Update/${meal.id}'),
-        headers: anyNamed('headers'),
-        body: anyNamed('body'),
-        encoding: anyNamed('encoding'),
-      )).thenAnswer((_) async => http.Response(
-        jsonEncode({
-          'id': meal.id,
-          'title': meal.name,
-          'food_image_id': meal.foodImageId,
-          'date': meal.date?.toIso8601String(),
-          'ingredients': meal.ingredients.map((ingredient) => {
-            'id': ingredient.id,
-            'ingredient_id': {
-              'id': ingredient.ingredient.id,
-              'name': ingredient.ingredient.name,
-              'food_image_id': ingredient.ingredient.foodImageId,
-            }
-          }).toList(),
-        }),
-        200,
-      ));
+        // Arrange: Set up the stub to return a 200 response
+        when(client.put(
+          Uri.parse('${ApiConfig.baseUrl}/api/Meals/Update/${meal.id}'), // Specify the API endpoint for meal creation.
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8', // Specify that the content is JSON.
+            'Authorization': 'Bearer mocked_token_value',
+          },
+          body: jsonEncode(meal.toJson()),
+        )).thenAnswer((_) async => http.Response(
+          jsonEncode({
+            'id': meal.id,
+            'title': meal.name,
+            'food_image_id': meal.foodImageId,
+            'date': meal.date?.toIso8601String(),
+            'ingredients': meal.ingredients.map((ingredient) => {
+              'id': ingredient.id,
+              'ingredient_id': {
+                'id': ingredient.ingredient.id,
+                'name': ingredient.ingredient.name,
+                'food_image_id': ingredient.ingredient.foodImageId,
+              }
+            }).toList(),
+          }),
+          200,
+        ));
+    
+        final response = await updateMeal(client, authProvider, meal);
 
-      final response = await updateMeal(client, authProvider, meal);
-
-      expect(response.statusCode, 200);
+        expect(response.statusCode, 200);
+      });
     });
-  });
 
     group('deleteMeal tests', () {
       test('return with 200 response when a meal is removed from the database', () async {
