@@ -68,6 +68,12 @@ Future<http.Response> createMeal(AuthProvider authProvider, final String name,
 Future<http.Response> updateMeal(
     http.Client client, AuthProvider authProvider, final Meal meal) async {
   final jwtToken = await authProvider.retrieveToken();
+  // Create JSON with date formatted as yyyy-MM-dd for the API 
+  final mealJson = meal.toJson();
+  if (mealJson['date'] != null && meal.date != null) {
+    mealJson['date'] = DateFormat('yyyy-MM-dd').format(meal.date!);
+  }
+  
   // Sending a POST request to the API endpoint to create a new meal.
   final response = await client.put(
     Uri.parse(
@@ -77,18 +83,7 @@ Future<http.Response> updateMeal(
           'application/json; charset=UTF-8', // Specify that the content is JSON.
       'Authorization': 'Bearer $jwtToken'
     },
-    // Encode the meal data as JSON for the request body.
-    body: jsonEncode(meal.toJson()),
-
-
-   /*      // Encode the meal data as JSON for the request bodyy with date formatted as yyyy-MM-dd 
-    body: jsonEncode({
-      'id': meal.id,
-      'name': meal.name,
-      'food_image_id': meal.foodImageId,
-      'date': meal.date != null ? DateFormat('yyyy-MM-dd').format(meal.date!) : null,
-      'ingredients': meal.ingredients.map((e) => e.toJson()).toList(),
-    })  */
+    body: jsonEncode(mealJson),
   );
  developer.log('Statuscode: ${response.statusCode} body:${response.body}');
   return response; // Return the response from the server.
