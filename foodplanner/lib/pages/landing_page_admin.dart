@@ -88,7 +88,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
           'cta': Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.switch_account),
+              Icon(Icons.group),
               SizedBox(width: 10),
             ],
           ),
@@ -148,33 +148,32 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
         },
       ];
 
-  @override
-  Widget build(BuildContext context) {
+    @override
+  Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(
-            'Velkommen ${admin.firstName}${admin.lastName.isNotEmpty ? ' ${admin.lastName}' : ''}',
-            style: AppTextStyles.headline4,
-          ),
-        ),
         backgroundColor: Colors.white,
+        toolbarHeight: 225,
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 70),
+          child: Text(
+            'Velkommen \n${admin.firstName ?? 'Admin'}',
+            style: TextStyle(fontSize: 36),
+            textAlign: TextAlign.center,
+          )
+        )
       ),
       backgroundColor: Colors.white,
+
       bottomNavigationBar: NavBar(),
       body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height
-              - kToolbarHeight
-              - MediaQuery.of(context).padding.top,
-          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 40),
+                const SizedBox(height: 10),
                 ...adminActions.map((action) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
