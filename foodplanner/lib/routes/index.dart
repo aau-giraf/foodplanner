@@ -9,7 +9,7 @@ import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
 import 'package:foodplanner/pages/main_page_parent.dart';
-import 'package:foodplanner/pages/landing_page_teacher.dart';
+import 'package:foodplanner/pages/main_page_teacher.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/pages/profile_page.dart';
@@ -130,7 +130,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const TeacherLandingPage();
+              return const TeacherMainPage();
             } else {
               return const UnauthorizedPage();
             }
