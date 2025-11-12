@@ -208,15 +208,17 @@ class _MealFormPageState extends State<MealFormPage> {
                           final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AddIngredientPage(authProvider: AuthProvider()),
+                              builder: (context) => AddIngredientPage(
+                                preSelectedIngredients: selectedIngredients,
+                                authProvider: AuthProvider()
+                              ),
                             ),
                           );
                           if (result != null) {
                             setState(() {
+                              selectedIngredients.clear();
                               if (result is List<Map<String, dynamic>>) {
                                 selectedIngredients.addAll(result);
-                              } else if (result is Map<String, dynamic>) {
-                                selectedIngredients.add(result);
                               }
                             });
                           }
