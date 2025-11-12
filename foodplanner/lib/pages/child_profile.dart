@@ -14,6 +14,7 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:foodplanner/pages/choose_parent.dart';
 import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/models/user_roles.dart';
 
 class ChildProfile extends StatefulWidget {
   final Child child;
@@ -38,7 +39,7 @@ class ChildProfileState extends State<ChildProfile>
       email: 'Unknown',
       firstName: 'Unknown',
       lastName: 'Unknown',
-      role: 'Unknown',
+      role: UserRole.empty(),
       archived: false);
   bool isEditingFirstName = false;
   bool isEditingLastName = false;

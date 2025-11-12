@@ -3,7 +3,7 @@ import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'landing_page_teacher.dart';
@@ -78,7 +78,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 final authProvider =
                     Provider.of<AuthProvider>(context, listen: false);
-                authProvider.setRole(ROLES.admin);
+                authProvider.setRole(UserRole.of({Role.admin}));
               },
               child: const Text('Set role to admin'),
             ),
@@ -86,7 +86,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 final authProvider =
                     Provider.of<AuthProvider>(context, listen: false);
-                authProvider.setRole(ROLES.parent);
+                authProvider.setRole(UserRole.of({Role.parent}));
               },
               child: const Text('Set role to parent'),
             ),
@@ -100,7 +100,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 final authProvider =
                     Provider.of<AuthProvider>(context, listen: false);
-                if (authProvider.hasRole([ROLES.parent])) {
+                if (authProvider.userRole?.hasRole(Role.parent) ?? false) {
                   context.go(NO_MEAL);
                 } else {
                   context.go('/unauthorized');

@@ -9,7 +9,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:foodplanner/services/user_service.dart';
@@ -258,7 +258,7 @@ class _SignupState extends State<SignupPage> {
           final role =
               await LoginPage.authService.fetchAuthData(email, password);
           switch (role) {
-            case ROLES.student:
+            case Role.student:
             if(context.mounted){
               GoRouter.of(context).go(STUDENT_CREATE);
               break;

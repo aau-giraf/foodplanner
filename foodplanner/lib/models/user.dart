@@ -1,9 +1,11 @@
+import 'user_roles.dart';
+
 class User {
   final int id;
   final String firstName;
   final String lastName;
   final String email;
-  final String role;
+  final UserRole role;
   final bool archived;
 
   const User({
@@ -23,7 +25,7 @@ class User {
         'first_name': String firstName,
         'last_name': String lastName,
         'email': String email,
-        'role': String role,
+        'role': int role,
         'archived': bool archived,
       } =>
         User(
@@ -31,7 +33,7 @@ class User {
           firstName: firstName,
           lastName: lastName,
           email: email,
-          role: role,
+          role: UserRole.fromFlagValue(role),
           archived: archived,
         ),
       _ => throw const FormatException('Bruger kunne ikke findes.'),
@@ -42,7 +44,7 @@ class User {
 class UserLogin {
   final String jwt;
   final bool roleApproved;
-  final String role;
+  final UserRole role;
 
   const UserLogin({
     required this.jwt,
@@ -55,12 +57,12 @@ class UserLogin {
       {
         'jwt': String jwt,
         'roleApproved': bool roleApproved,
-        'role': String role,
+        'role': int role,
       } =>
         UserLogin(
           jwt: jwt,
           roleApproved: roleApproved,
-          role: role,
+          role: UserRole.fromFlagValue(role),
         ),
       _ => throw const FormatException('Bruger kunne ikke findes.'),
     };
