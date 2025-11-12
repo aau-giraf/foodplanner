@@ -52,9 +52,13 @@ class LandingPageState extends State<LandingPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await authProvider.loadFromStorage();
       if (!authProvider.isLoggedIn) {
-        context.go(LOGIN_PAGE);
+        if(context.mounted){
+          context.go(LOGIN_PAGE);
+        } else {developer.log("Context was unmounted when trying to go to login page");}
       } else if (authProvider.isApproved != true) {
-        context.go('/unauthorized');
+        if(context.mounted){
+          context.go('/unauthorized');
+        } else{developer.log("Context was unmounted when trying to go to unauthorized page");}
       }
     });
 
@@ -78,7 +82,9 @@ class LandingPageState extends State<LandingPage> {
                   await authProvider
                       .logout(); // Just call it; don't try to store a result
                  developer.log('Logged out'); // For debugging purposes
+                 if(context.mounted){
                   context.go(LOGIN_PAGE);
+                 } else{developer.log("Context was unmounted when trying to log out");}
                 },
                 child: const Text('Logout'),
               ),

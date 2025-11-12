@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
@@ -51,7 +53,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -64,12 +66,19 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                 ),
               ),
               IconButton(
-                  onPressed: () async {
-                    await AuthProvider().setRole(ROLES.student);
-                    await AuthProvider().loadFromStorage();
-                    GoRouter.of(context).go('/');
-                  },
-                  icon: SFIcon(SFIcons.sf_lock_open_fill)),
+                onPressed: () async {
+                  await AuthProvider().setRole(ROLES.student);
+                  await AuthProvider().loadFromStorage();
+
+                  if (!context.mounted){
+                    developer.log('buildcontext is not mounted, in $runtimeType');
+                    return;
+                  }
+
+                  GoRouter.of(context).go('/');
+                },
+                icon: SFIcon(SFIcons.sf_lock_open_fill)
+              ),
             ],
           ),
         ),

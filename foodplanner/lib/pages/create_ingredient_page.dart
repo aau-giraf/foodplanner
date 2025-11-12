@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -69,9 +70,11 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
         )).body,
       ),
     );
-    
-    
-    Navigator.pop(context, newIngredient);
+    if(mounted){
+      Navigator.pop(context, newIngredient);
+    } else {
+      developer.log("Error while creating ingredient");
+    }
   }
 
   @override

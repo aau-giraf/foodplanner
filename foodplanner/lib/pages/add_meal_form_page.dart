@@ -12,7 +12,6 @@ import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/ingredient_services.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:http/http.dart' as http;
@@ -263,6 +262,10 @@ class _MealFormPageState extends State<MealFormPage> {
                               });
                             }
                             createMealWithIngredients();
+                            if (!context.mounted){
+                              developer.log('buildcontext was unmounted in $runtimeType');
+                              return;
+                            }
                             Navigator.pop(context);
                             Navigator.pop(context);
                           },
@@ -273,6 +276,10 @@ class _MealFormPageState extends State<MealFormPage> {
                               true, // Mark as a destructive action.
                           onPressed: () async {
                             await createMealWithIngredients();
+                            if (!context.mounted){
+                              developer.log('buildcontext was unmounted in $runtimeType');
+                              return;
+                            }
                             Navigator.pop(context);
                             Navigator.pop(context);
                           },

@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
@@ -563,6 +565,11 @@ class ParentProfileState extends State<ParentProfile>
                         final authProvider =
                             Provider.of<AuthProvider>(context, listen: false);
                         await authProvider.logout();
+                        if (!context.mounted){
+                          developer.log('buildcontext was unmounted in $runtimeType');
+                          return;
+                        }
+
                         context.go(LOGIN_PAGE);
                       },
                       backgroundColor: Colors.red,
