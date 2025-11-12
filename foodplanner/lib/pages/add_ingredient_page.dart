@@ -19,13 +19,11 @@ import 'package:http/http.dart';
 class AddIngredientPage extends StatefulWidget {
   final IngredientServices? ingredientServices;
   final AuthProvider? authProvider;
-  final List<Map<String, dynamic>>? preSelectedIngredients;
 
   const AddIngredientPage({
     super.key,
     this.ingredientServices,
     this.authProvider,
-    this.preSelectedIngredients
   });
 
   @override
@@ -75,10 +73,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
           if (_controllersById.containsKey(id)) {
             newControllers[id] = _controllersById[id]!;
           } else {
-            final isPreSelected = widget.preSelectedIngredients?.any((selected) => selected['id'] == id) ??
-              false;
-
-            newControllers[id] = ValueNotifier<bool>(isPreselected);
+            newControllers[id] = ValueNotifier<bool>(false);
           }
         }
         // Dispose any controllers that no longer correspond to an ingredient
@@ -276,11 +271,6 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                           _ingredients.sort((a, b) =>  (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
                           _controllersById[tempIngredient.id] = ValueNotifier<bool>(false);
                         });
-                        _ingredients.sort((a, b) => (a['name'] as String)
-                            .toLowerCase()
-                            .compareTo((b['name'] as String).toLowerCase()));
-                        _controllers.add(ValueNotifier<bool>(false));
-                      });
                         _runFilter(_controller.text);
                     }
                   },
@@ -299,12 +289,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                 final filteredItem = _filteredIngredients[index];
                 final id = filteredItem['id'];
                 // Ensure a stable controller exists for this id (create if missing)
-                final controller = _controllersById.putIfAbsent(id, () => {
-                  
-                  final isPreSelected = widget.preSelectedIngredients?.any((selected) => selected['id'] == id) ?? false;
-                  
-                    return ValueNotifier<bool>(isPreSelected);
-                });
+                final controller = _controllersById.putIfAbsent(id, () => ValueNotifier<bool>(false));
 
                 return SettingsWidget(
                   key: ValueKey(id),

@@ -8,7 +8,6 @@ import 'package:foodplanner/components/meal_box.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
-import 'package:foodplanner/pages/edit_meal_page.dart';
 import 'package:foodplanner/routes/paths.dart';
 
 import 'package:foodplanner/routes/user_roles.dart';
@@ -88,52 +87,46 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
       ),
       bottomNavigationBar: NavBar(),
       backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ReusableMealBox(),
-                  ), // Use the reusable widget
-                  SizedBox(height: 20),
-                  mealNotifier.meal == null
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: CustomButton(
-                            onTab: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const MealFormPage()),
-                              ).then((_) {
-                                mealNotifier.fetchMealData();
-                              });
-                            },
-                            icon: SFIcon(
-                              SFIcons.sf_plus,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ))
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: CustomButton(
-                            onTab: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => EditMealPage()));
-                            },
-                            text: 'Se og Redigér\nMadpakke',
-                            //fontSize: 16,
-                          ),
-                        ),
-                ],
-              ),
-            ),
-          ],
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: ReusableMealBox(),
+          ), // Use the reusable widget
+          SizedBox(height: 20),
+          mealNotifier.meal == null
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: CustomButton(
+                    onTab: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MealFormPage()),
+                      ).then((_) {
+                        mealNotifier.fetchMealData();
+                      });
+                    },
+                    icon: SFIcon(
+                      SFIcons.sf_plus,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: CustomButton(
+                    onTab: () {
+                      GoRouter.of(context).go(FEEDBACK_Page);
+                    },
+                    text: 'Se Feedback',
+                    //fontSize: 16,
+                  ),
+                ),
+        ],
       ),
     );
   }
