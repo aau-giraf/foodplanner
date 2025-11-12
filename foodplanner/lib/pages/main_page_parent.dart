@@ -9,6 +9,7 @@ import 'package:foodplanner/pages/choose_child_parent.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/routes/paths.dart';
+import 'package:foodplanner/config/colors.dart';
 
 
 
@@ -74,7 +75,7 @@ class ParentMainPageState extends State<ParentMainPage> {
               hoverColor: Colors.transparent,
               onTap: (){
                 Navigator.push(
-                  context, 
+                  context,
                   MaterialPageRoute(builder: (context) => ChooseChildParent())  
                 );
               },
@@ -84,7 +85,7 @@ class ParentMainPageState extends State<ParentMainPage> {
                 width: double.infinity,
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: AppColors.background,
                   borderRadius: BorderRadius.circular(30)
                 ),
                 padding: const EdgeInsets.all(15),
@@ -111,17 +112,18 @@ class ParentMainPageState extends State<ParentMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                Navigator.push(
+                GoRouter.of(context).go(SETTINGS_PAGE);
+                /*Navigator.push(
                   context, 
-                  MaterialPageRoute(builder: (context) => Settings())  
-                );
+                  //MaterialPageRoute(builder: (context) => Settings())  
+                ); */
               },
               child: Container(
                 height: 59,
                 width: double.infinity,
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: AppColors.background,
                   borderRadius: BorderRadius.circular(30),
                   
                 ),
@@ -158,7 +160,7 @@ class ParentMainPageState extends State<ParentMainPage> {
                 width: double.infinity,
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: AppColors.background,
                   borderRadius: BorderRadius.circular(30)
                 ),
                 padding: const EdgeInsets.all(15),
@@ -182,7 +184,8 @@ class ParentMainPageState extends State<ParentMainPage> {
             ),
           ]
         )
-      )
+      ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }

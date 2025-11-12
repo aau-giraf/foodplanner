@@ -2,6 +2,127 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/routes/paths.dart';
+import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/services/navbar_factory_service.dart';
+import 'package:go_router/go_router.dart';
+//import 'package:flutter/foundation.dart';
+
+
+class NavBar extends StatefulWidget {
+  int currentPageIndex;
+  
+  NavBar({
+    super.key,
+    this.currentPageIndex = 0,
+  });
+
+  @override
+  State<NavBar> createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> {
+  //final List<Widget> _destinations = [];
+
+  //final Future<ROLES?> _roleFuture = AuthProvider().retrieveRole();
+
+  void _handleNavigation(int index, ROLES role, BuildContext context) {
+    //setState((){
+    //  widget.currentPageIndex = index;
+    //});
+
+    if(role == ROLES.teacher || role == ROLES.parent) {
+      switch(index) {
+        case 0:
+          GoRouter.of(context).go(PARENT_MAIN);
+          break;
+        case 1:
+          GoRouter.of(context).go(CHOOSE_CHILD);
+          break;                
+        case 2:
+          GoRouter.of(context).go(SETTINGS_PAGE);
+          break;
+        case 3: 
+          //() async {
+          //  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+          //  await authProvider.logout();
+          //  context.go(LOGIN_PAGE);
+          GoRouter.of(context).go(LOGIN_PAGE);
+          break;
+      }
+    } else if (role == ROLES.student){
+      switch(index) {
+        case 0: 
+          GoRouter.of(context).go(FEEDBACK_Page);
+          break;
+        case 1: 
+          GoRouter.of(context).go(MADPAKKE);
+          break;
+        case 2:
+          GoRouter.of(context).go(SETTINGS_PAGE);
+          break;
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: AuthProvider().retrieveRole(),
+      //future: _roleFuture,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if(!snapshot.hasData) {
+          return const SizedBox.shrink();
+      }
+      final role = snapshot.data!;
+      final index = widget.currentPageIndex;
+      final destinations = NavBarDestinationFactory.getNavBarDestinations(role);
+
+      //final bool onStartPage = isStartPage(context);
+      //final safeIndex =  widget.currentPageIndex; //.clamp(0, destinations.length -1);
+      //final safeIndex =  widget.currentPageIndex;
+      //debugPrint('Destinations: ${destinations.map((d) => d.label).toList()}');
+      //debugPrint('SelectedIndex: ${index}');
+
+      return ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+          child: NavigationBar(
+            backgroundColor: AppColors.background,
+            indicatorColor: AppColors.primary,
+            selectedIndex: index,
+            //debugPrint('index widget: ${widget.currentPageIndex}'),
+            onDestinationSelected: (int index) => {
+              //debugPrint('Nav pressed index: $index'),
+              setState(() {
+                widget.currentPageIndex = index;
+              }),
+              //debugPrint('index widget: ${widget.currentPageIndex}'),
+              _handleNavigation(index, role, context),
+            },
+            destinations: destinations,
+          )
+        );
+  },);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+/*
+import 'package:flutter/material.dart';
+import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
 
@@ -114,3 +235,4 @@ class _NavBarState extends State<NavBar> {
     );
   }
 }
+*/

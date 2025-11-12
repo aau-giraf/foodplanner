@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 
 class ChooseChildParent extends StatelessWidget {
+  
+  const ChooseChildParent ({
+    super.key,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,6 +24,7 @@ class ChooseChildParent extends StatelessWidget {
         ),
       ),
       backgroundColor: Colors.white,
+      bottomNavigationBar: NavBar(currentPageIndex: 1),
     );
   }
 }

@@ -11,6 +11,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 
 class CreateChildPage extends StatefulWidget {
   const CreateChildPage({super.key});
@@ -342,6 +343,7 @@ class _SignupChildState extends State<CreateChildPage> {
           ),
         ),
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }
