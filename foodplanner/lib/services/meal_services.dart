@@ -77,8 +77,18 @@ Future<http.Response> updateMeal(
           'application/json; charset=UTF-8', // Specify that the content is JSON.
       'Authorization': 'Bearer $jwtToken'
     },
-    // Encode the meal data as JSON for the request body.
-    body: jsonEncode(meal.toJson()),
+    /* // Encode the meal data as JSON for the request body.
+    body: jsonEncode(meal.toJson()), */
+
+
+        // Encode the meal data as JSON for the request bodyy with date formatted as yyyy-MM-dd 
+    body: jsonEncode({
+      'id': meal.id,
+      'name': meal.name,
+      'food_image_id': meal.foodImageId,
+      'date': meal.date != null ? DateFormat('yyyy-MM-dd').format(meal.date!) : null,
+      'ingredients': meal.ingredients.map((e) => e.toJson()).toList(),
+    }) 
   );
  developer.log('Statuscode: ${response.statusCode} body:${response.body}');
   return response; // Return the response from the server.
