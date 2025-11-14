@@ -8,6 +8,7 @@ import 'package:foodplanner/components/meal_box.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
+import 'package:foodplanner/pages/edit_meal_page.dart';
 import 'package:foodplanner/routes/paths.dart';
 
 import 'package:foodplanner/routes/user_roles.dart';
@@ -120,9 +121,11 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: CustomButton(
                     onTab: () {
-                      GoRouter.of(context).go(FEEDBACK_Page);
-                    },
-                    text: 'Se Feedback',
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditMealPage()));
+                            },
+
+                          // Burde nok alignes center i fremtiden
+                            text: 'Se og Redigér\n   Madpakke',
                     //fontSize: 16,
                   ),
                 ),
