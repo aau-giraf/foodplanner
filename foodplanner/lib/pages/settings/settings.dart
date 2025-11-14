@@ -544,7 +544,9 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
           'divider': false,
         },*/
       ];
-  List<Map<String, dynamic>> get adminSettings => [
+
+  // Det her skal ikke være herinde mere, men sletter ikke lige, i tilfælde af vi vil bruge det
+  /*List<Map<String, dynamic>> get adminSettings => [
         {
           'title': "Godkend profiler",
           'leftIcon': SFIcons.sf_person_crop_circle_badge_checkmark,
@@ -612,19 +614,32 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
             );
           }
         },
-      ];
+      ];*/
 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: const Text(
           'Indstillinger',
           style: AppTextStyles.headline2,
         ),
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
+      ),*/
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        toolbarHeight: 200,
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 25),
+          child: Text(
+            'Indstillinger (mangler icon)',
+            style: TextStyle(fontSize: 36),
+            textAlign: TextAlign.center,
+          ),
+        ),
       ),
       bottomNavigationBar: NavBar(currentPageIndex: 3),
       backgroundColor: Colors.white,
@@ -634,7 +649,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Column(
                   children: [
                     Card(
@@ -670,7 +685,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                         children: [
                           SizedBox(height: 20),
                           CustomButton(
-                            text: 'Gem ændringer',
+                            text: 'Gem ændring',
                             onTab: () async {
                               await saveChanges();
                               await resetPage();
@@ -693,6 +708,8 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
               ),
               SizedBox(height: 10),
               if (authProvider.userRole?.hasRole(Role.admin) ?? false)
+              // Da der ikke er forskel på settings med de forskellige user roles, så skal dette også væk
+              /*if (authProvider.hasRole([ROLES.admin]))
                 Card(
                   elevation: 2,
                   color: AppColors.background,
@@ -727,7 +744,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       ),
                     ),
                   ),
-                ),
+                ),*/
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: CustomButton(
@@ -758,9 +775,12 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       },
                       onCancel: (){
                         Navigator.of(context).pop();
-                      }
+                      },
                     );
-                })
+                  },
+                  foregroundColor: AppColors.errorText,
+                  backgroundColor: AppColors.background,
+                )
               )
             ],
           ),

@@ -15,6 +15,7 @@ class SettingsWidget extends StatefulWidget {
   final dynamic cta;
   final SettingsType type;
   final bool divider;
+  final bool isBold;
   final bool clickable;
   final VoidCallback? ctaFunction;
   final bool isEditable;
@@ -31,6 +32,7 @@ class SettingsWidget extends StatefulWidget {
     this.cta,
     required this.type,
     this.divider = true,
+    this.isBold = false,
     this.clickable = false,
     this.ctaFunction,
     this.controller,
@@ -115,7 +117,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                       )
                     : Text(
                         widget.title,
-                        style: AppTextStyles.bigText,
                         softWrap: true, // Allow text to wrap
                       )),
             widget.cta ?? Container(),
@@ -164,7 +165,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                           SizedBox(width: 10),
                           Text(
                             widget.title,
-                            style: AppTextStyles.bigText,
                           ),
                           widget.showSpacer ? Spacer() : Container(),
                           widget.cta ?? Container(),
@@ -181,7 +181,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             ? Divider(
                 color: Colors.black,
                 thickness: 0.25,
-                indent: 70,
+                indent: 95,
+                endIndent: 8,
               )
             : Container()
       ],
@@ -222,9 +223,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 Text(
                   widget.title,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.bigText.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
                   softWrap: true, // Allow text to wrap
                 ),
                 SizedBox(height: 10),
