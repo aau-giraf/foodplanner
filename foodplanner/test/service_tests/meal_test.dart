@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'meal_test.mocks.dart';
+import 'package:intl/intl.dart';
 
 
 // Custom mock AuthProvider for tests only
@@ -155,7 +156,13 @@ void main() {
             'Content-Type': 'application/json; charset=UTF-8', // Specify that the content is JSON.
             'Authorization': 'Bearer mocked_token_value',
           },
-          body: jsonEncode(meal.toJson()),
+          body:jsonEncode({
+            'id': meal.id,
+            'name': meal.name,
+            'food_image_id': meal.foodImageId,
+            'date': meal.date != null ? DateFormat('yyyy-MM-dd').format(meal.date!) : null,
+            'ingredients': meal.ingredients.map((e) => e.toJson()).toList(),
+          }) ,
         )).thenAnswer((_) async => http.Response(
           jsonEncode({
             'id': meal.id,
