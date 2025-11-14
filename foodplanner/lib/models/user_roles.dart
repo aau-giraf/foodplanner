@@ -31,29 +31,19 @@ class UserRole {
 
   UserRole add(Role role) => UserRole._({...roles, role});
 
-  int toFlagValue() {
-    int value = 0;
+  factory UserRole.fromString(String value) {
+    List<String> roleValues = value.split(",");
+    var userRole = UserRole.empty();
 
-    if (hasRole(Role.admin))   value |= 1 << 0;
-    if (hasRole(Role.child))   value |= 1 << 1;
-    if (hasRole(Role.teacher)) value |= 1 << 2;
-    if (hasRole(Role.parent))  value |= 1 << 3;
+    for (var role in Role.values){
+      if(roleValues.contains(role.name)){
+        userRole = userRole.add(role);
+      }
+    }
 
-    return value;
-  }
-
-  factory UserRole.fromString(String value) => UserRole.fromFlagValue(int.parse(value));
-
-  factory UserRole.fromFlagValue(int value) {
-    final roles = <Role>{};
-    if (value & (1 << 0) != 0) roles.add(Role.admin);
-    if (value & (1 << 1) != 0) roles.add(Role.child);
-    if (value & (1 << 2) != 0) roles.add(Role.teacher);
-    if (value & (1 << 3) != 0) roles.add(Role.parent);
-
-    return UserRole._(roles);
+    return userRole;
   }
 
   @override
-  String toString() => toFlagValue().toString();
+  String toString() => roles.map((r) => r.name).join(",");
 }

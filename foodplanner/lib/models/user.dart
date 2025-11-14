@@ -25,7 +25,7 @@ class User {
         'first_name': String firstName,
         'last_name': String lastName,
         'email': String email,
-        'role': int role,
+        'role': String role,
         'archived': bool archived,
       } =>
         User(
@@ -33,7 +33,7 @@ class User {
           firstName: firstName,
           lastName: lastName,
           email: email,
-          role: UserRole.fromFlagValue(role),
+          role: UserRole.fromString(role),
           archived: archived,
         ),
       _ => throw const FormatException('Bruger kunne ikke findes.'),
@@ -57,12 +57,12 @@ class UserLogin {
       {
         'jwt': String jwt,
         'roleApproved': bool roleApproved,
-        'role': int role,
+        'role': String role,
       } =>
         UserLogin(
           jwt: jwt,
           roleApproved: roleApproved,
-          role: UserRole.fromFlagValue(role),
+          role: UserRole.fromString(role),
         ),
       _ => throw const FormatException('Bruger kunne ikke findes.'),
     };
