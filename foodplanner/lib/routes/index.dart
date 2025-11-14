@@ -10,6 +10,7 @@ import 'package:foodplanner/pages/home_page.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
 import 'package:foodplanner/pages/main_page_parent.dart';
 import 'package:foodplanner/pages/main_page_teacher.dart';
+import 'package:foodplanner/pages/main_page_AT';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/pages/profile_page.dart';
@@ -19,6 +20,8 @@ import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/pages/choose_child_parent.dart';
+import 'package:foodplanner/pages/student_page.dart';
+import 'package:foodplanner/pages/edit_meal_form_page.dart';
 
 import '../pages/login_page.dart';
 import '../pages/unauthorized_page.dart';
@@ -112,8 +115,13 @@ final router = GoRouter(
       builder: (context, state) => ChooseChildParent(),
     ),
 
-    //no need for wildcard handling as flutter already does it
+/*
+    GoRoute(path: '/madpakke',
+      builder: (context, state) => EditMealFormPage();
+    ),
+*/
 
+    //no need for wildcard handling as flutter already does it
     GoRoute(
       path: TEACHER_ROOT,
       builder: (context, state) {
@@ -154,9 +162,11 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const ChildLandingPageMadpakke(
+              return const StudentPage();
+              /*return const ChildLandingPageMadpakke(
                 student: {},
               ); // im guessing this page, student_page is a dummy one it seems TODO
+              */
             } else {
               return const UnauthorizedPage();
             }
@@ -279,12 +289,14 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return Column(
+                return const ATMainPage();
+              /*return Column(
                 children: [
                   const Text('Admin Page'),
                   NavBar(),
                 ],
               ); // another dummy page, I think Dressi is making a new one TODO
+              */
             } else {
               return const UnauthorizedPage();
             }
@@ -292,6 +304,7 @@ final router = GoRouter(
         );
       },
     ),
+
     GoRoute(
         path: PARENT_ROOT,
         builder: (context, state) {
@@ -317,11 +330,13 @@ final router = GoRouter(
           );
         },
         //whats this?
+        /*
         routes: [
           GoRoute(
             path: MADPAKKE,
             builder: (context, state) => ParentMainPage(),
           )
-        ]),
+        ]*/
+      ),
   ],
 );

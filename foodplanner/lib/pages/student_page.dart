@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 
 class StudentPage extends StatelessWidget {
    const StudentPage({super.key});
@@ -26,6 +27,7 @@ class StudentPage extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:foodplanner/pages/choose_child_parent.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/routes/paths.dart';
+import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
@@ -16,15 +17,15 @@ import 'package:provider/provider.dart';
 import 'package:validators/validators.dart';
 import 'package:foodplanner/config/colors.dart';
 
-class TeacherMainPage extends StatefulWidget {
-  const TeacherMainPage({super.key});
+class ATMainPage extends StatefulWidget {
+  const ATMainPage({super.key});
 
   @override
-  State<TeacherMainPage> createState() =>
-      TeacherMainPageState();
+  State<ATMainPage> createState() =>
+      ATMainPageState();
 }
 
-class TeacherMainPageState extends State<TeacherMainPage> {
+class ATMainPageState extends State<ATMainPage> {
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   dynamic _user;
 
@@ -53,7 +54,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
         title: Padding(
           padding: const EdgeInsets.only(top: 70),
           child: Text(
-            'Velkommen \n${_user?.firstName ?? 'Lærer'}',
+            'Velkommen \n${_user?.firstName ?? 'Forældre'}',
             style: TextStyle(fontSize: 36),
             textAlign: TextAlign.center,
           )
@@ -70,7 +71,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
               hoverColor: Colors.transparent,
               onTap: (){
                 Navigator.push(
-                  context, 
+                  context,
                   MaterialPageRoute(builder: (context) => ChooseChildParent())  
                 );
               },
@@ -81,6 +82,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
                 margin: const EdgeInsets.symmetric(horizontal: 30),
                 decoration: BoxDecoration(
                   color: AppColors.background,
+
                   borderRadius: BorderRadius.circular(30),
                   boxShadow:[
                     BoxShadow(
@@ -96,7 +98,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
                   alignment: Alignment.center,
                   children: [
                     const Text(
-                      'Vælg barn',
+                      'Teacher role',
                       style: TextStyle(fontSize: 20),
                       textAlign: TextAlign.center
                     ),
@@ -115,10 +117,11 @@ class TeacherMainPageState extends State<TeacherMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                Navigator.push(
+                GoRouter.of(context).go(SETTINGS_PAGE);
+                /*Navigator.push(
                   context, 
-                  MaterialPageRoute(builder: (context) => Settings())  
-                );
+                  //MaterialPageRoute(builder: (context) => Settings())  
+                ); */
               },
               child: Container(
                 height: 59,
@@ -141,7 +144,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
                   alignment: Alignment.center,
                   children: [
                     const Text(
-                      'Indstillinger',
+                      'Teacher role',
                       style: TextStyle(fontSize: 20),
                       textAlign: TextAlign.center
                     ),
@@ -179,6 +182,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
                       spreadRadius: 0,
                     )
                   ]
+
                 ),
                 padding: const EdgeInsets.all(15),
                 child: Stack(

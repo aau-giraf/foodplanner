@@ -34,8 +34,14 @@ class _NavBarState extends State<NavBar> {
     if(role == ROLES.teacher || role == ROLES.guardian) {
       switch(index) {
         case 0:
-          GoRouter.of(context).go(GUARDIAN_MAIN);
+          if(role == ROLES.guardian){
+          GoRouter.of(context).go(PARENT_ROOT);
           break;
+          } else {
+            GoRouter.of(context).go(TEACHER_ROOT);
+          break;
+          }
+
         case 1:
           GoRouter.of(context).go(CHOOSE_CHILD);
           break;                
@@ -62,7 +68,18 @@ class _NavBarState extends State<NavBar> {
           GoRouter.of(context).go(SETTINGS_PAGE);
           break;
       }
-    } 
+    } else if (role == ROLES.admin) {
+        switch(index) {
+          case 0:
+            GoRouter.of(context).go(ADMIN_ROOT);
+            break;
+          case 1:
+            GoRouter.of(context).go(SETTINGS_PAGE);
+            break;
+          case 2:
+            GoRouter.of(context).go(LOGIN_PAGE);
+        }
+    }
   }
 
   @override

@@ -65,12 +65,18 @@ class NavBarDestinationFactory {
       ),
 
       NavigationDestination(
-      selectedIcon: SFIcon(
+        selectedIcon: Icon(
+          Icons.lunch_dining,
+          color: Colors.white,
+        ),
+        icon: Icon(Icons.lunch_dining),
+        label: 'Madpakke',
+      /*selectedIcon: SFIcon(
         SFIcons.sf_gift_fill,
         color: Colors.white,
       ),
       icon: SFIcon(SFIcons.sf_gift),
-      label: 'Madpakke',
+      label: 'Madpakke',*/
       ),
 
       NavigationDestination(
