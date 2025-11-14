@@ -100,22 +100,6 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
           }
         },
         {
-          'title': "Indstillinger",
-          'cta': Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.settings),
-              SizedBox(width: 10),
-            ],
-          ),
-          'ctaFunction': () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Settings()),
-            );
-          }
-        },
-        {
           'title': "Skift Rolle",
           'cta': Row(
             mainAxisSize: MainAxisSize.min,
@@ -128,6 +112,22 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const RoleSelectionPage()),
+            );
+          }
+        },
+        {
+          'title': "Indstillinger",
+          'cta': Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.settings),
+              SizedBox(width: 10),
+            ],
+          ),
+          'ctaFunction': () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Settings()),
             );
           }
         },
@@ -189,9 +189,9 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
                           boxShadow: [
                             BoxShadow(
                               color: Color(0x3F000000),
-                              blurRadius: 4,
-                              offset: Offset(0, 4),
-                              spreadRadius: 0,
+                      blurRadius: 4,
+                      offset: Offset(0, 4),
+                      spreadRadius: 0,
                             ),
                           ],
                         ),
