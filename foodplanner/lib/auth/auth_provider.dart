@@ -7,7 +7,7 @@ class AuthProvider with ChangeNotifier {
   final FlutterSecureStorage _secureStorage;
   bool? _isApproved;
   bool _isLoggedIn = false;
-  UserRole? _userRole;
+  UserRoles? _userRole;
   String? _jwtToken;
 
   AuthProvider({FlutterSecureStorage? secureStorage})
@@ -19,10 +19,10 @@ class AuthProvider with ChangeNotifier {
 
   bool? get isApproved => _isApproved;
   bool get isLoggedIn => _isLoggedIn;
-  UserRole? get userRole => _userRole;
+  UserRoles? get userRole => _userRole;
   String? get jwtToken => _jwtToken;
 
-  Future<void> login(UserRole role, String token, bool isApproved) async {
+  Future<void> login(UserRoles role, String token, bool isApproved) async {
     _isApproved = isApproved;
     _isLoggedIn = true;
     _userRole = role;
@@ -59,7 +59,7 @@ class AuthProvider with ChangeNotifier {
     return _isLoggedIn && (userRole?.hasOneOfRoles(roles) ?? false);
   }
 
-  Future<void> setRole(UserRole role) async {
+  Future<void> setRole(UserRoles role) async {
     _isLoggedIn = true;
     _userRole = role;
     await _secureStorage.write(key: 'userRole', value: role.toString());
@@ -78,7 +78,7 @@ class AuthProvider with ChangeNotifier {
       return;
     }
 
-    _userRole = UserRole.fromString(userRoleString);
+    _userRole = UserRoles.fromString(userRoleString);
 
     notifyListeners();
   }
@@ -89,7 +89,7 @@ class AuthProvider with ChangeNotifier {
     return _jwtToken;
   }
 
-  Future<UserRole?> retrieveRole() async {
+  Future<UserRoles?> retrieveRole() async {
     await loadFromStorage();
     return _userRole;
   }

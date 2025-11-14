@@ -78,7 +78,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 final authProvider =
                     Provider.of<AuthProvider>(context, listen: false);
-                authProvider.setRole(UserRole.of({Role.admin}));
+                authProvider.setRole(UserRoles.of({Role.admin}));
               },
               child: const Text('Set role to admin'),
             ),
@@ -86,7 +86,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 final authProvider =
                     Provider.of<AuthProvider>(context, listen: false);
-                authProvider.setRole(UserRole.of({Role.parent}));
+                authProvider.setRole(UserRoles.of({Role.parent}));
               },
               child: const Text('Set role to parent'),
             ),

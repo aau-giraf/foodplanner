@@ -28,7 +28,7 @@ class PinService {
           final bool roleApproved = data['roleApproved'];
           String role = data['role'];
 
-          UserRole authRole = UserRole.fromString(role);
+          UserRoles authRole = UserRoles.fromString(role);
 
         await AuthProvider().login(authRole, jwt, roleApproved);
         return null;

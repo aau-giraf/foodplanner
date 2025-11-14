@@ -39,7 +39,7 @@ class ChildProfileState extends State<ChildProfile>
       email: 'Unknown',
       firstName: 'Unknown',
       lastName: 'Unknown',
-      role: UserRole.empty(),
+      role: UserRoles.empty(),
       archived: false);
   bool isEditingFirstName = false;
   bool isEditingLastName = false;

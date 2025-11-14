@@ -37,7 +37,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
       email: 'Unknown',
       firstName: 'Unknown',
       lastName: 'Unknown',
-      role: UserRole.empty(),
+      role: UserRoles.empty(),
       archived: false);
 
   @override

@@ -21,7 +21,7 @@ class AuthService {
 
 
  
-Future<UserRole> fetchAuthData(String email, String password) async {
+Future<UserRoles> fetchAuthData(String email, String password) async {
   try {
     final response = await http.post(
       Uri.parse('$apiUrl/api/Users/Login'),
@@ -40,7 +40,7 @@ Future<UserRole> fetchAuthData(String email, String password) async {
       final bool roleApproved = data['roleApproved'];
       String roleValueString = data['role'];
 
-      UserRole authRole = UserRole.fromString(roleValueString);
+      UserRoles authRole = UserRoles.fromString(roleValueString);
 
       await AuthProvider().login(authRole, jwt, roleApproved);
       return authRole;

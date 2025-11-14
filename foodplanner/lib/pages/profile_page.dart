@@ -39,7 +39,7 @@ class ParentProfileState extends State<ParentProfile>
       email: 'Unknown',
       firstName: 'Unknown',
       lastName: 'Unknown',
-      role: UserRole.empty(),
+      role: UserRoles.empty(),
       archived: false);
 
   Child child = Child(
@@ -66,7 +66,7 @@ class ParentProfileState extends State<ParentProfile>
   String updatedPassword = '';
   String updatedPincode = '';
 
-  UserRole? userRole;
+  UserRoles? userRole;
 
   @override
   void initState() {

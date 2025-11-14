@@ -1,12 +1,12 @@
 enum Role { admin, teacher, parent, student, child }
 
-class UserRole {
+class UserRoles {
   final Set<Role> roles;
 
-  const UserRole._(this.roles);
+  const UserRoles._(this.roles);
 
-  factory UserRole.of(Iterable<Role> roles) => UserRole._({...roles});
-  factory UserRole.empty() => const UserRole._({});
+  factory UserRoles.of(Iterable<Role> roles) => UserRoles._({...roles});
+  factory UserRoles.empty() => const UserRoles._({});
 
   bool hasRole(Role role) => roles.contains(role);
 
@@ -29,11 +29,11 @@ class UserRole {
     return false;
   }
 
-  UserRole add(Role role) => UserRole._({...roles, role});
+  UserRoles add(Role role) => UserRoles._({...roles, role});
 
-  factory UserRole.fromString(String value) {
+  factory UserRoles.fromString(String value) {
     List<String> roleValues = value.split(",");
-    var userRole = UserRole.empty();
+    var userRole = UserRoles.empty();
 
     for (var role in Role.values){
       if(roleValues.contains(role.name)){

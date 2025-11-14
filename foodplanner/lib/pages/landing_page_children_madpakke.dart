@@ -30,7 +30,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   late Future<bool> _hasRolesFuture;
   Child? _child;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
-  UserRole? userRole;
+  UserRoles? userRole;
   Future<void>? _callerFuture;
 
   @override
