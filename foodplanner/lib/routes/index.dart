@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/pages/Change_Roll.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
@@ -36,8 +37,10 @@ final router = GoRouter(
           return '/login';
         }
         switch (role) {
-          case ROLES.teacher || ROLES.admin:
+          case ROLES.teacher:
             return TEACHER_ROOT;
+          case ROLES.admin:
+            return ADMIN_ROOT;
           case ROLES.parent:
             return PARENT_ROOT;
           default:
@@ -269,7 +272,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const AdminLandingPage();
+              return const RoleSelectionPage();
               /*return Column(
                 children: [
                   const Text('Admin Page'),

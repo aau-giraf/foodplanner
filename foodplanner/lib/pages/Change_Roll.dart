@@ -1,78 +1,185 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/routes/user_roles.dart';
-import 'package:foodplanner/routes/paths.dart'; // contains ADMIN_ROOT, TEACHER_ROOT, etc.
+import 'package:foodplanner/pages/landing_page_admin.dart';
+import 'package:foodplanner/pages/landing_page_teacher.dart';
+import 'package:go_router/go_router.dart';
+import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/models/user.dart' as model;
+import 'package:foodplanner/services/user_service.dart';
+import 'package:provider/provider.dart';
+
 
 class RoleSelectionPage extends StatefulWidget {
   const RoleSelectionPage({super.key});
+
+  static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
   @override
   State<RoleSelectionPage> createState() => _SelectionPageRoleState();
 }
 
 class _SelectionPageRoleState extends State<RoleSelectionPage> {
-  String? _selectedRole;
-
-  Future<void> _selectRole(String role) async {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    await auth.setRole(role as ROLES);
-    await auth.loadFromStorage();
-    setState(() => _selectedRole = role);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Rolle sat til: $role')),
-    );
-
-   
-    String targetPath;
-    if (role == ROLES.admin) {
-      targetPath = ADMIN_ROOT;
-    } else if (role == ROLES.teacher) {
-      targetPath = TEACHER_ROOT;
-    } else {
-      targetPath = '/';
-    }
+  List<Map<String, String?>> students = [];
+  List<Map<String, String?>> filteredStudents = [];
+  List<Map<String, String>> schoolClasses = [];
+  Set<String> selectedClassIds = {};
+  Set<String> highlightedStudentIds = {};
+  TextEditingController searchController = TextEditingController();
 
 
-    GoRouter.of(context).go(targetPath);
+  Future<void> fetchUser() async {
+    final userInfo = await RoleSelectionPage.userService.fetchLoggedInUser();
+    setState(() {
+      admin = userInfo;
+    });
   }
+  model.User admin = model.User(
+      id: 0,
+      email: 'Unknown',
+      firstName: 'Unknown',
+      lastName: 'Unknown',
+      role: 'Unknown',
+      archived: false);
 
   @override
-  Widget build(BuildContext context) {
-  
-    final roles = <Map<String, dynamic>>[
-      {'key': ROLES.teacher, 'label': 'Lærer'},
-      {'key': ROLES.admin, 'label': 'Admin'},
-    ];
+  void initState() {
+    super.initState();
+    fetchUser();
+  }
 
+  List<Map<String, dynamic>> get adminActions  => [
+        {
+          'title': "Admin",
+          'height': 90.0,
+          'fontSize': 35,
+          'cta': Row(
+            mainAxisSize: MainAxisSize.min,
+          ),
+          'ctaFunction': () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AdminLandingPage()),
+            );
+          }
+        },
+        {
+          'title': "Lærer",
+          'height': 90,
+          'fontSize': 35,
+          'cta': Row(
+            mainAxisSize: MainAxisSize.min,
+          ),
+          'ctaFunction': () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const TeacherLandingPage()),
+            );
+          }
+        },
+        {
+          'title': "Log ud",
+          'height': 60,
+          'cta': Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.logout),
+              SizedBox(width: 10),
+            ],
+          ),
+          'ctaFunction': () async {
+            final auth = Provider.of<AuthProvider>(context, listen: false);
+            await auth.logout(); 
+            GoRouter.of(context).go('/');
+          }
+        },
+      ];
+
+    @override
+  Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vælg rolle'),
         backgroundColor: Colors.white,
-        elevation: 0,
+        toolbarHeight: 225,
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 70),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+          
+          Text(
+            'Velkommen!',
+            style: TextStyle(fontSize: 36),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 5),
+          Text(
+              'Fortsæt som...',
+              style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
+          ),
+          ],
+          ),
+        )
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        itemCount: roles.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
-        itemBuilder: (context, i) {
-          final roleEntry = roles[i];
-          final rawKey = roleEntry['key'];
-          final key = rawKey is String ? rawKey : rawKey.toString();
-          final label = roleEntry['label'] as String;
-          final selected = _selectedRole == key;
-          return ListTile(
-            leading: Icon(
-              selected ? Icons.check_circle : Icons.circle_outlined,
-              color: selected ? Colors.green : Colors.grey,
+      backgroundColor: Colors.white,
+
+      bottomNavigationBar: NavBar(),
+      body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 10),
+                ...adminActions.map((action) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: GestureDetector(
+                      onTap: action['ctaFunction'] as VoidCallback?,
+                      child: Container(
+                        width: double.infinity,
+                        height: action['height'] as double? ?? 60,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        decoration: BoxDecoration(
+                          color: AppColors.background,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(20),
+                            bottom: Radius.circular(20),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 4),
+                      spreadRadius: 0,
+                            ),
+                          ],
+                        ),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Text(
+                              action['title'] as String,
+                              style: TextStyle(
+                                fontSize: action['fontSize'] as double? ?? 20,                                )
+                            ),
+                            Positioned(
+                              right: 0,
+                              child: action['cta'] as Widget,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ],
             ),
-            title: Text(label),
-            onTap: () => _selectRole(key),
-          );
-        },
-      ),
-    );
+          ),
+        ),
+      );
   }
 }
