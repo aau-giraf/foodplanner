@@ -13,7 +13,7 @@ class AdminProfilesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         backgroundColor: Colors.white,
         toolbarHeight: 225,
         centerTitle: true,
@@ -25,20 +25,57 @@ class AdminProfilesPage extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         )
+      ),*/
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        toolbarHeight: 225,
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 70),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Administrér profiler',
+                style: TextStyle(fontSize: 36),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 50),
+              Text(
+                  'Aktive anmodninger',
+                  style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,
+              ),
+              Container(
+                width: 26,
+                height: 26,
+                decoration: BoxDecoration(
+                  color: AppColors.primary, // Din orange
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    '2',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
       ),
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Column(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: 
+        
+        Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(
-              child: Text(
-                'Aktive anmodninger',
-                style: TextStyle(fontSize: 20),
-                textAlign: TextAlign.center,
-              ),
-            ),
             Card(
               elevation: 2,
               color: AppColors.background,
@@ -46,6 +83,9 @@ class AdminProfilesPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Column(
                   children: [
+                    ColoredBox(
+                      color: Colors.blue,
+                    ),
                     const SizedBox(height: 10),
                     SettingsWidget(
                       title: 'title',
