@@ -46,7 +46,7 @@ class ParentProfileState extends State<ParentProfile>
       childId: 0,
       firstName: 'Unknown',
       lastName: 'Unknown',
-      parentId: 0,
+      //parentId: 0,
       classId: 0);
 
   bool isEditingFirstName = false;
