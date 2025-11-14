@@ -53,7 +53,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
         title: Padding(
           padding: const EdgeInsets.only(top: 70),
           child: Text(
-            'Velkommen \n${_user?.firstName ?? 'Lærer'}',
+            'Velkommen \n${_user?.firstName}',
             style: TextStyle(fontSize: 36),
             textAlign: TextAlign.center,
           )
@@ -96,7 +96,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
                   alignment: Alignment.center,
                   children: [
                     const Text(
-                      'Vælg barn',
+                      'Vælg elev',
                       style: TextStyle(fontSize: 20),
                       textAlign: TextAlign.center
                     ),

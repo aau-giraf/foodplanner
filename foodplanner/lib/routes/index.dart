@@ -306,12 +306,6 @@ final router = GoRouter(
             },
           );
         },
-        //whats this?
-        routes: [
-          GoRoute(
-            path: MADPAKKE,
-            builder: (context, state) => ParentMainPage(),
-          )
-        ]),
+    ),
   ],
 );
