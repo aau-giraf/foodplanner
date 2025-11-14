@@ -14,8 +14,17 @@ class AdminProfilesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Admin', style: AppTextStyles.headline4),
         backgroundColor: Colors.white,
+        toolbarHeight: 225,
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 70),
+          child: Text(
+            'Administrér profiler',
+            style: TextStyle(fontSize: 36),
+            textAlign: TextAlign.center,
+          ),
+        )
       ),
       backgroundColor: Colors.white,
       body: Padding(
@@ -23,6 +32,13 @@ class AdminProfilesPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            SizedBox(
+              child: Text(
+                'Aktive anmodninger',
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+            ),
             Card(
               elevation: 2,
               color: AppColors.background,
@@ -30,11 +46,11 @@ class AdminProfilesPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Column(
                   children: [
-                    Text(
-                      'Administration',
-                      style: AppTextStyles.bigText.copyWith(fontWeight: FontWeight.bold),
-                    ),
                     const SizedBox(height: 10),
+                    SettingsWidget(
+                      title: 'title',
+                      type: SettingsType.inlineItems,
+                    ),
                     SettingsWidget(
                       leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
                       title: 'Godkend profiler',
