@@ -163,11 +163,10 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const ParentLandingPageMadpakke();
-              /*return const ChildLandingPageMadpakke(
+              return const ChildLandingPageMadpakke(
                 student: {},
               ); // im guessing this page, student_page is a dummy one it seems TODO
-              */
+              
             } else {
               return const UnauthorizedPage();
             }
@@ -175,6 +174,7 @@ final router = GoRouter(
         );
       },
     ),
+
     GoRoute(
       path: STUDENT_CREATE,
       builder: (context, state) {

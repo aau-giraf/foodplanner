@@ -2,7 +2,7 @@ class Child {
   final int childId;
   final String firstName;
   final String lastName;
-  final int parentId;
+  final int parentId; //eksistere ikke længere i databasen - sker i et table.
   final int classId;
 
   const Child({

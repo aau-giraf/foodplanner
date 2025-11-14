@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/meal_box.dart';
@@ -18,7 +19,9 @@ import 'package:provider/provider.dart';
 class ChildLandingPageMadpakke extends StatefulWidget {
   final Map<String, String> student;
   const ChildLandingPageMadpakke(
-      {super.key, /* required Map<String, String> */ required this.student});
+      {super.key,
+       /* required Map<String, String> */ 
+       required this.student});
 
   @override
   State<ChildLandingPageMadpakke> createState() =>
@@ -47,27 +50,42 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
           authProvider.hasRoles([ROLES.guardian, ROLES.student, ROLES.teacher]);
     });
 
-    if (authProvider.userRole == ROLES.student ||
-        authProvider.userRole == ROLES.guardian) {
-      final childData = await childService.fetchChildById();
-      setState(() {
+    Child? childData;
+
+    if (authProvider.userRole == ROLES.student || authProvider.userRole == ROLES.guardian) {
+      childData = await childService.fetchChildById();
+      
+      /*setState(() {
         _child = childData;
-      });
+      });*/
+
     } else if (authProvider.userRole == ROLES.teacher) {
       int tempChildId = int.parse(widget.student['id']!);
-      final childData = await childService.GetByChildId(tempChildId);
+      childData = await childService.GetByChildId(tempChildId);
+      
+      /*setState(() {
+        _child = childData;
+      });*/
+    }
+
+    if(childData == null){
       setState(() {
         _child = childData;
       });
     }
-
-    setState(() {
-      _callerFuture = caller();
-    });
+    if(_child != null) {
+      setState(() {
+        _child = childData;
+        _callerFuture = caller();
+      });
+    }
   }
 
+
   Future<void> caller() async {
-    await MealNotifier().teacherUpdateChildId(_child!.parentId);
+    /*if(_child?.parentId != null) {
+      await MealNotifier().teacherUpdateChildId(_child!.parentId);
+    }*/
     await MealNotifier().updateDate(DateTime.now());
   }
 
@@ -118,6 +136,11 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                       future: _callerFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
+                          
+                          if(_child == null){
+                            return Text('Data for barnet kunne ikke hentes');
+                          }
+
                           return ReusableMealBox();
                         } else {
                           return CircularProgressIndicator();
