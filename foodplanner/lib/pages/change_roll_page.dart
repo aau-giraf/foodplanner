@@ -52,7 +52,7 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
   List<Map<String, dynamic>> get adminActions  => [
         {
           'title': "Admin",
-          'height': 90.0,
+          'height': 100,
           'fontSize': 35,
           'cta': Row(
             mainAxisSize: MainAxisSize.min,
@@ -66,7 +66,7 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
         },
         {
           'title': "Lærer",
-          'height': 90,
+          'height': 100,
           'fontSize': 35,
           'cta': Row(
             mainAxisSize: MainAxisSize.min,
@@ -100,6 +100,7 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         toolbarHeight: 225,
         centerTitle: true,
@@ -136,7 +137,7 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
                 const SizedBox(height: 10),
                 ...adminActions.map((action) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     child: GestureDetector(
                       onTap: action['ctaFunction'] as VoidCallback?,
                       child: Container(

@@ -3,7 +3,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
-import 'package:foodplanner/pages/Change_Roll.dart';
+import 'package:foodplanner/pages/change_roll_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -162,7 +162,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
                 const SizedBox(height: 10),
                 ...adminActions.map((action) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     child: GestureDetector(
                       onTap: action['ctaFunction'] as VoidCallback?,
                       child: Container(
