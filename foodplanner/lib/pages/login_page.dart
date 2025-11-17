@@ -89,7 +89,13 @@ class LoginPageState extends State<LoginPage> {
         return;
       }
 
-      switch (role) {
+        if(role.hasRole(Role.student)){GoRouter.of(context).go(STUDENT_CREATE);}
+        else if(role.hasRole(Role.parent)){GoRouter.of(context).go(PARENT_ROOT);}
+        else if(role.hasRole(Role.teacher)){GoRouter.of(context).go(TEACHER_ROOT);}
+        else if(role.hasRole(Role.admin)){GoRouter.of(context).go(ADMIN_ROOT);}
+        else {GoRouter.of(context).go(LOGIN_PAGE);}
+
+/*       switch (role) {
         case Role.teacher:
           GoRouter.of(context).go(TEACHER_ROOT);
           break;
@@ -105,7 +111,7 @@ class LoginPageState extends State<LoginPage> {
         default:
           GoRouter.of(context).go(LOGIN_PAGE);
           break;
-      }
+      } */
 
   }
     catch (e) {
