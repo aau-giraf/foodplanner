@@ -11,7 +11,7 @@ import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/edit_meal_page.dart';
 import 'package:foodplanner/routes/paths.dart';
 
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:foodplanner/services/user_service.dart';
@@ -67,7 +67,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
               ),
               IconButton(
                 onPressed: () async {
-                  await AuthProvider().setRole(ROLES.student);
+                  await AuthProvider().setRole(UserRoles.of({Role.student}));
                   await AuthProvider().loadFromStorage();
 
                   if (!context.mounted){

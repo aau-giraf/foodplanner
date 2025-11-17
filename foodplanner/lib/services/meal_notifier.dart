@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/meal.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_meal.dart';
 import 'package:intl/intl.dart';
@@ -41,7 +41,7 @@ class MealNotifier with ChangeNotifier {
     final mealService = MealService(apiUrl: baseUrl);
     final role = await AuthProvider().retrieveRole();
     Meal? mealData;
-    if (role == ROLES.student || role == ROLES.parent) {
+    if (role == Role.student || role == Role.parent) {
       mealData = await mealService
           .fetchMealData(DateFormat('yyyy-MM-dd').format(selectedDate));
     } else {

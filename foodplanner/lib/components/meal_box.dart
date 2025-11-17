@@ -4,7 +4,7 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/date_time_picker.dart';
 import 'package:foodplanner/components/meal_box_content.dart';
 import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:provider/provider.dart';
 
@@ -17,10 +17,6 @@ class ReusableMealBox extends StatefulWidget {
 
 class _ReusableMealBoxState extends State<ReusableMealBox> {
   late MealNotifier mealNotifier;
-
-  Future<ROLES?> _retrieveRole() async {
-    return await AuthProvider().retrieveRole();
-  }
 
   @override
   void initState() {
@@ -45,9 +41,9 @@ class _ReusableMealBoxState extends State<ReusableMealBox> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: FutureBuilder(
-                  future: _retrieveRole(),
+                  future: AuthProvider().retrieveRole(),
                   builder: (context, snapshot) {
-                    if (snapshot.hasData && snapshot.data == ROLES.parent) {
+                    if (snapshot.hasData && (snapshot.data?.hasRole(Role.parent) ?? false)) {
                       return InkWell(
                         onTap: () => mealNotifier.selectDate(context),
                         overlayColor: WidgetStatePropertyAll(AppColors.primary),
