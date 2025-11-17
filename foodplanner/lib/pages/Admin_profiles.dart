@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/button.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
@@ -66,7 +68,7 @@ class AdminProfilesPage extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
       ),
       backgroundColor: Colors.white,
       body: Padding(
@@ -131,13 +133,52 @@ class AdminProfilesPage extends StatelessWidget {
                         );
                       },
                     ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: CustomButton(
+                        onTab: null,
+                        text: "{konto_navn}",
+                        foregroundColor: AppColors.textPrimary,
+                        backgroundColor: AppColors.background,
+                        size: ButtonSize.medium,
+                      ),
+                    ),
+                    Container(
+                      width: 26,
+                      height: 26,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary, // Din orange
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text(
+                          '!',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: CustomButton(
+                onTab: null,
+                text: "Alle profiler",
+                foregroundColor: AppColors.textPrimary,
+                backgroundColor: AppColors.background,
+                size: ButtonSize.medium,
               ),
             ),
           ],
         ),
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }
