@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/nav_bar.dart';
-import 'package:foodplanner/pages/change_roll_page.dart';
+import 'package:foodplanner/pages/change_role_page.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
