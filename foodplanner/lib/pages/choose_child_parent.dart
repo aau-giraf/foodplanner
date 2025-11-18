@@ -2,7 +2,9 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/pages/create_child_page.dart';
+import 'package:foodplanner/pages/signup_page_child.dart';
+import 'package:foodplanner/pages/feedback_chat_page.dart';
+import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +22,9 @@ class ChooseChildParent extends StatefulWidget {
 }
 
 class ChooseChildParentState extends State<ChooseChildParent> {
+
+  AuthProvider get authProvider => Provider.of<AuthProvider>(context, listen: false);
+
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   dynamic _user; 
 
@@ -36,7 +41,6 @@ class ChooseChildParentState extends State<ChooseChildParent> {
 
   // method for retrieving a parents children
   Future<void> _loadChildren() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     setState(() => isLoading = true);
 
@@ -50,7 +54,7 @@ class ChooseChildParentState extends State<ChooseChildParent> {
         print('Could not fetch children: $e');
       }
 
-      await Future.delayed(Duration(milliseconds: 50));
+      await Future.delayed(Duration(milliseconds: 50)); // create a buffer to have enough time for fetchang all children 
 
       if (mounted) { // checks whether the object is part of a tree
         setState(() {
@@ -64,7 +68,7 @@ class ChooseChildParentState extends State<ChooseChildParent> {
     }
   }
 
-  Widget buildButton(StatefulWidget pageRoute, String buttonTxt, IconData icon, String iconType){
+  Widget buildButton(Widget pageRoute, String buttonTxt, IconData icon, String iconType){
     const double iconSize = 22;
     return CustomButton(
       onTab: (){
@@ -120,7 +124,7 @@ class ChooseChildParentState extends State<ChooseChildParent> {
                   Directionality(
                     textDirection: TextDirection.rtl, 
                     child: buildButton(
-                      ChooseChildParent(), // OBS: this needs to be changed to the correct page
+                      FeedbackChatPage(), // OBS: need to make sure if it is actually the correct one 
                       'Feedback', 
                       SFIcons.sf_message, 
                       'SFIcon'
@@ -130,7 +134,7 @@ class ChooseChildParentState extends State<ChooseChildParent> {
                   Directionality(
                     textDirection: TextDirection.rtl, 
                     child: buildButton(
-                      ChooseChildParent(), // OBS: this needs to be changed to the correct page
+                      ParentLandingPageMadpakke(), // OBS: need to make sure if this is the correct one
                       'Madpakke', 
                       Icons.lunch_dining_outlined, 
                       'Icon'
@@ -151,11 +155,17 @@ class ChooseChildParentState extends State<ChooseChildParent> {
               ),
             Directionality(
               textDirection: TextDirection.rtl, 
-              child: buildButton(
-                CreateChildPage(), 
-                'Tilføj barn', 
-                Icons.add_reaction_outlined, 
-                'Icon'
+              child: CustomButton(
+                onTab: () async {
+                  bool? created = await Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPageChild()));
+                  if (created == true) {
+                    _loadChildren();
+                  }
+                }, 
+                text: 'Tilføj barn', 
+                materialIcon: Icon(Icons.add_reaction_outlined), 
+                backgroundColor: AppColors.lightSecondary,
+                foregroundColor: AppColors.textPrimary,
               ),
             ),
           ],

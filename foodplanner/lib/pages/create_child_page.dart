@@ -1,4 +1,4 @@
-import 'dart:convert';
+/*import 'dart:convert';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
@@ -31,7 +31,7 @@ class _SignupChildState extends State<CreateChildPage> {
   String firstNameError = '';
   String lastNameError = '';
 
-  //Regular expression for vildationg full name, Email, password¨
+  //Regular expression for vildationg full name, Email, password
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
 
   Future<List<SchoolClass>> classesFuture =
@@ -345,4 +345,4 @@ class _SignupChildState extends State<CreateChildPage> {
       ),
     );
   }
-}
+}*/

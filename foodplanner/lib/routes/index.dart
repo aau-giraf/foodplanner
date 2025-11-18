@@ -3,7 +3,7 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
-import 'package:foodplanner/pages/create_child_page.dart';
+/*import 'package:foodplanner/pages/create_child_page.dart';*/
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
@@ -13,7 +13,10 @@ import 'package:foodplanner/pages/landing_page_teacher.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/pages/profile_page.dart';
-import 'package:foodplanner/pages/signup_page.dart';
+/*import 'package:foodplanner/pages/signup_page.dart';*/
+import 'package:foodplanner/pages/signup_page_adult.dart';
+/*import 'package:foodplanner/pages/signup_page_base.dart';*/
+import 'package:foodplanner/pages/signup_page_child.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
@@ -51,11 +54,11 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/signup',
-      builder: (context, state) => SignupPage(),
+      builder: (context, state) => SignupPageAdult(),
     ),
     GoRoute(
       path: '/signup/create-child',
-      builder: (context, state) => CreateChildPage(),
+      builder: (context, state) => SignupPageChild(),
     ),
     GoRoute(
       path: '/unauthorized',
@@ -170,7 +173,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const CreateChildPage(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const SignupPageChild(); // im guessing this page, student_page is a dummy one it seems TODO
             } else {
               return const UnauthorizedPage();
             }
