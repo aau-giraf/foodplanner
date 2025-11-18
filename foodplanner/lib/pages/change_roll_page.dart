@@ -81,6 +81,7 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
         {
           'title': "Log ud",
           'height': 60,
+          'borderRadius': BorderRadius.circular(50),
           'cta': Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -146,7 +147,8 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: BoxDecoration(
                           color: AppColors.background,
-                          borderRadius: const BorderRadius.vertical(
+                          borderRadius: action['borderRadius'] as BorderRadius ?
+                          ?? const BorderRadius.vertical(
                             top: Radius.circular(20),
                             bottom: Radius.circular(20),
                           ),
