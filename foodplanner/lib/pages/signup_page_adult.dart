@@ -23,6 +23,27 @@ class SignupPageAdult extends StatefulWidget {
 
 class _SignupPageAdultState extends State<SignupPageAdult> {
 
+  Set<String> role = {'Parent'};
+
+  List<ButtonSegment<String>> segments = [
+    ButtonSegment(
+      value: 'Parent',
+      label: Text('Forældre'),
+      icon: SFIcon(SFIcons.sf_figure_and_child_holdinghands),
+    ),
+    ButtonSegment(
+      value: 'Teacher',
+      label: Text('Lærer'),
+      icon: SFIcon(SFIcons.sf_graduationcap_fill),
+    ),
+  ];
+
+  void roleChange(Set<String> value) {
+    setState(() {
+      role = value;
+    });
+  }
+
   Widget roleSelection(){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -45,40 +66,18 @@ class _SignupPageAdultState extends State<SignupPageAdult> {
     );
   }
 
-  List<ButtonSegment<String>> segments = [
-    ButtonSegment(
-      value: 'Parent',
-      label: Text('Forældre'),
-      icon: SFIcon(SFIcons.sf_figure_and_child_holdinghands),
-    ),
-    ButtonSegment(
-      value: 'Teacher',
-      label: Text('Lærer'),
-      icon: SFIcon(SFIcons.sf_graduationcap_fill),
-    ),
-  ];
-
-  Set<String> role = {'Parent'};
-
-  void roleChange(Set<String> value) {
-    setState(() {
-      role = value;
-    });
-  }
-
-
-void signUserUp(
+  void signUserUp(
       BuildContext context,
       String firstName,
       String lastName,
       String email,
       String password,
-      String role) async {
+      Set<String> role) async {
 
     try {
 
       final response = await SignupPageBase.userService
-          .createUser(firstName, lastName, email, password, role);
+          .createUser(firstName, lastName, email, password, role.first);
 
       if (!context.mounted) return;
 
@@ -113,7 +112,7 @@ void signUserUp(
               ),
             );
           } else {
-            if (role == 'Parent') {
+            if (role.first == 'Parent') {
               context.go('/signup/create-child');
             } else {
               context.go('/');
@@ -140,7 +139,7 @@ void signUserUp(
   Widget build(BuildContext context){
     return SignupPageBase(
       title: "Opret mig", 
-      buttonText: "Opret mit", 
+      buttonText: "Opret mig", 
       selection: roleSelection(), 
       onSubmit: (fields) async {
         signUserUp(context, 
@@ -148,7 +147,7 @@ void signUserUp(
           fields["lastName"]!,
           fields["email"]!,
           fields["password"]!,
-          fields["role"]!
+          role
         );
       }
     );
