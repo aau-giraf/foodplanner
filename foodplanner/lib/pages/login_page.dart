@@ -89,23 +89,17 @@ class LoginPageState extends State<LoginPage> {
         return;
       }
 
-      switch (role) {
-        case Role.teacher:
-          GoRouter.of(context).go(TEACHER_ROOT);
-          break;
-        case Role.student:
-          GoRouter.of(context).go(STUDENT_ROOT);
-          break;
-        case Role.admin:
-          GoRouter.of(context).go(ADMIN_ROOT);
-          break;
-        case Role.parent:
-          GoRouter.of(context).go(PARENT_ROOT);
-          break;
-        default:
-          GoRouter.of(context).go(LOGIN_PAGE);
-          break;
-      }
+        developer.log('Login successful, role data: $role');
+        developer.log('Has student role: ${role.hasRole(Role.student)}');
+        developer.log('Has parent role: ${role.hasRole(Role.parent)}');
+        developer.log('Has teacher role: ${role.hasRole(Role.teacher)}');
+        developer.log('Has admin role: ${role.hasRole(Role.admin)}'); 
+
+        if(role.hasRole(Role.student)){GoRouter.of(context).go(STUDENT_CREATE);}
+        else if(role.hasRole(Role.parent)){GoRouter.of(context).go(PARENT_ROOT);}
+        else if(role.hasRole(Role.teacher)){GoRouter.of(context).go(TEACHER_ROOT);}
+        else if(role.hasRole(Role.admin)){GoRouter.of(context).go(ADMIN_ROOT);}
+        else {GoRouter.of(context).go(LOGIN_PAGE);}
 
   }
     catch (e) {

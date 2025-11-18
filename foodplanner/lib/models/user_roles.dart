@@ -32,15 +32,13 @@ class UserRoles {
   UserRoles add(Role role) => UserRoles._({...roles, role});
 
   factory UserRoles.fromString(String value) {
-    List<String> roleValues = value.split(",");
+    List<String> roleValues = value.split(",").map((s) => s.trim().toLowerCase()).toList();
     var userRole = UserRoles.empty();
-
     for (var role in Role.values){
-      if(roleValues.contains(role.name)){
+      if(roleValues.contains(role.name)){  // role.name is already lowercase
         userRole = userRole.add(role);
       }
     }
-
     return userRole;
   }
 

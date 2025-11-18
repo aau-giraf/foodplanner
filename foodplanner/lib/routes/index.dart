@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/loading_animation.dart';
@@ -35,14 +37,12 @@ final router = GoRouter(
         if (!isLoggedIn) {
           return '/login';
         }
-        switch (role) {
-          case Role.teacher || Role.admin:
-            return TEACHER_ROOT;
-          case Role.parent:
-            return PARENT_ROOT;
-          default:
-            return STUDENT_ROOT;
-        }
+        if(role == null){developer.log("Role was null"); return null;} 
+
+        if(role.hasOneOfRoles({Role.teacher, Role.admin})){return TEACHER_ROOT;}
+        else if (role.hasRole(Role.parent)){return PARENT_ROOT;}
+        else {return STUDENT_ROOT;}
+
       },
     ),
     GoRoute(

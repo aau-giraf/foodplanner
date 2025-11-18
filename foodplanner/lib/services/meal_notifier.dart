@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
@@ -6,6 +7,7 @@ import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_meal.dart';
 import 'package:intl/intl.dart';
+
 
 class MealNotifier with ChangeNotifier {
   final FlutterSecureStorage _secureStorage;
@@ -40,8 +42,9 @@ class MealNotifier with ChangeNotifier {
             DateFormat('yyyy-MM-dd').format(DateTime.now()));
     final mealService = MealService(apiUrl: baseUrl);
     final role = await AuthProvider().retrieveRole();
+    if(role == null){developer.log("Role was null"); return;} 
     Meal? mealData;
-    if (role == Role.student || role == Role.parent) {
+    if (role.hasRole(Role.student)||role.hasRole(Role.parent)) {
       mealData = await mealService
           .fetchMealData(DateFormat('yyyy-MM-dd').format(selectedDate));
     } else {
