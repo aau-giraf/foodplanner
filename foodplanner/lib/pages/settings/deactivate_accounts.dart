@@ -10,15 +10,15 @@ import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 
-class DeactivateAccountsPage extends StatefulWidget {
+class AdminAllProfiles extends StatefulWidget {
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-  const DeactivateAccountsPage({super.key});
+  const AdminAllProfiles({super.key});
 
   @override
-  _DeactivateAccountsPageState createState() => _DeactivateAccountsPageState();
+  _AdminAllProfilesState createState() => _AdminAllProfilesState();
 }
 
-class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
+class _AdminAllProfilesState extends State<AdminAllProfiles> {
   bool isSwitched = true;
   TextEditingController searchController = TextEditingController();
 
@@ -41,7 +41,7 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
   }
 
   void fetchAllUsers() {
-    DeactivateAccountsPage.userService.fetchAllUsers().then((result) {
+    AdminAllProfiles.userService.fetchAllUsers().then((result) {
       setState(() {
         users = result;
         filteredUsers = result;
@@ -53,7 +53,7 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
   }
 
   void updateArchived(int id) async {
-    var error = await DeactivateAccountsPage.userService.updateArchived(id);
+    var error = await AdminAllProfiles.userService.updateArchived(id);
     if (error != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -145,7 +145,7 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
               leftIcon: SFIcons.sf_person_crop_circle_fill_badge_minus,
               title: 'Deaktiver profiler',
               subTitle:
-                  'Administrer profiler. Her kan du deaktivere eller genaktivere brugere.',
+                  'Administrer profiler. Her kan du rediger, slette, deaktivere eller genaktivere brugere.',
               type: SettingsType.header,
             ),
             SizedBox(

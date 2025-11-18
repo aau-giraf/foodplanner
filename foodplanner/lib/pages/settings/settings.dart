@@ -102,7 +102,7 @@ class _SettingsPage extends State<Settings> {
           'ctaFunction': () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => DeactivateAccountsPage()),
+              MaterialPageRoute(builder: (context) => AdminAllProfiles()),
             );
           }
         },
