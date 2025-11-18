@@ -110,65 +110,69 @@ class ChooseChildParentState extends State<ChooseChildParent> {
         ),
       ),
       backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var child in children) 
-              ExpansionTile(
-                title: Text(child.firstName),
-                tilePadding: const EdgeInsets.all(15),
-                collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(30)),
-                children: [
-                  Padding(padding: EdgeInsets.all(10)),
-                  Directionality(
-                    textDirection: TextDirection.rtl, 
-                    child: buildButton(
-                      FeedbackChatPage(), // OBS: need to make sure if it is actually the correct one 
-                      'Feedback', 
-                      SFIcons.sf_message, 
-                      'SFIcon'
+      body: SingleChildScrollView(
+        child: 
+          Center(
+            child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var child in children) 
+                ExpansionTile(
+                  title: Text(child.firstName),
+                  tilePadding: const EdgeInsets.all(15),
+                  collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(30)),
+                  children: [
+                    Padding(padding: EdgeInsets.all(10)),
+                    Directionality(
+                      textDirection: TextDirection.rtl, 
+                      child: buildButton(
+                        FeedbackChatPage(), // OBS: need to make sure if it is actually the correct one 
+                        'Feedback', 
+                        SFIcons.sf_message, 
+                        'SFIcon'
+                      ),
                     ),
-                  ),
-                  Padding(padding: EdgeInsets.all(15)),
-                  Directionality(
-                    textDirection: TextDirection.rtl, 
-                    child: buildButton(
-                      ParentLandingPageMadpakke(), // OBS: need to make sure if this is the correct one
-                      'Madpakke', 
-                      Icons.lunch_dining_outlined, 
-                      'Icon'
+                    Padding(padding: EdgeInsets.all(15)),
+                    Directionality(
+                      textDirection: TextDirection.rtl, 
+                      child: buildButton(
+                        ParentLandingPageMadpakke(), // OBS: need to make sure if this is the correct one
+                        'Madpakke', 
+                        Icons.lunch_dining_outlined, 
+                        'Icon'
+                      ),
                     ),
-                  ),
-                  Padding(padding: EdgeInsets.all(15)),
-                  Directionality(
-                    textDirection: TextDirection.rtl, 
-                    child: buildButton(
-                      ChooseChildParent(), // OBS: this needs to be changed to the correct page
-                      'Indstillinger', 
-                      Icons.settings_outlined, 
-                      'Icon'
+                    Padding(padding: EdgeInsets.all(15)),
+                    Directionality(
+                      textDirection: TextDirection.rtl, 
+                      child: buildButton(
+                        ChooseChildParent(), // OBS: this needs to be changed to the correct page
+                        'Indstillinger', 
+                        Icons.settings_outlined, 
+                        'Icon'
+                      ),
                     ),
-                  ),
-                  Padding(padding: EdgeInsets.all(10)),
-                ],
+                    Padding(padding: EdgeInsets.all(10)),
+                  ],
+                ),
+              Directionality(
+                textDirection: TextDirection.rtl, 
+                child: CustomButton(
+                  onTab: () async {
+                    bool? created = await Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPageChild()));
+                    if (created == true) {
+                      _loadChildren();
+                    }
+                  }, 
+                  text: 'Tilføj barn', 
+                  materialIcon: Icon(Icons.add_reaction_outlined), 
+                  backgroundColor: AppColors.lightSecondary,
+                  foregroundColor: AppColors.textPrimary,
+                ),
               ),
-            Directionality(
-              textDirection: TextDirection.rtl, 
-              child: CustomButton(
-                onTab: () async {
-                  bool? created = await Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPageChild()));
-                  if (created == true) {
-                    _loadChildren();
-                  }
-                }, 
-                text: 'Tilføj barn', 
-                materialIcon: Icon(Icons.add_reaction_outlined), 
-                backgroundColor: AppColors.lightSecondary,
-                foregroundColor: AppColors.textPrimary,
-              ),
-            ),
-          ],
+              Padding(padding: EdgeInsets.all(10)),
+            ],
+          ),
         ),
       ),
     );
