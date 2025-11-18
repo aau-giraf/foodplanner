@@ -8,11 +8,6 @@ import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
-import 'package:flutter_advanced_segment/flutter_advanced_segment.dart';
-import 'package:foodplanner/pages/settings/administrate_children.dart';
-import 'package:foodplanner/pages/settings/admin_approve_page.dart';
-import 'package:foodplanner/pages/settings/school_classes.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
 import 'package:foodplanner/models/user_roles.dart';
@@ -68,14 +63,22 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
   String updatedPassword = '';
   String updatedPincode = '';
 
-  ROLES? userRole;
+  UserRoles? userRole;
 
   @override
   void initState(){
     super.initState();
 
+    /*AuthProvider().retrieveRole().then((role) {
+      /*if(role == UserRoles.fromString('Teacher') || role == UserRoles.fromString('admin') || role == UserRoles.fromString('parent')){*/
+        fetchUser();
+      /*} else {
+        fetchUserToChild();
+      }*/
+      userRole = role;
+    });*/
     AuthProvider().retrieveRole().then((role) {
-      if(role == ROLES.teacher || role == ROLES.admin || role == ROLES.parent){
+      if ((role?.hasRole(Role.teacher) ?? false) || (role?.hasRole(Role.admin) ?? false)) {
         fetchUser();
       } else {
         fetchUserToChild();
@@ -177,7 +180,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
   }
 
   Future<void> resetPage() async {
-    if (userRole == ROLES.parent){
+    if (userRole == UserRoles.fromString('parent')){
       await fetchUser();
       setState(() {
         isEditingFirstName = false;
@@ -188,7 +191,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
         hasChanges = false;
       });
       }
-    else if (userRole == ROLES.teacher || userRole == ROLES.admin) {
+    else if (userRole == UserRoles.fromString('Teacher') || userRole == UserRoles.fromString('Admin')) {
       await fetchUser();
       setState(() {
         isEditingFirstName = false;
