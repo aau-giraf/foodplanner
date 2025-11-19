@@ -9,6 +9,6 @@ void main(){
     //final fetchUser = fetchUser();
     final UserService service = UserService(apiUrl: ApiConfig.baseUrl);
     final user = await service.fetchLoggedInUser();
-    expect(user.firstName, "C");
+    expect(user.email, "m@m.dk");
   });
 }
