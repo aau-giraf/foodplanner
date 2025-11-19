@@ -4,6 +4,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/login_page.dart';
+import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/pages/signup_page_base.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
@@ -89,8 +90,50 @@ class _SignupPageAdultState extends State<SignupPageAdult> {
             duration: Duration(seconds: 5),
           ),
         );
+      }
 
-        try {
+      
+      GoRouter.of(context).go(UNAUTHORIZED);
+
+    } catch (e) {
+
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Fejl ved oprettelse af bruger: $e'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    }
+  }
+
+  /*void signUserUp(
+      BuildContext context,
+      String firstName,
+      String lastName,
+      String email,
+      String password,
+      Set<String> role) async {
+
+    try {
+
+      final response = await SignupPageBase.userService
+          .createUser(firstName, lastName, email, password, role.first);
+
+      if (!context.mounted) return;
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Bruger oprettet!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 5),
+          ),
+        );
+
+        /*try {
           final role =
               await LoginPage.authService.fetchAuthData(email, password);
           switch (role) {
@@ -121,7 +164,7 @@ class _SignupPageAdultState extends State<SignupPageAdult> {
         }
       } else {
         var error = jsonDecode(response.body);
-        (context as Element).findAncestorStateOfType<SignupPageBaseState>()?.handleErrors(error);
+        (context as Element).findAncestorStateOfType<SignupPageBaseState>()?.handleErrors(error);*/
       }
     } catch (e) {
       if (!context.mounted) return;
@@ -133,7 +176,7 @@ class _SignupPageAdultState extends State<SignupPageAdult> {
         ),
       );
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context){

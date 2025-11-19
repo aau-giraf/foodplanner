@@ -1,4 +1,5 @@
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/add_existing_child.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/config/colors.dart';
@@ -32,6 +33,8 @@ class ChooseChildParentState extends State<ChooseChildParent> {
   List<Child> children = [];
 
   bool isLoading = true;
+
+  final singleUseCodeController = TextEditingController();
 
   @override
   void initState() {
@@ -164,13 +167,16 @@ class ChooseChildParentState extends State<ChooseChildParent> {
                       _loadChildren();
                     }
                   }, 
-                  text: 'Tilføj barn', 
+                  text: 'Tilføj nyt barn', 
                   materialIcon: Icon(Icons.add_reaction_outlined), 
                   backgroundColor: AppColors.lightSecondary,
                   foregroundColor: AppColors.textPrimary,
                 ),
               ),
               Padding(padding: EdgeInsets.all(10)),
+              SizedBox(
+                child: AddExistingChild(controller: singleUseCodeController,),
+              )
             ],
           ),
         ),
