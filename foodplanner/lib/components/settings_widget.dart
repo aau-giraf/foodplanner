@@ -181,7 +181,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             ? Divider(
                 color: Colors.black,
                 thickness: 0.25,
-                indent: 95,
+                indent: 90,
                 endIndent: 8,
               )
             : Container()
