@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
@@ -11,7 +13,7 @@ import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'signup_page.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:go_router/go_router.dart';
-import '../routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 
 //test push
 class LoginPage extends StatefulWidget {
@@ -83,28 +85,34 @@ class LoginPageState extends State<LoginPage> {
     try {
       final role = await LoginPage.authService
           .fetchAuthData(usernameController.text, passwordController.text);
-      switch (role) {
-      case ROLES.teacher:
-        GoRouter.of(context).go(TEACHER_ROOT);
-        break;
-      case ROLES.student:
-        GoRouter.of(context).go(STUDENT_ROOT);
-        break;
-      case ROLES.admin:
-        GoRouter.of(context).go(ADMIN_ROOT);
-        break;
-      case ROLES.parent:
-        GoRouter.of(context).go(PARENT_ROOT);
-        break;
-      default:
-        GoRouter.of(context).go(LOGIN_PAGE);
-        break;
-    }
+      
+      if (!context.mounted){
+        developer.log('buildcontext is not mounted, in $runtimeType');
+        return;
+      }
+
+        developer.log('Login successful, role data: $role');
+        developer.log('Has student role: ${role.hasRole(Role.student)}');
+        developer.log('Has parent role: ${role.hasRole(Role.parent)}');
+        developer.log('Has teacher role: ${role.hasRole(Role.teacher)}');
+        developer.log('Has admin role: ${role.hasRole(Role.admin)}'); 
+
+        if(role.hasRole(Role.student)){GoRouter.of(context).go(STUDENT_CREATE);}
+        else if(role.hasRole(Role.parent)){GoRouter.of(context).go(PARENT_ROOT);}
+        else if(role.hasRole(Role.teacher)){GoRouter.of(context).go(TEACHER_ROOT);}
+        else if(role.hasRole(Role.admin)){GoRouter.of(context).go(ADMIN_ROOT);}
+        else {GoRouter.of(context).go(LOGIN_PAGE);}
+
   }
     catch (e) {
       if (e is AuthException) {
         handleErrors({'Message': [e.message]});
       } else if (e is NetworkException) {
+        if (!context.mounted){
+          developer.log('buildcontext is not mounted, in $runtimeType');
+          return;
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Der opstod et problem ved login: ${e.message}'),
@@ -113,6 +121,11 @@ class LoginPageState extends State<LoginPage> {
           ),
         );
       } else {
+        if (!context.mounted){
+          developer.log('buildcontext is not mounted, in $runtimeType');
+          return;
+        }
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Der opstod et ukendt problem ved login: $e'),

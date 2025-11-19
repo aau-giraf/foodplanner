@@ -5,7 +5,7 @@ import 'package:foodplanner/routes/paths.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import '../auth/auth_provider.dart';
-import '../routes/user_roles.dart';
+import '../models/user_roles.dart';
 
 class AuthException implements Exception {
   final String message;
@@ -24,7 +24,7 @@ class AuthService {
 
 
  
-Future<ROLES> fetchAuthData(String email, String password) async {
+Future<UserRoles> fetchAuthData(String email, String password) async {
   try {
     final response = await http.post(
       Uri.parse('$apiUrl/api/Users/Login'),
@@ -41,13 +41,9 @@ Future<ROLES> fetchAuthData(String email, String password) async {
       final data = jsonDecode(response.body);
       final String jwt = data['jwt'];
       final bool roleApproved = data['roleApproved'];
-      String role = data['role'];
+      String roleValueString = data['role'];
 
-     if (role == "Child"){
-       role = "Student";
-     }
-
-      ROLES authRole = roleFromString(role.toLowerCase());
+      UserRoles authRole = UserRoles.fromString(roleValueString);
 
       await AuthProvider().login(authRole, jwt, roleApproved);
       return authRole;
@@ -60,21 +56,4 @@ Future<ROLES> fetchAuthData(String email, String password) async {
     throw NetworkException('Forkert email eller adgangskode');
   }
 }
-
-  ROLES roleFromString(String role) {
-    switch (role) {
-      case 'teacher':
-        return ROLES.teacher;
-      case 'student':
-        return ROLES.student;
-      case 'admin':
-        return ROLES.admin;
-      case 'parent':
-        return ROLES.parent;
-      case 'child':
-        return ROLES.child;
-      default:
-        throw Exception('Unknown role: $role');
-    }
-  }
 }

@@ -13,6 +13,7 @@ import 'package:foodplanner/components/Custom_List_Item.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user.dart' as model;
 import 'package:foodplanner/services/user_service.dart';
+import 'package:foodplanner/models/user_roles.dart';
 
 class TeacherLandingPage extends StatefulWidget {
   const TeacherLandingPage({super.key});
@@ -35,7 +36,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
       email: 'Unknown',
       firstName: 'Unknown',
       lastName: 'Unknown',
-      role: 'Unknown',
+      role: UserRoles.empty(),
       archived: false);
 
   @override

@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/pages/pin_code.dart';
@@ -51,9 +52,13 @@ class LandingPageState extends State<LandingPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await authProvider.loadFromStorage();
       if (!authProvider.isLoggedIn) {
-        context.go(LOGIN_PAGE);
+        if(context.mounted){
+          context.go(LOGIN_PAGE);
+        } else {developer.log("Context was unmounted when trying to go to login page");}
       } else if (authProvider.isApproved != true) {
-        context.go('/unauthorized');
+        if(context.mounted){
+          context.go('/unauthorized');
+        } else{developer.log("Context was unmounted when trying to go to unauthorized page");}
       }
     });
 
@@ -76,8 +81,10 @@ class LandingPageState extends State<LandingPage> {
                       Provider.of<AuthProvider>(context, listen: false);
                   await authProvider
                       .logout(); // Just call it; don't try to store a result
-                  print('Logged out'); // For debugging purposes
+                 developer.log('Logged out'); // For debugging purposes
+                 if(context.mounted){
                   context.go(LOGIN_PAGE);
+                 } else{developer.log("Context was unmounted when trying to log out");}
                 },
                 child: const Text('Logout'),
               ),

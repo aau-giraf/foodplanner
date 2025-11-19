@@ -55,6 +55,7 @@ class _SchoolClasses extends State<SchoolClasses> {
   }
 
   void addClass() {
+    final messenger = ScaffoldMessenger.of(context);
     SchoolClasses.schoolClassService
         .createClass(controller.text)
         .then((schoolClass) {
@@ -66,7 +67,7 @@ class _SchoolClasses extends State<SchoolClasses> {
         controller.clear();
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text('Klassen ${schoolClass.className} er blevet tilføjet'),
           duration: Duration(seconds: 2),
@@ -77,11 +78,12 @@ class _SchoolClasses extends State<SchoolClasses> {
   }
 
   void updateClass(int classId) async {
+     final messenger = ScaffoldMessenger.of(context);
     var error = await SchoolClasses.schoolClassService
         .updateClass(classId, controllers[classId]!.text);
 
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text(error['Message'][0]),
           duration: Duration(seconds: 2),
@@ -89,7 +91,7 @@ class _SchoolClasses extends State<SchoolClasses> {
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text('Klassen er blevet opdateret'),
           duration: Duration(seconds: 2),
@@ -100,9 +102,10 @@ class _SchoolClasses extends State<SchoolClasses> {
   }
 
   void deleteClass(int classId) async {
+    final messenger = ScaffoldMessenger.of(context);
     var error = await SchoolClasses.schoolClassService.deleteClass(classId);
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text(error['Message'][0]),
           duration: Duration(seconds: 2),
@@ -114,7 +117,7 @@ class _SchoolClasses extends State<SchoolClasses> {
         schoolClasses
             .removeWhere((schoolClass) => schoolClass.classId == classId);
       });
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text('Klassen er blevet slettet'),
           duration: Duration(seconds: 2),

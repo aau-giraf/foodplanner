@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -9,6 +10,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
+import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
@@ -98,7 +100,7 @@ class _MealFormPageState extends State<MealFormPage> {
               ingredientId,
             );
           } catch (e) {
-            print(
+            developer.log(
                 'Failed to create packed ingredient for ID: $ingredientId - $e');
           }
         }
@@ -186,8 +188,12 @@ class _MealFormPageState extends State<MealFormPage> {
                         itemBuilder: (BuildContext context, index) {
                           final ingredient = selectedIngredients[index];
                           return SettingsWidget(
-                            leftIcon: SFIcons
-                                .sf_person_crop_circle_fill_badge_checkmark,
+                            leftWidget: FoodImage(
+                              foodImageId: ingredient['foodImageId'],
+                              width: 50,
+                              height: 50,
+                              borderRadius: 8.0,
+                            ),
                             title: ingredient['name'],
                             type: SettingsType.items,
                           );
@@ -202,15 +208,22 @@ class _MealFormPageState extends State<MealFormPage> {
                           final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AddIngredientPage(),
+                              builder: (context) => AddIngredientPage(
+                                authProvider: AuthProvider(),
+                                preSelectedIngredients: selectedIngredients,
+                              ),
                             ),
                           );
                           if (result != null) {
                             setState(() {
                               if (result is List<Map<String, dynamic>>) {
-                                selectedIngredients.addAll(result);
+                                selectedIngredients
+                                  ..clear()
+                                  ..addAll(result);
                               } else if (result is Map<String, dynamic>) {
-                                selectedIngredients.add(result);
+                                selectedIngredients
+                                  ..clear()
+                                  ..add(result);
                               }
                             });
                           }
@@ -254,6 +267,10 @@ class _MealFormPageState extends State<MealFormPage> {
                               });
                             }
                             createMealWithIngredients();
+                            if (!context.mounted){
+                              developer.log('buildcontext was unmounted in $runtimeType');
+                              return;
+                            }
                             Navigator.pop(context);
                             Navigator.pop(context);
                           },
@@ -264,6 +281,10 @@ class _MealFormPageState extends State<MealFormPage> {
                               true, // Mark as a destructive action.
                           onPressed: () async {
                             await createMealWithIngredients();
+                            if (!context.mounted){
+                              developer.log('buildcontext was unmounted in $runtimeType');
+                              return;
+                            }
                             Navigator.pop(context);
                             Navigator.pop(context);
                           },
