@@ -76,7 +76,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
       ),
-      bottomNavigationBar: NavBar(),
+      bottomNavigationBar: NavBar(currentPageIndex: 1),
       backgroundColor: Colors.white,
       body: Center(
         child: Column(

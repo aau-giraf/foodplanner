@@ -11,6 +11,7 @@ import 'package:flutter_advanced_segment/flutter_advanced_segment.dart';
 import 'package:foodplanner/pages/settings/administrate_children.dart';
 import 'package:foodplanner/pages/settings/admin_approve_page.dart';
 import 'package:foodplanner/pages/settings/SchoolClasses.dart';
+import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
@@ -235,6 +236,50 @@ class _SettingsPage extends State<Settings> {
                   foregroundColor: AppColors.errorText,
                   backgroundColor: AppColors.background,
                   size: ButtonSize.medium,
+                ),
+              ),
+              
+              SizedBox(height: 30),
+              InkWell(
+                hoverColor: Colors.transparent,
+                onTap: () async {
+                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  await authProvider.logout();
+                  context.go(LOGIN_PAGE);
+                },
+                child: Container(
+                  height: 59,
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow:[
+                      BoxShadow(
+                        color: Color(0x3F000000),
+                        blurRadius: 4,
+                        offset: Offset(0, 4),
+                        spreadRadius: 0,
+                      )
+                    ]
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const Text(
+                        'Log ud',
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center
+                      ),
+                      const Positioned(
+                        right: 19,
+                        child: Icon(
+                          Icons.logout,
+                        ),
+                      ),
+                    ]
+                  ),
                 ),
               ),
             ],

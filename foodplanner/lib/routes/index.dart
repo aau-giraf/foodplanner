@@ -205,7 +205,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
           future:
-              authProvider.hasRoles([ROLES.guardian, ROLES.teacher, ROLES.admin]),
+              authProvider.hasRoles([ROLES.guardian, ROLES.teacher, ROLES.admin, ROLES.student]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -255,7 +255,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
           future:
-              authProvider.hasRoles([ROLES.guardian, ROLES.teacher, ROLES.admin]),
+              authProvider.hasRoles([ROLES.guardian, ROLES.teacher, ROLES.admin, ROLES.student]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -291,7 +291,7 @@ final router = GoRouter(
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
                 //return const ATMainPage();
-                return const AdminLandingPage();
+                return const ATMainPage();
               /*return Column(
                 children: [
                   const Text('Admin Page'),
@@ -313,7 +313,7 @@ final router = GoRouter(
           final authProvider =
               Provider.of<AuthProvider>(context, listen: false);
           return FutureBuilder<bool>(
-            future: authProvider.hasRoles([ROLES.guardian, ROLES.admin]),
+            future: authProvider.hasRoles([ROLES.guardian, ROLES.admin, ROLES.student]),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -340,5 +340,33 @@ final router = GoRouter(
           )
         ]*/
       ),
+
+      GoRoute(
+      path: STUDENT_UNLOCKED,
+      builder: (context, state) {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        return FutureBuilder<bool>(
+          future: authProvider.hasRoles([ROLES.student, ROLES.admin]),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
+            } else if (snapshot.hasData && snapshot.data == true) {
+              return const ParentLandingPageMadpakke(); // im guessing this page, student_page is a dummy one it seems TODO
+              
+            } else {
+              return const UnauthorizedPage();
+            }
+          },
+        );
+      },
+    ),
   ],
 );
+
+

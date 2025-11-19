@@ -207,6 +207,7 @@ class ParentMainPageState extends State<ParentMainPage> {
         )
       ),
       bottomNavigationBar: NavBar(),
+      
     );
   }
 }
