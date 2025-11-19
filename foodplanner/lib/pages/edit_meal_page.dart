@@ -73,7 +73,7 @@ class _EditMealPageState extends State<EditMealPage> {
     });
 
     try {
-      final uploadResponse = await uploadFoodImage(selected);
+      final uploadResponse = await UploadFoodImage(selected);
       if (uploadResponse.statusCode == 200) {
         final int newImageId = int.tryParse(uploadResponse.body) ?? jsonDecode(uploadResponse.body) as int;
 

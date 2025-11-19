@@ -5,19 +5,19 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
-/*import 'package:foodplanner/pages/create_child_page.dart';*/
+import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
-import 'package:foodplanner/pages/main_page_parent.dart';
+import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/pages/landing_page_teacher.dart';
+import 'package:foodplanner/pages/main_page_parent.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/pages/profile_page.dart';
-/*import 'package:foodplanner/pages/signup_page.dart';*/
+import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/signup_page_adult.dart';
-/*import 'package:foodplanner/pages/signup_page_base.dart';*/
 import 'package:foodplanner/pages/signup_page_child.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
@@ -149,7 +149,7 @@ final router = GoRouter(
             } else if (snapshot.hasData && snapshot.data == true) {
               return const ChildLandingPageMadpakke(
                 student: {},
-              ); // im guessing this page, student_page is a dummy one it seems TODO
+              );
             } else {
               return const UnauthorizedPage();
             }
@@ -173,7 +173,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const SignupPageChild(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const SignupPageChild();
             } else {
               return const UnauthorizedPage();
             }
@@ -198,7 +198,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const Settings(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const Settings();
             } else {
               return const UnauthorizedPage();
             }
@@ -248,7 +248,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const FeedbackChatPage(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const FeedbackChatPage();
             } else {
               return const UnauthorizedPage();
             }
@@ -277,7 +277,7 @@ final router = GoRouter(
                   const Text('Admin Page'),
                   NavBar(),
                 ],
-              ); // another dummy page, I think Dressi is making a new one TODO
+              );
             } else {
               return const UnauthorizedPage();
             }
@@ -310,11 +310,11 @@ final router = GoRouter(
           );
         },
         //whats this?
-        routes: [
+        /*routes: [
           GoRoute(
             path: MADPAKKE,
-            builder: (context, state) => ParentMainPage(),
+            builder: (context, state) => ParentLandingPageMadpakke(),
           )
-        ]),
+        ]*/),
   ],
 );

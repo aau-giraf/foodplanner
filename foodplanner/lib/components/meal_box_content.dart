@@ -64,7 +64,7 @@ class Mealboxcontent extends StatelessWidget {
             onTab: () => mealNotifier.updateDate(mealNotifier.selectedDate.subtract(Duration(days: 1))), 
             customHeight: buttonHeight, 
             customWidth: buttonWidth, 
-            icon: SFIcon(SFIcons.sf_arrow_backward)
+            sfIcon: SFIcon(SFIcons.sf_arrow_backward)
           ),
         ),
         Text(
@@ -77,7 +77,7 @@ class Mealboxcontent extends StatelessWidget {
             onTab: () => mealNotifier.updateDate(mealNotifier.selectedDate.add(Duration(days: 1))), 
             customHeight: buttonHeight, 
             customWidth: buttonWidth, 
-            icon: SFIcon(SFIcons.sf_arrow_forward)
+            sfIcon: SFIcon(SFIcons.sf_arrow_forward)
           ),
         )
       ],
