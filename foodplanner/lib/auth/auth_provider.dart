@@ -53,6 +53,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<bool> hasRole(Role role) async => (userRole?.hasRole(role) ?? false);
+  Future<bool> hasAllRoles(Iterable<Role> roles) async => (userRole?.hasAllRoles(roles) ?? false);
 
   Future<bool> hasOneOfRolesUnapproved(List<Role> roles) async {
     await loadFromStorage();
@@ -93,4 +94,6 @@ class AuthProvider with ChangeNotifier {
     await loadFromStorage();
     return _userRole;
   }
+
+
 }

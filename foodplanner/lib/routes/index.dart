@@ -44,11 +44,16 @@ final router = GoRouter(
         if (!isLoggedIn) {
           return '/login';
         }
-        if(role == null){developer.log("Role was null"); return null;} 
+        // developer.log('User go router roles: ${role.toString()}');
 
-        if(role.hasOneOfRoles({Role.teacher, Role.admin})){return TEACHER_ROOT;}
-        else if (role.hasRole(Role.parent)){return PARENT_ROOT;}
-        else {return STUDENT_ROOT;}
+        // if(role == null){developer.log("Role was null"); return null;} 
+        
+        // if(role.hasAllRoles([Role.admin, Role.teacher])) {return ADMIN_TEACHER_ROOT;}
+
+        // else if(role.hasOnlyRole(Role.teacher)){return TEACHER_ROOT;}
+        // else if (role.hasOnlyRole(Role.admin)) {return ADMIN_ROOT;}
+        // else if (role.hasRole(Role.parent)){return PARENT_ROOT;}
+        // else {return STUDENT_ROOT;}
 
       },
     ),
@@ -367,7 +372,40 @@ final router = GoRouter(
           },
         );
       },
+      ),
+
+      GoRoute(
+      path: ADMIN_TEACHER_ROOT,
+      builder: (context, state) {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        return FutureBuilder<bool>(
+          future: authProvider.hasOneOfRoles([Role.admin, Role.teacher]),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: LoadingAnimation(
+                  imagePath:
+                      'assets/images/logo.png', // Replace with your image path
+                  size: 50.0,
+                ),
+              ); // Show loading while waiting
+            } else if (snapshot.hasData && snapshot.data == true) {
+                return const ATMainPage();
+              /*return Column(
+                children: [
+                  const Text('Admin Page'),
+                  NavBar(),
+                ],
+              ); // another dummy page, I think Dressi is making a new one TODO
+              */
+            } else {
+              return const UnauthorizedPage();
+            }
+          },
+        );
+      },
     ),
+
   ],
 );
 

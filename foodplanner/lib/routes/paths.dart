@@ -1,6 +1,7 @@
 // main root and auth root
 
 const String MAIN_ROOT = '/';
+const String ADMIN_TEACHER_ROOT = '/admin_teacher';
 const String ADMIN_ROOT = '/admin';
 const String TEACHER_ROOT = '/teacher';
 const String STUDENT_ROOT = '/student';
