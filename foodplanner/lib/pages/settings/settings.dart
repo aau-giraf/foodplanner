@@ -155,7 +155,7 @@ class _SettingsPage extends State<Settings> {
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
       ),
-      bottomNavigationBar: NavBar(currentPageIndex: 2),
+      bottomNavigationBar: NavBar(),
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -4,12 +4,13 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/navigation/admin_nav_strategy.dart';
 import 'package:foodplanner/navigation/guardian_nav_strategy.dart';
+import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/navigation/student_nav_strategy.dart';
 import 'package:foodplanner/navigation/teacher_nav_strategy.dart';
 import 'package:foodplanner/pages/landing_page_teacher.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
-import 'package:foodplanner/navigation/navbar_strategy_factory.dart';
+import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
 import 'package:go_router/go_router.dart';
 //import 'package:flutter/foundation.dart';
 
@@ -27,44 +28,8 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> {
-  //final List<Widget> _destinations = [];
-
-  //final Future<ROLES?> _roleFuture = AuthProvider().retrieveRole();
-  
+    
   final GlobalKey _teacherMenuIconKey = GlobalKey();
-
-  void _handleNavigation(int index, ROLES role, BuildContext context) {
-    //setState((){
-    //  widget.currentPageIndex = index;
-    //});
-
-    switch (role) {
-      case ROLES.teacher:
-        TeacherNavStrategy teacherNavStrategy = new TeacherNavStrategy();
-        teacherNavStrategy.navigate(index, context, role);
-        break;
-      
-      case ROLES.guardian:
-        GuardianNavStrategy guardianNavStrategy = new GuardianNavStrategy();
-        guardianNavStrategy.navigate(index, context, null);
-        break;
-
-      case ROLES.student:
-        StudentNavStrategy studentNavStrategy = new StudentNavStrategy();
-        studentNavStrategy.navigate(index, context, null);
-          break;
-
-      case ROLES.admin:
-        AdminNavStrategy adminNavStrategy = new AdminNavStrategy();
-        adminNavStrategy.navigate(index, context, null);
-        break;
-
-      default:
-        throw Exception('Provided role $role is not handled in _handleNavigation');
-    }
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -78,15 +43,8 @@ class _NavBarState extends State<NavBar> {
       
         final role = snapshot.data!;
         final index = widget.currentPageIndex;
-        final destinations = NavBarDestinationFactory.getNavBarDestinations(role);
-
-        //if(role ==)
-
-      //final bool onStartPage = isStartPage(context);
-      //final safeIndex =  widget.currentPageIndex; //.clamp(0, destinations.length -1);
-      //final safeIndex =  widget.currentPageIndex;
-      //debugPrint('Destinations: ${destinations.map((d) => d.label).toList()}');
-      //debugPrint('SelectedIndex: ${index}');
+        final navStrategy = NavBarStrategyMapper.getNavBarStrategy(role);
+        final destinations = navStrategy.getDestinations();
 
         return ClipRRect(
           borderRadius: const BorderRadius.only(
@@ -101,32 +59,11 @@ class _NavBarState extends State<NavBar> {
               backgroundColor: AppColors.background,
               indicatorColor: AppColors.primary,
               selectedIndex: index,
-              //debugPrint('index widget: ${widget.currentPageIndex}'),
               onDestinationSelected: (int index) {
-                //debugPrint('Nav pressed index: $index'),
                 setState(() {
                   widget.currentPageIndex = index;
                 });
-                //debugPrint('index widget: ${widget.currentPageIndex}'),
-                _handleNavigation(index, role, context);
-
-                /*if (role == ROLES.teacher && index == 3) {
-                  showMenu<String>(
-                    context: context, 
-                    //position: RelativeRect.fromLTRB(1000.0), 
-                    items: <PopupMenuItem<String>>[
-                      PopupMenuItem<String>(
-                        child: ListTile
-                        (leading: Icon(Icons.home), title: Text('home'))
-                      ),
-                      PopupMenuItem(
-                        child: ListTile(leading: Icon(Icons.logout), title: Text('logout'))
-                      ),
-                    ],
-                    elevation: 8.0,
-                  );
-                  return;
-                }*/
+                navStrategy.navigate(index, context, role);
               },
               destinations: destinations,
             ),
@@ -136,76 +73,6 @@ class _NavBarState extends State<NavBar> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-  // void handleStudentRouting(int index, BuildContext context) {
-  //   switch(index) {
-  //       case 0: 
-  //         GoRouter.of(context).go(FEEDBACK_Page);
-  //         break;
-  //       case 1: 
-  //         GoRouter.of(context).go(STUDENT_UNLOCKED);
-  //         break;
-  //       case 2:
-  //         GoRouter.of(context).go(SETTINGS_PAGE);
-  //         break;
-  //       case 3:
-  //         //GoRouter.of(context).go(STUDENT_ROOT);
-  //         GoRouter.of(context).go(LOGIN_PAGE);
-  //         break;
-  //   }
-  // }
-/*
-  void handleAdminRouting(int index, BuildContext context) {
-    switch(index) {
-          case 0:
-            GoRouter.of(context).go(ADMIN_ROOT);
-            break;
-          case 1:
-            GoRouter.of(context).go(SETTINGS_PAGE);
-            break;
-          case 2:
-            GoRouter.of(context).go(LOGIN_PAGE);
-        }
-  }
-*/
-/*
-  void handleGuardianParentRouting(int index, BuildContext context, ROLES role) {
-    switch(index) {
-        case 0:
-          if(role == ROLES.guardian){
-            GoRouter.of(context).go(PARENT_ROOT);
-            break;
-          } else if (role == ROLES.teacher){
-            GoRouter.of(context).go(TEACHER_ROOT);
-            break;
-          }
-        case 1:
-          GoRouter.of(context).go(CHOOSE_CHILD);
-          break;                
-        case 2:
-          GoRouter.of(context).go(SETTINGS_PAGE);
-          break;
-        case 3: 
-          //() async {
-          //  final authProvider = Provider.of<AuthProvider>(context, listen: false);
-          //  await authProvider.logout();
-          //  context.go(LOGIN_PAGE);
-          GoRouter.of(context).go(LOGIN_PAGE);
-          break;
-      }
-  }
-  */
-
 
 
 

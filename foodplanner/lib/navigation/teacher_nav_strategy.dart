@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/navigation/navigation_destination_helper.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
@@ -100,6 +102,16 @@ class TeacherNavStrategy implements NavigationStrategy {
         break;
     }
     
+  }
+
+  @override
+  List<NavigationDestination> getDestinations(){
+    return [
+      NavigationDestinationHelper.buildIconDestination(icon: Icons.home_outlined, selectedIcon: Icons.home, label: ''),
+      NavigationDestinationHelper.buildIconDestination(icon: Icons.escalator_warning_outlined, selectedIcon: Icons.escalator_warning, label: ''),
+      NavigationDestinationHelper.buildIconDestination(icon: SFIcons.sf_gearshape, label: '', selectedIcon: SFIcons.sf_gearshape_fill, isSfIcon: true),
+      NavigationDestinationHelper.buildIconDestination(icon: Icons.logout_outlined, selectedIcon: Icons.logout_outlined, label: ''),
+    ];
   }
 
   //alt funktionalitet for case 3 lig den herunder og kald denne funktion under case 3
