@@ -7,7 +7,7 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/pin_code.dart';
 import 'package:go_router/go_router.dart';
@@ -100,7 +100,7 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
     if (pin.length == 4) {
       var error = await PinCode.pinService.checkPin(pin);
       await Future.delayed(Duration(milliseconds: 300));
-      
+
       if (error == null && mounted) {
         navigateToRole(role);
 
@@ -113,25 +113,38 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
     }
   }
 
-    void navigateToRole(ROLES role) {
+    void navigateToRole(UserRoles role) {
       
       NavigationStrategy navigationStrategy = NavBarStrategyMapper.getNavBarStrategy(role);
       
-      switch(role) {
-        case ROLES.guardian: 
+      if (role.hasOnlyRole(Role.teacher)) {
+        navigationStrategy.goToPage(TEACHER_ROOT, context);
+    
+      } else if (role.hasOnlyRole(Role.parent)) {
+        navigationStrategy.goToPage(PARENT_ROOT, context);
+
+      } else if (role.hasOnlyRole(Role.student)) {
+        navigationStrategy.goToPage(STUDENT_UNLOCKED, context);
+    
+      } else {
+        throw Exception("No pin navigation is handled for this role $role");
+      }
+      
+      /*switch(role) {
+        case Role.parent: 
           navigationStrategy.goToPage(PARENT_ROOT, context);
           //GoRouter.of(context).go(PARENT_ROOT);
           break;
-        case ROLES.teacher: 
+        case Role.teacher: 
           navigationStrategy.goToPage(TEACHER_ROOT, context);
           //GoRouter.of(context).go(TEACHER_ROOT);
           break;
-        case ROLES.student:
+        case Role.student:
           navigationStrategy.goToPage(STUDENT_UNLOCKED, context);
           //GoRouter.of(context).go(STUDENT_UNLOCKED);
         default:
           break;
-      }
+      }*/
     }
 
   void handleCreatePin(String type, int number) async {
@@ -301,7 +314,7 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
     );
   }
   
-  ROLES role = ROLES.student;
+  UserRoles role = UserRoles.of([Role.student]);
   //final usernameController = TextEditingController();
   //String emailError = '';
   

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/routes/paths.dart'; // contains ADMIN_ROOT, TEACHER_ROOT, etc.
 
 class RoleSelectionPage extends StatefulWidget {
@@ -17,7 +17,7 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
 
   Future<void> _selectRole(String role) async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
-    await auth.setRole(role as ROLES);
+    await auth.setRole(role as UserRoles);
     await auth.loadFromStorage();
     setState(() => _selectedRole = role);
 
@@ -27,9 +27,9 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
 
    
     String targetPath;
-    if (role == ROLES.admin) {
+    if (role == Role.admin) {
       targetPath = ADMIN_ROOT;
-    } else if (role == ROLES.teacher) {
+    } else if (role == Role.teacher) {
       targetPath = TEACHER_ROOT;
     } else {
       targetPath = '/';
@@ -43,8 +43,8 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
   Widget build(BuildContext context) {
   
     final roles = <Map<String, dynamic>>[
-      {'key': ROLES.teacher, 'label': 'Lærer'},
-      {'key': ROLES.admin, 'label': 'Admin'},
+      {'key': Role.teacher, 'label': 'Lærer'},
+      {'key': Role.admin, 'label': 'Admin'},
     ];
 
     return Scaffold(

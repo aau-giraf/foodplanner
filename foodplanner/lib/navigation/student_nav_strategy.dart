@@ -5,7 +5,7 @@ import 'package:foodplanner/navigation/navigation_destination_helper.dart';
 import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:go_router/go_router.dart';
 
 class StudentUnlockedNavStrategy extends NavigationStrategy {
@@ -19,30 +19,6 @@ class StudentUnlockedNavStrategy extends NavigationStrategy {
 
   @override
   List<String> get pages => _pages;
-
-  @override
-  void navigate(int index, BuildContext context, ROLES? role) {
-    String goToPage = pages[index];
-    GoRouter.of(context).go(goToPage);
-
-    /*
-    switch(index) {
-        case 0: 
-          break;
-        case 1: 
-          GoRouter.of(context).go(STUDENT_UNLOCKED);
-          break;
-        case 2:
-          GoRouter.of(context).go(SETTINGS_PAGE);
-          break;
-        case 3:
-          GoRouter.of(context).go(STUDENT_ROOT);
-          break;
-    }
-    */
-    
-    NavigationService.setCurrentPage(index);
-  }
 
   @override
   List<NavigationDestination> getDestinations(){

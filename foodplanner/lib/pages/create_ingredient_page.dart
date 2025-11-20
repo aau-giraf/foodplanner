@@ -150,7 +150,7 @@ class _CreateIngredientPageState extends State<CreateIngredientPage> {
                                       
                                       // If image was captured, upload it
                                       if (image != null) {
-                                        final imageResponse = await uploadFoodImage(image);
+                                        final imageResponse = await UploadFoodImage(image);
                                         final int responseData = jsonDecode(imageResponse.body);
                                         setState(() {
                                           foodImageId = responseData;

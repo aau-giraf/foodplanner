@@ -19,6 +19,7 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:foodplanner/services/food_image_service.dart';
 
+
 /// This class is used to create the meal page where the user can create an individual meal for their children.
 class MealFormPage extends StatefulWidget {
   const MealFormPage({
@@ -188,12 +189,12 @@ class _MealFormPageState extends State<MealFormPage> {
                         itemBuilder: (BuildContext context, index) {
                           final ingredient = selectedIngredients[index];
                           return SettingsWidget(
-                            leftWidget: FoodImage(
+                            /*leftWidget: FoodImage(
                               foodImageId: ingredient['foodImageId'],
                               width: 50,
                               height: 50,
                               borderRadius: 8.0,
-                            ),
+                            ),*/
                             title: ingredient['name'],
                             type: SettingsType.items,
                           );
@@ -258,7 +259,7 @@ class _MealFormPageState extends State<MealFormPage> {
                               ),
                             );
                             if (image != null) {
-                              final imageResponse = await uploadFoodImage(
+                              final imageResponse = await UploadFoodImage(
                                   image); // Ensure this method is defined.
                               final int responseData =
                                   jsonDecode(imageResponse.body);

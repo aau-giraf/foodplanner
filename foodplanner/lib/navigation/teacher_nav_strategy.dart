@@ -1,14 +1,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/navigation/navigation_destination_helper.dart';
 import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:provider/provider.dart';
 
 class TeacherNavStrategy extends NavigationStrategy {
  
@@ -25,24 +27,18 @@ class TeacherNavStrategy extends NavigationStrategy {
   List<String> get pages => _pages;
 
   @override
-  void navigate(int index, BuildContext context, ROLES? role) {
+  void navigate(int index, BuildContext context, UserRoles role) async {
     switch(index) {
-      case 0:
-        GoRouter.of(context).go(TEACHER_ROOT);
-        break;
-      case 1:
-        GoRouter.of(context).go(CHOOSE_CHILD);
-        break;                
-      case 2:
-        GoRouter.of(context).go(SETTINGS_PAGE);
+      case 0|| 1 || 2:
+        super.navigate(index, context, role);
         break;
       case 3: 
-        //() async {
-        //  final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        //  await authProvider.logout();
-        //  context.go(LOGIN_PAGE);
+
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        await authProvider.logout();
+        context.go(LOGIN_PAGE);
         
-  
+
         //final RenderBox renderbox = menuKey.currentContext!.findRenderObject() as Renderbox;
         
         showMenu<String> (

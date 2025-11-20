@@ -3,6 +3,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/pages/Change_Roll.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
@@ -49,7 +50,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
       email: 'Unknown',
       firstName: 'Unknown',
       lastName: 'Unknown',
-      role: 'Unknown',
+      role: UserRoles.empty(),
       archived: false);
 
   @override

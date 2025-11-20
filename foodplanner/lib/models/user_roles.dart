@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum Role { admin, teacher, parent, student, child }
 
 class UserRoles {
@@ -29,6 +31,10 @@ class UserRoles {
     return false;
   }
 
+  bool hasOnlyRole(Role role) {
+    return roles.contains(role) && roles.length == 1;
+  }
+
   UserRoles add(Role role) => UserRoles._({...roles, role});
 
   factory UserRoles.fromString(String value) {
@@ -36,6 +42,7 @@ class UserRoles {
     var userRole = UserRoles.empty();
     for (var role in Role.values){
       if(roleValues.contains(role.name)){  // role.name is already lowercase
+        debugPrint('UserRoles fromString user has roles: ${role.toString()}');
         userRole = userRole.add(role);
       }
     }

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'user_roles.dart';
 
 class User {
@@ -19,6 +21,7 @@ class User {
 
 
   factory User.fromJson(Map<String, dynamic> json) {
+    debugPrint('User roles when getting user from json ${json['role']}');
     return switch (json) {
       {
         'id': int id,
@@ -27,7 +30,7 @@ class User {
         'email': String email,
         'role': String role,
         'archived': bool archived,
-      } =>
+      } => 
         User(
           id: id,
           firstName: firstName,

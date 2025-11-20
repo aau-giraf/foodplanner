@@ -19,7 +19,7 @@ const String ADD_MEAL = '/create';
 const String EDIT_MEAL = '/edit';
 const String NO_MEAL = '/empy';
 const String CHOOSE_CHILD = '/choose_child';
-const String GUARDIAN_MAIN = '/parent_landing_page';
+const String PARENT_MAIN = '/parent_landing_page';
 const String STUDENT_UNLOCKED = "/student_unlocked";
 
 // routing through concat of pages from above (lavet baseret på vores p3 dont ask why)

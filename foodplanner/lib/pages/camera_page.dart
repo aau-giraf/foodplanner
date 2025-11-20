@@ -149,7 +149,7 @@ class _MealPageState extends State<CameraPage> {
                             DisplayPictureScreen(image: XFile(image.path)),
                       ),
                     );
-                  } else {developer.log("Something went wrong when taking a picture");}
+                  } else {debugPrint("Something went wrong when taking a picture");}
                 });
               },
               backgroundColor: AppColors.primary,

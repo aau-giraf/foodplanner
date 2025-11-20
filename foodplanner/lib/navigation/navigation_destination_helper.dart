@@ -37,15 +37,7 @@ class NavigationDestinationHelper {
     ); 
   }
 /*
-  static List<NavigationDestination> adminRoleDestination() {
-    return [
-      _buildIconDestination(icon: Icons.home_outlined, selectedIcon: Icons.home, label: ''),
-      _buildIconDestination(icon: Icons.manage_accounts_outlined, selectedIcon: Icons.manage_accounts, label: ''),
-      _buildIconDestination(icon: Icons.school_outlined, selectedIcon: Icons.school, label: ''),
-      _buildIconDestination(icon: SFIcons.sf_gearshape, selectedIcon: SFIcons.sf_gearshape_fill, label: '', isSfIcon: true),
-      _buildIconDestination(icon: Icons.room_preferences_outlined, selectedIcon: Icons.room_preferences, label: ''),
-    ];
-  }
+
 
   static List<NavigationDestination> teacherRoleDestination() {
     return [
