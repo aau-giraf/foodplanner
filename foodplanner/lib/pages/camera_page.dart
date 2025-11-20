@@ -141,7 +141,7 @@ class _MealPageState extends State<CameraPage> {
             child: FloatingActionButton(
               onPressed: () {
                 getImageFromGallery().then((image) {
-                  if (image != null) {
+                  if (image != null && context.mounted) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -149,7 +149,7 @@ class _MealPageState extends State<CameraPage> {
                             DisplayPictureScreen(image: XFile(image.path)),
                       ),
                     );
-                  }
+                  } else {developer.log("Something went wrong when taking a picture");}
                 });
               },
               backgroundColor: AppColors.primary,

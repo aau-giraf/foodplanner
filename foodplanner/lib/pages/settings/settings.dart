@@ -12,10 +12,11 @@ import 'package:foodplanner/pages/settings/administrate_children.dart';
 import 'package:foodplanner/pages/settings/admin_approve_page.dart';
 import 'package:foodplanner/pages/settings/SchoolClasses.dart';
 import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
 import 'package:go_router/go_router.dart';
+
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -193,7 +194,7 @@ class _SettingsPage extends State<Settings> {
                 ),
               ),
               SizedBox(height: 10),
-              if (authProvider.hasRole([ROLES.admin]))
+              if (authProvider.userRole?.hasRole(Role.admin) ?? false)
                 Card(
                   elevation: 2,
                   color: AppColors.background,

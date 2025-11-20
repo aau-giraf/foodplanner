@@ -100,8 +100,10 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
     if (pin.length == 4) {
       var error = await PinCode.pinService.checkPin(pin);
       await Future.delayed(Duration(milliseconds: 300));
-      if (error == null) {
+      
+      if (error == null && mounted) {
         navigateToRole(role);
+
       } else {
         setState(() {
           pin = [];
@@ -144,7 +146,7 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
     if (confirmPinCode.length == 4) {
       if (createPinCode.join() == confirmPinCode.join()) {
         var error = await PinCode.pinService.updatePin(confirmPinCode);
-        if (error == null) {
+        if (error == null && mounted) {
           Navigator.of(context).pop();
         } else {
           setState(() {

@@ -49,8 +49,11 @@ class UnauthorizedPage extends StatelessWidget {
                       onTab: () async {
                         final authProvider =
                             Provider.of<AuthProvider>(context, listen: false);
+
+                        final router = GoRouter.of(context);
                         await authProvider.logout();
-                        context.go('/login');
+                        
+                        router.go('/login');
                       },
                       text: "Log ud"),
                 ),

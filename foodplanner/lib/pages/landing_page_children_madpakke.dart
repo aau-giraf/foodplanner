@@ -9,7 +9,7 @@ import 'package:foodplanner/models/child.dart';
 
 import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
@@ -32,7 +32,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   late Future<bool> _hasRolesFuture;
   Child? _child;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
-  ROLES? userRole;
+  UserRoles? userRole;
   Future<void>? _callerFuture;
 
   @override
@@ -47,19 +47,19 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
     setState(() {
       userRole = role;
       _hasRolesFuture =
-          authProvider.hasRoles([ROLES.guardian, ROLES.student, ROLES.teacher]);
+
+          authProvider.hasOneOfRoles([Role.parent, Role.student, Role.teacher]);
     });
 
     Child? childData;
 
-    if (authProvider.userRole == ROLES.student || authProvider.userRole == ROLES.guardian) {
-      childData = await childService.fetchChildById();
-      
-      /*setState(() {
+    if (authProvider.userRole == Role.student ||
+        authProvider.userRole == Role.parent) {
+      final childData = await childService.fetchChildById();
+      setState(() {
         _child = childData;
-      });*/
-
-    } else if (authProvider.userRole == ROLES.teacher) {
+      });
+    } else if (authProvider.userRole == Role.teacher) {
       int tempChildId = int.parse(widget.student['id']!);
       childData = await childService.GetByChildId(tempChildId);
       
@@ -93,7 +93,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: userRole == ROLES.teacher || userRole == ROLES.admin
+        leading: userRole == Role.teacher || userRole == Role.admin
             ? IconButton(
                 onPressed: () {
                   GoRouter.of(context).go(TEACHER_ROOT);
@@ -106,7 +106,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
           style: AppTextStyles.headline4,
         ),
         centerTitle: true,
-        actions: userRole != ROLES.teacher && userRole != ROLES.admin
+        actions: userRole != Role.teacher && userRole != Role.admin
             ? [
                 IconButton(
                   onPressed: () {
@@ -149,7 +149,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                     ),
                   ), // Use the reusable widget
                   SizedBox(height: 20),
-                  if (userRole == ROLES.teacher || userRole == ROLES.admin)
+                  if ((userRole?.hasRole(Role.teacher) ?? false) || (userRole?.hasRole(Role.admin) ?? false))
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: CustomButton(

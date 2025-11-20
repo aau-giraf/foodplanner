@@ -45,6 +45,7 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
   // Function to remove a user after approval or denial
   void _approveUser(int userId) async {
     try {
+      //final messenger = ScaffoldMessenger.of(context);
       final bool success =
           await AdminApprovePage.userService.updateApproveUsers(userId);
       if (success) {
@@ -57,6 +58,7 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
     } catch (e) {
       print('Error approving user: $e');
     }
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Brugeren er blevet godkendt'),
@@ -80,6 +82,7 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
     } catch (e) {
       print('Error removing user: $e');
     }
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Brugeren er blevet fjernet'),
