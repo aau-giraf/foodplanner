@@ -19,7 +19,7 @@ class NavBarStrategyMapper {
         return new GuardianNavStrategy();
       
       case ROLES.student:
-        return new StudentNavStrategy();
+        return new StudentUnlockedNavStrategy();
 
       case ROLES.admin:
         return new AdminNavStrategy();

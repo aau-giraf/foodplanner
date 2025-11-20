@@ -5,6 +5,7 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/pages/choose_child_parent.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
@@ -31,6 +32,9 @@ class TeacherMainPageState extends State<TeacherMainPage> {
   @override
   void initState() {
     super.initState();
+
+    NavigationService.setCurrentPage(0);
+
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     authProvider.loadFromStorage().then((_) {
       authProvider.retrieveToken().then((token) {

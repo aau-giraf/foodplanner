@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/navigation/navigation_destination_helper.dart';
+import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:go_router/go_router.dart';
 
-class AdminNavStrategy implements NavigationStrategy {
+class AdminNavStrategy extends NavigationStrategy {
+
+  List<String> _pages = [ADMIN_ROOT, SETTINGS_PAGE, LOGIN_PAGE];
+
+  @override
+  set pages(List<String> pages) {
+    _pages = pages;
+  }
+
+  @override
+  List<String> get pages => _pages;
 
   @override
   void navigate(int index, BuildContext context, ROLES? role){
@@ -20,6 +31,9 @@ class AdminNavStrategy implements NavigationStrategy {
       case 2:
         GoRouter.of(context).go(LOGIN_PAGE);
     }
+    
+    NavigationService.setCurrentPage(index);
+
   }
   
   @override
@@ -31,4 +45,5 @@ class AdminNavStrategy implements NavigationStrategy {
     ];
     
   }
+  
 }

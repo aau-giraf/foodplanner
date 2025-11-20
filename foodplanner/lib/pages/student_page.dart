@@ -5,6 +5,7 @@ import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/meal_box.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/routes/paths.dart';
 
@@ -30,6 +31,9 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
   @override
   void initState() {
     super.initState();
+
+    NavigationService.setCurrentPage(0);
+
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     authProvider.loadFromStorage().then((_) {
       authProvider.retrieveToken().then((token) {
@@ -76,7 +80,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
       ),
-      bottomNavigationBar: NavBar(currentPageIndex: 1),
+      bottomNavigationBar: NavBar(),
       backgroundColor: Colors.white,
       body: Center(
         child: Column(

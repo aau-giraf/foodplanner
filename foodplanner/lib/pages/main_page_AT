@@ -16,6 +16,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:validators/validators.dart';
 import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/navigation/navigation_service.dart';
 
 class ATMainPage extends StatefulWidget {
   const ATMainPage({super.key});
@@ -32,6 +33,9 @@ class ATMainPageState extends State<ATMainPage> {
   @override
   void initState() {
     super.initState();
+
+    NavigationService.setCurrentPage(0);
+
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     authProvider.loadFromStorage().then((_) {
       authProvider.retrieveToken().then((token) {

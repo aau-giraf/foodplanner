@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
+import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/create_child_page.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
@@ -290,7 +292,6 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-                //return const ATMainPage();
                 return const ATMainPage();
               /*return Column(
                 children: [

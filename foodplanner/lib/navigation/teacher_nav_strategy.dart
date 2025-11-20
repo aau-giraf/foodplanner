@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/navigation/navigation_destination_helper.dart';
+import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
@@ -9,9 +10,19 @@ import 'package:go_router/go_router.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 
-class TeacherNavStrategy implements NavigationStrategy {
+class TeacherNavStrategy extends NavigationStrategy {
  
   final GlobalKey menuKey = GlobalKey ();
+
+  List<String> _pages = [TEACHER_ROOT, CHOOSE_CHILD, SETTINGS_PAGE, LOGIN_PAGE];
+
+  @override
+  set pages(List<String> pages) {
+    _pages = pages;
+  }
+
+  @override
+  List<String> get pages => _pages;
 
   @override
   void navigate(int index, BuildContext context, ROLES? role) {
@@ -102,6 +113,7 @@ class TeacherNavStrategy implements NavigationStrategy {
         break;
     }
     
+    NavigationService.setCurrentPage(index);
   }
 
   @override

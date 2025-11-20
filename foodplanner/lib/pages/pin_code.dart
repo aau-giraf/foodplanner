@@ -4,6 +4,8 @@ import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
+import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -110,15 +112,21 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
   }
 
     void navigateToRole(ROLES role) {
+      
+      NavigationStrategy navigationStrategy = NavBarStrategyMapper.getNavBarStrategy(role);
+      
       switch(role) {
         case ROLES.guardian: 
-          GoRouter.of(context).go(PARENT_ROOT);
+          navigationStrategy.goToPage(PARENT_ROOT, context);
+          //GoRouter.of(context).go(PARENT_ROOT);
           break;
         case ROLES.teacher: 
-          GoRouter.of(context).go(TEACHER_ROOT);
+          navigationStrategy.goToPage(TEACHER_ROOT, context);
+          //GoRouter.of(context).go(TEACHER_ROOT);
           break;
         case ROLES.student:
-          GoRouter.of(context).go(STUDENT_UNLOCKED);
+          navigationStrategy.goToPage(STUDENT_UNLOCKED, context);
+          //GoRouter.of(context).go(STUDENT_UNLOCKED);
         default:
           break;
       }
