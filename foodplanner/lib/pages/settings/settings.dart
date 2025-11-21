@@ -13,7 +13,7 @@ import 'package:foodplanner/pages/settings/admin_approve_page.dart';
 import 'package:foodplanner/pages/settings/SchoolClasses.dart';
 import 'package:foodplanner/routes/user_roles.dart';
 import 'package:provider/provider.dart';
-import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
+import 'package:foodplanner/pages/admin/profiles/admin_all_profiles.dart';
 import 'package:go_router/go_router.dart';
 
 class Settings extends StatefulWidget {

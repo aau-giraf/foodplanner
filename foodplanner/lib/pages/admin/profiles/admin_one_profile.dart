@@ -1,50 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/button.dart';
+import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/Admin_profiles.dart';
-import 'package:foodplanner/pages/settings/deactivate_accounts.dart'; 
-import 'package:foodplanner/pages/settings/admin_approve_page.dart'; 
-import 'package:go_router/go_router.dart';
-import 'package:foodplanner/services/user_service.dart';
-import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/models/user.dart';
+import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/services/user_service.dart';
+import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/services/user_service.dart';
 
-class AdminProfilesPage extends StatefulWidget {
-  const AdminProfilesPage({super.key});
+class AdminOneProfile extends StatefulWidget {
+  const AdminOneProfile({super.key});
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
   @override
-  State<AdminProfilesPage> createState() => _AdminProfilesPageState();
+  State<AdminOneProfile> createState() => _AdminOneProfileState();
 }
 
-class _AdminProfilesPageState extends State<AdminProfilesPage> {
+class _AdminOneProfileState extends State<AdminOneProfile> {
   List<User> _users = [];
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadUsers();
-  }
-
-  // Function to load users asynchronously
-  Future<void> _loadUsers() async {
-    try {
-      final users = await AdminProfilesPage.userService.fetchApproveUsers();
-      setState(() {
-        _users = users;
-        _isLoading = false;
-      });
-    } catch (e) {
-      print('Error loading users: $e');
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
   @override
@@ -60,34 +42,19 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Administrér profiler',
+                'Administrér',
                 style: TextStyle(fontSize: 36),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 50),
               Text(
-                  'Aktive anmodninger',
-                  style: TextStyle(fontSize: 18),
-                  textAlign: TextAlign.center,
+                'profiler',
+                style: TextStyle(fontSize: 36),
+                textAlign: TextAlign.center,
               ),
-              Container(
-                width: 26,
-                height: 26,
-                decoration: BoxDecoration(
-                  color: AppColors.primary, // Din orange
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    '2',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
+              Icon(
+                Icons.manage_accounts_outlined,
               ),
+              SizedBox(height: 35),
             ],
           ),
         ),
@@ -138,7 +105,6 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
                     ColoredBox(
                       color: Colors.blue,
                     ),
-                    const SizedBox(height: 10),
                     /*SettingsWidget(
                       leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
                       title: 'Godkend profiler',
@@ -179,34 +145,6 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
                         );
                       },
                     ),*/
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: CustomButton(
-                        onTab: null,
-                        text: "{konto_navn}",
-                        foregroundColor: AppColors.textPrimary,
-                        backgroundColor: AppColors.background,
-                        size: ButtonSize.medium,
-                      ),
-                    ),
-                    Container(
-                      width: 26,
-                      height: 26,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary, // Din orange
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '!',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -215,20 +153,17 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AdminAllProfiles()),
-                  );
+                  
                 },
                 child: Container(
                   height: 56,
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   decoration: BoxDecoration(
-                    color: Colors.white,                         // hvid som i Figma
-                    borderRadius: BorderRadius.circular(50),     // pill-form
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(50),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.15),   // let skygge
+                        color: Colors.black.withOpacity(0.15),
                         blurRadius: 6,
                         offset: const Offset(0, 3),
                       ),

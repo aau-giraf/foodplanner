@@ -9,6 +9,7 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 
 class AdminAllProfiles extends StatefulWidget {
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
@@ -112,7 +113,7 @@ class _AdminAllProfilesState extends State<AdminAllProfiles> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Padding(
+        /*leading: Padding(
           padding: const EdgeInsets.only(left: 20),
           child: InkWell(
             onTap: () {
@@ -135,13 +136,37 @@ class _AdminAllProfilesState extends State<AdminAllProfiles> {
         ),
         leadingWidth: 200,
         backgroundColor: Colors.white,
-        scrolledUnderElevation: 0,
+        scrolledUnderElevation: 0,*/
+        backgroundColor: Colors.white,
+        toolbarHeight: 225,
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 70),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Administrér',
+                style: TextStyle(fontSize: 36),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                'profiler',
+                style: TextStyle(fontSize: 36),
+                textAlign: TextAlign.center,
+              ),
+              Icon(
+                Icons.manage_accounts_outlined,
+              ),
+            ],
+          ),
+        ),
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SettingsWidget(
+            /*SettingsWidget(
               leftIcon: SFIcons.sf_person_crop_circle_fill_badge_minus,
               title: 'Deaktiver profiler',
               subTitle:
@@ -150,7 +175,7 @@ class _AdminAllProfilesState extends State<AdminAllProfiles> {
             ),
             SizedBox(
               height: 20,
-            ),
+            ),*/
             SearchField(
               controller: searchController,
               hintText: 'Søg efter bruger',
@@ -191,6 +216,7 @@ class _AdminAllProfilesState extends State<AdminAllProfiles> {
           ],
         ),
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }

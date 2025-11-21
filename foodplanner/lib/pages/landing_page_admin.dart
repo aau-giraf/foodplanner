@@ -17,8 +17,8 @@ import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/pages/settings/admin_approve_page.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:provider/provider.dart';
-import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
-import 'package:foodplanner/pages/Admin_profiles.dart';
+import 'package:foodplanner/pages/admin/profiles/admin_all_profiles.dart';
+import 'package:foodplanner/pages/admin/profiles/admin_profiles.dart';
 
 class AdminLandingPage extends StatefulWidget {
   const AdminLandingPage({super.key});
