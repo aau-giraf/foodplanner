@@ -15,17 +15,19 @@ class NavBarStrategyMapper {
     var activeRole = ActiveRoleService.activeRole;
     debugPrint('Users active role is ${activeRole.toString()}');
     debugPrint('All of the users roles: ${role.toString()}');
+    
     if(activeRole == Role.teacher && role.hasAllRoles([Role.admin, Role.teacher])) {
       throw new Exception('User has active role teacher and has roles admin and teacher. Create the business logic for what the navstrategy should look like');
     }
     else if (role.hasOnlyRole(Role.teacher)) {
       debugPrint('Returning teacher nav strategy');
       return new TeacherNavStrategy();
+    
     } else if (role.hasOnlyRole(Role.parent)) {
       debugPrint('Returning parent nav strategy');
       return new ParentNavStrategy();
     
-    } else if (role.hasOnlyRole(Role.student)) {
+    } else if (role.hasOnlyRole(Role.child) || role.hasOnlyRole(Role.student)) {
         debugPrint('Returning student nav strategy');
         return new StudentUnlockedNavStrategy();
     
@@ -35,7 +37,7 @@ class NavBarStrategyMapper {
     
     } else if (role.hasAllRoles([Role.admin, Role.teacher])) {
       debugPrint('Returning admin teacher nav strategy');
-      return new AdminNavStrategy();
+      return new AdminTeacherNavStrategy();
     } 
     
     else if (role.hasOnlyRole(Role.admin)) {

@@ -93,12 +93,12 @@ class LoginPageState extends State<LoginPage> {
       }
 
         debugPrint('Login successful, role data: $role');
-        debugPrint('Has student role: ${role.hasRole(Role.student)}');
+        debugPrint('Has student role: ${role.hasRole(Role.child)}');
         debugPrint('Has parent role: ${role.hasRole(Role.parent)}');
         debugPrint('Has teacher role: ${role.hasRole(Role.teacher)}');
         debugPrint('Has admin role: ${role.hasRole(Role.admin)}'); 
         var navStrategy = NavBarStrategyMapper.getNavBarStrategy(role);
-        navStrategy.navigateToHomePage(context);
+        navStrategy.navigateToHomePage(context, role);
 
         /*
         if(role.hasAllRoles([Role.admin, Role.teacher])) {

@@ -123,7 +123,9 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
       } else if (role.hasOnlyRole(Role.parent)) {
         navigationStrategy.goToPage(PARENT_ROOT, context);
 
-      } else if (role.hasOnlyRole(Role.student)) {
+      } else if (role.hasOnlyRole(Role.student)
+      //|| role.hasOnlyRole(Role.child)
+      ) {
         navigationStrategy.goToPage(STUDENT_UNLOCKED, context);
     
       } else {

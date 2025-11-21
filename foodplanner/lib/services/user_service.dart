@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:foodplanner/auth/auth_provider.dart';
 
 class UserService {
   final String apiUrl;

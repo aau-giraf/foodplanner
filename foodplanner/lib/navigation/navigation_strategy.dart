@@ -18,7 +18,6 @@ abstract class NavigationStrategy {
   List<NavigationDestination> getDestinations();
 
   void goToPage(String goToPage, BuildContext context) {
-    
     for (int i = 0; i < pages.length ; i++) {
       if(pages[i] == goToPage) {
         GoRouter.of(context).go(goToPage); 
@@ -27,7 +26,12 @@ abstract class NavigationStrategy {
     }
   }
 
-  void navigateToHomePage(BuildContext context) {
+  void navigateToHomePage(BuildContext context, UserRoles role) {
+    /*if(role.hasOneOfRoles([Role.child, Role.student])) {
+      var pageToVisit = pages[1];
+      goToPage(pageToVisit, context); 
+    }*/
+
     var pageToVisit = pages[0];
     goToPage(pageToVisit, context);
   }

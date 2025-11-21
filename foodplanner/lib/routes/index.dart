@@ -36,23 +36,31 @@ final router = GoRouter(
     GoRoute(
       path: '/',
       redirect: (context, state) async {
+        
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        final role = await authProvider.retrieveRole();
+        
+        if(!authProvider.isLoggedIn) {
+          return '/login';
+        }
+
+        return null;
+        /*final role = await authProvider.retrieveRole();
         final isLoggedIn = authProvider.isLoggedIn;
         if (!isLoggedIn) {
           return '/login';
         }
         // developer.log('User go router roles: ${role.toString()}');
 
-        // if(role == null){developer.log("Role was null"); return null;} 
+         if(role == null){developer.log("Role was null"); return null;} 
         
-        // if(role.hasAllRoles([Role.admin, Role.teacher])) {return ADMIN_TEACHER_ROOT;}
+         if(role.hasAllRoles([Role.admin, Role.teacher])) {return ADMIN_TEACHER_ROOT;}
 
-        // else if(role.hasOnlyRole(Role.teacher)){return TEACHER_ROOT;}
-        // else if (role.hasOnlyRole(Role.admin)) {return ADMIN_ROOT;}
-        // else if (role.hasRole(Role.parent)){return PARENT_ROOT;}
-        // else {return STUDENT_ROOT;}
-
+         else if(role.hasOnlyRole(Role.teacher)){return TEACHER_ROOT;}
+         else if (role.hasOnlyRole(Role.admin)) {return ADMIN_ROOT;}
+         else if (role.hasRole(Role.parent)){return PARENT_ROOT;}
+         else {return STUDENT_ROOT;}
+        
+        */
       },
     ),
     GoRoute(
@@ -157,7 +165,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
-          future: authProvider.hasOneOfRoles([Role.student, Role.admin]),
+          future: authProvider.hasOneOfRoles([Role.child, Role.student, Role.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -185,7 +193,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
-          future: authProvider.hasOneOfRolesUnapproved([Role.student]),
+          future: authProvider.hasOneOfRolesUnapproved([Role.child]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -210,7 +218,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
           future:
-              authProvider.hasOneOfRoles([Role.parent, Role.teacher, Role.admin, Role.student]),
+              authProvider.hasOneOfRoles([Role.parent, Role.teacher, Role.admin, Role.child, Role.student]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -260,7 +268,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
           future:
-              authProvider.hasOneOfRoles([Role.parent, Role.teacher, Role.admin, Role.student]),
+              authProvider.hasOneOfRoles([Role.parent, Role.teacher, Role.admin, Role.child, Role.student]),
 
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -318,7 +326,7 @@ final router = GoRouter(
           final authProvider =
               Provider.of<AuthProvider>(context, listen: false);
           return FutureBuilder<bool>(
-            future: authProvider.hasOneOfRoles([Role.parent, Role.admin, Role.student]),
+            future: authProvider.hasOneOfRoles([Role.parent, Role.admin, Role.child, Role.student]),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -351,7 +359,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
-          future: authProvider.hasOneOfRoles([Role.student]),
+          future: authProvider.hasOneOfRoles([Role.child, Role.student]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

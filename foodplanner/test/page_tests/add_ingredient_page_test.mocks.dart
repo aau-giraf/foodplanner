@@ -484,6 +484,16 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
       ) as _i4.Future<bool>);
 
   @override
+  _i4.Future<bool> hasAllRoles(Iterable<_i10.Role>? roles) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #hasAllRoles,
+          [roles],
+        ),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
+
+  @override
   _i4.Future<bool> hasOneOfRolesUnapproved(List<_i10.Role>? roles) =>
       (super.noSuchMethod(
         Invocation.method(

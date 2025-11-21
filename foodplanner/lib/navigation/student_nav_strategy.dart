@@ -30,5 +30,10 @@ class StudentUnlockedNavStrategy extends NavigationStrategy {
     ];
   }
   
+  @override 
+  void navigateToHomePage(BuildContext context, UserRoles role) {
+    String pageToVisit =  STUDENT_ROOT;
+    goToPage(pageToVisit, context);
+  }
   
 }
