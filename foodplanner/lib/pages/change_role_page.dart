@@ -1,40 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/components/search_field.dart';
-import 'package:foodplanner/components/settings_widget.dart';
-
-import 'package:foodplanner/models/user_roles.dart';
-import 'package:foodplanner/pages/Change_Roll.dart';
-
-import 'package:foodplanner/pages/change_role_page.dart';
-
+import 'package:foodplanner/pages/landing_page_admin.dart';
+import 'package:foodplanner/pages/landing_page_teacher.dart';
 import 'package:go_router/go_router.dart';
-import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/components/Custom_List_Item.dart';
-import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user.dart' as model;
 import 'package:foodplanner/services/user_service.dart';
-import 'package:foodplanner/pages/settings/admin_approve_page.dart';
-import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:provider/provider.dart';
-import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
-import 'package:foodplanner/pages/Admin_profiles.dart';
 
-class AdminLandingPage extends StatefulWidget {
-  const AdminLandingPage({super.key});
+
+class RoleSelectionPage extends StatefulWidget {
+  const RoleSelectionPage({super.key});
 
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
   @override
-  State<AdminLandingPage> createState() => _LandingPageAdminState();
+  State<RoleSelectionPage> createState() => _SelectionPageRoleState();
 }
 
-class _LandingPageAdminState extends State<AdminLandingPage> {
+class _SelectionPageRoleState extends State<RoleSelectionPage> {
   List<Map<String, String?>> students = [];
   List<Map<String, String?>> filteredStudents = [];
   List<Map<String, String>> schoolClasses = [];
@@ -44,7 +30,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
 
 
   Future<void> fetchUser() async {
-    final userInfo = await AdminLandingPage.userService.fetchLoggedInUser();
+    final userInfo = await RoleSelectionPage.userService.fetchLoggedInUser();
     setState(() {
       admin = userInfo;
     });
@@ -54,7 +40,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
       email: 'Unknown',
       firstName: 'Unknown',
       lastName: 'Unknown',
-      role: UserRoles.empty(),
+      role: 'Unknown',
       archived: false);
 
   @override
@@ -65,65 +51,37 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
 
   List<Map<String, dynamic>> get adminActions  => [
         {
-          'title': "Administrér Profiler",
+          'title': "Admin",
+          'height': 100,
+          'fontSize': 35,
           'cta': Row(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.manage_accounts),
-              SizedBox(width: 10),
-            ],
           ),
           'ctaFunction': () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const AdminProfilesPage()),
+              MaterialPageRoute(builder: (context) => const AdminLandingPage()),
             );
           }
         },
         {
-          'title': "Administrér Skole",
+          'title': "Lærer",
+          'height': 100,
+          'fontSize': 35,
           'cta': Row(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.school),
-              SizedBox(width: 10),
-            ],
-          ),
-        },
-        {
-          'title': "Indstillinger",
-          'cta': Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.settings),
-              SizedBox(width: 10),
-            ],
           ),
           'ctaFunction': () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const Settings()),
-            );
-          }
-        },
-        {
-          'title': "Skift Rolle",
-          'cta': Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.group),
-              SizedBox(width: 10),
-            ],
-          ),
-          'ctaFunction': () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const RoleSelectionPage()),
+              MaterialPageRoute(builder: (context) => const TeacherLandingPage()),
             );
           }
         },
         {
           'title': "Log ud",
+          'height': 60,
+          'borderRadius': BorderRadius.circular(50),
           'cta': Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -143,16 +101,29 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         toolbarHeight: 225,
         centerTitle: true,
         title: Padding(
           padding: const EdgeInsets.only(top: 70),
-          child: Text(
-            'Velkommen \n${admin.firstName ?? 'Admin'}',
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+          
+          Text(
+            'Velkommen!',
             style: TextStyle(fontSize: 36),
             textAlign: TextAlign.center,
-          )
+          ),
+          SizedBox(height: 5),
+          Text(
+              'Fortsæt som...',
+              style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
+          ),
+          ],
+          ),
         )
       ),
       backgroundColor: Colors.white,
@@ -172,11 +143,15 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
                       onTap: action['ctaFunction'] as VoidCallback?,
                       child: Container(
                         width: double.infinity,
-                        height: 60,
+                        height: action['height'] as double? ?? 60,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: BoxDecoration(
                           color: AppColors.background,
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: action['borderRadius'] as BorderRadius ?
+                          ?? const BorderRadius.vertical(
+                            top: Radius.circular(20),
+                            bottom: Radius.circular(20),
+                          ),
                           boxShadow: [
                             BoxShadow(
                               color: Color(0x3F000000),
@@ -191,7 +166,8 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
                           children: [
                             Text(
                               action['title'] as String,
-                              style: TextStyle(fontSize: 20)
+                              style: TextStyle(
+                                fontSize: action['fontSize'] as double? ?? 20,                                )
                             ),
                             Positioned(
                               right: 0,
