@@ -149,42 +149,6 @@ class _AdminOneProfileState extends State<AdminOneProfile> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: GestureDetector(
-                onTap: () {
-                  
-                },
-                child: Container(
-                  height: 56,
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        'Alle profiler',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      SFIcon(SFIcons.sf_chevron_forward),
-                    ],
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
