@@ -15,7 +15,7 @@ abstract class NavigationStrategy {
     NavigationService.setCurrentPage(index);
   }
 
-  List<NavigationDestination> getDestinations();
+  List<NavigationDestination> getDestinations(UserRoles role);
 
   void goToPage(String goToPage, BuildContext context) {
     for (int i = 0; i < pages.length ; i++) {

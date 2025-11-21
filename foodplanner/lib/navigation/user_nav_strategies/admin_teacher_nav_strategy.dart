@@ -7,16 +7,15 @@ import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
+import 'package:foodplanner/services/active_role_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:provider/provider.dart';
 
-class TeacherNavStrategy extends NavigationStrategy {
- 
-  final GlobalKey menuKey = GlobalKey ();
+class AdminTeacherNavStrategy extends NavigationStrategy {
 
-  List<String> _pages = [TEACHER_ROOT, CHOOSE_CHILD, SETTINGS_PAGE, LOGIN_PAGE];
+  List<String> _pages = [ADMIN_TEACHER_ROOT, CHOOSE_CHILD, SETTINGS_PAGE, LOGIN_PAGE];
 
   @override
   set pages(List<String> pages) {
@@ -33,15 +32,26 @@ class TeacherNavStrategy extends NavigationStrategy {
         super.navigate(index, context, role);
         break;
       case 3: 
+        openMenu(context);
+        break;
+    }
+    
+    NavigationService.setCurrentPage(index);
+  }
 
-        final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        await authProvider.logout();
-        context.go(LOGIN_PAGE);
-        
+  @override
+  List<NavigationDestination> getDestinations(UserRoles role){
+    return [
+      NavigationDestinationHelper.buildIconDestination(icon: Icons.home_outlined, selectedIcon: Icons.home, label: ''),
+        NavigationDestinationHelper.buildIconDestination(icon: Icons.escalator_warning_outlined, selectedIcon: Icons.escalator_warning, label: ''),
+        NavigationDestinationHelper.buildIconDestination(icon: SFIcons.sf_gearshape, label: '', selectedIcon: SFIcons.sf_gearshape_fill, isSfIcon: true),
+        NavigationDestinationHelper.buildIconDestination(icon: Icons.room_preferences, selectedIcon: Icons.room_preferences_outlined, label: ''),
+    ];
+  }
 
-        //final RenderBox renderbox = menuKey.currentContext!.findRenderObject() as Renderbox;
-        
-        showMenu<String> (
+  //alt funktionalitet for case 3 lig den herunder og kald denne funktion under case 3
+  void openMenu(BuildContext context){
+    showMenu<String> (
           context: context, 
           position: RelativeRect.fromLTRB(100, 650, 0, 0), 
           items: <PopupMenuItem<String>>[
@@ -54,13 +64,14 @@ class TeacherNavStrategy extends NavigationStrategy {
                   children: [
                     Icon(Icons.home),
                     SizedBox(height: 4),
-                    Text('Home', style: AppTextStyles.standardWithoutColor,),
+                    Text('Skift rolle', style: AppTextStyles.standardWithoutColor,),
                   ],
                   //(leading: Icon(Icons.home), title: Text('home')),
                 ),
               ),
               onTap: () => {
-                GoRouter.of(context).go(TEACHER_ROOT)
+                GoRouter.of(context).go(ADMIN_ROOT),
+                ActiveRoleService.setActiveRole(Role.admin),
               }
             ),
 
@@ -94,8 +105,10 @@ class TeacherNavStrategy extends NavigationStrategy {
                   ],
                 ),
               ),
-              onTap: () => {
-                GoRouter.of(context).go(LOGIN_PAGE)
+              onTap: () async {
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                await authProvider.logout();
+                GoRouter.of(context).go(LOGIN_PAGE);
               }
             ),
           ],
@@ -105,26 +118,6 @@ class TeacherNavStrategy extends NavigationStrategy {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8))),
         );
-        
-        break;
-    }
-    
-    NavigationService.setCurrentPage(index);
-  }
-
-  @override
-  List<NavigationDestination> getDestinations(){
-    return [
-      NavigationDestinationHelper.buildIconDestination(icon: Icons.home_outlined, selectedIcon: Icons.home, label: ''),
-      NavigationDestinationHelper.buildIconDestination(icon: Icons.escalator_warning_outlined, selectedIcon: Icons.escalator_warning, label: ''),
-      NavigationDestinationHelper.buildIconDestination(icon: SFIcons.sf_gearshape, label: '', selectedIcon: SFIcons.sf_gearshape_fill, isSfIcon: true),
-      NavigationDestinationHelper.buildIconDestination(icon: Icons.logout_outlined, selectedIcon: Icons.logout_outlined, label: ''),
-    ];
-  }
-
-  //alt funktionalitet for case 3 lig den herunder og kald denne funktion under case 3
-  void openMenu(){
-
   }
 }
 

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/navigation/admin_nav_strategy.dart';
-import 'package:foodplanner/navigation/admin_teacher_nav_strategy.dart';
-import 'package:foodplanner/navigation/parent_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/admin_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/admin_roles_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/admin_teacher_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/parent_nav_strategy.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
-import 'package:foodplanner/navigation/student_nav_strategy.dart';
-import 'package:foodplanner/navigation/teacher_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/student_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/teacher_nav_strategy.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/navigation/navigation_destination_helper.dart';
 import 'package:foodplanner/services/active_role_service.dart';
@@ -17,7 +18,10 @@ class NavBarStrategyMapper {
     debugPrint('All of the users roles: ${role.toString()}');
     
     if(activeRole == Role.teacher && role.hasAllRoles([Role.admin, Role.teacher])) {
-      throw new Exception('User has active role teacher and has roles admin and teacher. Create the business logic for what the navstrategy should look like');
+      //throw new Exception('User has active role teacher and has roles admin and teacher. Create the business logic for what the navstrategy should look like');
+      debugPrint('Returning admin teacher nav strategy');
+      return new AdminTeacherNavStrategy();
+
     }
     else if (role.hasOnlyRole(Role.teacher)) {
       debugPrint('Returning teacher nav strategy');
@@ -37,7 +41,7 @@ class NavBarStrategyMapper {
     
     } else if (role.hasAllRoles([Role.admin, Role.teacher])) {
       debugPrint('Returning admin teacher nav strategy');
-      return new AdminTeacherNavStrategy();
+      return new AdminRolesNavStrategy();
     } 
     
     else if (role.hasOnlyRole(Role.admin)) {

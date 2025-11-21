@@ -5,14 +5,14 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/routes/paths.dart'; // contains ADMIN_ROOT, TEACHER_ROOT, etc.
 
-class RoleSelectionPage extends StatefulWidget {
-  const RoleSelectionPage({super.key});
+class RoleSelectionPageOld extends StatefulWidget {
+  const RoleSelectionPageOld({super.key});
 
   @override
-  State<RoleSelectionPage> createState() => _SelectionPageRoleState();
+  State<RoleSelectionPageOld> createState() => _SelectionPageRoleState();
 }
 
-class _SelectionPageRoleState extends State<RoleSelectionPage> {
+class _SelectionPageRoleState extends State<RoleSelectionPageOld> {
   String? _selectedRole;
 
   Future<void> _selectRole(String role) async {

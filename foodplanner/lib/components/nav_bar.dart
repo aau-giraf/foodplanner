@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/navigation/admin_teacher_nav_strategy.dart';
-import 'package:foodplanner/navigation/parent_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/admin_roles_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/parent_nav_strategy.dart';
 import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
-import 'package:foodplanner/navigation/student_nav_strategy.dart';
-import 'package:foodplanner/navigation/teacher_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/student_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/teacher_nav_strategy.dart';
 import 'package:foodplanner/pages/landing_page_teacher.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
@@ -30,7 +30,7 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
     
-  final GlobalKey _teacherMenuIconKey = GlobalKey();
+  //final GlobalKey _teacherMenuIconKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _NavBarState extends State<NavBar> {
         final UserRoles role = snapshot.data!;
         final index = NavigationService.getCurrentPage();
         final navStrategy = NavBarStrategyMapper.getNavBarStrategy(role);
-        final destinations = navStrategy.getDestinations();
+        final destinations = navStrategy.getDestinations(role);
 
         return ClipRRect(
           borderRadius: const BorderRadius.only(

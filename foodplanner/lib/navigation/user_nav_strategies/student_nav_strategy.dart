@@ -21,7 +21,7 @@ class StudentUnlockedNavStrategy extends NavigationStrategy {
   List<String> get pages => _pages;
 
   @override
-  List<NavigationDestination> getDestinations(){
+  List<NavigationDestination> getDestinations(UserRoles role){
     return [
       NavigationDestinationHelper.buildIconDestination(icon: SFIcons.sf_message, selectedIcon: SFIcons.sf_message_fill, label: '', isSfIcon: true),
       NavigationDestinationHelper.buildIconDestination(icon: Icons.lunch_dining_outlined, selectedIcon: Icons.lunch_dining, label: ''),
