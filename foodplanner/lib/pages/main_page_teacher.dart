@@ -6,6 +6,7 @@ import 'package:foodplanner/components/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/choose_child_parent.dart';
+import 'package:foodplanner/pages/choose_child_teacher.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/routes/paths.dart';
@@ -71,7 +72,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
               onTap: (){
                 Navigator.push(
                   context, 
-                  MaterialPageRoute(builder: (context) => ChooseChildParent())  
+                  MaterialPageRoute(builder: (context) => ChooseChildTeacher())  
                 );
               },
               
