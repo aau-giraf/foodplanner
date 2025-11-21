@@ -1,4 +1,4 @@
-enum Role { admin, teacher, guardian, student, child, pupil }
+enum Role { admin, teacher, guardian, pupil }
 
 class UserRoles {
   final Set<Role> roles;

@@ -95,7 +95,7 @@ class LoginPageState extends State<LoginPage> {
         developer.log('Has teacher role: ${role.hasRole(Role.teacher)}');
         developer.log('Has admin role: ${role.hasRole(Role.admin)}');
 
-        if(role.hasRole(Role.student)){GoRouter.of(context).go(STUDENT_CREATE);}
+        if(role.hasRole(Role.pupil)){GoRouter.of(context).go(STUDENT_CREATE);}
         else if(role.hasRole(Role.guardian)){GoRouter.of(context).go(PARENT_ROOT);}
         else if(role.hasRole(Role.teacher)){GoRouter.of(context).go(TEACHER_ROOT);}
         else if(role.hasRole(Role.admin)){GoRouter.of(context).go(ADMIN_ROOT);}
