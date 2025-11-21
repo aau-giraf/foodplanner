@@ -28,21 +28,7 @@ class Mealboxcontent extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: CustomButton(
-                onTab: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChildLandingPageSeMadpakke()
-                    ),
-                  );
-                },
-                text: 'Se madpakke',
-                size: ButtonSize.medium,
-              ),
-            ),
+            
           ],
         );
       },

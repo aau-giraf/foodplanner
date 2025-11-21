@@ -11,6 +11,7 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/components/image.dart';
+import 'package:foodplanner/pages/food_template_page.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
@@ -39,7 +40,8 @@ class _MealFormPageState extends State<MealFormPage> {
   final TextEditingController mealNameController = TextEditingController();
   String baseUrl = ApiConfig.baseUrl;
   int mealId = 0;
-  http.MultipartFile? image;
+  bool isUploadingImage = false;
+  bool saveAsTemplate = false;
 
   @override
   void initState() {
@@ -49,6 +51,64 @@ class _MealFormPageState extends State<MealFormPage> {
     selectedIngredientsIds = retrieveSelectedIngredients();
   }
 
+  Future<void> _showImageDialog() async {
+    await showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('Vil du tilføje et billede af madpakken?'),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () async {
+              await _pickAndUploadImage();
+            },
+            child: const Text('Ja'),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Nej'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickAndUploadImage() async {
+    final image = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CameraPage(),
+      ),
+    );
+
+    if (image == null) return;
+
+    setState(() {
+      isUploadingImage = true;
+    });
+
+    try {
+      final imageResponse = await uploadFoodImage(image);
+      if (imageResponse.statusCode == 200) {
+        final int responseData =
+            int.tryParse(imageResponse.body) ?? jsonDecode(imageResponse.body);
+        setState(() {
+          foodImageId = responseData;
+        });
+      }
+    } catch (e) {
+      developer.log('Failed to upload image: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          isUploadingImage = false;
+        });
+      }
+    }
+  }
   Future<void> _initializeDate() async {
     final mealNotifier = MealNotifier();
     date = await mealNotifier.retrieveDate();
@@ -163,10 +223,98 @@ class _MealFormPageState extends State<MealFormPage> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Text('Navn på madpakke',
-                          style: AppTextStyles.headline3),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      child: CustomButton(
+                        onTab: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FoodTemplatePage(),
+                            ),
+                          );
+                        },
+                        text: "Brug Skabelon",
+                        backgroundColor: Colors.white,
+                        foregroundColor: AppColors.textPrimary,
+                        size: ButtonSize.medium,
+                        trailingIcon: SFIcon(SFIcons.sf_chevron_right),
+                      ),
                     ),
+
+
+          // Image 
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      child: GestureDetector(
+                        onTap: _showImageDialog,
+                        child: Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                width: double.infinity,
+                                height: 220,
+                                color: Colors.white,
+                                child: foodImageId == null
+                                    ? Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.image,
+                                            size: 48,
+                                            color: AppColors.textSecondary,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text('Tilføj billede',
+                                              style: AppTextStyles.mediumText),
+                                        ],
+                                      )
+                                    : FoodImage(
+                                        foodImageId: foodImageId!,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                      ),
+                              ),
+                            ),
+
+
+                            // + Icon button
+                            Positioned(
+                              right: 12,
+                              bottom: 12,
+                              child: FloatingActionButton(
+                                mini: true,
+                                backgroundColor: AppColors.primary,
+                                onPressed: isUploadingImage
+                                    ? null
+                                    : _showImageDialog,
+                                child: isUploadingImage
+                                    ? const SizedBox(
+                                        width: 16,
+                                        height: 16,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : SFIcon(SFIcons.sf_plus),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                         Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Text('Navn på madpakke',
+                          style: AppTextStyles.headline4),
+                    ),
+                
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: CustomTextField(
@@ -177,8 +325,21 @@ class _MealFormPageState extends State<MealFormPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 50), // Spacer for vertical layout.
+                    const SizedBox(height: 30),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Ingredienser',
+                          style: AppTextStyles.headline4,
+                        ),
+                      ),
+                    ),
 
+
+
+                  
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20),
                       child: ListView.builder(
@@ -186,6 +347,7 @@ class _MealFormPageState extends State<MealFormPage> {
                         physics: NeverScrollableScrollPhysics(),
                         itemCount: selectedIngredients.length,
                         itemBuilder: (BuildContext context, index) {
+                        
                           final ingredient = selectedIngredients[index];
                           return SettingsWidget(
                             leftWidget: FoodImage(
@@ -200,6 +362,9 @@ class _MealFormPageState extends State<MealFormPage> {
                         },
                       ),
                     ),
+
+                      
+
 
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -228,11 +393,56 @@ class _MealFormPageState extends State<MealFormPage> {
                             });
                           }
                         },
-                        text: 'Tilføj ingredienser',
+                        text: 'Fjern eller tilføj ingredienser',
+                        trailingIcon: SFIcon(SFIcons.sf_chevron_right),
                         size: ButtonSize.medium,
+                        backgroundColor: Colors.white,
+                        foregroundColor: AppColors.textPrimary,
                       ),
                     ),
+
+
+
                     SizedBox(height: 20),
+
+                    // Skabelon switch
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Gem som skabelon',
+                                    style: AppTextStyles.headline4),
+                                const SizedBox(height: 4),
+                                Text('Gem madpakken til senere brug',
+                                    style: AppTextStyles.mediumText),
+                              ],
+                            ),
+                        
+                            CupertinoSwitch(
+                              value: saveAsTemplate,
+                              onChanged: (value) {
+                                setState(() {
+                                  saveAsTemplate = value;
+                                });
+                              },
+                              activeColor: AppColors.primary, // mAYBE  green is better?
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20), 
                   ],
                 ),
               ),
@@ -240,59 +450,9 @@ class _MealFormPageState extends State<MealFormPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: CustomButton(
-                onTab: () {
-                  showCupertinoDialog(
-                    context: context,
-                    builder: (BuildContext context) => CupertinoAlertDialog(
-                      title: Text(
-                          'Vil du tilføje et billede af madpakken?'), // Title of the dialog.
-                      actions: <CupertinoDialogAction>[
-                        CupertinoDialogAction(
-                          isDefaultAction:
-                              true, // Highlight the default action.
-                          onPressed: () async {
-                            final image = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CameraPage(),
-                              ),
-                            );
-                            if (image != null) {
-                              final imageResponse = await uploadFoodImage(
-                                  image); // Ensure this method is defined.
-                              final int responseData =
-                                  jsonDecode(imageResponse.body);
-                              setState(() {
-                                foodImageId = responseData;
-                              });
-                            }
-                            createMealWithIngredients();
-                            if (!context.mounted){
-                              developer.log('buildcontext was unmounted in $runtimeType');
-                              return;
-                            }
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          },
-                          child: const Text("Ja"), // Button text for "Yes".
-                        ),
-                        CupertinoDialogAction(
-                          isDestructiveAction:
-                              true, // Mark as a destructive action.
-                          onPressed: () async {
-                            await createMealWithIngredients();
-                            if (!context.mounted){
-                              developer.log('buildcontext was unmounted in $runtimeType');
-                              return;
-                            }
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Nej'), // Button text for "No".
-                        ),
-                      ],
-                    ),
-                  );
+                onTab: () async {
+                  await createMealWithIngredients();
+                  Navigator.pop(context);
                 },
                 text: 'Opret madpakke',
                 size: ButtonSize.medium,
