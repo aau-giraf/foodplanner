@@ -19,6 +19,8 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/routes/paths.dart';
+import 'package:foodplanner/models/user_roles.dart';
+import 'package:flutter_sficon/flutter_sficon.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -46,6 +48,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
       lastName: 'Unknown',
       classId: 0);
 
+  IconData? icon;
   bool isEditingFirstName = false;
   bool isEditingLastName = false;
   bool isEditingEmail = false;
@@ -623,24 +626,34 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
-      /*appBar: AppBar(
-        title: const Text(
-          'Indstillinger',
-          style: AppTextStyles.headline2,
-        ),
-        backgroundColor: Colors.white,
-        scrolledUnderElevation: 0,
-      ),*/
       appBar: AppBar(
         backgroundColor: Colors.white,
         toolbarHeight: 200,
         centerTitle: true,
         title: Padding(
           padding: const EdgeInsets.only(top: 25),
-          child: Text(
-            'Indstillinger (mangler icon)',
+          /*child: Text(
+            'Indstillinger',
             style: TextStyle(fontSize: 36),
             textAlign: TextAlign.center,
+          ),*/
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'Indstillinger',
+                style: TextStyle(fontSize: 36),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 8),
+              Icon(
+                Icons.settings_outlined,
+                color: AppColors.textPrimary,
+                size: 32.0,
+                semanticLabel: 'Settings',
+              ),
+            ],
           ),
         ),
       ),
@@ -753,8 +766,14 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                 child: CustomButton(
                   text: "Log ud",
                   onTab: () async {
-                    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                    final authProvider =
+                        Provider.of<AuthProvider>(context, listen: false);
                     await authProvider.logout();
+                    if (!context.mounted){
+                      print('buildcontext was unmounted in $runtimeType');
+                      return;
+                    }
+
                     context.go(LOGIN_PAGE);
                   },
                   foregroundColor: AppColors.textFieldBorderFocus,
