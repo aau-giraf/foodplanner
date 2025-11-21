@@ -26,10 +26,10 @@ class TeacherNavStrategy extends NavigationStrategy {
   List<String> get pages => _pages;
 
   @override
-  void navigate(int index, BuildContext context, UserRoles role) async {
+  void navigate(int index, BuildContext context) async {
     switch(index) {
       case 0 || 1 || 2:
-        super.navigate(index, context, role);
+        super.navigate(index, context);
         break;
       case 3: 
         final authProvider = Provider.of<AuthProvider>(context, listen: false);

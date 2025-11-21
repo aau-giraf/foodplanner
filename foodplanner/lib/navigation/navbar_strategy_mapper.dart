@@ -14,6 +14,7 @@ import 'package:foodplanner/services/active_role_service.dart';
 class NavBarStrategyMapper {
   static NavigationStrategy getNavBarStrategy(UserRoles role) {  
     var activeRole = ActiveRoleService.activeRole;
+    
     debugPrint('Users active role is ${activeRole.toString()}');
     debugPrint('All of the users roles: ${role.toString()}');
     

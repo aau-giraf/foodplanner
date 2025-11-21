@@ -8,7 +8,7 @@ abstract class NavigationStrategy {
   
   List<String> pages = [];
   
-  void navigate(int index, BuildContext context, UserRoles role) {
+  void navigate(int index, BuildContext context) {
     String goToPage = pages[index];
     GoRouter.of(context).go(goToPage);
 

@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 
 class AdminNavStrategy extends NavigationStrategy {
 
-  List<String> _pages = [ADMIN_ROOT, SETTINGS_PAGE, LOGIN_PAGE];
+  List<String> _pages = [ADMIN_ROOT, ADMIN_PROFILES_PAGE, ADMIN_SCHOOL, SETTINGS_PAGE];
 
   @override
   set pages(List<String> pages) {
@@ -25,10 +25,10 @@ class AdminNavStrategy extends NavigationStrategy {
   List<String> get pages => _pages;
 
   @override
-  void navigate(int index, BuildContext context, UserRoles role){
+  void navigate(int index, BuildContext context){
     switch(index) {
       case 0 || 1 || 2 || 3:
-        super.navigate(index, context, role);
+        super.navigate(index, context);
         break;
       case 4:
         openMenu(context);
@@ -63,7 +63,7 @@ class AdminNavStrategy extends NavigationStrategy {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(Icons.room_preferences),
+                    Icon(Icons.group),
                     SizedBox(height: 4),
                     Text('Skift rolle', style: AppTextStyles.standardWithoutColor,),
                   ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/components/text_field.dart';
@@ -276,6 +277,7 @@ class _SchoolClasses extends State<SchoolClasses> {
           ],
         ),
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }

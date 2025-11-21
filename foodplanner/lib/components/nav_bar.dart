@@ -8,7 +8,7 @@ import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/navigation/user_nav_strategies/student_nav_strategy.dart';
 import 'package:foodplanner/navigation/user_nav_strategies/teacher_nav_strategy.dart';
-import 'package:foodplanner/pages/landing_page_teacher.dart';
+import 'package:foodplanner/pages/main_page_admin_teacher.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
@@ -64,7 +64,7 @@ class _NavBarState extends State<NavBar> {
                 setState(() {
                   widget.currentPageIndex = index;
                 });
-                navStrategy.navigate(index, context, role);
+                navStrategy.navigate(index, context);
               },
               destinations: destinations,
             ),

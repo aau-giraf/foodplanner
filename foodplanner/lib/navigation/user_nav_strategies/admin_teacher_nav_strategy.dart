@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 
 class AdminTeacherNavStrategy extends NavigationStrategy {
 
-  List<String> _pages = [ADMIN_TEACHER_ROOT, CHOOSE_CHILD, SETTINGS_PAGE, LOGIN_PAGE];
+  List<String> _pages = [ADMIN_TEACHER_ROOT, CHOOSE_CHILD, SETTINGS_PAGE];
 
   @override
   set pages(List<String> pages) {
@@ -26,10 +26,10 @@ class AdminTeacherNavStrategy extends NavigationStrategy {
   List<String> get pages => _pages;
 
   @override
-  void navigate(int index, BuildContext context, UserRoles role) async {
+  void navigate(int index, BuildContext context) async {
     switch(index) {
       case 0|| 1 || 2:
-        super.navigate(index, context, role);
+        super.navigate(index, context);
         break;
       case 3: 
         openMenu(context);
@@ -62,7 +62,7 @@ class AdminTeacherNavStrategy extends NavigationStrategy {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(Icons.home),
+                    Icon(Icons.group),
                     SizedBox(height: 4),
                     Text('Skift rolle', style: AppTextStyles.standardWithoutColor,),
                   ],

@@ -1,30 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/components/search_field.dart';
-import 'package:foodplanner/components/settings_widget.dart';
-
 import 'package:foodplanner/models/user_roles.dart';
-import 'package:foodplanner/pages/Change_Roll.dart';
-import 'package:foodplanner/pages/change_role_page.dart';
-
-//import 'package:foodplanner/pages/change_role_page.dart';
-
+import 'package:foodplanner/routes/paths.dart';
 import 'package:go_router/go_router.dart';
-import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/components/Custom_List_Item.dart';
-import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user.dart' as model;
 import 'package:foodplanner/services/user_service.dart';
-import 'package:foodplanner/pages/settings/admin_approve_page.dart';
-import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:provider/provider.dart';
-import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
-import 'package:foodplanner/pages/Admin_profiles.dart';
 
 class AdminLandingPage extends StatefulWidget {
   const AdminLandingPage({super.key});
@@ -75,10 +60,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
             ],
           ),
           'ctaFunction': () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AdminProfilesPage()),
-            );
+            GoRouter.of(context).go(ADMIN_PROFILES_PAGE);
           }
         },
         {
@@ -101,10 +83,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
             ],
           ),
           'ctaFunction': () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Settings()),
-            );
+            GoRouter.of(context).go(SETTINGS_PAGE);
           }
         },
         {
@@ -117,10 +96,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
             ],
           ),
           'ctaFunction': () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const RoleSelectionPage()),
-            );
+            GoRouter.of(context).go(ADMIN_ROLES_ROOT);
           }
         },
         {

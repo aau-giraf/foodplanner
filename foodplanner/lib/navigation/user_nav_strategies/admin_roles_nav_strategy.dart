@@ -22,10 +22,10 @@ class AdminRolesNavStrategy extends NavigationStrategy {
   List<String> get pages => _pages;
 
   @override
-  void navigate(int index, BuildContext context, UserRoles? role) async{
+  void navigate(int index, BuildContext context) async{
     switch(index) {
       case 0 || 1:
-        navigate(index, context, role);
+        navigate(index, context);
       case 2:
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
         await authProvider.logout();

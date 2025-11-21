@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/pages/main_page_admin.dart';
-import 'package:foodplanner/pages/landing_page_teacher.dart';
+import 'package:foodplanner/pages/main_page_admin_teacher.dart';
 import 'package:foodplanner/pages/main_page_parent.dart';
 import 'package:foodplanner/pages/main_page_teacher.dart';
+import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/active_role_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -74,7 +75,7 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
           ),
           'ctaFunction': () {
             ActiveRoleService.setActiveRole(Role.admin); 
-            context.go('/admin');
+            context.go(ADMIN_ROOT);
             /*Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const AdminLandingPage()),
@@ -90,7 +91,7 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
           ),
           'ctaFunction': () {
             ActiveRoleService.setActiveRole(Role.teacher);
-            context.go('/admin_teacher');
+            context.go(ADMIN_TEACHER_ROOT);
             /*Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const TeacherMainPage()),

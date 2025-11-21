@@ -5,6 +5,10 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/user_roles.dart';
+import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
+import 'package:foodplanner/navigation/navigation_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/parent_nav_strategy.dart';
 import 'package:foodplanner/pages/choose_child_parent.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
@@ -29,6 +33,8 @@ class ParentMainPage extends StatefulWidget {
 class ParentMainPageState extends State<ParentMainPage> {
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   dynamic _user;
+
+  final nav = ParentNavStrategy();
 
   @override
   void initState() {
@@ -74,10 +80,7 @@ class ParentMainPageState extends State<ParentMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChooseChildParent())  
-                );
+                GoRouter.of(context).go(CHOOSE_CHILD_PARENT);
               },
               
               child: Container(
@@ -121,11 +124,8 @@ class ParentMainPageState extends State<ParentMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                GoRouter.of(context).go(SETTINGS_PAGE);
-                /*Navigator.push(
-                  context, 
-                  //MaterialPageRoute(builder: (context) => Settings())  
-                ); */
+                nav.navigate(2, context);
+                //GoRouter.of(context).go(SETTINGS_PAGE);
               },
               child: Container(
                 height: 59,

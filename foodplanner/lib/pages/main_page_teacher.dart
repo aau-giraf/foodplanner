@@ -5,11 +5,13 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/navigation/navigation_service.dart';
-import 'package:foodplanner/pages/choose_child_parent.dart';
+import 'package:foodplanner/pages/choose_child_teacher.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/routes/paths.dart';
+import 'package:foodplanner/services/active_role_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +29,10 @@ class TeacherMainPage extends StatefulWidget {
 
 class TeacherMainPageState extends State<TeacherMainPage> {
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
+  //late User _user;
   dynamic _user;
+
+  //var activeRole = ActiveRoleService.activeRole;
 
   @override
   void initState() {
@@ -73,10 +78,11 @@ class TeacherMainPageState extends State<TeacherMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                Navigator.push(
+                GoRouter.of(context).go(CHOOSE_CHILD_TEACHER);
+                /*Navigator.push(
                   context, 
-                  MaterialPageRoute(builder: (context) => ChooseChildParent())  
-                );
+                  MaterialPageRoute(builder: (context) => ChooseChildTeacher())  
+                );*/
               },
               
               child: Container(
@@ -119,10 +125,11 @@ class TeacherMainPageState extends State<TeacherMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                Navigator.push(
+                GoRouter.of(context).go(SETTINGS_PAGE);
+                /*Navigator.push(
                   context, 
                   MaterialPageRoute(builder: (context) => Settings())  
-                );
+                );*/
               },
               child: Container(
                 height: 59,
@@ -159,6 +166,51 @@ class TeacherMainPageState extends State<TeacherMainPage> {
                 ),
               ),
             ),
+
+            /*
+            if(activeRole == Role.teacher && _user.hasAllRoles([Role.admin, Role.teacher])) ...[
+              SizedBox(height: 30),
+              InkWell(
+              hoverColor: Colors.transparent,
+              onTap: () async {
+                GoRouter.of(context).go(ADMIN_ROOT);
+              },
+              child: Container(
+                height: 59,
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow:[
+                    BoxShadow(
+                      color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 4),
+                      spreadRadius: 0,
+                    )
+                  ]
+                ),
+                padding: const EdgeInsets.all(15),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Text(
+                      'Skift rolle',
+                      style: TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center
+                    ),
+                    const Positioned(
+                      right: 19,
+                      child: Icon(
+                        Icons.group,
+                      ),
+                    ),
+                  ]
+                ),
+              ),
+            ),
+          ],*/
 
             SizedBox(height: 30),
             InkWell(
