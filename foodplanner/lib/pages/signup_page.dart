@@ -9,7 +9,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:foodplanner/services/user_service.dart';
@@ -255,42 +255,34 @@ class _SignupState extends State<SignupPage> {
           ),
         );
         try {
-          final role =
-              await LoginPage.authService.fetchAuthData(email, password);
-          switch (role) {
-            case ROLES.student:
-            if(context.mounted){
+          final role = await LoginPage.authService.fetchAuthData(email, password);
+          
+          if (!context.mounted) {
+            developer.log('Context was unmounted after fetchAuthData in $runtimeType');
+            return;
+          }
+          
+
+        if(role.hasRole(Role.student)){GoRouter.of(context).go(STUDENT_CREATE);}
+        else if(role.hasRole(Role.guardian)){GoRouter.of(context).go('/signup/create-child');}
+        else {GoRouter.of(context).go(UNAUTHORIZED);}
+
+/*           switch (role) {
+            case Role.student:
               GoRouter.of(context).go(STUDENT_CREATE);
               break;
-            }
+            case Role.parent:  // Add parent case
+              GoRouter.of(context).go('/signup/create-child');
+              break;
             default:
               GoRouter.of(context).go(UNAUTHORIZED);
               break;
-          }
+          } */
         } catch (e) {
-          if (e is AuthException) {
-            handleErrors({
-              'Message': [e.message]
-            });
-            if(context.mounted){
-              ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Fejl ved login af bruger: ${e.message}'),
-                backgroundColor: Colors.red,
-                duration: Duration(seconds: 5),
-              ),
-            );
-            }else{developer.log("Context was unmounted when trying to display error message in snackbar");}
-          } else {
-            if(context.mounted){
-              if (role.first == 'Parent') {
-                context.go('/signup/create-child');
-              } else {
-                context.go('/');
-              }
-            }else{developer.log("Context was unmounted when trying to reload page due to error");}
-          }
-        }
+          if (!context.mounted) {
+            developer.log('Context was unmounted during error handling in $runtimeType');
+            return;
+          }}
       } else {
         var error = jsonDecode(response.body);
         handleErrors(error);

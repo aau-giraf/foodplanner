@@ -8,7 +8,7 @@ import 'package:foodplanner/models/pupil.dart';
 
 import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
@@ -30,7 +30,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
   late Future<bool> _hasRolesFuture;
   Pupil? _pupil;
   final PupilService pupilService = PupilService(apiUrl: ApiConfig.baseUrl);
-  ROLES? userRole;
+  UserRoles? userRole;
   Future<void>? _callerFuture;
 
   @override
@@ -45,16 +45,16 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
     setState(() {
       userRole = role;
       _hasRolesFuture =
-          authProvider.hasRoles([ROLES.guardian, ROLES.student, ROLES.teacher]);
+          authProvider.hasOneOfRoles([Role.guardian, Role.student, Role.teacher]);
     });
 
-    if (authProvider.userRole == ROLES.student ||
-        authProvider.userRole == ROLES.guardian) {
+    if (authProvider.userRole == Role.student ||
+        authProvider.userRole == Role.guardian) {
       final childData = await pupilService.fetchPupilById();
       setState(() {
         _pupil = childData;
       });
-    } else if (authProvider.userRole == ROLES.teacher) {
+    } else if (authProvider.userRole == Role.teacher) {
       int tempChildId = int.parse(widget.pupil['id']!);
       final childData = await pupilService.getByPupilId(tempChildId);
       setState(() {
@@ -76,7 +76,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: userRole == ROLES.teacher || userRole == ROLES.admin
+        leading: userRole == Role.teacher || userRole == Role.admin
             ? IconButton(
                 onPressed: () {
                   GoRouter.of(context).go(TEACHER_ROOT);
@@ -89,7 +89,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
           style: AppTextStyles.headline4,
         ),
         centerTitle: true,
-        actions: userRole != ROLES.teacher && userRole != ROLES.admin
+        actions: userRole != Role.teacher && userRole != Role.admin
             ? [
                 IconButton(
                   onPressed: () {
@@ -127,7 +127,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
                     ),
                   ), // Use the reusable widget
                   SizedBox(height: 20),
-                  if (userRole == ROLES.teacher || userRole == ROLES.admin)
+                  if ((userRole?.hasRole(Role.teacher) ?? false) || (userRole?.hasRole(Role.admin) ?? false))
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: CustomButton(

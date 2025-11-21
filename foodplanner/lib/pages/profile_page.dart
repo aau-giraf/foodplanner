@@ -8,7 +8,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/user.dart';
-import 'package:foodplanner/routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
@@ -39,7 +39,7 @@ class GuardianProfileState extends State<GuardianProfile>
       email: 'Unknown',
       firstName: 'Unknown',
       lastName: 'Unknown',
-      role: 'Unknown',
+      role: UserRoles.empty(),
       archived: false);
 
   Pupil pupil = Pupil(
@@ -66,14 +66,14 @@ class GuardianProfileState extends State<GuardianProfile>
   String updatedPassword = '';
   String updatedPincode = '';
 
-  ROLES? userRole;
+  UserRoles? userRole;
 
   @override
   void initState() {
     super.initState();
 
     AuthProvider().retrieveRole().then((role) {
-      if (role == ROLES.teacher || role == ROLES.admin) {
+      if ((role?.hasRole(Role.teacher) ?? false) || (role?.hasRole(Role.admin) ?? false)) {
         fetchAdminAndTeacher();
       } else {
         fetchGuardianAndPupil();
@@ -159,7 +159,7 @@ class GuardianProfileState extends State<GuardianProfile>
   }
 
   Future<void> resetPage() async {
-    if (userRole == ROLES.guardian) {
+    if ((userRole?.hasRole(Role.guardian) ?? false)) {
       await fetchGuardianAndPupil();
       setState(() {
         isEditingFirstName = false;
@@ -169,7 +169,7 @@ class GuardianProfileState extends State<GuardianProfile>
         isEditingPincode = false;
         hasChanges = false;
       });
-    } else if (userRole == ROLES.teacher || userRole == ROLES.admin) {
+    } else if ((userRole?.hasRole(Role.teacher) ?? false) || (userRole?.hasRole(Role.admin) ?? false)) {
       await fetchAdminAndTeacher();
       setState(() {
         isEditingFirstName = false;
@@ -467,7 +467,7 @@ class GuardianProfileState extends State<GuardianProfile>
           ),
           'showSpacer': false,
         },
-        if (userRole == ROLES.guardian)
+        if (userRole?.hasRole(Role.guardian) ?? false)
           {
             'title': 'Barn',
             'isEditable': false,

@@ -19,11 +19,13 @@ import 'package:http/http.dart';
 class AddIngredientPage extends StatefulWidget {
   final IngredientServices? ingredientServices;
   final AuthProvider? authProvider;
+  final List<Map<String, dynamic>>? preSelectedIngredients;
 
   const AddIngredientPage({
     super.key,
     this.ingredientServices,
     this.authProvider,
+    this.preSelectedIngredients,
   });
 
   @override
@@ -73,7 +75,9 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
           if (_controllersById.containsKey(id)) {
             newControllers[id] = _controllersById[id]!;
           } else {
-            newControllers[id] = ValueNotifier<bool>(false);
+            // Check if this ingredient is preselected
+            final isPreSelected = widget.preSelectedIngredients?.any((selected) => selected['id'] == id) ?? false;
+            newControllers[id] = ValueNotifier<bool>(isPreSelected);
           }
         }
         // Dispose any controllers that no longer correspond to an ingredient
@@ -133,7 +137,9 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
   Future<void> _deleteIngredient(int index) async {
      try {
     final messenger = ScaffoldMessenger.of(context);
-    final id = _ingredients[index]["id"];
+    // Get the ingredient from the filtered list
+    final filteredItem = _filteredIngredients[index];
+    final id = filteredItem["id"] as int;
     final authProvider = AuthProvider();
     final response = await ingredientServices.deleteIngredient(client!, authProvider, id);
     
@@ -158,13 +164,12 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     } else {
       // Success - remove from list
       setState(() {
-        final id = _ingredients[index]['id'];
         if (_controllersById.containsKey(id)) {
           _controllersById[id]?.dispose();
           _controllersById.remove(id);
         }
 
-        _ingredients.removeAt(index);
+        _ingredients.removeWhere((ing) => ing['id'] == id);
         _filteredIngredients.removeWhere((ing) => ing['id'] == id);
       });
     }
@@ -289,7 +294,11 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                 final filteredItem = _filteredIngredients[index];
                 final id = filteredItem['id'];
                 // Ensure a stable controller exists for this id (create if missing)
-                final controller = _controllersById.putIfAbsent(id, () => ValueNotifier<bool>(false));
+                final controller = _controllersById.putIfAbsent(id, () {
+                  // Checking if this ingredient is preselected
+                  final isPreSelected = widget.preSelectedIngredients?.any((selected) => selected['id'] == id) ?? false;
+                  return ValueNotifier<bool>(isPreSelected);
+                });
 
                 return SettingsWidget(
                   key: ValueKey(id),

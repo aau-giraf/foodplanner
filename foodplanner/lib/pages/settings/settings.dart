@@ -11,9 +11,9 @@ import 'package:flutter_advanced_segment/flutter_advanced_segment.dart';
 import 'package:foodplanner/pages/settings/administrate_pupils.dart';
 import 'package:foodplanner/pages/settings/admin_approve_page.dart';
 import 'package:foodplanner/pages/settings/school_classes.dart';
-import 'package:foodplanner/routes/user_roles.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
+import 'package:foodplanner/models/user_roles.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -191,7 +191,7 @@ class _SettingsPage extends State<Settings> {
                 ),
               ),
               SizedBox(height: 10),
-              if (authProvider.hasRole([ROLES.admin]))
+              if (authProvider.userRole?.hasRole(Role.admin) ?? false)
                 Card(
                   elevation: 2,
                   color: AppColors.background,

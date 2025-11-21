@@ -11,7 +11,7 @@ import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'signup_page.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:go_router/go_router.dart';
-import '../routes/user_roles.dart';
+import 'package:foodplanner/models/user_roles.dart';
 
 //test push
 class LoginPage extends StatefulWidget {
@@ -89,23 +89,17 @@ class LoginPageState extends State<LoginPage> {
         return;
       }
 
-      switch (role) {
-        case ROLES.teacher:
-          GoRouter.of(context).go(TEACHER_ROOT);
-          break;
-        case ROLES.student:
-          GoRouter.of(context).go(STUDENT_ROOT);
-          break;
-        case ROLES.admin:
-          GoRouter.of(context).go(ADMIN_ROOT);
-          break;
-        case ROLES.guardian:
-          GoRouter.of(context).go(PARENT_ROOT);
-          break;
-        default:
-          GoRouter.of(context).go(LOGIN_PAGE);
-          break;
-      }
+        developer.log('Login successful, role data: $role');
+        developer.log('Has student role: ${role.hasRole(Role.pupil)}');
+        developer.log('Has parent role: ${role.hasRole(Role.guardian)}');
+        developer.log('Has teacher role: ${role.hasRole(Role.teacher)}');
+        developer.log('Has admin role: ${role.hasRole(Role.admin)}');
+
+        if(role.hasRole(Role.student)){GoRouter.of(context).go(STUDENT_CREATE);}
+        else if(role.hasRole(Role.guardian)){GoRouter.of(context).go(PARENT_ROOT);}
+        else if(role.hasRole(Role.teacher)){GoRouter.of(context).go(TEACHER_ROOT);}
+        else if(role.hasRole(Role.admin)){GoRouter.of(context).go(ADMIN_ROOT);}
+        else {GoRouter.of(context).go(LOGIN_PAGE);}
 
   }
     catch (e) {
