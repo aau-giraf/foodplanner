@@ -57,7 +57,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
         title: Padding(
           padding: const EdgeInsets.only(top: 70),
           child: Text(
-            'Velkommen \n${_user?.firstName ?? 'Lærer'}',
+            'Velkommen \n${_user?.firstName}',
             style: TextStyle(fontSize: 36),
             textAlign: TextAlign.center,
           )
@@ -65,7 +65,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
       ),
       backgroundColor: Colors.white,
       
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(vertical: 181),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -82,7 +82,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
               child: Container(
                 height: 59,
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: AppColors.background,
                   borderRadius: BorderRadius.circular(30),
@@ -100,7 +100,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
                   alignment: Alignment.center,
                   children: [
                     const Text(
-                      'Vælg barn',
+                      'Vælg elev',
                       style: TextStyle(fontSize: 20),
                       textAlign: TextAlign.center
                     ),
@@ -127,7 +127,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
               child: Container(
                 height: 59,
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: AppColors.background,
                   borderRadius: BorderRadius.circular(30),
@@ -171,7 +171,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
               child: Container(
                 height: 59,
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: AppColors.background,
                   borderRadius: BorderRadius.circular(30),

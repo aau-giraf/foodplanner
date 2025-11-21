@@ -58,7 +58,7 @@ class ParentMainPageState extends State<ParentMainPage> {
         title: Padding(
           padding: const EdgeInsets.only(top: 70),
           child: Text(
-            'Velkommen \n${_user?.firstName ?? 'Forældre'}',
+            'Velkommen \n${_user?.firstName}',
             style: TextStyle(fontSize: 36),
             textAlign: TextAlign.center,
           )
@@ -66,7 +66,7 @@ class ParentMainPageState extends State<ParentMainPage> {
       ),
       backgroundColor: Colors.white,
       
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(vertical: 181),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -83,7 +83,7 @@ class ParentMainPageState extends State<ParentMainPage> {
               child: Container(
                 height: 59,
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: AppColors.background,
 
@@ -130,7 +130,7 @@ class ParentMainPageState extends State<ParentMainPage> {
               child: Container(
                 height: 59,
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: AppColors.background,
                   borderRadius: BorderRadius.circular(30),
@@ -174,7 +174,7 @@ class ParentMainPageState extends State<ParentMainPage> {
               child: Container(
                 height: 59,
                 width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: AppColors.background,
                   borderRadius: BorderRadius.circular(30),
