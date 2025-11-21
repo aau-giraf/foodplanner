@@ -90,8 +90,8 @@ class AdministratePupilsState extends State<AdministratePupils>
               context,
               MaterialPageRoute(
                 builder: (context) => PupilProfile(
-                  child: pupil,
-                  onChildChanged: fetchPupils,
+                  pupil: pupil,
+                  onPupilChanged: fetchPupils,
                 ),
               ),
             ).then((_) {

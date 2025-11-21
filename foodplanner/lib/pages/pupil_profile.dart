@@ -17,9 +17,9 @@ import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user_roles.dart';
 
 class PupilProfile extends StatefulWidget {
-  final Pupil child;
-  final VoidCallback? onChildChanged;
-  const PupilProfile({super.key, required this.child, this.onChildChanged});
+  final Pupil pupil;
+  final VoidCallback? onPupilChanged;
+  const PupilProfile({super.key, required this.pupil, this.onPupilChanged});
 
   static final PupilService childService =
       PupilService(apiUrl: ApiConfig.baseUrl);
@@ -68,17 +68,17 @@ class PupilProfileState extends State<PupilProfile>
     super.initState();
 
     firstNameController.text =
-        TextEditingController(text: widget.child.firstName).text;
+        TextEditingController(text: widget.pupil.firstName).text;
     lastNameController.text =
-        TextEditingController(text: widget.child.lastName).text;
-    updatedFirstName = widget.child.firstName;
-    updatedLastName = widget.child.lastName;
-    selectedClassId = widget.child.classId.toString();
-    initialClassId = widget.child.classId.toString();
+        TextEditingController(text: widget.pupil.lastName).text;
+    updatedFirstName = widget.pupil.firstName;
+    updatedLastName = widget.pupil.lastName;
+    selectedClassId = widget.pupil.classId.toString();
+    initialClassId = widget.pupil.classId.toString();
     fetchGuardian();
     selectedGuardian = guardian;
-    selectedGuardianId = widget.child.parentId;
-    initialGuardianId = widget.child.parentId;
+    selectedGuardianId = widget.pupil.guardianId;
+    initialGuardianId = widget.pupil.guardianId;
 
     PupilProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
@@ -90,7 +90,7 @@ class PupilProfileState extends State<PupilProfile>
   }
 
   void fetchGuardian() {
-    PupilProfile.userService.fetchUser(widget.child.parentId).then((result) {
+    PupilProfile.userService.fetchUser(widget.pupil.guardianId).then((result) {
       setState(() {
         guardian = result;
         selectedGuardian = result;
@@ -142,7 +142,7 @@ class PupilProfileState extends State<PupilProfile>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              widget.child.firstName,
+                              widget.pupil.firstName,
                               style: AppTextStyles.bigText,
                             ),
                           ],
@@ -158,7 +158,7 @@ class PupilProfileState extends State<PupilProfile>
                     if (isEditingFirstName) {
                       setState(() {
                         isEditingFirstName = false;
-                        firstNameController.text = widget.child.firstName;
+                        firstNameController.text = widget.pupil.firstName;
                         if (!isEditingLastName &&
                             !isEditingClass &&
                             !classChanges) {
@@ -204,7 +204,7 @@ class PupilProfileState extends State<PupilProfile>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              widget.child.lastName,
+                              widget.pupil.lastName,
                               style: AppTextStyles.bigText,
                             ),
                           ],
@@ -220,7 +220,7 @@ class PupilProfileState extends State<PupilProfile>
                     if (isEditingLastName) {
                       setState(() {
                         isEditingLastName = false;
-                        lastNameController.text = widget.child.lastName;
+                        lastNameController.text = widget.pupil.lastName;
                         if (!isEditingFirstName &&
                             !isEditingLastName &&
                             !isEditingClass &&
@@ -355,7 +355,7 @@ class PupilProfileState extends State<PupilProfile>
               ),
             ),
           ),
-          'value': getClassName(widget.child.classId),
+          'value': getClassName(widget.pupil.classId),
         },
         {
           'title': 'Forældre',
@@ -388,8 +388,8 @@ class PupilProfileState extends State<PupilProfile>
                 context,
                 MaterialPageRoute(
                     builder: (context) => ChooseGuardian(
-                          pupil: widget.child,
-                          onPupilChanged: widget.onChildChanged,
+                          pupil: widget.pupil,
+                          onPupilChanged: widget.onPupilChanged,
                         )));
             if (selectedGuardianId != null) {
               final selectedGuardian =
@@ -437,9 +437,9 @@ class PupilProfileState extends State<PupilProfile>
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: SettingsWidget(
               leftIcon: SFIcons.sf_figure_and_child_holdinghands,
-              title: '${widget.child.firstName}s',
+              title: '${widget.pupil.firstName}s',
               subTitle:
-                  'Her kan du redigere ${widget.child.firstName}s profil og klasse. ',
+                  'Her kan du redigere ${widget.pupil.firstName}s profil og klasse. ',
               type: SettingsType.header,
             ),
           ),
@@ -503,14 +503,14 @@ class PupilProfileState extends State<PupilProfile>
                       final navigator = Navigator.of(context); 
                       PupilProfile.childService
                           .updatePupil(
-                              widget.child.childId,
+                              widget.pupil.pupilId,
                               updatedFirstName.isNotEmpty
                                   ? updatedFirstName
-                                  : widget.child.firstName,
+                                  : widget.pupil.firstName,
                               updatedLastName.isNotEmpty
                                   ? updatedLastName
-                                  : widget.child.lastName,
-                              selectedGuardianId ?? widget.child.parentId,
+                                  : widget.pupil.lastName,
+                              selectedGuardianId ?? widget.pupil.guardianId,
                               int.parse(selectedClassId!))
                           .then((response) {
 
@@ -535,8 +535,8 @@ class PupilProfileState extends State<PupilProfile>
                         selectedClassId = initialClassId;
                         selectedGuardianId = initialGuardianId;
                         selectedGuardian = guardian;
-                        firstNameController.text = widget.child.firstName;
-                        lastNameController.text = widget.child.lastName;
+                        firstNameController.text = widget.pupil.firstName;
+                        lastNameController.text = widget.pupil.lastName;
                       }),
                     },
                     backgroundColor: Colors.white,

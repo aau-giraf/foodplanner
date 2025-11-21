@@ -1,15 +1,15 @@
 class Pupil {
-  final int childId;
+  final int pupilId;
   final String firstName;
   final String lastName;
-  final int parentId;
+  final int guardianId;
   final int classId;
 
   const Pupil({
-    required this.childId,
+    required this.pupilId,
     required this.firstName,
     required this.lastName,
-    required this.parentId,
+    required this.guardianId,
     required this.classId,
   });
 
@@ -19,14 +19,14 @@ class Pupil {
         'childId': int childId,
         'firstName': String firstName,
         'lastName': String lastName,
-        'parentId': int parentId,
+        'parentId': int guardianId,
         'classId': int classId,
       } =>
         Pupil(
-          childId: childId,
+          pupilId: childId,
           firstName: firstName,
           lastName: lastName,
-          parentId: parentId,
+          guardianId: guardianId,
           classId: classId,
         ),
       _ => throw const FormatException('Barn kunne ikke findes.'),

@@ -43,10 +43,10 @@ class GuardianProfileState extends State<GuardianProfile>
       archived: false);
 
   Pupil pupil = Pupil(
-      childId: 0,
+      pupilId: 0,
       firstName: 'Unknown',
       lastName: 'Unknown',
-      parentId: 0,
+      guardianId: 0,
       classId: 0);
 
   bool isEditingFirstName = false;
