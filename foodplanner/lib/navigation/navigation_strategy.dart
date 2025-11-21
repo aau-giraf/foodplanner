@@ -26,6 +26,11 @@ abstract class NavigationStrategy {
       }
     }
   }
+
+  void navigateToHomePage(BuildContext context) {
+    var pageToVisit = pages[0];
+    goToPage(pageToVisit, context);
+  }
   
   
 }

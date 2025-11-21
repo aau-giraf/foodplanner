@@ -17,6 +17,10 @@ import 'package:provider/provider.dart';
 import 'package:validators/validators.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/navigation/navigation_service.dart';
+import 'package:foodplanner/models/user_roles.dart';
+import 'package:foodplanner/services/active_role_service.dart';
+
+
 
 class ATMainPage extends StatefulWidget {
   const ATMainPage({super.key});
@@ -75,6 +79,7 @@ class ATMainPageState extends State<ATMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
+                ActiveRoleService.setActiveRole(Role.teacher);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ChooseChildParent())  
@@ -122,6 +127,7 @@ class ATMainPageState extends State<ATMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
+                ActiveRoleService.setActiveRole(Role.admin);
                 GoRouter.of(context).go(SETTINGS_PAGE);
                 /*Navigator.push(
                   context, 
@@ -149,7 +155,7 @@ class ATMainPageState extends State<ATMainPage> {
                   alignment: Alignment.center,
                   children: [
                     const Text(
-                      'Teacher role',
+                      'Admin role',
                       style: TextStyle(fontSize: 20),
                       textAlign: TextAlign.center
                     ),

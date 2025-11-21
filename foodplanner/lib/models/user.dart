@@ -21,7 +21,6 @@ class User {
 
 
   factory User.fromJson(Map<String, dynamic> json) {
-    debugPrint('User roles when getting user from json ${json['role']}');
     return switch (json) {
       {
         'id': int id,

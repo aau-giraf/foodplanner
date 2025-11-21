@@ -42,7 +42,6 @@ class UserRoles {
     var userRole = UserRoles.empty();
     for (var role in Role.values){
       if(roleValues.contains(role.name)){  // role.name is already lowercase
-        debugPrint('UserRoles fromString user has roles: ${role.toString()}');
         userRole = userRole.add(role);
       }
     }
