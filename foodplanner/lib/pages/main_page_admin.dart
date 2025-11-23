@@ -37,11 +37,8 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
     final userInfo = await AdminLandingPage.userService.fetchLoggedInUser();
     setState(() {
       admin = userInfo;
-
-      if (userInfo != null) {
-        navStrategy = NavBarStrategyMapper.getNavBarStrategy(userInfo.role);
-        debugPrint('navStrategy er $navStrategy');
-      }
+      navStrategy = NavBarStrategyMapper.getNavBarStrategy(userInfo.role);
+      debugPrint('navStrategy $navStrategy');
     });
   }
   model.User admin = model.User(
@@ -106,6 +103,8 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
           ),
           'ctaFunction': () {
             ActiveRoleService.setActiveRole(Role.teacher);
+            //NavigationStrategy navStrategyAdminTeacher = NavBarStrategyMapper.getNavBarStrategy(UserRoles.of([Role.teacher]));
+            navStrategy = NavBarStrategyMapper.getNavBarStrategy(admin.role);
             navStrategy?.goToPage(ADMIN_TEACHER_ROOT, context);
             //GoRouter.of(context).go(ADMIN_ROLES_ROOT);
           }

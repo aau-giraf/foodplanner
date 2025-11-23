@@ -32,6 +32,7 @@ class AdminNavStrategy extends NavigationStrategy {
         break;
       case 4:
         openMenu(context);
+        return;
     }
     
     NavigationService.setCurrentPage(index);
@@ -72,7 +73,7 @@ class AdminNavStrategy extends NavigationStrategy {
               ),
               onTap: () => {
                 GoRouter.of(context).go(TEACHER_ROOT),
-                ActiveRoleService.setActiveRole(Role.teacher),
+                ActiveRoleService.setActiveRole(Role.teacher, ),
               }
             ),
 

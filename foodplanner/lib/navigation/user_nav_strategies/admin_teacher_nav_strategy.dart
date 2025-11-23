@@ -33,7 +33,7 @@ class AdminTeacherNavStrategy extends NavigationStrategy {
         break;
       case 3: 
         openMenu(context);
-        break;
+        return;
     }
     
     NavigationService.setCurrentPage(index);
