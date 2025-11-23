@@ -5,7 +5,7 @@ class ActiveRoleService {
   
   static Role? get activeRole => _activeRole;
 
-  static void setActiveRole(Role role) {
+  static void setActiveRole(Role? role) {
     _activeRole = role;
   }
 }

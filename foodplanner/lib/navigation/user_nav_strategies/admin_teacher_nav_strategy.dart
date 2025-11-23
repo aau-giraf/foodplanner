@@ -109,6 +109,7 @@ class AdminTeacherNavStrategy extends NavigationStrategy {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
                 await authProvider.logout();
                 GoRouter.of(context).go(LOGIN_PAGE);
+                ActiveRoleService.setActiveRole(null);
               }
             ),
           ],

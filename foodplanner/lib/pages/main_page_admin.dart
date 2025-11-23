@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user_roles.dart';
+import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
+import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
+import 'package:foodplanner/services/active_role_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/nav_bar.dart';
@@ -28,11 +31,17 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
   Set<String> highlightedStudentIds = {};
   TextEditingController searchController = TextEditingController();
 
+  NavigationStrategy? navStrategy; 
 
   Future<void> fetchUser() async {
     final userInfo = await AdminLandingPage.userService.fetchLoggedInUser();
     setState(() {
       admin = userInfo;
+
+      if (userInfo != null) {
+        navStrategy = NavBarStrategyMapper.getNavBarStrategy(userInfo.role);
+        debugPrint('navStrategy er $navStrategy');
+      }
     });
   }
   model.User admin = model.User(
@@ -60,7 +69,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
             ],
           ),
           'ctaFunction': () {
-            GoRouter.of(context).go(ADMIN_PROFILES_PAGE);
+            navStrategy?.goToPage(ADMIN_PROFILES_PAGE, context);
           }
         },
         {
@@ -83,7 +92,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
             ],
           ),
           'ctaFunction': () {
-            GoRouter.of(context).go(SETTINGS_PAGE);
+            navStrategy?.goToPage(SETTINGS_PAGE, context);
           }
         },
         {
@@ -96,7 +105,9 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
             ],
           ),
           'ctaFunction': () {
-            GoRouter.of(context).go(ADMIN_ROLES_ROOT);
+            ActiveRoleService.setActiveRole(Role.teacher);
+            navStrategy?.goToPage(ADMIN_TEACHER_ROOT, context);
+            //GoRouter.of(context).go(ADMIN_ROLES_ROOT);
           }
         },
         {
