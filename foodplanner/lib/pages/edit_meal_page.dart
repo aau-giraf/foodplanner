@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +31,8 @@ class EditMealPage extends StatefulWidget {
 class _EditMealPageState extends State<EditMealPage> {
   final TextEditingController _nameController = TextEditingController();
 
-  
-  
+  XFile? _tempImgFile;
+  List<Map<String, dynamic>>? _tempIng;
   bool _isSaving = false;
   bool isTemplate = false;
 
@@ -55,66 +56,29 @@ class _EditMealPageState extends State<EditMealPage> {
     super.dispose();
   }
 
+
+
   Future<void> _replaceImage() async {
     final mealNotifier = context.read<MealNotifier>();
     final currentMeal = mealNotifier.meal;
     if (currentMeal == null) return;
 
-    XFile? selected = await Navigator.push(
+   
+    final XFile? selected = await Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const CameraPage()),
     );
 
-  if (selected == null) return; // user cancelled
+
+
+    if (selected == null) return;
 
     setState(() {
-      _isSaving = true;
-    }); 
-
-
-    try {
-      final uploadResponse = await uploadFoodImage(selected);
-      if (uploadResponse.statusCode == 200) {
-        final int newImageId = int.tryParse(uploadResponse.body) ?? jsonDecode(uploadResponse.body) as int;
-
-        final Meal updatedMeal = Meal(
-          id: currentMeal.id,
-          name: _nameController.text.trim().isNotEmpty
-              ? _nameController.text.trim()
-              : (currentMeal.name.isNotEmpty ? currentMeal.name : 'madpakke'),
-          foodImageId: newImageId,
-          date: currentMeal.date,
-          ingredients: currentMeal.ingredients,
-        );
-
-        await updateMeal(http.Client(), context.read(), updatedMeal);
-        await mealNotifier.fetchMealData();
-      }
-    } catch (e) {
-      
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Kunne ikke opdatere billedet.')),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
-      }
-    }
+      _tempImgFile = selected;
+    });
   }
 
-/*
-  Future<void> _fetchIngrediens() async{
 
-      final mealNotifier = context.read<MealNotifier>();
-    final currentMeal = mealNotifier.meal;
-    
-
-
-  }*/
 
    Future<void> _saveTextFieldName() async{
      try {
@@ -144,77 +108,103 @@ class _EditMealPageState extends State<EditMealPage> {
      }
    }
 
-   Future<void> _updateIngredients(List<Map<String, dynamic>> selectedIngredients) async {
-     try {
-       final mealNotifier = context.read<MealNotifier>();
-       final currentMeal = mealNotifier.meal;
-       if (currentMeal == null) return;
 
-       setState(() {
-         _isSaving = true;
-       });
 
-       // current ingredient IDs ingredients already in the meal)
-       final Set<int> currentIds = currentMeal.ingredients
-           .map((packed) => packed.ingredient.id)
-           .toSet();
 
-       //selected ingredient IDs, the new ingredients 
-       final Set<int> selectedIds = selectedIngredients
-           .map((ingredient) => ingredient['id'] as int)
-           .toSet();
+  void _updateIngredients(List<Map<String, dynamic>> selectedIngredients) {
 
-       // Delete ingredients that no longer selected
-       for (final packed in currentMeal.ingredients) {
-         if (!selectedIds.contains(packed.ingredient.id)) {
-           await deletePackedIngredient(context.read(), packed.id);
-         }
-       }
+    // Just update the temporary ingredients list
+    setState(() {
+      _tempIng = selectedIngredients;
+    });
+  }
 
-       // Add new selected ingredients to the meal 
-       for (final ingredient in selectedIngredients) {
-         final ingredientId = ingredient['id'] as int;
-         if (!currentIds.contains(ingredientId)) {
-           await createPackedIngredient(context.read(), currentMeal.id, ingredientId);
-         }
-       }
+  Future<void> _persistIngUpdate(Meal currentMeal) async {
+    if (_tempIng == null) return;
 
-       // Refresh to show the updated ingredients
-       await mealNotifier.fetchMealData();
+    final Set<int> currentIds = currentMeal.ingredients.map((packed) => packed.ingredient.id).toSet();
+    final Set<int> selectedIds = _tempIng!.map((ingredient) => ingredient['id'] as int).toSet();
 
-       if (mounted) {
-        // These popup's need a better design for later
-         ScaffoldMessenger.of(context).showSnackBar(
-           const SnackBar(content: Text('Ingredienser opdateret!')),
-         );
-       }
-     } catch (e) {
-       if (mounted) {
-         ScaffoldMessenger.of(context).showSnackBar(
-           const SnackBar(content: Text('Kunne ikke opdatere ingredienser.')),
-         );
-       }
-     } finally {
-       if (mounted) {
-         setState(() {
-           _isSaving = false;
-         });
-       }
-     }
-   }
+      // removeing unselected ingredients
+    for (final packed in currentMeal.ingredients) {
+      if (!selectedIds.contains(packed.ingredient.id)) {
+        await deletePackedIngredient(context.read(), packed.id);
+      }
+    }
 
+    // adding new selected ingredients
+    for (final ingredient in _tempIng!) {
+      final ingredientId = ingredient['id'] as int;
+      if (!currentIds.contains(ingredientId)) {
+        await createPackedIngredient(context.read(), currentMeal.id, ingredientId);
+      }
+    }
+  }
+
+
+    // saving every field 
    Future<void> _saveEverything() async {
-     try {
-     
+    final mealNotifier = context.read<MealNotifier>();
+    final currentMeal = mealNotifier.meal;
+    if (currentMeal == null) return;
+
+    setState(() {
+      _isSaving = true;
+    });
+
+    try {
+      int updatedFoodImageId = currentMeal.foodImageId as int;
+      if (_tempImgFile != null) {
+        final uploadResponse = await uploadFoodImage(_tempImgFile!);
+        
+        if (uploadResponse.statusCode != 200) {
+          throw Exception('Image upload could not be ulloaed ${uploadResponse.statusCode}');
+        }
       
-     } catch (e) {
-       if (mounted) {
-         ScaffoldMessenger.of(context).showSnackBar(
-           const SnackBar(content: Text('Kunne ikke gemme ændringerne.')),
-         );
-       }
-     }
+        updatedFoodImageId = int.tryParse(uploadResponse.body) ?? jsonDecode(uploadResponse.body) as int;
+      }
+
+      await _persistIngUpdate(currentMeal);
+
+      final updatedMeal = Meal(
+        id: currentMeal.id,
+        name: _nameController.text.trim().isNotEmpty
+            ? _nameController.text.trim()
+            : (currentMeal.name.isNotEmpty ? currentMeal.name : 'madpakke'),
+        foodImageId: updatedFoodImageId,
+        date: currentMeal.date,
+        ingredients: currentMeal.ingredients,
+      );
+
+      await updateMeal(http.Client(), context.read(), updatedMeal);
+      await mealNotifier.fetchMealData();
+
+      if (mounted) {
+        setState(() {
+          _tempImgFile = null;
+          _tempIng = null;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Ændringer gemt!'), backgroundColor: Colors.green, ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Kunne ikke gemme ændringerne.')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
    }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -234,8 +224,10 @@ class _EditMealPageState extends State<EditMealPage> {
                     isDefaultAction: true,
                     onPressed: () async {
                       await _saveEverything();
-                      Navigator.pop(context); 
-                      Navigator.pop(context); 
+                    
+                     Navigator.pop(context); 
+                     Navigator.pop(context); 
+                  
                       
                      
                     },
@@ -274,6 +266,19 @@ class _EditMealPageState extends State<EditMealPage> {
       body: Consumer<MealNotifier>(
         builder: (context, mealNotifier, _) {
           final meal = mealNotifier.meal;
+          // Retrieve displayed ingredients either from temp or from meal
+          final List<Map<String, dynamic>> displayedIngredients = _tempIng ??
+              (meal == null
+                  ? <Map<String, dynamic>>[]
+                  : meal.ingredients
+                      .map((p) => {
+                            'id': p.ingredient.id,
+                            'name': p.ingredient.name,
+                          })
+                      .toList());
+          final bool showNoMealData = meal == null && _tempIng == null;
+
+
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
@@ -306,7 +311,7 @@ class _EditMealPageState extends State<EditMealPage> {
                                         CupertinoDialogAction(
                                           isDefaultAction: true,
                                           onPressed: () async {
-                                            Navigator.pop(context);
+                                           Navigator.pop(context);
                                             await _replaceImage();
                                           },
                                           child: const Text('Ja'),
@@ -314,7 +319,7 @@ class _EditMealPageState extends State<EditMealPage> {
                                         CupertinoDialogAction(
                                           isDestructiveAction: true,
                                           onPressed: () {
-                                            // Navigator.pop(context);
+                                            Navigator.pop(context);
                                           },
                                           child: const Text('Nej'),
                                         ),
@@ -329,7 +334,9 @@ class _EditMealPageState extends State<EditMealPage> {
                                     height: 220,
                                     child: meal == null
                                         ? Container(color: AppColors.secondary)
-                                        : FoodImage(foodImageId: meal.foodImageId),
+                                        : _tempImgFile != null
+                                            ? Image.network(_tempImgFile!.path,fit: BoxFit.cover,) // use new image
+                                            : FoodImage(foodImageId: meal.foodImageId), //use  existing image
                                   ),
                                 ),
                               ),
@@ -374,24 +381,22 @@ class _EditMealPageState extends State<EditMealPage> {
                         Text('Ingredienser', style: AppTextStyles.headline4,),
                     
                        const SizedBox(height: 8),
-                       if (meal == null)
+                       if (showNoMealData)
                          const Text('Ingen ingrediens data for denne dato.')
-                        
-                       else if (meal.ingredients.isEmpty) 
+                       else if (displayedIngredients.isEmpty)
                          const Text('Ingen ingredienser for denne dato.')
-                       else 
-                        
+                       else
                          ListView.separated(
                            shrinkWrap: true,
-                           itemCount: meal.ingredients.length,
+                           itemCount: displayedIngredients.length,
                            separatorBuilder: (_, __) => const Divider(height: 0),
                            itemBuilder: (context, index) {
-                             final packed = meal.ingredients[index];
+                             final ingredient = displayedIngredients[index];
                              return ListTile(
                                contentPadding: EdgeInsets.zero,
                                iconColor: Colors.green,
                                leading: const Icon(Icons.check_circle_outline_outlined),
-                               title: Text(packed.ingredient.name),
+                               title: Text(ingredient['name'] as String),
                              );
                            },
                          ),
@@ -399,14 +404,15 @@ class _EditMealPageState extends State<EditMealPage> {
 
                         CustomButton(onTab:   () async{
                          final meal = context.read<MealNotifier>().meal;
-                               final preSelected = meal == null
-                                   ? <Map<String, dynamic>>[]
-                                   : meal.ingredients
-                                       .map((p) => {
-                                             'id': p.ingredient.id,
-                                             'name': p.ingredient.name,
-                                           })
-                                       .toList();
+                               final preSelected = _tempIng ??
+                                   (meal == null
+                                       ? <Map<String, dynamic>>[]
+                                       : meal.ingredients
+                                           .map((p) => {
+                                                 'id': p.ingredient.id,
+                                                 'name': p.ingredient.name,
+                                               })
+                                           .toList());
                     
                                final result = await Navigator.push(
                                  context,
@@ -417,7 +423,7 @@ class _EditMealPageState extends State<EditMealPage> {
 
                                    
                                if (result != null) {
-                                 await _updateIngredients(result as List<Map<String, dynamic>>);
+                                 _updateIngredients(result as List<Map<String, dynamic>>);
                                }
                         }, 
                         text: 'Tilføj eller fjern ingredienser',
@@ -462,9 +468,19 @@ class _EditMealPageState extends State<EditMealPage> {
           
                 ),
                 const SizedBox(height: 10),
-                CustomButton(onTab: (){
+                CustomButton(
+                  onTab: (){
+                  if(_isSaving)
+                    return;
+                  else{
+                    _saveEverything();
+                    Navigator.pop(context);
+                  }
 
-                }, text: 'Gem Ændringer', size: ButtonSize.medium,),
+                 },
+                  text: _isSaving ? 'Gemmer...' : 'Gem Ændringer',
+                  size: ButtonSize.medium,
+                ),
               ],
             ),
           );
