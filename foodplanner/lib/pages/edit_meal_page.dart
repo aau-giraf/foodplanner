@@ -382,7 +382,7 @@ class _EditMealPageState extends State<EditMealPage> {
                     
                        const SizedBox(height: 8),
                        if (showNoMealData)
-                         const Text('Ingen ingrediens data for denne dato.')
+                         const Text('Ingen ingrediens data for  .')
                        else if (displayedIngredients.isEmpty)
                          const Text('Ingen ingredienser for denne dato.')
                        else
@@ -413,7 +413,7 @@ class _EditMealPageState extends State<EditMealPage> {
                                                  'name': p.ingredient.name,
                                                })
                                            .toList());
-                    
+                         
                                final result = await Navigator.push(
                                  context,
                                  MaterialPageRoute(
@@ -469,13 +469,11 @@ class _EditMealPageState extends State<EditMealPage> {
                 ),
                 const SizedBox(height: 10),
                 CustomButton(
-                  onTab: (){
-                  if(_isSaving)
-                    return;
-                  else{
-                    _saveEverything();
+                  onTab: () async{
+                    if (_isSaving) return;
+                  await _saveEverything();
                     Navigator.pop(context);
-                  }
+                  
 
                  },
                   text: _isSaving ? 'Gemmer...' : 'Gem Ændringer',
