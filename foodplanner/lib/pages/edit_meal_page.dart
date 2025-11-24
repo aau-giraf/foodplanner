@@ -30,7 +30,8 @@ class EditMealPage extends StatefulWidget {
 class _EditMealPageState extends State<EditMealPage> {
   final TextEditingController _nameController = TextEditingController();
 
-  final FocusNode _nameFocusNode = FocusNode();
+  
+  
   bool _isSaving = false;
   bool isTemplate = false;
 
@@ -44,18 +45,13 @@ class _EditMealPageState extends State<EditMealPage> {
 
 
 
-    _nameFocusNode.addListener(() {
-      if (!_nameFocusNode.hasFocus) {
-        _saveTextFieldName(); 
-      }
-    });
+  
   }
 
   
   @override
   void dispose() {
     _nameController.dispose();
-    _nameFocusNode.dispose();
     super.dispose();
   }
 
@@ -64,7 +60,7 @@ class _EditMealPageState extends State<EditMealPage> {
     final currentMeal = mealNotifier.meal;
     if (currentMeal == null) return;
 
-    final XFile? selected = await Navigator.push(
+    XFile? selected = await Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const CameraPage()),
     );
@@ -73,7 +69,8 @@ class _EditMealPageState extends State<EditMealPage> {
 
     setState(() {
       _isSaving = true;
-    });
+    }); 
+
 
     try {
       final uploadResponse = await uploadFoodImage(selected);
@@ -206,6 +203,19 @@ class _EditMealPageState extends State<EditMealPage> {
      }
    }
 
+   Future<void> _saveEverything() async {
+     try {
+     
+      
+     } catch (e) {
+       if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(
+           const SnackBar(content: Text('Kunne ikke gemme ændringerne.')),
+         );
+       }
+     }
+   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -215,7 +225,37 @@ class _EditMealPageState extends State<EditMealPage> {
           child: InkWell(
             onTap: () {
               //GoRouter.of(context).go(PARENT_ROOT);
-              Navigator.pop(context);
+ showCupertinoDialog(
+              context: context,
+              builder: (BuildContext context) => CupertinoAlertDialog(
+                title: const Text('Er du sikker på at du vil gemme ændringerne?'),
+                actions: <CupertinoDialogAction>[
+                  CupertinoDialogAction(
+                    isDefaultAction: true,
+                    onPressed: () async {
+                      await _saveEverything();
+                      Navigator.pop(context); 
+                      Navigator.pop(context); 
+                      
+                     
+                    },
+                    child: const Text('Ja'),
+                  ),
+                  CupertinoDialogAction(
+                    isDestructiveAction: true,
+                    onPressed: () {
+                   
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    
+                    },
+                    child: const Text('Nej'),
+                  ),
+                ],
+              ));
+       
+
+           
             },
             child: Row(
               children: [
@@ -274,7 +314,7 @@ class _EditMealPageState extends State<EditMealPage> {
                                         CupertinoDialogAction(
                                           isDestructiveAction: true,
                                           onPressed: () {
-                                            Navigator.pop(context);
+                                            // Navigator.pop(context);
                                           },
                                           child: const Text('Nej'),
                                         ),
@@ -320,7 +360,6 @@ class _EditMealPageState extends State<EditMealPage> {
                         const SizedBox(height: 8),
                         TextField(
                           controller: _nameController,
-                          focusNode: _nameFocusNode ,
                           textInputAction: TextInputAction.done,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
@@ -333,40 +372,7 @@ class _EditMealPageState extends State<EditMealPage> {
                         ),
                         const SizedBox(height: 20),
                         Text('Ingredienser', style: AppTextStyles.headline4,),
-                       /* Row(
-                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                         children: [
-                           Text('Ingredienser', style: AppTextStyles.headline4,),
-                           TextButton.icon(
-                             onPressed: () async {
-                               final meal = context.read<MealNotifier>().meal;
-                               final preSelected = meal == null
-                                   ? <Map<String, dynamic>>[]
-                                   : meal.ingredients
-                                       .map((p) => {
-                                             'id': p.ingredient.id,
-                                             'name': p.ingredient.name,
-                                           })
-                                       .toList();
                     
-                               final result = await Navigator.push(
-                                 context,
-                                 MaterialPageRoute(
-                                   builder: (_) => AddIngredientPage(
-                                     preSelectedIngredients: preSelected,
-                                   ),
-                                 ),
-                               );
-                    
-                               if (result != null) {
-                                 await _updateIngredients(result as List<Map<String, dynamic>>);
-                               }
-                             },
-                             icon: const Icon(Icons.edit_note_sharp),
-                             label: const Text('Redigér', ),
-                           ), 
-                         ],
-                       ), */
                        const SizedBox(height: 8),
                        if (meal == null)
                          const Text('Ingen ingrediens data for denne dato.')
