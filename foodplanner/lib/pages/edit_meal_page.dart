@@ -1,8 +1,10 @@
 import 'dart:convert';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
@@ -30,6 +32,7 @@ class _EditMealPageState extends State<EditMealPage> {
 
   final FocusNode _nameFocusNode = FocusNode();
   bool _isSaving = false;
+  bool isTemplate = false;
 
  
 
@@ -234,152 +237,233 @@ class _EditMealPageState extends State<EditMealPage> {
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text( 'Redigér Madpakke', style: AppTextStyles.headline2,),
                 const SizedBox(height: 20),
-                Center(
-                  child: Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          showCupertinoDialog(
-                            context: context,
-                            builder: (BuildContext context) => CupertinoAlertDialog(
-                              title: const Text('Vil du tilføje et billede af madpakken?'),
-                              actions: <CupertinoDialogAction>[
-                                CupertinoDialogAction(
-                                  isDefaultAction: true,
-                                  onPressed: () async {
-                                    Navigator.pop(context);
-                                    await _replaceImage();
-                                  },
-                                  child: const Text('Ja'),
+                Card(
+                  elevation: 2,
+                    color: AppColors.background,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
+                        Center(
+                          child: Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  showCupertinoDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => CupertinoAlertDialog(
+                                      title: const Text('Vil du tilføje et billede af madpakken?'),
+                                      actions: <CupertinoDialogAction>[
+                                        CupertinoDialogAction(
+                                          isDefaultAction: true,
+                                          onPressed: () async {
+                                            Navigator.pop(context);
+                                            await _replaceImage();
+                                          },
+                                          child: const Text('Ja'),
+                                        ),
+                                        CupertinoDialogAction(
+                                          isDestructiveAction: true,
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Nej'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: SizedBox(
+                                    width: 220,
+                                    height: 220,
+                                    child: meal == null
+                                        ? Container(color: AppColors.secondary)
+                                        : FoodImage(foodImageId: meal.foodImageId),
+                                  ),
                                 ),
-                                CupertinoDialogAction(
-                                  isDestructiveAction: true,
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Nej'),
+                              ),
+                              Positioned(
+                                right: 8,
+                                bottom: 8,
+                                child: HeroMode(
+                                  enabled: false,
+                                  child: FloatingActionButton(
+                                    mini: true,
+                                    backgroundColor: AppColors.primary,
+                                    onPressed: _isSaving ? null : _replaceImage,
+                                    child: _isSaving
+                                        ? const SizedBox(
+                                            width: 16,
+                                            height: 16,
+                                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                          )
+                                        : SFIcon(SFIcons.sf_pencil),
+                                  ),
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: SizedBox(
-                            width: 220,
-                            height: 220,
-                            child: meal == null
-                                ? Container(color: AppColors.secondary)
-                                : FoodImage(foodImageId: meal.foodImageId),
+                              )
+                            ],
                           ),
                         ),
-                      ),
-                      Positioned(
-                        right: 8,
-                        bottom: 8,
-                        child: HeroMode(
-                          enabled: false,
-                          child: FloatingActionButton(
-                            mini: true,
-                            backgroundColor: AppColors.primary,
-                            onPressed: _isSaving ? null : _replaceImage,
-                            child: _isSaving
-                                ? const SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                                  )
-                                : SFIcon(SFIcons.sf_pencil),
+                        const SizedBox(height: 24),
+                        Center(child: Text('Madpakkens Navn', style: AppTextStyles.headline4,  )),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: _nameController,
+                          focusNode: _nameFocusNode ,
+                          textInputAction: TextInputAction.done,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Madpakkens nye navn...',
+                      
+                            suffixIcon: Icon(Icons.edit)
                           ),
+                    
+                    
                         ),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Text('Madpakkens Navn', style: AppTextStyles.headline4, ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _nameController,
-                  focusNode: _nameFocusNode ,
-                  textInputAction: TextInputAction.done,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Madpakkens nye navn...',
-  
-                    suffixIcon: Icon(Icons.edit)
-                  ),
-
-
-                ),
-                const SizedBox(height: 20),
-               Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: [
-                   Text('Ingredienser', style: AppTextStyles.headline4,),
-                   TextButton.icon(
-                     onPressed: () async {
-                       final meal = context.read<MealNotifier>().meal;
-                       final preSelected = meal == null
-                           ? <Map<String, dynamic>>[]
-                           : meal.ingredients
-                               .map((p) => {
-                                     'id': p.ingredient.id,
-                                     'name': p.ingredient.name,
-                                   })
-                               .toList();
-
-                       final result = await Navigator.push(
-                         context,
-                         MaterialPageRoute(
-                           builder: (_) => AddIngredientPage(
-                             preSelectedIngredients: preSelected,
-                           ),
+                        const SizedBox(height: 20),
+                        Text('Ingredienser', style: AppTextStyles.headline4,),
+                       /* Row(
+                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                         children: [
+                           Text('Ingredienser', style: AppTextStyles.headline4,),
+                           TextButton.icon(
+                             onPressed: () async {
+                               final meal = context.read<MealNotifier>().meal;
+                               final preSelected = meal == null
+                                   ? <Map<String, dynamic>>[]
+                                   : meal.ingredients
+                                       .map((p) => {
+                                             'id': p.ingredient.id,
+                                             'name': p.ingredient.name,
+                                           })
+                                       .toList();
+                    
+                               final result = await Navigator.push(
+                                 context,
+                                 MaterialPageRoute(
+                                   builder: (_) => AddIngredientPage(
+                                     preSelectedIngredients: preSelected,
+                                   ),
+                                 ),
+                               );
+                    
+                               if (result != null) {
+                                 await _updateIngredients(result as List<Map<String, dynamic>>);
+                               }
+                             },
+                             icon: const Icon(Icons.edit_note_sharp),
+                             label: const Text('Redigér', ),
+                           ), 
+                         ],
+                       ), */
+                       const SizedBox(height: 8),
+                       if (meal == null)
+                         const Text('Ingen ingrediens data for denne dato.')
+                        
+                       else if (meal.ingredients.isEmpty) 
+                         const Text('Ingen ingredienser for denne dato.')
+                       else 
+                        
+                         ListView.separated(
+                           shrinkWrap: true,
+                           itemCount: meal.ingredients.length,
+                           separatorBuilder: (_, __) => const Divider(height: 0),
+                           itemBuilder: (context, index) {
+                             final packed = meal.ingredients[index];
+                             return ListTile(
+                               contentPadding: EdgeInsets.zero,
+                               iconColor: Colors.green,
+                               leading: const Icon(Icons.check_circle_outline_outlined),
+                               title: Text(packed.ingredient.name),
+                             );
+                           },
                          ),
-                       );
-
-                       if (result != null) {
-                         await _updateIngredients(result as List<Map<String, dynamic>>);
-                       }
-                     },
-                     icon: const Icon(Icons.edit_note_sharp),
-                     label: const Text('Redigér', ),
-                   ),
-                 ],
-               ),
-               const SizedBox(height: 8),
-               if (meal == null)
-                 const Text('Ingen ingrediens data for denne dato.')
-                
-               else if (meal.ingredients.isEmpty) 
-                 const Text('Ingen ingredienser for denne dato.')
-               else 
-                
-                 ListView.separated(
-                   shrinkWrap: true,
-                   itemCount: meal.ingredients.length,
-                   separatorBuilder: (_, __) => const Divider(height: 0),
-                   itemBuilder: (context, index) {
-                     final packed = meal.ingredients[index];
-                     return ListTile(
-                       contentPadding: EdgeInsets.zero,
-                       iconColor: Colors.green,
-                       leading: const Icon(Icons.check_circle_outline_outlined),
-                       title: Text(packed.ingredient.name),
-                     );
-                   },
-                 )
 
 
+                        CustomButton(onTab:   () async{
+                         final meal = context.read<MealNotifier>().meal;
+                               final preSelected = meal == null
+                                   ? <Map<String, dynamic>>[]
+                                   : meal.ingredients
+                                       .map((p) => {
+                                             'id': p.ingredient.id,
+                                             'name': p.ingredient.name,
+                                           })
+                                       .toList();
+                    
+                               final result = await Navigator.push(
+                                 context,
+                                 MaterialPageRoute(
+                                   builder: (_) => AddIngredientPage(
+                                     preSelectedIngredients: preSelected,
+                                   )));
+
+                                   
+                               if (result != null) {
+                                 await _updateIngredients(result as List<Map<String, dynamic>>);
+                               }
+                        }, 
+                        text: 'Tilføj eller fjern ingredienser',
+                        foregroundColor: AppColors.textPrimary,
+                        backgroundColor: Colors.white,
+                        // trailingIcon: SFIcon(SFIcons.sf_chevron_right),
+                        size: ButtonSize.medium
+                        
+                        ),
+
+                        const SizedBox(height: 20),
+
+  // Skabelon switch
+                     Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              'Gem som skabelon',
+                              style: AppTextStyles.headline4,
+                            ),
+                        
+                            CupertinoSwitch(
+                              value: isTemplate,
+                              onChanged: (value) {
+                                setState(() {
+                                  isTemplate = value;
+                                 
+                                });
+                              },
+                              activeTrackColor: AppColors.primary, 
+                            ),]),
+
+                    
+                    SizedBox(height: 10,)
+                    
+                      ]
+                      
+
+                      ,
+                    ),
+                  ),
+          
+                ),
+                const SizedBox(height: 10),
+                CustomButton(onTab: (){
+
+                }, text: 'Gem Ændringer', size: ButtonSize.medium,),
               ],
             ),
           );
         },
-      ),
+    ),
     );
   }
 }
