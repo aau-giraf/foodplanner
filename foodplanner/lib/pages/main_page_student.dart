@@ -32,8 +32,6 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
   void initState() {
     super.initState();
 
-    NavigationService.setCurrentPage(0);
-
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     authProvider.loadFromStorage().then((_) {
       authProvider.retrieveToken().then((token) {
@@ -80,7 +78,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
       ),
-      bottomNavigationBar: NavBar(),
+      bottomNavigationBar: NavBar(currentPageIndex: 1),
       backgroundColor: Colors.white,
       body: Center(
         child: Column(

@@ -25,11 +25,13 @@ class AdminRolesNavStrategy extends NavigationStrategy {
   void navigate(int index, BuildContext context) async{
     switch(index) {
       case 0 || 1:
-        navigate(index, context);
+        super.navigate(index, context);
+        break;
       case 2:
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
         await authProvider.logout();
         GoRouter.of(context).go(LOGIN_PAGE);
+        break;
     }
     
     NavigationService.setCurrentPage(index);

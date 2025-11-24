@@ -35,6 +35,7 @@ class ParentMainPageState extends State<ParentMainPage> {
   dynamic _user;
 
   final nav = ParentNavStrategy();
+  NavigationStrategy? navStrategy;
 
   @override
   void initState() {
@@ -48,6 +49,8 @@ class ParentMainPageState extends State<ParentMainPage> {
         userService.fetchLoggedInUser().then((userData) {
           setState(() {
             _user = userData;
+            navStrategy = NavBarStrategyMapper.getNavBarStrategy(userData.role);
+            debugPrint('navStrategy $navStrategy');
           });
         });
       });
@@ -80,7 +83,8 @@ class ParentMainPageState extends State<ParentMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                GoRouter.of(context).go(CHOOSE_CHILD_PARENT);
+                navStrategy?.goToPage(CHOOSE_CHILD_PARENT, context);
+                //GoRouter.of(context).go(CHOOSE_CHILD_PARENT);
               },
               
               child: Container(
@@ -124,7 +128,8 @@ class ParentMainPageState extends State<ParentMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                nav.navigate(2, context);
+                navStrategy?.goToPage(CHOOSE_CHILD_PARENT, context);
+                //nav.navigate(2, context);
                 //GoRouter.of(context).go(SETTINGS_PAGE);
               },
               child: Container(

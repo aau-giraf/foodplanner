@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 
 class ChooseChildTeacher extends StatelessWidget {
   @override
@@ -18,6 +19,7 @@ class ChooseChildTeacher extends StatelessWidget {
         ),
       ),
       backgroundColor: Colors.white,
+      bottomNavigationBar: NavBar(),
     );
   }
 }

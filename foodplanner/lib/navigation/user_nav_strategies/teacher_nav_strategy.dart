@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 
 class TeacherNavStrategy extends NavigationStrategy {
 
-  List<String> _pages = [TEACHER_ROOT, CHOOSE_CHILD, SETTINGS_PAGE, LOGIN_PAGE];
+  List<String> _pages = [TEACHER_ROOT, CHOOSE_CHILD_TEACHER, SETTINGS_PAGE, LOGIN_PAGE];
 
   @override
   set pages(List<String> pages) {

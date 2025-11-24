@@ -26,7 +26,7 @@ class ParentNavStrategy extends NavigationStrategy {
   void navigate(int index, BuildContext context) async {
     switch(index) {
       case 0 || 1 || 2:
-        navigate(index, context);
+        super.navigate(index, context);
         break;
       case 3: 
         //() async {

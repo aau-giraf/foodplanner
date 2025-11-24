@@ -22,6 +22,7 @@ abstract class NavigationStrategy {
       if(pages[i] == goToPage) {
         GoRouter.of(context).go(goToPage); 
         NavigationService.setCurrentPage(i);
+        debugPrint('i is $i which is page $goToPage');
       }
     }
   }
@@ -33,6 +34,7 @@ abstract class NavigationStrategy {
     }*/
 
     var pageToVisit = pages[0];
+    debugPrint('Navigating to home page ');
     goToPage(pageToVisit, context);
   }
   

@@ -3,6 +3,8 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
+import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -46,10 +48,15 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
     fetchUser();
   }
 
+    NavigationStrategy? navStrategy; 
+
+
   Future<void> fetchUser() async {
     final userInfo = await TeacherLandingPage.userService.fetchLoggedInUser();
     setState(() {
       teacher = userInfo;
+      navStrategy = NavBarStrategyMapper.getNavBarStrategy(userInfo.role);
+      debugPrint('navStrategy $navStrategy');
     });
   }
 

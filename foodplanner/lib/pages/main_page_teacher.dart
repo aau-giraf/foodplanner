@@ -6,7 +6,9 @@ import 'package:foodplanner/components/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/user_roles.dart';
+import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
 import 'package:foodplanner/navigation/navigation_service.dart';
+import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/pages/choose_child_teacher.dart';
 import 'package:foodplanner/pages/login_page.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
@@ -33,6 +35,8 @@ class TeacherMainPageState extends State<TeacherMainPage> {
   dynamic _user;
 
   //var activeRole = ActiveRoleService.activeRole;
+  NavigationStrategy? navStrategy; 
+
 
   @override
   void initState() {
@@ -46,6 +50,9 @@ class TeacherMainPageState extends State<TeacherMainPage> {
         userService.fetchLoggedInUser().then((userData) {
           setState(() {
             _user = userData;
+            navStrategy = NavBarStrategyMapper.getNavBarStrategy(userData.role);
+            debugPrint('navStrategy $navStrategy');
+            //debugPrint('_user ${_user.role}');
           });
         });
       });
@@ -78,7 +85,12 @@ class TeacherMainPageState extends State<TeacherMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                GoRouter.of(context).go(CHOOSE_CHILD_TEACHER);
+                //if(ActiveRoleService.activeRole == Role.teacher) {
+                //  navStrategy?.goToPage(CHOOSE_CHILD_TEACHER, context);
+                //} else {
+                  navStrategy?.goToPage(CHOOSE_CHILD_TEACHER, context);
+                //}
+                //GoRouter.of(context).go(CHOOSE_CHILD_TEACHER);
                 /*Navigator.push(
                   context, 
                   MaterialPageRoute(builder: (context) => ChooseChildTeacher())  
@@ -125,7 +137,8 @@ class TeacherMainPageState extends State<TeacherMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                GoRouter.of(context).go(SETTINGS_PAGE);
+                navStrategy?.goToPage(SETTINGS_PAGE, context);
+                //GoRouter.of(context).go(SETTINGS_PAGE);
                 /*Navigator.push(
                   context, 
                   MaterialPageRoute(builder: (context) => Settings())  
