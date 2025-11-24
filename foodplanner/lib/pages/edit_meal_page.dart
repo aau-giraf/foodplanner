@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/image.dart';
+import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/meal.dart';
@@ -389,15 +390,27 @@ class _EditMealPageState extends State<EditMealPage> {
                          ListView.separated(
                            shrinkWrap: true,
                            itemCount: displayedIngredients.length,
-                           separatorBuilder: (_, __) => const Divider(height: 0),
+                          separatorBuilder: (_, __) => const Divider(height: 0),
                            itemBuilder: (context, index) {
                              final ingredient = displayedIngredients[index];
-                             return ListTile(
-                               contentPadding: EdgeInsets.zero,
-                               iconColor: Colors.green,
-                               leading: const Icon(Icons.check_circle_outline_outlined),
-                               title: Text(ingredient['name'] as String),
-                             );
+                             
+                            return  Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          FoodImage(
+            foodImageId: ingredient['foodImageId'],
+            width: 50,
+            height: 50,
+            borderRadius: 8.0,
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(ingredient['name']),
+          ),
+        ],
+      ),
+    );
                            },
                          ),
 
