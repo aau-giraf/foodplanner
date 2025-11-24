@@ -11,6 +11,9 @@ class CustomButton extends StatelessWidget {
   final String text;
   final SFIcon? sfIcon;
   final Icon? materialIcon;
+  final ImplicitlyAnimatedWidget? animatedWidget;
+  final MainAxisAlignment alignment;
+  final MainAxisSize axisSize;
   final Color backgroundColor;
   final Color foregroundColor;
   final ButtonSize? size; // Optional size parameter
@@ -23,6 +26,9 @@ class CustomButton extends StatelessWidget {
     this.text = '',
     this.sfIcon,
     this.materialIcon,
+    this.animatedWidget,
+    this.alignment = MainAxisAlignment.center,
+    this.axisSize = MainAxisSize.min,
     this.backgroundColor = AppColors.primary, // Default background color
     this.foregroundColor = AppColors.textSecondary, // Default foreground color
     this.size, // Size parameter
@@ -105,11 +111,12 @@ class CustomButton extends StatelessWidget {
           padding: buttonPadding, // Set the padding for the button
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: alignment,
+          mainAxisSize: axisSize,
           children: [
             if (sfIcon != null) sfIcon!,
             if (materialIcon != null) materialIcon!,
+            if (animatedWidget != null) animatedWidget!,
             if (sfIcon != null || materialIcon != null)
               const SizedBox(width: 8),
             Text(

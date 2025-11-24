@@ -1,8 +1,14 @@
-import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/add_existing_child.dart';
-import 'package:foodplanner/components/button.dart';
+import 'dart:async';
+import 'package:foodplanner/components/card_container.dart';
+import 'package:foodplanner/components/collapsible_list_scrollable.dart';
+import 'package:foodplanner/components/custom_app_bar.dart';
 import 'package:foodplanner/components/loading_animation.dart';
+import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/components/right_icon_button.dart';
+import 'package:foodplanner/components/search_field.dart';
+import 'package:foodplanner/components/text_field_card.dart';
 import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/signup_page_child.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/landing_page_parent.dart';
@@ -13,174 +19,193 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/services/child_service.dart';
+import 'dart:developer' as developer;
 
 class ChooseChildParent extends StatefulWidget {
   const ChooseChildParent({super.key});
 
   @override
   State<ChooseChildParent> createState() =>
-      ChooseChildParentState();
+      _ChooseChildParentState();
 }
 
-class ChooseChildParentState extends State<ChooseChildParent> {
+class _ChooseChildParentState extends State<ChooseChildParent> {
 
   AuthProvider get authProvider => Provider.of<AuthProvider>(context, listen: false);
 
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-  dynamic _user; 
-
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
-  List<Child> children = [];
 
-  bool isLoading = true;
+  final _singleUseCodeController = TextEditingController();
+  final _searchFieldController = TextEditingController();
+  final _scrollController = ScrollController();
 
-  final singleUseCodeController = TextEditingController();
+  List<Child> _children = [];
+  List<Child> _filteredChildren = [];
+
+  bool _isLoading = true;
+  int? _currentlyExpandedIndex;
 
   @override
   void initState() {
     super.initState();
-    _loadChildren();
+    _loadChildren(); // loads all children to initialize collapsible list 
   }
 
-  // method for retrieving a parents children
+  @override
+  void dispose() {
+    _singleUseCodeController.dispose();
+    _searchFieldController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+  
+  // method for retrieving the children of the logged in parent
   Future<void> _loadChildren() async {
-
-    setState(() => isLoading = true);
-
+    setState(() => _isLoading = true); // ensures that a loading animation is shown as long as the children are being loaded
     try {
       await authProvider.loadFromStorage();
-      final userData = await userService.fetchLoggedInUser();
 
       try {
-        children = await childService.fetchChildrenByParent();
+        _children = await childService.fetchChildrenByParent();
       } catch (e) {
-        print('Could not fetch children: $e');
+        developer.log('Could not fetch children: $e');
       }
 
-      await Future.delayed(Duration(milliseconds: 50)); // create a buffer to have enough time for fetchang all children 
+      await Future.delayed(Duration(milliseconds: 400)); // buffer to ensure enough time to fetch all children
 
       if (mounted) { // checks whether the object is part of a tree
         setState(() {
-          _user = userData;
-          isLoading = false;
+          _filteredChildren = _children; // ensures that all children are shown
+          _isLoading = false;
         });
       }
-
     } catch (e) {
-      print('Initialization error: $e');
+      developer.log('Error initializing children: $e'); 
     }
   }
 
-  Widget buildButton(Widget pageRoute, String buttonTxt, IconData icon, String iconType){
-    const double iconSize = 22;
-    return CustomButton(
-      onTab: (){
-        Navigator.push(
-          context, 
-          MaterialPageRoute(builder: (context) => pageRoute)  
-        );
-      },
-      text: buttonTxt,
-      sfIcon: iconType == 'SFIcon' ? SFIcon(icon, fontSize: iconSize) : null,
-      materialIcon: iconType == 'Icon' ? Icon(icon, size: iconSize) : null,
-      backgroundColor: AppColors.lightSecondary,
-      foregroundColor: AppColors.textPrimary,
+  // method for filtering the collapsible list based on input in search field
+  void searchFunction(String input){
+    setState(() {
+      _filteredChildren = _children.where((child) {
+        // pass both strings as lowercase to ensure case-insensitivity
+        final fullName = "${child.firstName} ${child.lastName}".toLowerCase(); 
+        final searchInput = input.toLowerCase();
+        return fullName.contains(searchInput); // return all elements where the input is part of the full name
+      }).toList();
+    });
+  }
+
+  
+  Future<void> findExistingChild(String email) async {
+    // OBS: Placeholder method - should be used for finding a child based on single-use code
+  }
+
+  Widget _buildSingleUseComponent(){
+    return CardContainer(
+      color: AppColors.background,
+        childWidget: Column(
+          children: [
+            SizedBox(height: 10),
+            Text(
+              'Tilføj barn via engangskode',
+              style: AppTextStyles.title,
+            ),
+            TextFieldCard(
+              hintText: "Engangskode...", 
+              controller: _singleUseCodeController
+          ),
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return Center(
-                child: LoadingAnimation(
-                  imagePath:
-                      'assets/images/logo.png', 
-                  size: 50.0,
-                ));
+
+    // animation shown if the children are still being loaded
+    if(_isLoading) {
+      return const Center(
+        child: LoadingAnimation(
+          imagePath: 'assets/images/logo.png',
+          size: 50.0, 
+        )
+      );
     }
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        toolbarHeight: 200,
-        centerTitle: true,
-        title: const Padding(
-          padding: const EdgeInsets.only(top: 25),
-          child: Text(
-            'Vælg barn',
-            style: TextStyle(fontSize: 36),
-            textAlign: TextAlign.center,
-          ),
-        ),
+      appBar: CustomAppBar(
+        title: "Vælg barn", materialIcon: 
+        Icon(
+          Icons.escalator_warning,
+          size: 30,
+        )
       ),
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: 
-          Center(
-            child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var child in children) 
-                ExpansionTile(
-                  title: Text(child.firstName),
-                  tilePadding: const EdgeInsets.all(15),
-                  collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(30)),
-                  children: [
-                    Padding(padding: EdgeInsets.all(10)),
-                    Directionality(
-                      textDirection: TextDirection.rtl, 
-                      child: buildButton(
-                        FeedbackChatPage(), // OBS: need to make sure if it is actually the correct one 
-                        'Feedback', 
-                        SFIcons.sf_message, 
-                        'SFIcon'
+      backgroundColor: Colors.white, 
+
+      body: Column (
+        children: [
+          Padding( padding: EdgeInsetsGeometry.only(top: 15)),
+          // component for search field and collapsible list
+          Expanded(
+            child: CardContainer(
+              clipBehavior: Clip.antiAlias,
+              color: AppColors.background,
+              childWidget: Column(
+                children: [
+                  SearchField(
+                    controller: _searchFieldController, 
+                    onChanged: searchFunction, 
+                    borderRadius: 30, 
+                    backgroundColor: Colors.white, 
+                    horizontalPadding: 5, 
+                    verticalPadding: 5, 
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.textFieldBorderFocus.withAlpha(100),
+                        blurRadius: 6,
+                        offset: const Offset(0, 4),
                       ),
-                    ),
-                    Padding(padding: EdgeInsets.all(15)),
-                    Directionality(
-                      textDirection: TextDirection.rtl, 
-                      child: buildButton(
-                        ParentLandingPageMadpakke(), // OBS: need to make sure if this is the correct one
-                        'Madpakke', 
-                        Icons.lunch_dining_outlined, 
-                        'Icon'
-                      ),
-                    ),
-                    Padding(padding: EdgeInsets.all(15)),
-                    Directionality(
-                      textDirection: TextDirection.rtl, 
-                      child: buildButton(
-                        ChooseChildParent(), // OBS: this needs to be changed to the correct page
-                        'Indstillinger', 
-                        Icons.settings_outlined, 
-                        'Icon'
-                      ),
-                    ),
-                    Padding(padding: EdgeInsets.all(10)),
-                  ],
-                ),
-              Directionality(
-                textDirection: TextDirection.rtl, 
-                child: CustomButton(
-                  onTab: () async {
-                    bool? created = await Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPageChild()));
-                    if (created == true) {
-                      _loadChildren();
-                    }
-                  }, 
-                  text: 'Tilføj nyt barn', 
-                  materialIcon: Icon(Icons.add_reaction_outlined), 
-                  backgroundColor: AppColors.lightSecondary,
-                  foregroundColor: AppColors.textPrimary,
-                ),
+                    ],
+                  ),
+                  CollapsibleListScrollable(
+                    elements: _filteredChildren, 
+                    controller: _scrollController, 
+                    currentlyExpandedIndex: _currentlyExpandedIndex,
+                    // redirection corresponding to the buttons; OBS: change this to the correct ones 
+                    onFeedback: () => Navigator.push(context, MaterialPageRoute(builder: (_) => FeedbackChatPage())), 
+                    onLunch: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ParentLandingPageMadpakke())), 
+                    onSettings: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChooseChildParent())), 
+
+                    // ensures that only one element is expanded at the time 
+                    onExpansionChanged: (newIndex) => setState(() {
+                      _currentlyExpandedIndex = newIndex;
+                    }),
+                  ),
+                ],
               ),
-              Padding(padding: EdgeInsets.all(10)),
-              SizedBox(
-                child: AddExistingChild(controller: singleUseCodeController,),
-              )
-            ],
+            ),
           ),
-        ),
+
+          // "Opret barn" button
+          RightIconButton(
+            buttonText: "Tilføj barn",
+            onTab: () async {
+              bool? created = await Navigator.push(context, MaterialPageRoute(builder: (_) => SignupPageChild()));
+              if (created == true){ // ensures that the children are loaded again, if a new child has been registered
+                _loadChildren();
+              }
+            },
+            materialIcon: Icon(Icons.add_reaction_outlined),
+          ),
+
+          // element for single-time use code functionality
+          _buildSingleUseComponent(),
+
+        ],
       ),
+      bottomNavigationBar: NavBar(currentPageIndex: 0), // OBS: the old navigation bar is used, must be updated
     );
   }
 }
