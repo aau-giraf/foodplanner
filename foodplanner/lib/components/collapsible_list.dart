@@ -110,7 +110,7 @@ class CollapsibleList extends StatelessWidget {
       onTap: onHeaderTap,
       borderRadius: BorderRadius.circular(30),
       child: Container(
-        width: screenWidth - 50,
+        width: screenWidth - 90, // this fixes the width of each button, such that the scrollbar does not overlap - could be changed to a dynamic animation
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
           color: isExpanded? AppColors.primary : Colors.white,

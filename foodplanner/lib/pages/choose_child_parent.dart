@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:foodplanner/components/card_container.dart';
 import 'package:foodplanner/components/collapsible_list_scrollable.dart';
 import 'package:foodplanner/components/custom_app_bar.dart';
@@ -148,8 +149,7 @@ class _ChooseChildParentState extends State<ChooseChildParent> {
         children: [
           Padding( padding: EdgeInsetsGeometry.only(top: 15)),
           // component for search field and collapsible list
-          Expanded(
-            child: CardContainer(
+          CardContainer(
               clipBehavior: Clip.antiAlias,
               color: AppColors.background,
               childWidget: Column(
@@ -169,6 +169,9 @@ class _ChooseChildParentState extends State<ChooseChildParent> {
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: math.min(_children.length * 65.0, 400),
+                    child: 
                   CollapsibleListScrollable(
                     elements: _filteredChildren, 
                     controller: _scrollController, 
@@ -183,10 +186,10 @@ class _ChooseChildParentState extends State<ChooseChildParent> {
                       _currentlyExpandedIndex = newIndex;
                     }),
                   ),
+                  ),
                 ],
               ),
             ),
-          ),
 
           // "Opret barn" button
           RightIconButton(

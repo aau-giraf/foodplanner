@@ -31,14 +31,12 @@ class CollapsibleListScrollable<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ScrollConfiguration(
+    return ScrollConfiguration(
         // this ensure that the default scrollbar is not shown
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: CustomScrollbar(
           controller: controller,
           child: ListView.builder(
-            padding: EdgeInsets.only(right: 40, left: 15), // ensures the scrollbar does not overlap with the buttons
             controller: controller,
             itemCount: elements.length,
             itemBuilder: (context, i) {
@@ -63,7 +61,6 @@ class CollapsibleListScrollable<T> extends StatelessWidget {
             },
           ),
         ),
-      ),
-    );
+      );
   }
 }
