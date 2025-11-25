@@ -146,7 +146,7 @@ class UserService {
     return response;
   }
 
-  Future<List<User>> fetchAllParents() async {
+  Future<List<User>> fetchAllGuardians() async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http
         .get(Uri.parse('$apiUrl/api/Admin/GetAll'), headers: <String, String>{

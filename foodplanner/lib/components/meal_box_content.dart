@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class Mealboxcontent extends StatelessWidget {
   const Mealboxcontent({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return Consumer<MealNotifier>(
@@ -18,7 +18,7 @@ class Mealboxcontent extends StatelessWidget {
         }
         return Column(
           children: [
-            _buildNavigationArrows(mealNotifier), 
+            _buildNavigationArrows(mealNotifier),
             SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -35,7 +35,7 @@ class Mealboxcontent extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ChildLandingPageSeMadpakke()
+                      builder: (context) => PupilLandingPageSeMadpakke()
                     ),
                   );
                 },
@@ -61,9 +61,9 @@ class Mealboxcontent extends StatelessWidget {
         Padding(
           padding: horizontalInsets,
           child: CustomButton(
-            onTab: () => mealNotifier.updateDate(mealNotifier.selectedDate.subtract(Duration(days: 1))), 
-            customHeight: buttonHeight, 
-            customWidth: buttonWidth, 
+            onTab: () => mealNotifier.updateDate(mealNotifier.selectedDate.subtract(Duration(days: 1))),
+            customHeight: buttonHeight,
+            customWidth: buttonWidth,
             icon: SFIcon(SFIcons.sf_arrow_backward)
           ),
         ),
@@ -72,11 +72,11 @@ class Mealboxcontent extends StatelessWidget {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         Padding(
-          padding: horizontalInsets, 
+          padding: horizontalInsets,
           child: CustomButton(
-            onTab: () => mealNotifier.updateDate(mealNotifier.selectedDate.add(Duration(days: 1))), 
-            customHeight: buttonHeight, 
-            customWidth: buttonWidth, 
+            onTab: () => mealNotifier.updateDate(mealNotifier.selectedDate.add(Duration(days: 1))),
+            customHeight: buttonHeight,
+            customWidth: buttonWidth,
             icon: SFIcon(SFIcons.sf_arrow_forward)
           ),
         )
