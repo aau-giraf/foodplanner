@@ -35,18 +35,13 @@ class Settings extends StatefulWidget {
 
 class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin {
   User user = User(
-      id: 0,
-      email: 'Unknown',
-      firstName: 'Unknown',
-      lastName: 'Unknown',
-      role: 'Unknown',
-      archived: false);
-
-  Child child = Child(
-      childId: 0,
-      firstName: 'Unknown',
-      lastName: 'Unknown',
-      classId: 0);
+    id: 0,
+    email: 'Unknown',
+    firstName: 'Unknown',
+    lastName: 'Unknown',
+    role: UserRoles.empty(),
+    archived: false
+  );
 
   IconData? icon;
   bool isEditingFirstName = false;
@@ -72,20 +67,8 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
   void initState(){
     super.initState();
 
-    /*AuthProvider().retrieveRole().then((role) {
-      /*if(role == UserRoles.fromString('Teacher') || role == UserRoles.fromString('admin') || role == UserRoles.fromString('parent')){*/
-        fetchUser();
-      /*} else {
-        fetchUserToChild();
-      }*/
-      userRole = role;
-    });*/
     AuthProvider().retrieveRole().then((role) {
-      if ((role?.hasRole(Role.teacher) ?? false) || (role?.hasRole(Role.admin) ?? false)) {
-        fetchUser();
-      } else {
-        fetchUserToChild();
-      }
+      fetchUser();
       userRole = role;
     });
   }
@@ -94,22 +77,6 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
     final userInfo = await Settings.userService.fetchLoggedInUser();
     setState(() {
       user = userInfo;
-      firstNameController.text = user.firstName;
-      lastNameController.text = user.lastName;
-      emailController.text = user.email;
-      updatedFirstName = user.firstName;
-      updatedLastName = user.lastName;
-      updatedEmail = user.email;
-    });
-  }
-
-  // Den her skal lige laves
-  Future<void> fetchUserToChild() async {
-    final userInfo = await Settings.userService.userInfo(user.id);
-    final fetchedChild = await Settings.childService.fetchChildById();
-    setState(() {
-      user = userInfo;
-      child = fetchedChild;
       firstNameController.text = user.firstName;
       lastNameController.text = user.lastName;
       emailController.text = user.email;
@@ -183,27 +150,15 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
   }
 
   Future<void> resetPage() async {
-    if (userRole == UserRoles.fromString('parent')){
-      await fetchUser();
-      setState(() {
-        isEditingFirstName = false;
-        isEditingLastName = false;
-        isEditingEmail = false;
-        isEditingPassword = false;
-        isEditingPincode = false;
-        hasChanges = false;
-      });
-      }
-    else if (userRole == UserRoles.fromString('Teacher') || userRole == UserRoles.fromString('Admin')) {
-      await fetchUser();
-      setState(() {
-        isEditingFirstName = false;
-        isEditingLastName = false;
-        isEditingEmail = false;
-        isEditingPassword = false;
-        hasChanges = false;
-      });
-    }
+    await fetchUser();
+    setState(() {
+      isEditingFirstName = false;
+      isEditingLastName = false;
+      isEditingEmail = false;
+      isEditingPassword = false;
+      isEditingPincode = false;
+      hasChanges = false;
+    });
   }
 
   void deleteUser(int userId) async {
@@ -723,7 +678,6 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                 )
               ),
               SizedBox(height: 10),
-              if (authProvider.userRole?.hasRole(Role.admin) ?? false)
               // Da der ikke er forskel på settings med de forskellige user roles, så skal dette også væk
               /*if (authProvider.hasRole([ROLES.admin]))
                 Card(

@@ -16,9 +16,8 @@ class User {
     required this.role,
     required this.archived,
   });
-
-
-  /*factory User.fromJson(Map<String, dynamic> json) {
+  
+  factory User.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
         'id': int id,
@@ -34,27 +33,6 @@ class User {
           lastName: lastName,
           email: email,
           role: UserRoles.fromString(role),
-          archived: archived,
-        ),
-      _ => throw const FormatException('Bruger kunne ikke findes.'),
-    };
-  }*/
-  factory User.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-        'id': int id,
-        'first_name': String firstName,
-        'last_name': String lastName,
-        'email': String email,
-        'role': int role,
-        'archived': bool archived,
-      } =>
-        User(
-          id: id,
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          role: UserRoles.fromInt(role),
           archived: archived,
         ),
       _ => throw const FormatException('Bruger kunne ikke findes.'),
