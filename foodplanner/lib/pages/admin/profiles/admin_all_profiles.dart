@@ -158,6 +158,17 @@ class _AdminAllProfilesState extends State<AdminAllProfiles> {
               Icon(
                 Icons.manage_accounts_outlined,
               ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Alle profiler',
+                    style: TextStyle(fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              )
             ],
           ),
         ),
