@@ -52,6 +52,7 @@ class _MealFormPageState extends State<MealFormPage> {
   }
 
   Future<void> _showImageDialog() async {
+   
     await showCupertinoDialog(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
@@ -60,6 +61,7 @@ class _MealFormPageState extends State<MealFormPage> {
           CupertinoDialogAction(
             isDefaultAction: true,
             onPressed: () async {
+              Navigator.pop(context);
               await _pickAndUploadImage();
             },
             child: const Text('Ja'),
@@ -74,6 +76,7 @@ class _MealFormPageState extends State<MealFormPage> {
         ],
       ),
     );
+    
   }
 
   Future<void> _pickAndUploadImage() async {
@@ -245,8 +248,7 @@ class _MealFormPageState extends State<MealFormPage> {
 
           // Image 
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical:   10),
                       child: GestureDetector(
                         onTap: _showImageDialog,
                         child: Stack(
@@ -254,31 +256,26 @@ class _MealFormPageState extends State<MealFormPage> {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(16),
-                              child: Container(
-                                width: double.infinity,
-                                height: 220,
-                                color: Colors.white,
-                                child: foodImageId == null
-                                    ? Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.image,
-                                            size: 48,
-                                            color: AppColors.textSecondary,
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Text('Tilføj billede',
-                                              style: AppTextStyles.mediumText),
-                                        ],
-                                      )
-                                    : FoodImage(
-                                        foodImageId: foodImageId!,
-                                        width: double.infinity,
-                                        height: double.infinity,
-                                      ),
-                              ),
+                              child: foodImageId == null
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.image,
+                                          size: 48,
+                                          color: AppColors.textSecondary,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text('Tilføj billede',
+                                            style: AppTextStyles.mediumText),
+                                      ],
+                                    )
+                                   
+                                  : FoodImage(
+                                      foodImageId: foodImageId!,
+                                    
+                                    ),
                             ),
 
 
@@ -310,7 +307,7 @@ class _MealFormPageState extends State<MealFormPage> {
                     ),
 
                          Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: Text('Navn på madpakke',
                           style: AppTextStyles.headline4),
                     ),
@@ -326,14 +323,11 @@ class _MealFormPageState extends State<MealFormPage> {
                     ),
 
                     const SizedBox(height: 30),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Ingredienser',
-                          style: AppTextStyles.headline4,
-                        ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Ingredienser',
+                        style: AppTextStyles.headline4,
                       ),
                     ),
 
