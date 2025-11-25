@@ -39,6 +39,7 @@ class CollapsibleListScrollable<T> extends StatelessWidget {
           controller: controller,
           child: ListView.builder(
             padding: EdgeInsets.only(right: 40, left: 15), // ensures the scrollbar does not overlap with the buttons
+            controller: controller,
             itemCount: elements.length,
             itemBuilder: (context, i) {
               final element = elements[i];
