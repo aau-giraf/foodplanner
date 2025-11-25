@@ -1,32 +1,32 @@
-class Child {
-  final int childId;
+class Pupil {
+  final int pupilId;
   final String firstName;
   final String lastName;
-  final int parentId;
+  final int guardianId;
   final int classId;
 
-  const Child({
-    required this.childId,
+  const Pupil({
+    required this.pupilId,
     required this.firstName,
     required this.lastName,
-    required this.parentId,
+    required this.guardianId,
     required this.classId,
   });
 
-  factory Child.fromJson(Map<String, dynamic> json) {
+  factory Pupil.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
         'childId': int childId,
         'firstName': String firstName,
         'lastName': String lastName,
-        'parentId': int parentId,
+        'parentId': int guardianId,
         'classId': int classId,
       } =>
-        Child(
-          childId: childId,
+        Pupil(
+          pupilId: childId,
           firstName: firstName,
           lastName: lastName,
-          parentId: parentId,
+          guardianId: guardianId,
           classId: classId,
         ),
       _ => throw const FormatException('Barn kunne ikke findes.'),
