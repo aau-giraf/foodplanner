@@ -108,6 +108,9 @@ class AdminTeacherNavStrategy extends NavigationStrategy {
               onTap: () async {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
                 await authProvider.logout();
+                if(!context.mounted) {
+                  return;
+                }
                 GoRouter.of(context).go(LOGIN_PAGE);
                 ActiveRoleService.setActiveRole(null);
               }

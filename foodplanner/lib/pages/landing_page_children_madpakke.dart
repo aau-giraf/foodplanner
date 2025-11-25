@@ -13,15 +13,18 @@ import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
+import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ChildLandingPageMadpakke extends StatefulWidget {
   final Map<String, String> student;
+  
   const ChildLandingPageMadpakke(
       {super.key,
        /* required Map<String, String> */ 
-       required this.student});
+       required this.student}
+  );
 
   @override
   State<ChildLandingPageMadpakke> createState() =>
@@ -32,6 +35,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   late Future<bool> _hasRolesFuture;
   Child? _child;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
+  final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   UserRoles? userRole;
   Future<void>? _callerFuture;
 
@@ -44,18 +48,28 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   Future<void> _initialize() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final role = await authProvider.retrieveRole();
+    debugPrint('Brugerrolle: $role');
+
     setState(() {
       userRole = role;
-      _hasRolesFuture =
-
-          authProvider.hasOneOfRoles([Role.parent, Role.student, Role.teacher]);
+      _hasRolesFuture = authProvider.hasOneOfRoles([Role.parent, Role.student, Role.teacher]);
     });
 
     Child? childData;
 
+    //baseret på userRole henter den barnets data ud fra personens egen profil eller fra den map man sendte ind via widgetten.
     if (authProvider.userRole == Role.student ||
         authProvider.userRole == Role.parent) {
-      final childData = await childService.fetchChildById();
+      
+      debugPrint('childData = $childData');
+      try {
+        final childData = await childService.fetchChildById();
+        //final loggedInUser = await userService.fetchLoggedInUser();
+        //debugPrint('Fetch resultat: $loggedInUser');
+      } catch (e) {
+        debugPrint('Fejl ved fetchChildById: $e');
+      }
+      
       setState(() {
         _child = childData;
       });
@@ -69,15 +83,20 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
     }
 
     if(childData == null){
-      setState(() {
-        _child = childData;
-      });
-    }
-    if(_child != null) {
+      debugPrint('childData er NULL - barn blev IKKE hentet!');
       setState(() {
         _child = childData;
         _callerFuture = caller();
       });
+    }
+    if(_child != null) {
+      debugPrint('Barn fundet! kalder caller()');
+      setState(() {
+        _child = childData;
+        _callerFuture = caller();
+      });
+    } else {
+      debugPrint('Fejl: _child er fortsat null - _callerFuture bliver ikke sat!');
     }
   }
 

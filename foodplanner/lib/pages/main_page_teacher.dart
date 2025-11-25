@@ -1,24 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
 import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
-import 'package:foodplanner/pages/choose_child_teacher.dart';
-import 'package:foodplanner/pages/login_page.dart';
-import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/active_role_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:validators/validators.dart';
 import 'package:foodplanner/config/colors.dart';
 
 class TeacherMainPage extends StatefulWidget {
@@ -31,7 +22,6 @@ class TeacherMainPage extends StatefulWidget {
 
 class TeacherMainPageState extends State<TeacherMainPage> {
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-  //late User _user;
   dynamic _user;
 
   //var activeRole = ActiveRoleService.activeRole;
@@ -85,16 +75,8 @@ class TeacherMainPageState extends State<TeacherMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                //if(ActiveRoleService.activeRole == Role.teacher) {
-                //  navStrategy?.goToPage(CHOOSE_CHILD_TEACHER, context);
-                //} else {
                   navStrategy?.goToPage(CHOOSE_CHILD_TEACHER, context);
-                //}
-                //GoRouter.of(context).go(CHOOSE_CHILD_TEACHER);
-                /*Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => ChooseChildTeacher())  
-                );*/
+
               },
               
               child: Container(
@@ -138,11 +120,6 @@ class TeacherMainPageState extends State<TeacherMainPage> {
               hoverColor: Colors.transparent,
               onTap: (){
                 navStrategy?.goToPage(SETTINGS_PAGE, context);
-                //GoRouter.of(context).go(SETTINGS_PAGE);
-                /*Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => Settings())  
-                );*/
               },
               child: Container(
                 height: 59,
@@ -231,6 +208,9 @@ class TeacherMainPageState extends State<TeacherMainPage> {
               onTap: () async {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
                 await authProvider.logout();
+                if(!context.mounted) {
+                  return;
+                }
                 context.go(LOGIN_PAGE);
               },
               child: Container(

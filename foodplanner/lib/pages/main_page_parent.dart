@@ -1,25 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/navigation/user_nav_strategies/parent_nav_strategy.dart';
-import 'package:foodplanner/pages/choose_child_parent.dart';
-import 'package:foodplanner/pages/login_page.dart';
-import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:validators/validators.dart';
-import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/navigation/navigation_service.dart';
 
 class ParentMainPage extends StatefulWidget {
@@ -174,6 +164,9 @@ class ParentMainPageState extends State<ParentMainPage> {
               onTap: () async {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
                 await authProvider.logout();
+                if(!context.mounted) {
+                  return;
+                }
                 context.go(LOGIN_PAGE);
               },
               child: Container(

@@ -7,10 +7,6 @@ import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
-import 'package:foodplanner/services/active_role_service.dart';
-import 'package:go_router/go_router.dart';
-import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/config/text_styles.dart';
 import 'package:provider/provider.dart';
 
 class TeacherNavStrategy extends NavigationStrategy {
@@ -34,9 +30,11 @@ class TeacherNavStrategy extends NavigationStrategy {
       case 3: 
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         await authProvider.logout();
-        context.go(LOGIN_PAGE);
+        if(!context.mounted) {
+          return;
+        }
+        super.navigate(index, context);
         
-        //final RenderBox renderbox = menuKey.currentContext!.findRenderObject() as Renderbox;
         break;
     }
     

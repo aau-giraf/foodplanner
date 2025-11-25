@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
@@ -123,6 +122,9 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
           'ctaFunction': () async {
             final auth = Provider.of<AuthProvider>(context, listen: false);
             await auth.logout(); 
+            if(!mounted) {
+              return;
+            }
             GoRouter.of(context).go('/');
           }
         },

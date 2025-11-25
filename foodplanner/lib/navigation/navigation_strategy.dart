@@ -22,21 +22,14 @@ abstract class NavigationStrategy {
       if(pages[i] == goToPage) {
         GoRouter.of(context).go(goToPage); 
         NavigationService.setCurrentPage(i);
-        debugPrint('i is $i which is page $goToPage');
+        //debugPrint('i is $i which is page $goToPage');
       }
     }
   }
 
   void navigateToHomePage(BuildContext context, UserRoles role) {
-    /*if(role.hasOneOfRoles([Role.child, Role.student])) {
-      var pageToVisit = pages[1];
-      goToPage(pageToVisit, context); 
-    }*/
-
     var pageToVisit = pages[0];
-    debugPrint('Navigating to home page ');
+    //debugPrint('Navigating to home page ');
     goToPage(pageToVisit, context);
-  }
-  
-  
+  }  
 }

@@ -36,16 +36,5 @@ class NavigationDestinationHelper {
       label: label,
     ); 
   }
-/*
-
-
-  static List<NavigationDestination> teacherRoleDestination() {
-    return [
-      _buildIconDestination(icon: Icons.home_outlined, selectedIcon: Icons.home, label: ''),
-      _buildIconDestination(icon: Icons.escalator_warning_outlined, selectedIcon: Icons.escalator_warning, label: ''),
-      _buildIconDestination(icon: SFIcons.sf_gearshape, selectedIcon: SFIcons.sf_gearshape_fill, label: '', isSfIcon: true),
-      _buildIconDestination(icon: Icons.room_preferences_outlined, selectedIcon: Icons.room_preferences, label: ''),
-    ];
-  }
-  */
+  
 }

@@ -68,7 +68,6 @@ class AdminNavStrategy extends NavigationStrategy {
                     SizedBox(height: 4),
                     Text('Skift rolle', style: AppTextStyles.standardWithoutColor,),
                   ],
-                  //(leading: Icon(Icons.home), title: Text('home')),
                 ),
               ),
               onTap: () => {
@@ -110,6 +109,9 @@ class AdminNavStrategy extends NavigationStrategy {
               onTap: () async {
                 final authProvider = Provider.of<AuthProvider>(context, listen: false);
                 await authProvider.logout();
+                if(!context.mounted) {
+                  return;
+                }
                 GoRouter.of(context).go(LOGIN_PAGE);
                 ActiveRoleService.setActiveRole(null);
               }

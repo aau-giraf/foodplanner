@@ -112,6 +112,9 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
           'ctaFunction': () async {
             final auth = Provider.of<AuthProvider>(context, listen: false);
             await auth.logout(); 
+            if(!mounted) {
+              return;
+            }
             GoRouter.of(context).go('/');
           }
         },

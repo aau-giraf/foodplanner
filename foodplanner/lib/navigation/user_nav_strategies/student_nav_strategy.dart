@@ -2,11 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/navigation/navigation_destination_helper.dart';
-import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
-import 'package:go_router/go_router.dart';
 
 class StudentUnlockedNavStrategy extends NavigationStrategy {
 

@@ -7,7 +7,6 @@ import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ParentNavStrategy extends NavigationStrategy {
@@ -29,11 +28,14 @@ class ParentNavStrategy extends NavigationStrategy {
         super.navigate(index, context);
         break;
       case 3: 
-        //() async {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         await authProvider.logout();
-          //context.go(LOGIN_PAGE);
-        GoRouter.of(context).go(LOGIN_PAGE);
+        
+        if(!context.mounted) {
+          return;
+        }
+        super.navigate(index, context);
+
         break;
     }
     

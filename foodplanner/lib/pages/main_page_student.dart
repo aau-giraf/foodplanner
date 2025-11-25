@@ -5,10 +5,8 @@ import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/meal_box.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/routes/paths.dart';
-
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
@@ -68,6 +66,9 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                   onPressed: () async {
                     await AuthProvider().setRole(UserRoles.of([Role.student]));
                     await AuthProvider().loadFromStorage();
+                    if(!context.mounted) {
+                      return;
+                    }
                     GoRouter.of(context).go('/');
                   },
                   icon: SFIcon(SFIcons.sf_lock_open_fill)),
