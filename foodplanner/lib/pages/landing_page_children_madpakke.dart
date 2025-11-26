@@ -34,6 +34,7 @@ class ChildLandingPageMadpakke extends StatefulWidget {
 class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   late Future<bool> _hasRolesFuture;
   Child? _child;
+  User? _user;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   UserRoles? userRole;
@@ -56,22 +57,34 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
     });
 
     Child? childData;
+    User? loggedInUser;
+
+    debugPrint('authProvider.userRole: ${authProvider.userRole}');
+    debugPrint('Role.student: ${Role.student}');
 
     //baseret på userRole henter den barnets data ud fra personens egen profil eller fra den map man sendte ind via widgetten.
-    if (authProvider.userRole == Role.student ||
+    if (authProvider.userRole == role || authProvider.userRole == Role.child ||
         authProvider.userRole == Role.parent) {
-      
+      final loggedInUser = await userService.fetchLoggedInUser();
+      debugPrint('loggedInUser: $loggedInUser');
+
+      int userId = loggedInUser.id;
+      debugPrint('uderId: $userId');
+
+      final childData = await childService.GetByChildId(userId);
       debugPrint('childData = $childData');
+
       try {
-        final childData = await childService.fetchChildById();
+        //final childData = await childService.fetchChildById();
         //final loggedInUser = await userService.fetchLoggedInUser();
-        //debugPrint('Fetch resultat: $loggedInUser');
+        debugPrint('Fetch resultat: $loggedInUser');
       } catch (e) {
         debugPrint('Fejl ved fetchChildById: $e');
       }
       
       setState(() {
         _child = childData;
+        //_user = loggedInUser as User?;
       });
     } else if (authProvider.userRole == Role.teacher) {
       int tempChildId = int.parse(widget.student['id']!);
@@ -85,13 +98,16 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
     if(childData == null){
       debugPrint('childData er NULL - barn blev IKKE hentet!');
       setState(() {
+        //_user = loggedInUser;
         _child = childData;
         _callerFuture = caller();
       });
     }
+
     if(_child != null) {
       debugPrint('Barn fundet! kalder caller()');
       setState(() {
+        //_user = loggedInUser;
         _child = childData;
         _callerFuture = caller();
       });
