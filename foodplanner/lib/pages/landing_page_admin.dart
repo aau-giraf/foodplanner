@@ -3,6 +3,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/pages/Change_Roll.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
@@ -19,6 +20,7 @@ import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
 import 'package:foodplanner/pages/Admin_profiles.dart';
+import 'package:foodplanner/pages/settings/SchoolClasses.dart';
 
 class AdminLandingPage extends StatefulWidget {
   const AdminLandingPage({super.key});
@@ -84,6 +86,12 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
               SizedBox(width: 10),
             ],
           ),
+          'ctaFunction': () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SchoolClasses()),
+            );
+          }
         },
         {
           'title': "Indstillinger",
