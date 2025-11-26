@@ -43,7 +43,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
   @override
   void initState() {
     super.initState();
-    fetchChildrenData();
+    fetchPupilsData();
     fetchUser();
   }
 
@@ -54,7 +54,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
     });
   }
 
-  Future<void> fetchChildrenData() async {
+  Future<void> fetchPupilsData() async {
     try {
       String? jwtToken = await AuthProvider().retrieveToken();
       var apiClient = ApiClient(basePath: ApiConfig.baseUrl);

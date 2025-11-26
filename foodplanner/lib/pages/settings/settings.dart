@@ -9,25 +9,18 @@ import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:provider/provider.dart';
-import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:go_router/go_router.dart';
-import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/models/user.dart';
-import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/models/user_roles.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
 
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-  static final ChildService childService =
-      ChildService(apiUrl: ApiConfig.baseUrl);
 
   @override
   State<Settings> createState() => _SettingsPage();
@@ -554,7 +547,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
           'ctaFunction': () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AdministrateChildren()),
+              MaterialPageRoute(builder: (context) => AdministratePupils()),
             );
           }
         },
