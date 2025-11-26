@@ -262,8 +262,8 @@ class _SignupState extends State<SignupPage> {
           }
           
 
-        if(role.hasRole(Role.student)){GoRouter.of(context).go(STUDENT_CREATE);}
-        else if(role.hasRole(Role.parent)){GoRouter.of(context).go('/signup/create-child');}
+        if(role.hasRole(Role.pupil)){GoRouter.of(context).go(STUDENT_CREATE);}
+        else if(role.hasRole(Role.guardian)){GoRouter.of(context).go('/signup/create-child');}
         else {GoRouter.of(context).go(UNAUTHORIZED);}
 
 /*           switch (role) {

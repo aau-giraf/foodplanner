@@ -83,7 +83,7 @@ class _NavBarState extends State<NavBar> {
                         break;
                       }
                     case 2:
-                      if (snapshot.data?.hasRole(Role.parent) ?? false) {
+                      if (snapshot.data?.hasRole(Role.guardian) ?? false) {
                         GoRouter.of(context).go('/profile');
                         break;
                       } else {

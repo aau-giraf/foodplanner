@@ -9,11 +9,12 @@ enum ButtonSize { small, medium, large }
 class CustomButton extends StatelessWidget {
   final Function()? onTab;
   final String text;
-  final SFIcon? sfIcon;
+  final SFIcon? icon;
+  final SFIcon? trailingIcon;
   final Icon? materialIcon;
   final ImplicitlyAnimatedWidget? animatedWidget;
-  final MainAxisAlignment alignment;
-  final MainAxisSize axisSize;
+  final MainAxisAlignment mainAxisAlignment;
+  final MainAxisSize mainAxisSize;
   final Color backgroundColor;
   final Color foregroundColor;
   final ButtonSize? size; // Optional size parameter
@@ -24,17 +25,42 @@ class CustomButton extends StatelessWidget {
     super.key,
     required this.onTab,
     this.text = '',
-    this.sfIcon,
+    this.icon,
+    this.trailingIcon,
     this.materialIcon,
     this.animatedWidget,
-    this.alignment = MainAxisAlignment.center,
-    this.axisSize = MainAxisSize.min,
+    this.mainAxisAlignment = MainAxisAlignment.center,
+    this.mainAxisSize = MainAxisSize.min,
     this.backgroundColor = AppColors.primary, // Default background color
     this.foregroundColor = AppColors.textSecondary, // Default foreground color
     this.size, // Size parameter
     this.customWidth, // Custom width
     this.customHeight, // Custom height
   });
+
+
+// Helper to icons and text simultaneously
+Widget _textAndIcon(TextStyle textStyle) {
+
+  if (trailingIcon != null && text.isNotEmpty) {
+      return Stack(
+        children: [
+          Center(
+            child: Text(text, style: textStyle),
+          ),
+          
+          Align(
+            alignment: Alignment.centerRight,
+            child: trailingIcon!,
+          ),
+        ],
+      );
+    }
+    
+    
+    
+    return Text(text, style: textStyle);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,25 +132,22 @@ class CustomButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
-          disabledForegroundColor: foregroundColor.withOpacity(0.5),
-          elevation: 3,
+          disabledForegroundColor: foregroundColor.withValues(alpha: 0.5),
+          elevation: 5,
           padding: buttonPadding, // Set the padding for the button
         ),
         child: Row(
-          mainAxisAlignment: alignment,
-          mainAxisSize: axisSize,
+          mainAxisAlignment: mainAxisAlignment, 
+          mainAxisSize: mainAxisSize,
           children: [
-            if (sfIcon != null) sfIcon!,
+            if (icon != null) icon!,
             if (materialIcon != null) materialIcon!,
             if (animatedWidget != null) animatedWidget!,
-            if (sfIcon != null || materialIcon != null)
+            if (icon != null || materialIcon != null)
               const SizedBox(width: 8),
-            Text(
-              text,
-              style: buttonTextStyle,
-            )
+            _textAndIcon(buttonTextStyle),
           ],
-        ),
+        )
       ),
     );
   }

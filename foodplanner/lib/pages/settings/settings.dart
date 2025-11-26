@@ -8,7 +8,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_advanced_segment/flutter_advanced_segment.dart';
-import 'package:foodplanner/pages/settings/administrate_children.dart';
+import 'package:foodplanner/pages/settings/administrate_pupils.dart';
 import 'package:foodplanner/pages/settings/admin_approve_page.dart';
 import 'package:foodplanner/pages/settings/SchoolClasses.dart';
 import 'package:provider/provider.dart';
@@ -117,7 +117,7 @@ class _SettingsPage extends State<Settings> {
           'ctaFunction': () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AdministrateChildren()),
+              MaterialPageRoute(builder: (context) => AdministratePupils()),
             );
           }
         },
