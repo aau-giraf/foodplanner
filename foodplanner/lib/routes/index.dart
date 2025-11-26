@@ -18,7 +18,7 @@ import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/pages/profile_page.dart';
 import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/signup_page_adult.dart';
-import 'package:foodplanner/pages/signup_page_child.dart';
+import 'package:foodplanner/pages/signup_page_pupil.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:go_router/go_router.dart';

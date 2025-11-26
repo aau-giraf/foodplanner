@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 
 class CollapsibleList extends StatelessWidget {
-  final Child? child;
+  final Pupil? pupil;
   final SchoolClass? schoolClass;
 
   final String headerText;
@@ -19,7 +19,7 @@ class CollapsibleList extends StatelessWidget {
 
   const CollapsibleList ({
     super.key,
-    this.child,
+    this.pupil,
     this.schoolClass,
 
     required this.headerText,
@@ -95,7 +95,7 @@ class CollapsibleList extends StatelessWidget {
   List<Widget> _buildBodyWidgets() {
     List<Widget> childrenWidgets = [];
 
-    if(child != null){
+    if(pupil != null){
       childrenWidgets = _buildBodyWidgetsPupil(childrenWidgets); 
     } else if (schoolClass != null) {
       childrenWidgets = _buildBodyWidgetsSchoolClass(childrenWidgets);

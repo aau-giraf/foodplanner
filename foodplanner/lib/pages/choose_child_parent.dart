@@ -10,39 +10,39 @@ import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/text_field_card.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/signup_page_child.dart';
+import 'package:foodplanner/models/pupil.dart';
+import 'package:foodplanner/pages/landing_page_guardian.dart';
+import 'package:foodplanner/pages/signup_page_pupil.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
-import 'package:foodplanner/pages/landing_page_parent.dart';
 import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/models/child.dart';
-import 'package:foodplanner/services/child_service.dart';
 import 'dart:developer' as developer;
 
-class ChooseChildParent extends StatefulWidget {
-  const ChooseChildParent({super.key});
+class ChooseChildGuardian extends StatefulWidget {
+  const ChooseChildGuardian({super.key});
 
   @override
-  State<ChooseChildParent> createState() =>
-      _ChooseChildParentState();
+  State<ChooseChildGuardian> createState() =>
+      _ChooseChildGuardianState();
 }
 
-class _ChooseChildParentState extends State<ChooseChildParent> {
+class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
 
   AuthProvider get authProvider => Provider.of<AuthProvider>(context, listen: false);
 
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-  final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
+  final PupilService pupilService = PupilService(apiUrl: ApiConfig.baseUrl);
 
   final _singleUseCodeController = TextEditingController();
   final _searchFieldController = TextEditingController();
   final _scrollController = ScrollController();
 
-  List<Child> _children = [];
-  List<Child> _filteredChildren = [];
+  List<Pupil> _children = [];
+  List<Pupil> _filteredChildren = [];
 
   bool _isLoading = true;
   int? _currentlyExpandedIndex;
@@ -68,10 +68,12 @@ class _ChooseChildParentState extends State<ChooseChildParent> {
       await authProvider.loadFromStorage();
 
       try {
-        _children = await childService.fetchChildrenByParent();
+        _children = await pupilService.fetchPupilByParent();
       } catch (e) {
         developer.log('Could not fetch children: $e');
       }
+
+      print(_children);
 
       await Future.delayed(Duration(milliseconds: 400)); // buffer to ensure enough time to fetch all children
 
@@ -178,8 +180,8 @@ class _ChooseChildParentState extends State<ChooseChildParent> {
                     currentlyExpandedIndex: _currentlyExpandedIndex,
                     // redirection corresponding to the buttons; OBS: change this to the correct ones 
                     onFeedback: () => Navigator.push(context, MaterialPageRoute(builder: (_) => FeedbackChatPage())), 
-                    onLunch: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ParentLandingPageMadpakke())), 
-                    onSettings: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChooseChildParent())), 
+                    onLunch: () => Navigator.push(context, MaterialPageRoute(builder: (_) => GuardianLandingPageMadpakke())), 
+                    onSettings: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChooseChildGuardian())), 
 
                     // ensures that only one element is expanded at the time 
                     onExpansionChanged: (newIndex) => setState(() {
@@ -195,7 +197,7 @@ class _ChooseChildParentState extends State<ChooseChildParent> {
           RightIconButton(
             buttonText: "Tilføj barn",
             onTab: () async {
-              bool? created = await Navigator.push(context, MaterialPageRoute(builder: (_) => SignupPageChild()));
+              bool? created = await Navigator.push(context, MaterialPageRoute(builder: (_) => CreatePupilPage()));
               if (created == true){ // ensures that the children are loaded again, if a new child has been registered
                 _loadChildren();
               }

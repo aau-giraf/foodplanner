@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/pupil.dart';
+import 'package:foodplanner/services/api_config.dart';
 import 'package:http/http.dart' as http;
 
 class PupilService {
@@ -66,7 +67,7 @@ class PupilService {
   }
 
   Future<http.Response> updatePupil(int id, String firstName, String lastName,
-      int parentId, int classId) async {
+      int? parentId, int classId) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
       Uri.parse('$apiUrl/api/Admin/UpdateChild'),
@@ -78,7 +79,26 @@ class PupilService {
         'ChildId': id,
         'firstName': firstName,
         'lastName': lastName,
-        /*'parentId': parentId,*/
+        'parentId': parentId,
+        'classId': classId,
+      }),
+    );
+
+    return response;
+  }
+
+  Future<http.Response> updatePupilsClass(int id, int classId) async {
+
+    final jwtToken = await AuthProvider().retrieveToken();
+
+    final response = await http.put(
+      Uri.parse('$apiUrl/api/Admin/UpdateChild'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $jwtToken',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'ChildId': id,
         'classId': classId,
       }),
     );
@@ -113,7 +133,7 @@ class PupilService {
     }
   }
 
-  Future<List<Child>> fetchChildrenByParent() async {
+  Future<List<Pupil>> fetchPupilByParent() async {
     List<dynamic> jsonList = [];
     final jwtToken = await AuthProvider().retrieveToken();
 
@@ -132,7 +152,7 @@ class PupilService {
           : json.decode(response.body);
 
         print(jsonList.toString()); // for debugging purposes
-      return jsonList.map((jsonItem) => Child.fromJson(jsonItem)).toList();
+      return jsonList.map((jsonItem) => Pupil.fromChildJson(jsonItem)).toList();
     } else {
       throw Exception('Failed to load children (status ${response.statusCode})');
     }

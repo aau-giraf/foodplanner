@@ -5,27 +5,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/pages/signup_page_base.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/user_service.dart';
 
-class SignupPageChild extends StatefulWidget {
+class CreatePupilPage extends StatefulWidget {
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   static final SchoolClassService schoolClassService = SchoolClassService(apiUrl: ApiConfig.baseUrl);
-  static final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
+  static final PupilService pupilService = PupilService(apiUrl: ApiConfig.baseUrl);
 
-  const SignupPageChild({super.key});
+  const CreatePupilPage({super.key});
 
   @override
-  State<SignupPageChild> createState() => _SignupPageChildState();
+  State<CreatePupilPage> createState() => _CreatePupilPageState();
 }
 
-class _SignupPageChildState extends State<SignupPageChild> {
+class _CreatePupilPageState extends State<CreatePupilPage> {
 
-  Future<List<SchoolClass>> classesFuture = SignupPageChild.schoolClassService.fetchAllClasses();
+  PupilService pupilService = CreatePupilPage.pupilService;
+
+  Future<List<SchoolClass>> classesFuture = CreatePupilPage.schoolClassService.fetchAllClasses();
 
   List<SchoolClass> classes = [];
 
@@ -61,9 +64,18 @@ class _SignupPageChildState extends State<SignupPageChild> {
           return;
         }
 
-        final childResponse = await SignupPageChild.childService.createChild(firstName, lastName, classId);
+        final Map<String, dynamic> userJson = jsonDecode(userResponse.body);
+        final int userID = userJson['id'];
 
-        if (childResponse.statusCode == 201){
+        final Pupil pupil = await pupilService.getByPupilId(userID);
+
+        //updating the classID for the pupil 
+        final updateClassResponse = await pupilService.updatePupilsClass(pupil.pupilId, classId);
+
+
+        /*final childResponse = await CreatePupilPage.pupilService.createPupil(firstName, lastName, classId);*/
+
+        if (updateClassResponse.statusCode == 201){
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Barn oprettet!'),
@@ -74,7 +86,7 @@ class _SignupPageChildState extends State<SignupPageChild> {
           await Future.delayed(const Duration(seconds: 1)); // buffer
           Navigator.pop(context, true);
         } else {
-          var error = jsonDecode(childResponse.body);
+          var error = jsonDecode(updateClassResponse.body);
           (context as Element).findAncestorStateOfType<SignupPageBaseState>()?.handleErrors(error);
         }
       } catch (e) {

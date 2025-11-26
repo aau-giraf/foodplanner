@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/collapsible_list.dart';
 import 'package:foodplanner/components/scroll_bar.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 
 // Class for creating a scroll view for a single child, with a collapsible list
@@ -9,7 +9,7 @@ class CollapsibleListScrollable<T> extends StatelessWidget {
   final List<T> elements; // this is the list used for the collapsible list (children or schoolclasses)
   final int? currentlyExpandedIndex;
   final ScrollController controller;
-  final Child? child;
+  final Pupil? pupil;
   final SchoolClass? schoolClass;
   final ValueChanged<int?> onExpansionChanged;
   final VoidCallback onFeedback;
@@ -21,7 +21,7 @@ class CollapsibleListScrollable<T> extends StatelessWidget {
     required this.elements,
     required this.controller,
     required this.currentlyExpandedIndex,
-    this.child,
+    this.pupil,
     this.schoolClass,
     required this.onExpansionChanged,
     required this.onFeedback,
@@ -43,9 +43,9 @@ class CollapsibleListScrollable<T> extends StatelessWidget {
               final element = elements[i];
               return CollapsibleList(
                 // collapsible list is renderes based on type of element (Child or Classroom)
-                child: element is Child ? element : null,
+                pupil: element is Pupil ? element : null,
                 schoolClass: element is SchoolClass ? element : null,
-                headerText: element is Child ? "${element.firstName} ${element.lastName}" : element is SchoolClass ? element.className : "",
+                headerText: element is Pupil ? "${element.firstName} ${element.lastName}" : element is SchoolClass ? element.className : "",
                 isExpanded: currentlyExpandedIndex == i, 
 
                 // redirection corresponding to the buttons; OBS: change this to the correct ones 

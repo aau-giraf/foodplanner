@@ -75,7 +75,7 @@ class ParentMainPageState extends State<ParentMainPage> {
               onTap: (){
                 Navigator.push(
                   context, 
-                  MaterialPageRoute(builder: (context) => ChooseChildParent())  
+                  MaterialPageRoute(builder: (context) => ChooseChildGuardian())  
                 );
               },
               

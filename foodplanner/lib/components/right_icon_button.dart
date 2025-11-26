@@ -44,7 +44,7 @@ class RightIconButton extends StatelessWidget{
           backgroundColor: AppColors.background,
           foregroundColor: AppColors.textPrimary,
           size: ButtonSize.medium,
-          axisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.max,
           animatedWidget: animatedWidget,
         ),
       ),
