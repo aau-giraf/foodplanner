@@ -14,7 +14,7 @@ class ChildWithClassname {
   });
 
   factory ChildWithClassname.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
+    /*return switch (json) {
       {
         'childId': int childId,
         'firstName': String firstName,
@@ -30,6 +30,18 @@ class ChildWithClassname {
           classId: classId,
         ),
       _ => throw const FormatException('Barn kunne ikke findes.'),
-    };
+    };*/
+    try {
+      return ChildWithClassname(
+        childId: json['childId'] as int,
+        firstName: json['firstName'] ?? '', 
+        lastName: json['lastName'] ?? '', 
+        className: json['className'] ?? 'Uden klasse', 
+        classId: json['classId'] as int,
+      );
+    } catch (e) {
+      print('Error parsing child: $json');
+      throw FormatException('Barn kunne ikke findes.');
+    }
   }
 }

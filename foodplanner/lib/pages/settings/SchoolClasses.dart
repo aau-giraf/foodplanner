@@ -31,11 +31,10 @@ class SchoolClasses extends StatefulWidget {
 class _SchoolClasses extends State<SchoolClasses> {
   Future<List<SchoolClass>> classesFuture =
       SchoolClasses.schoolClassService.fetchAllClasses();
-  List<Map<String, String>> schoolClasses = [];
-  List<SchoolClass> schoolClass = [];
-  List<Map<String, String?>> students = [];
-  List<Map<String, String?>> filteredStudents = [];
-  Set<String> selectedClassIds = {};
+  List<SchoolClass> schoolClasses = [];
+  List<ChildWithClassname> students = [];
+  List<ChildWithClassname> filteredStudents = [];
+  Set<int> selectedClassIds = {};
   Set<String> highlightedStudentIds = {};
   TextEditingController searchController = TextEditingController();
 
@@ -50,17 +49,37 @@ class _SchoolClasses extends State<SchoolClasses> {
     fetchChildrenData();
     classesFuture.then((classes) {
       setState(() {
+        schoolClasses = classes;
       });
       // Initialize the Map with classIds
-      for (var schoolClass in classes) {
-        isEditing[schoolClass.classId] = false;
-        controllers[schoolClass.classId] =
-            TextEditingController(text: schoolClass.className);
+      for (var c in classes) {
+        isEditing[c.classId] = false;
+        controllers[c.classId] =
+            TextEditingController(text: c.className);
       }
     });
   }
 
   Future<void> fetchChildrenData() async {
+    try {
+      students = await ChildService(apiUrl: ApiConfig.baseUrl).fetchChildrenInAllClass();
+      filteredStudents = students;
+
+      setState(() {
+        final uniqueClasses = <int, String> {};
+        for (var child in students) {
+          uniqueClasses[child.classId] = child.className;
+        }
+      
+        schoolClasses = uniqueClasses.entries.map((entry) => SchoolClass(classId: entry.key, className: entry.value)).toList();
+        schoolClasses.sort((a,b) => a.className.compareTo(b.className));
+      });
+    } catch (e) {
+      print('Error fetching children: $e');
+    }
+  }
+
+  /*Future<void> fetchChildrenData() async {
     try {
       String? jwtToken = await AuthProvider().retrieveToken();
       var apiClient = ApiClient(basePath: ApiConfig.baseUrl);
@@ -79,12 +98,20 @@ class _SchoolClasses extends State<SchoolClasses> {
           }).toList();
           filteredStudents = students;
 
-          final uniqueClasses = <String, String>{};
+          final uniqueClasses = <int, String>{};
           for (var student in students) {
-            uniqueClasses[student['classId']!] = student['className']!;
+            if(student['classId'] != null && student['className'] != null) {
+              final id = int.tryParse(student['classId']!) ?? -1;
+              if (id > 0) uniqueClasses[id] = student['className']!;
+            }
           }
-          schoolClasses = uniqueClasses.entries.map((entry) => {'id': entry.key, 'name': entry.value}).toList();
-          schoolClasses.sort((a,b) => a['name']!.compareTo(b['name']!));
+          for (var entry in uniqueClasses.entries) {
+            final exists = schoolClasses.any((c) => c.classId == entry.key);
+            if (!exists) {
+              schoolClasses.add(SchoolClass(classId: entry.key, className: entry.value));
+            }
+          }
+          schoolClasses.sort((a,b) => a.className.compareTo(b.className));
         });
       } else {
         throw Exception('Failed to load children data');
@@ -92,9 +119,9 @@ class _SchoolClasses extends State<SchoolClasses> {
     } catch (e){
       print('Error fetching children data: $e');
     }
-  }
+  }*/
 
-  void toggleClassStudents(String classId) {
+  void toggleClassStudents(int classId) {
     setState(() {
       if (selectedClassIds.contains(classId)) {
         selectedClassIds.remove(classId);
@@ -120,17 +147,14 @@ class _SchoolClasses extends State<SchoolClasses> {
         selectedClassIds.clear();
       } else {
         filteredStudents = students.where((student) {
-          final studentName = student['name']!.toLowerCase();
+          final studentName = '${student.firstName} ${student.lastName}'.toLowerCase();
           return studentName.contains(lowerCaseQuery);
         }).toList();
 
         // Automatically expand the classes containing the searched students
         selectedClassIds.clear();
-        if (filteredStudents.isNotEmpty) {
-          for (var student in filteredStudents) {
-            final classId = student['classId'];
-            selectedClassIds.add(classId!);
-          }
+        for (var student in filteredStudents) {
+          selectedClassIds.add(student.classId);
         }
       }
     });
@@ -140,7 +164,7 @@ class _SchoolClasses extends State<SchoolClasses> {
     setState(() {
       if (selectedClassIds.isEmpty) {
         selectedClassIds =
-            schoolClasses.map((schoolClass) => schoolClass['id']!).toSet();
+            schoolClasses.map((schoolClass) => schoolClass.classId).toSet();
       } else {
         selectedClassIds.clear();
         searchController.clear();
@@ -161,18 +185,18 @@ class _SchoolClasses extends State<SchoolClasses> {
   void addClass() {
     SchoolClasses.schoolClassService
         .createClass(controller.text)
-        .then((schoolClass) {
+        .then((newClass) {
       setState(() {
-        schoolClasses.add(schoolClass as Map<String, String>);
-        isEditing[schoolClass.classId] = false;
-        controllers[schoolClass.classId] =
-            TextEditingController(text: schoolClass.className);
+        schoolClasses.add(newClass);
+        isEditing[newClass.classId] = false;
+        controllers[newClass.classId] =
+            TextEditingController(text: newClass.className);
         controller.clear();
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Klassen ${schoolClass.className} er blevet tilføjet'),
+          content: Text('Klassen ${newClass.className} er blevet tilføjet'),
           duration: Duration(seconds: 2),
           backgroundColor: Colors.green,
         ),
@@ -216,7 +240,7 @@ class _SchoolClasses extends State<SchoolClasses> {
     } else {
       setState(() {
         schoolClasses
-            .removeWhere((schoolClass) => schoolClass.classId == classId);
+            .removeWhere((schoolClass) => schoolClass.classId == classId.toString());
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -350,25 +374,46 @@ class _SchoolClasses extends State<SchoolClasses> {
           SizedBox(height: 20),
           Expanded(
             child: ListView.builder(
-              shrinkWrap: true,
+              itemCount: schoolClasses.length,
+              itemBuilder: (context, index) {
+                final schoolClass = schoolClasses[index]; 
+                final childrenInClass = students.where((child) => child.classId == schoolClass.classId).toList();
+
+                return ExpansionTile(
+                  title: Text(schoolClass.className),
+                  children: [
+                    if (childrenInClass.isNotEmpty)
+                      ...childrenInClass.map((child){
+                        return ListTile(
+                          title: Text('${child.firstName} ${child.lastName}'),
+                        );
+                      }),
+                    if (childrenInClass.isEmpty)
+                      const ListTile(
+                        title: Text("Ingen børn"),
+                      ),
+
+                    const ListTile(
+                      title: Text("Tilføj barn"),
+                    )
+                  ]
+                );
+              }
+              /*shrinkWrap: true,
               itemCount: schoolClasses.length,
               itemBuilder: (context, index) {
                 final schoolClass = schoolClasses[index];
                 final isLastClass = index == schoolClasses.length - 1;
                 final classStudents = students
-                    .where((student) =>
-                        student['classId'] == schoolClass['id'])
+                    .where((student) => student['classId'] == schoolClass['id'])
                     .toList();
                 final filteredClassStudents = filteredStudents
-                    .where((student) =>
-                        student['classId'] == schoolClass['id'])
+                    .where((student) => student['classId'] == schoolClass['id'])
                     .toList();
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomListItem(
-                      leftIcon: SFIcons.sf_figure_2,
-                      leftIconStyle: TextStyle(fontSize: 22),
                       title: schoolClass['name'] ?? 'Unknown',
                       isHighlighted: false,
                       isLastItem: isLastClass,
@@ -390,14 +435,12 @@ class _SchoolClasses extends State<SchoolClasses> {
                                     classStudents.indexOf(student) ==
                                         classStudents.length - 1;
                             return CustomListItem(
-                              leftIcon: SFIcons.sf_figure_child,
                               key: ValueKey(student['id']),
                               title: student['name'] ?? 'Unknown',
                               isHighlighted: highlightedStudentIds
                                   .contains(student['id']),
                               isLastItem: isLastStudentInLastClass,
-                              onTap: () =>
-                                  navigateToStudentDetails(student),
+                              onTap: () => navigateToStudentDetails(student),
                               isTapped: highlightedStudentIds
                                   .contains(student['id']),
                             );
@@ -406,7 +449,7 @@ class _SchoolClasses extends State<SchoolClasses> {
                       ),
                   ],
                 );
-              },
+              },*/
             ),
           ),
                     
@@ -418,21 +461,17 @@ class _SchoolClasses extends State<SchoolClasses> {
                         controller: controllers[schoolClass.classId],
                       )*/            
           TextButton(
-          onPressed: addClass,
-          child: Text(
-            "Tilføj klasse",
-            style: AppTextStyles.mediumText.copyWith(
-              color: Colors.blue.shade700,
-              fontWeight: FontWeight.w600,
-            ),
-          )
+            onPressed: addClass,
+            child: Text(
+              "Tilføj klasse",
+              style: AppTextStyles.mediumText.copyWith(
+                color: Colors.blue.shade700,
+                fontWeight: FontWeight.w600,
+              ),
+            )
           )
         ],
       ),
     );
   }
-}
-
-extension on Map<String, String> {
-  get classId => null;
-}
+} 
