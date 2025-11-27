@@ -1,14 +1,26 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+
 import 'package:foodplanner/components/nav_bar.dart';
+
+import 'package:foodplanner/api/openapi/lib/api.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/Custom_List_Item.dart';
+
 import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/child_with_classname.dart';
 import 'package:foodplanner/models/schoolClass.dart';
+import 'package:foodplanner/models/child.dart';
 import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
+import 'package:go_router/go_router.dart';
 
 class SchoolClasses extends StatefulWidget {
   static final SchoolClassService schoolClassService =
@@ -24,6 +36,11 @@ class _SchoolClasses extends State<SchoolClasses> {
   Future<List<SchoolClass>> classesFuture =
       SchoolClasses.schoolClassService.fetchAllClasses();
   List<SchoolClass> schoolClasses = [];
+  List<ChildWithClassname> students = [];
+  List<ChildWithClassname> filteredStudents = [];
+  Set<int> selectedClassIds = {};
+  Set<String> highlightedStudentIds = {};
+  TextEditingController searchController = TextEditingController();
 
   final controller = TextEditingController();
 
@@ -33,15 +50,129 @@ class _SchoolClasses extends State<SchoolClasses> {
   @override
   void initState() {
     super.initState();
+    fetchChildrenData();
     classesFuture.then((classes) {
       setState(() {
         schoolClasses = classes;
       });
       // Initialize the Map with classIds
-      for (var schoolClass in classes) {
-        isEditing[schoolClass.classId] = false;
-        controllers[schoolClass.classId] =
-            TextEditingController(text: schoolClass.className);
+      for (var c in classes) {
+        isEditing[c.classId] = false;
+        controllers[c.classId] =
+            TextEditingController(text: c.className);
+      }
+    });
+  }
+
+  Future<void> fetchChildrenData() async {
+    try {
+      students = await ChildService(apiUrl: ApiConfig.baseUrl).fetchChildrenInAllClass();
+      filteredStudents = students;
+
+      setState(() {
+        final uniqueClasses = <int, String> {};
+        for (var child in students) {
+          uniqueClasses[child.classId] = child.className;
+        }
+      
+        schoolClasses = uniqueClasses.entries.map((entry) => SchoolClass(classId: entry.key, className: entry.value)).toList();
+        schoolClasses.sort((a,b) => a.className.compareTo(b.className));
+      });
+    } catch (e) {
+      print('Error fetching children: $e');
+    }
+  }
+
+  /*Future<void> fetchChildrenData() async {
+    try {
+      String? jwtToken = await AuthProvider().retrieveToken();
+      var apiClient = ApiClient(basePath: ApiConfig.baseUrl);
+      apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
+      final childrensApi = ChildrensApi(apiClient);
+      final List<ChildrenGetAllDTO>? data =
+          await childrensApi.apiChildrensGetAllChildrenClassesGet();
+      
+      if (data != null) {
+        setState(() {
+          students = data.map((ChildrenGetAllDTO e) => {
+            'id': e.childId.toString(),
+            'name': '${e.firstName} ${e.lastName}',
+            'classId': e.classId.toString(),
+            'className': e.className,
+          }).toList();
+          filteredStudents = students;
+
+          final uniqueClasses = <int, String>{};
+          for (var student in students) {
+            if(student['classId'] != null && student['className'] != null) {
+              final id = int.tryParse(student['classId']!) ?? -1;
+              if (id > 0) uniqueClasses[id] = student['className']!;
+            }
+          }
+          for (var entry in uniqueClasses.entries) {
+            final exists = schoolClasses.any((c) => c.classId == entry.key);
+            if (!exists) {
+              schoolClasses.add(SchoolClass(classId: entry.key, className: entry.value));
+            }
+          }
+          schoolClasses.sort((a,b) => a.className.compareTo(b.className));
+        });
+      } else {
+        throw Exception('Failed to load children data');
+      }
+    } catch (e){
+      print('Error fetching children data: $e');
+    }
+  }*/
+
+  void toggleClassStudents(int classId) {
+    setState(() {
+      if (selectedClassIds.contains(classId)) {
+        selectedClassIds.remove(classId);
+      } else {
+        selectedClassIds.add(classId);
+      }
+    });
+  }
+
+  void navigateToStudentDetails(Map<String, String?> student) {
+    // Filter out null values from the student map
+    final filteredStudent =
+        student.map((key, value) => MapEntry(key, value ?? ''));
+
+    GoRouter.of(context).go('/student-details', extra: filteredStudent);
+  }
+
+  void filterStudents(String query) {
+    final lowerCaseQuery = query.toLowerCase();
+    setState(() {
+      if (lowerCaseQuery.isEmpty) {
+        filteredStudents = students;
+        selectedClassIds.clear();
+      } else {
+        filteredStudents = students.where((student) {
+          final studentName = '${student.firstName} ${student.lastName}'.toLowerCase();
+          return studentName.contains(lowerCaseQuery);
+        }).toList();
+
+        // Automatically expand the classes containing the searched students
+        selectedClassIds.clear();
+        for (var student in filteredStudents) {
+          selectedClassIds.add(student.classId);
+        }
+      }
+    });
+  }
+
+  void collapseAll() {
+    setState(() {
+      if (selectedClassIds.isEmpty) {
+        selectedClassIds =
+            schoolClasses.map((schoolClass) => schoolClass.classId).toSet();
+      } else {
+        selectedClassIds.clear();
+        searchController.clear();
+        filteredStudents = students;
       }
     });
   }
@@ -59,18 +190,18 @@ class _SchoolClasses extends State<SchoolClasses> {
     final messenger = ScaffoldMessenger.of(context);
     SchoolClasses.schoolClassService
         .createClass(controller.text)
-        .then((schoolClass) {
+        .then((newClass) {
       setState(() {
-        schoolClasses.add(schoolClass);
-        isEditing[schoolClass.classId] = false;
-        controllers[schoolClass.classId] =
-            TextEditingController(text: schoolClass.className);
+        schoolClasses.add(newClass);
+        isEditing[newClass.classId] = false;
+        controllers[newClass.classId] =
+            TextEditingController(text: newClass.className);
         controller.clear();
       });
 
       messenger.showSnackBar(
         SnackBar(
-          content: Text('Klassen ${schoolClass.className} er blevet tilføjet'),
+          content: Text('Klassen ${newClass.className} er blevet tilføjet'),
           duration: Duration(seconds: 2),
           backgroundColor: Colors.green,
         ),
@@ -116,7 +247,7 @@ class _SchoolClasses extends State<SchoolClasses> {
     } else {
       setState(() {
         schoolClasses
-            .removeWhere((schoolClass) => schoolClass.classId == classId);
+            .removeWhere((schoolClass) => schoolClass.classId == classId.toString());
       });
       messenger.showSnackBar(
         SnackBar(
@@ -214,70 +345,141 @@ class _SchoolClasses extends State<SchoolClasses> {
         scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SettingsWidget(
-              title: 'Administrer klasser',
-              type: SettingsType.header,
-              leftIcon: SFIcons.sf_figure_2,
-              subTitle: 'Tilføj, rediger og slet klasser',
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Card(
-                elevation: 2,
-                color: AppColors.background,
-                surfaceTintColor: AppColors.background,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: CustomTextField(
-                          controller: controller,
-                          errorText: "",
-                          hintText: "Skriv klasse navn",
-                          type: TextFieldType.smallTextField,
-                          color: Colors.white,
-                        ),
+      body: Column(
+        children: [
+          Text(
+            'Administrér klasser',
+            style: TextStyle(fontSize: 36),
+          ),
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Card(
+              elevation: 2,
+              color: AppColors.background,
+              surfaceTintColor: AppColors.background,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: CustomTextField(
+                        controller: controller,
+                        errorText: "",
+                        hintText: "Skriv klasse navn",
+                        type: TextFieldType.smallTextField,
+                        color: Colors.white,
                       ),
-                      SizedBox(width: 10),
-                      TextButton(
-                        onPressed: addClass,
-                        child: Text(
-                          "Tilføj klasse",
-                          style: AppTextStyles.mediumText.copyWith(
-                            color: Colors.blue.shade700,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          softWrap: true,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                    ],
-                  ),
+                    ),
+                    SizedBox(width: 10),
+                  ],
                 ),
               ),
             ),
-            ...schoolClasses.map(
-              (schoolClass) {
-                return SettingsWidget(
-                  title: controllers[schoolClass.classId]!.text,
-                  type: SettingsType.items,
-                  leftIcon: SFIcons.sf_figure_2,
-                  cta: cta(schoolClass.classId),
-                  isEditable: isEditing[schoolClass.classId]!,
-                  controller: controllers[schoolClass.classId],
+          ),
+          SizedBox(height: 20),
+          Expanded(
+            child: ListView.builder(
+              itemCount: schoolClasses.length,
+              itemBuilder: (context, index) {
+                final schoolClass = schoolClasses[index]; 
+                final childrenInClass = students.where((child) => child.classId == schoolClass.classId).toList();
+
+                return ExpansionTile(
+                  title: Text(schoolClass.className),
+                  children: [
+                    if (childrenInClass.isNotEmpty)
+                      ...childrenInClass.map((child){
+                        return ListTile(
+                          title: Text('${child.firstName} ${child.lastName}'),
+                        );
+                      }),
+                    if (childrenInClass.isEmpty)
+                      const ListTile(
+                        title: Text("Ingen børn"),
+                      ),
+
+                    const ListTile(
+                      title: Text("Tilføj barn"),
+                    )
+                  ]
                 );
-              },
+              }
+              /*shrinkWrap: true,
+              itemCount: schoolClasses.length,
+              itemBuilder: (context, index) {
+                final schoolClass = schoolClasses[index];
+                final isLastClass = index == schoolClasses.length - 1;
+                final classStudents = students
+                    .where((student) => student['classId'] == schoolClass['id'])
+                    .toList();
+                final filteredClassStudents = filteredStudents
+                    .where((student) => student['classId'] == schoolClass['id'])
+                    .toList();
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomListItem(
+                      title: schoolClass['name'] ?? 'Unknown',
+                      isHighlighted: false,
+                      isLastItem: isLastClass,
+                      onTap: () =>
+                          toggleClassStudents(schoolClass['id']!),
+                      isTapped: selectedClassIds
+                          .contains(schoolClass['id']),
+                    ),
+                    if (selectedClassIds.contains(schoolClass['id']))
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40),
+                        child: Column(
+                          children: (searchController.text.isEmpty
+                                  ? classStudents
+                                  : filteredClassStudents)
+                              .map((student) {
+                            final isLastStudentInLastClass =
+                                isLastClass &&
+                                    classStudents.indexOf(student) ==
+                                        classStudents.length - 1;
+                            return CustomListItem(
+                              key: ValueKey(student['id']),
+                              title: student['name'] ?? 'Unknown',
+                              isHighlighted: highlightedStudentIds
+                                  .contains(student['id']),
+                              isLastItem: isLastStudentInLastClass,
+                              onTap: () => navigateToStudentDetails(student),
+                              isTapped: highlightedStudentIds
+                                  .contains(student['id']),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                  ],
+                );
+              },*/
             ),
-          ],
-        ),
+          ),
+                    
+                      /*child: SettingsWidget(
+                        title: controllers[schoolClass.classId]!.text,
+                        type: SettingsType.items,
+                        cta: cta(schoolClass.classId),
+                        isEditable: isEditing[schoolClass.classId]!,
+                        controller: controllers[schoolClass.classId],
+                      )*/            
+          TextButton(
+            onPressed: addClass,
+            child: Text(
+              "Tilføj klasse",
+              style: AppTextStyles.mediumText.copyWith(
+                color: Colors.blue.shade700,
+                fontWeight: FontWeight.w600,
+              ),
+            )
+          )
+        ],
       ),
       bottomNavigationBar: NavBar(),
     );
   }
-}
+} 

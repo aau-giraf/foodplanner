@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/child_with_classname.dart';
+import 'package:foodplanner/services/api_config.dart';
 import 'package:http/http.dart' as http;
 
 class ChildService {
@@ -111,4 +114,24 @@ class ChildService {
       throw Exception('Failed to load child data');
     }
   }
+
+  Future<List<ChildWithClassname>> fetchChildrenInAllClass() async {
+    try {
+      final jwtToken = await AuthProvider().retrieveToken();
+
+      final apiClient = ApiClient(basePath: ApiConfig.baseUrl);
+      apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
+
+      final childrensApi = ChildrensApi(apiClient);
+
+      final response = await childrensApi.apiChildrensGetAllChildrenClassesGetWithHttpInfo(); 
+
+      final jsonList = response as List<dynamic>? ?? [];
+
+      return jsonList.map((jsonItem) => ChildWithClassname.fromJson(jsonItem)).toList();
+    } catch (e) {
+      return[];
+    }
+  }
+    
 }
