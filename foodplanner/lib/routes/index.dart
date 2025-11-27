@@ -17,7 +17,7 @@ import 'package:foodplanner/pages/main_page_admin.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
 import 'package:foodplanner/pages/main_page_parent.dart';
 import 'package:foodplanner/pages/main_page_teacher.dart';
-import 'package:foodplanner/pages/settings/SchoolClasses.dart';
+import 'package:foodplanner/pages/admin_administration/SchoolClasses.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/pages/profile_page.dart';

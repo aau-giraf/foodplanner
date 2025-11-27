@@ -22,7 +22,7 @@ import 'package:provider/provider.dart';
 
 import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
 import 'package:foodplanner/pages/Admin_profiles.dart';
-import 'package:foodplanner/pages/settings/SchoolClasses.dart';
+import 'package:foodplanner/pages/admin_administration/SchoolClasses.dart';
 
 class AdminLandingPage extends StatefulWidget {
   const AdminLandingPage({super.key});

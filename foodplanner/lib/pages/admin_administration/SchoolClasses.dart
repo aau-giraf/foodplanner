@@ -17,6 +17,7 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child_with_classname.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/pages/admin_administration/EditClasses.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
@@ -471,6 +472,23 @@ class _SchoolClasses extends State<SchoolClasses> {
             onPressed: addClass,
             child: Text(
               "Tilføj klasse",
+              style: AppTextStyles.mediumText.copyWith(
+                color: Colors.blue.shade700,
+                fontWeight: FontWeight.w600,
+              ),
+            )
+          ),
+          TextButton(
+            onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditClasses()
+                    ),
+                  );
+                },
+            child: Text(
+              "Redigere klasse",
               style: AppTextStyles.mediumText.copyWith(
                 color: Colors.blue.shade700,
                 fontWeight: FontWeight.w600,
