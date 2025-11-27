@@ -75,7 +75,7 @@ class ChildProfileState extends State<ChildProfile>
     updatedLastName = widget.child.lastName;
     selectedClassId = widget.child.classId.toString();
     initialClassId = widget.child.classId.toString();
-    //fetchParent();
+    fetchParent();
     selectedParent = parent;
     selectedParentId = widget.child.parentId;
     initialParentId = widget.child.parentId;
@@ -89,7 +89,6 @@ class ChildProfileState extends State<ChildProfile>
     });
   }
 
-  /*
   void fetchParent() {
     ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
       setState(() {
@@ -100,7 +99,6 @@ class ChildProfileState extends State<ChildProfile>
       throw (error);
     });
   }
-  */
 
   @override
   void dispose() {
@@ -512,7 +510,7 @@ class ChildProfileState extends State<ChildProfile>
                               updatedLastName.isNotEmpty
                                   ? updatedLastName
                                   : widget.child.lastName,
-                              selectedParentId ?? widget.child.parentId!,
+                              selectedParentId ?? widget.child.parentId,
                               int.parse(selectedClassId!))
                           .then((response) {
 

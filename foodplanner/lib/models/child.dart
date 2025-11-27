@@ -2,14 +2,14 @@ class Child {
   final int childId;
   final String firstName;
   final String lastName;
-  final int? parentId; //eksistere ikke længere i databasen - sker i et table.
+  final int parentId; //eksistere ikke længere i databasen - sker i et table.
   final int classId;
 
   const Child({
     required this.childId,
     required this.firstName,
     required this.lastName,
-    this.parentId,
+    required this.parentId,
     required this.classId,
   });
 
@@ -19,14 +19,14 @@ class Child {
         'childId': int childId,
         'firstName': String firstName,
         'lastName': String lastName,
-        //'parentId': int parentId,
+        'parentId': int parentId,
         'classId': int classId,
       } =>
         Child(
           childId: childId,
           firstName: firstName,
           lastName: lastName,
-          //parentId: parentId,
+          parentId: parentId,
           classId: classId,
         ),
       _ => throw const FormatException('Barn kunne ikke findes.'),
