@@ -62,37 +62,31 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
     debugPrint('authProvider.userRole: ${authProvider.userRole}');
     debugPrint('Role.student: ${Role.student}');
 
-    //baseret på userRole henter den barnets data ud fra personens egen profil eller fra den map man sendte ind via widgetten.
-    if (authProvider.userRole == role || authProvider.userRole == Role.child ||
+    ////baseret på userRole henter den barnets data ud fra personens egen profil eller fra den map man sendte ind via widgetten.
+    if (authProvider == role || authProvider.userRole == Role.child ||
         authProvider.userRole == Role.parent) {
       final loggedInUser = await userService.fetchLoggedInUser();
-      debugPrint('loggedInUser: $loggedInUser');
+      //debugPrint('loggedInUser: $loggedInUser');
 
       int userId = loggedInUser.id;
-      debugPrint('uderId: $userId');
+      //debugPrint('uderId: $userId');
 
-      final childData = await childService.GetByChildId(userId);
-      debugPrint('childData = $childData');
-
-      try {
-        //final childData = await childService.fetchChildById();
-        //final loggedInUser = await userService.fetchLoggedInUser();
-        debugPrint('Fetch resultat: $loggedInUser');
-      } catch (e) {
-        debugPrint('Fejl ved fetchChildById: $e');
-      }
+      childData = await childService.GetByChildId(userId);
+      //debugPrint('childData = $childData');
       
       setState(() {
         _child = childData;
         //_user = loggedInUser as User?;
       });
+
     } else if (authProvider.userRole == Role.teacher) {
+      debugPrint('loggedInUser must be teacher: $loggedInUser');
       int tempChildId = int.parse(widget.student['id']!);
       childData = await childService.GetByChildId(tempChildId);
       
-      /*setState(() {
+      setState(() {
         _child = childData;
-      });*/
+      });
     }
 
     if(childData == null){
@@ -102,9 +96,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
         _child = childData;
         _callerFuture = caller();
       });
-    }
-
-    if(_child != null) {
+    } else if (_child != null) {
       debugPrint('Barn fundet! kalder caller()');
       setState(() {
         //_user = loggedInUser;
@@ -121,6 +113,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
     /*if(_child?.parentId != null) {
       await MealNotifier().teacherUpdateChildId(_child!.parentId);
     }*/
+    await MealNotifier().teacherUpdateChildId(_child!.childId);
     await MealNotifier().updateDate(DateTime.now());
   }
 

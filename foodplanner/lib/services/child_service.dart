@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/child.dart';
 import 'package:http/http.dart' as http;
@@ -105,8 +106,12 @@ class ChildService {
           'Authorization': 'Bearer $jwtToken',
         });
     if (response.statusCode == 200) {
+      debugPrint('response.body: ${response.body}');
       final data = json.decode(response.body);
-      return Child.fromJson(data);
+      debugPrint('child data: $data');
+      final child = Child.fromJson(data);
+      debugPrint('child from json: $child');
+      return child;
     } else {
       throw Exception('Failed to load child data');
     }
