@@ -49,7 +49,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   Future<void> _initialize() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final role = await authProvider.retrieveRole();
-    debugPrint('Brugerrolle: $role');
+    //debugPrint('Brugerrolle: $role');
 
     setState(() {
       userRole = role;
@@ -57,78 +57,57 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
     });
 
     Child? childData;
-    User? loggedInUser;
 
-    debugPrint('authProvider.userRole: ${authProvider.userRole}');
-    debugPrint('Role.student: ${Role.student}');
+    //debugPrint('authProvider.userRole: ${authProvider.userRole}');
+    //debugPrint('Role.student: ${Role.student}');
 
     //baseret på userRole henter den barnets data ud fra personens egen profil eller fra den map man sendte ind via widgetten.
-    if (authProvider.userRole == role || authProvider.userRole == Role.child ||
-        authProvider.userRole == Role.parent) {
+    if (authProvider.userRole!.hasRole(Role.child) || authProvider.userRole!.hasRole(Role.student) ||
+        authProvider.userRole!.hasRole(Role.parent)) {
       final loggedInUser = await userService.fetchLoggedInUser();
-      debugPrint('loggedInUser: $loggedInUser');
+      //debugPrint('loggedInUser: $loggedInUser');
 
       int userId = loggedInUser.id;
-      debugPrint('uderId: $userId');
+      //debugPrint('uderId: $userId');
 
-      final childData = await childService.GetByChildId(userId);
-      debugPrint('childData = $childData');
-
-      try {
-        //final childData = await childService.fetchChildById();
-        //final loggedInUser = await userService.fetchLoggedInUser();
-        debugPrint('Fetch resultat: $loggedInUser');
-      } catch (e) {
-        debugPrint('Fejl ved fetchChildById: $e');
-      }
+      childData = await childService.getByChildId(userId);
+      //debugPrint('childData = $childData');
       
       setState(() {
         _child = childData;
-        //_user = loggedInUser as User?;
       });
-    } else if (authProvider.userRole == Role.teacher) {
+
+    } else if (authProvider.userRole!.hasRole(Role.teacher)) {
       int tempChildId = int.parse(widget.student['id']!);
-      childData = await childService.GetByChildId(tempChildId);
+      childData = await childService.getByChildId(tempChildId);
       
-      /*setState(() {
-        _child = childData;
-      });*/
-    }
-
-    if(childData == null){
-      debugPrint('childData er NULL - barn blev IKKE hentet!');
       setState(() {
-        //_user = loggedInUser;
         _child = childData;
-        _callerFuture = caller();
       });
     }
 
-    if(_child != null) {
-      debugPrint('Barn fundet! kalder caller()');
+    if(childData != null) {
       setState(() {
-        //_user = loggedInUser;
-        _child = childData;
         _callerFuture = caller();
       });
-    } else {
-      debugPrint('Fejl: _child er fortsat null - _callerFuture bliver ikke sat!');
+    } else if (childData == null) {
+      throw Exception('ChildData er null');
     }
   }
 
 
   Future<void> caller() async {
-    /*if(_child?.parentId != null) {
-      await MealNotifier().teacherUpdateChildId(_child!.parentId);
-    }*/
-    await MealNotifier().updateDate(DateTime.now());
+    final mealNotifier = Provider.of<MealNotifier>(context, listen: false);
+    
+    await mealNotifier.teacherUpdateChildId(_child!.childId);
+    await mealNotifier.updateDate(DateTime.now());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: userRole == Role.teacher || userRole == Role.admin
+        leading: userRole!.hasRole(Role.teacher) ||userRole!.hasRole(Role.admin)
             ? IconButton(
                 onPressed: () {
                   GoRouter.of(context).go(TEACHER_ROOT);
@@ -141,7 +120,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
           style: AppTextStyles.headline4,
         ),
         centerTitle: true,
-        actions: userRole != Role.teacher && userRole != Role.admin
+        actions: !(userRole!.hasRole(Role.teacher)) && !(userRole!.hasRole(Role.admin))
             ? [
                 IconButton(
                   onPressed: () {
