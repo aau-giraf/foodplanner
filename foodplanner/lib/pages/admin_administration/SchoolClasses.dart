@@ -16,14 +16,19 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child_with_classname.dart';
 import 'package:foodplanner/models/schoolClass.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/pages/admin_administration/EditClasses.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:foodplanner/models/user_roles.dart';
+import 'package:foodplanner/api/openapi/lib/api.dart';
+import 'package:foodplanner/services/api_config.dart';
+import 'package:http/http.dart' as http;
 
 class SchoolClasses extends StatefulWidget {
+  //final String apiUrl;
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
 
@@ -41,7 +46,10 @@ class _SchoolClasses extends State<SchoolClasses> {
   List<ChildWithClassname> filteredStudents = [];
   Set<int> selectedClassIds = {};
   Set<String> highlightedStudentIds = {};
+
   TextEditingController searchController = TextEditingController();
+
+  final _scrollController = ScrollController();
 
   final controller = TextEditingController();
 
@@ -65,19 +73,48 @@ class _SchoolClasses extends State<SchoolClasses> {
     });
   }
 
+  /*Future<Child> GetChildrenByClassId (int id) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = http.get(
+      Uri.parse('$apiUrl/api/Admin/GetAllChildrenClassesAsync'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $jwtToken',
+      }
+    );
+
+    if(response.statusCode == 200){
+      List<dynamic> jsonResponse = jsonDecode(reponse.body) as List<dynamic>;
+      var responseList = jsonResponse.map((child) => Child.fromJson(child as Map<String, dynamic>)).toList();
+      return responseList;
+    } else if (response.statusCode == 403){
+      throw Exception('Du er ikke autherized til denne funktion');
+    } else {
+      throw Exception('Børn kunne ikke hentes');
+    }
+  }*/
+
   Future<void> fetchChildrenData() async {
     try {
+      print("UserRoles: ${UserRoles.fromString("Student")}");
+      //print("Fetching children from API");
       students = await ChildService(apiUrl: ApiConfig.baseUrl).fetchChildrenInAllClass();
+      print("Students: ${students}");
+      //print("fetched ${students.length} children");
+      print("Students.isEmpty: ${students.isEmpty}");
+      if (students.isEmpty) {
+        print("No children where fetched!");
+      } else {
+        for (var child in students) {
+          print ("Child: ${child.firstName} ${child.lastName}, classId: ${child.classId}, className: ${child.className}");
+        }
+      }
+      /*if(UserRoles.fromString("Student")) {
+        
+      }*/
       filteredStudents = students;
 
       setState(() {
-        final uniqueClasses = <int, String> {};
-        for (var child in students) {
-          uniqueClasses[child.classId] = child.className;
-        }
-      
-        schoolClasses = uniqueClasses.entries.map((entry) => SchoolClass(classId: entry.key, className: entry.value)).toList();
-        schoolClasses.sort((a,b) => a.className.compareTo(b.className));
+        filteredStudents = students;
       });
     } catch (e) {
       print('Error fetching children: $e');
@@ -385,13 +422,21 @@ class _SchoolClasses extends State<SchoolClasses> {
               itemCount: schoolClasses.length,
               itemBuilder: (context, index) {
                 final schoolClass = schoolClasses[index]; 
+
+                print("DEBUG: Cheking class ${schoolClass.className} (id ${schoolClass.classId})");
+
                 final childrenInClass = students.where((child) => child.classId == schoolClass.classId).toList();
+
+                print("Found ${childrenInClass.length} children in this class");
 
                 return ExpansionTile(
                   title: Text(schoolClass.className),
+                  tilePadding: const EdgeInsets.all(15),
+                  collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(30)),
                   children: [
                     if (childrenInClass.isNotEmpty)
                       ...childrenInClass.map((child){
+                        print("Student: ${child.firstName} in ${child.className}");
                         return ListTile(
                           title: Text('${child.firstName} ${child.lastName}'),
                         );

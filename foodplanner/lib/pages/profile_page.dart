@@ -6,7 +6,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/child_service.dart';
@@ -42,11 +42,11 @@ class ParentProfileState extends State<ParentProfile>
       role: UserRoles.empty(),
       archived: false);
 
-  Child child = Child(
-      childId: 0,
+  Pupil child = Pupil(
+      pupilId: 0,
       firstName: 'Unknown',
       lastName: 'Unknown',
-      parentId: 0,
+      guardianId: 0,
       classId: 0);
 
   bool isEditingFirstName = false;

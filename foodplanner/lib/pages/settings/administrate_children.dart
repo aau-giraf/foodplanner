@@ -3,7 +3,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
@@ -25,9 +25,9 @@ class AdministrateChildren extends StatefulWidget {
 
 class AdministrateChildrenState extends State<AdministrateChildren>
     with SingleTickerProviderStateMixin {
-  List<Child> children = [];
+  List<Pupil> children = [];
   List<SchoolClass> schoolClasses = [];
-  List<Child> filteredChildren = [];
+  List<Pupil> filteredChildren = [];
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -75,7 +75,7 @@ class AdministrateChildrenState extends State<AdministrateChildren>
     });
   }
 
-  Widget ctaButtons(Child child) {
+  Widget ctaButtons(Pupil child) {
     return Row(
       children: [
         IconButton(

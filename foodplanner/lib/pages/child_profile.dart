@@ -3,7 +3,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/services/child_service.dart';
@@ -17,7 +17,7 @@ import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user_roles.dart';
 
 class ChildProfile extends StatefulWidget {
-  final Child child;
+  final Pupil child;
   final VoidCallback? onChildChanged;
   const ChildProfile({super.key, required this.child, this.onChildChanged});
 
@@ -75,10 +75,10 @@ class ChildProfileState extends State<ChildProfile>
     updatedLastName = widget.child.lastName;
     selectedClassId = widget.child.classId.toString();
     initialClassId = widget.child.classId.toString();
-    fetchParent();
+    //fetchParent();
     selectedParent = parent;
-    selectedParentId = widget.child.parentId;
-    initialParentId = widget.child.parentId;
+    selectedParentId = widget.child.guardianId;
+    initialParentId = widget.child.guardianId;
 
     ChildProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
@@ -89,7 +89,7 @@ class ChildProfileState extends State<ChildProfile>
     });
   }
 
-  void fetchParent() {
+  /*void fetchParent() {
     ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
       setState(() {
         parent = result;
@@ -99,7 +99,7 @@ class ChildProfileState extends State<ChildProfile>
       throw (error);
     });
   }
-
+*/
   @override
   void dispose() {
     firstNameController.dispose();
@@ -503,14 +503,14 @@ class ChildProfileState extends State<ChildProfile>
                       final navigator = Navigator.of(context); 
                       ChildProfile.childService
                           .updateChild(
-                              widget.child.childId,
+                              widget.child.pupilId,
                               updatedFirstName.isNotEmpty
                                   ? updatedFirstName
                                   : widget.child.firstName,
                               updatedLastName.isNotEmpty
                                   ? updatedLastName
                                   : widget.child.lastName,
-                              selectedParentId ?? widget.child.parentId,
+                              selectedParentId ?? widget.child.guardianId!,
                               int.parse(selectedClassId!))
                           .then((response) {
 

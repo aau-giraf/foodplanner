@@ -5,7 +5,7 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/meal_box.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 
 import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/routes/paths.dart';
@@ -33,7 +33,7 @@ class ChildLandingPageMadpakke extends StatefulWidget {
 
 class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   late Future<bool> _hasRolesFuture;
-  Child? _child;
+  Pupil? _child;
   User? _user;
   final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
@@ -56,7 +56,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
       _hasRolesFuture = authProvider.hasOneOfRoles([Role.parent, Role.student, Role.teacher]);
     });
 
-    Child? childData;
+    Pupil? childData;
     User? loggedInUser;
 
     debugPrint('authProvider.userRole: ${authProvider.userRole}');
@@ -193,7 +193,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                             FEEDBACK_Page,
                             extra: {
                               'from': TEACHER_ROOT,
-                              'childId': _child!.childId.toString()
+                              'childId': _child!.pupilId.toString()
                             },
                           );
                         },
