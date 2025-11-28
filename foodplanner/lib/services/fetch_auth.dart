@@ -44,11 +44,10 @@ Future<UserRoles> fetchAuthData(String email, String password) async {
       final String jwt = data['jwt'];
       final bool roleApproved = data['roleApproved'];
       String roleValueString = data['role'];
-      int id = data['userId'];
 
       UserRoles authRole = UserRoles.fromString(roleValueString);
 
-      await AuthProvider().login(authRole, jwt, roleApproved, id);
+      await AuthProvider().login(authRole, jwt, roleApproved);
       return authRole;
     } else {
       var error = jsonDecode(response.body);

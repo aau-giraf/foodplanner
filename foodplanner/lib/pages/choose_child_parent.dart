@@ -73,8 +73,6 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
         developer.log('Could not fetch children: $e');
       }
 
-      print(_children);
-
       await Future.delayed(Duration(milliseconds: 400)); // buffer to ensure enough time to fetch all children
 
       if (mounted) { // checks whether the object is part of a tree

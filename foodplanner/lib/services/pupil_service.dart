@@ -151,7 +151,6 @@ class PupilService {
           ? response.body
           : json.decode(response.body);
 
-        print(jsonList.toString()); // for debugging purposes
       return jsonList.map((jsonItem) => Pupil.fromChildJson(jsonItem)).toList();
     } else {
       throw Exception('Failed to load children (status ${response.statusCode})');

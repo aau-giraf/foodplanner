@@ -24,17 +24,15 @@ class AuthProvider with ChangeNotifier {
   String? get jwtToken => _jwtToken;
   int? get userId => _userId;
 
-  Future<void> login(UserRoles role, String token, bool isApproved, int userId) async {
+  Future<void> login(UserRoles role, String token, bool isApproved) async {
     _isApproved = isApproved;
     _isLoggedIn = true;
     _userRole = role;
     _jwtToken = token;
-    _userId = userId;
     await _secureStorage.write(key: 'isApproved', value: isApproved.toString());
     await _secureStorage.write(key: 'isLoggedIn', value: 'true');
     await _secureStorage.write(key: 'userRole', value: role.toString());
     await _secureStorage.write(key: 'jwtToken', value: token);
-    await _secureStorage.write(key: 'userId', value: userId.toString());
     notifyListeners();
   }
 
