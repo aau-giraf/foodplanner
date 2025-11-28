@@ -16,6 +16,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/routes/paths.dart';
+import 'dart:developer' as developer;
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -27,6 +28,7 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin {
+
   User user = User(
     id: 0,
     email: 'Unknown',
@@ -154,10 +156,47 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
     });
   }
 
+
   void deleteLoggedInUser() async {
-    var error = await Settings.userService.deleteLoggedInUser();
-    if (error != null) {
-      context.go(LOGIN_PAGE);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      
+      var response = await Settings.userService.deleteLoggedInUser();
+
+      if (response.statusCode == 204){
+        messenger.showSnackBar( 
+          SnackBar(
+            content: Text('Bruger er slettet.'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 5),
+          ),
+        );
+        context.go(LOGIN_PAGE);
+      } else if (response.statusCode == 404) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Bruger forsøgt slettet kunne ikke findes.'),
+            backgroundColor: AppColors.errorText,
+            duration: Duration(seconds: 5),
+          ),
+        );
+      } else {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Der opstod en ukendt fejl under sletning af bruger.'),
+            backgroundColor: AppColors.errorText,
+            duration: Duration(seconds: 5),
+          ),
+        );
+      }
+    } catch (e) {
+      messenger.showSnackBar(
+          SnackBar(
+            content: Text('Der opstod en ukendt fejl under sletning af bruger: $e.'),
+            backgroundColor: AppColors.errorText,
+            duration: Duration(seconds: 5),
+          ),
+        );
     }
   }
 
@@ -571,6 +610,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final messenger = ScaffoldMessenger.of(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -737,7 +777,6 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       cancelText: 'Nej',
                       onConfirm: (){
                         deleteLoggedInUser();
-                        print('User successfully deleted ${user.id}');
                         Navigator.of(context).pop();
                       },
                       onCancel: (){

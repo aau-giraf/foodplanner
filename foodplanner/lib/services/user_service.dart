@@ -276,18 +276,14 @@ class UserService {
 
   Future<dynamic> deleteLoggedInUser() async {
     final jwtToken = await AuthProvider().retrieveToken();
-    final response = await http.put(
+    final response = await http.delete(
       Uri.parse('$apiUrl/api/Users/DeleteLoggedInUser'),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $jwtToken',
+        'accept': '*/*'
       }
     );
 
-    if (response.statusCode == 400){
-      return jsonDecode(response.body);
-    } else if (response.statusCode != 200){
-      return {'Message': 'Kunne ikke slette bruger'};
-    }
+    return response;
   }
 }
