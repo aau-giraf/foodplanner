@@ -12,6 +12,8 @@ import 'package:go_router/go_router.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/pages/admin/profiles/admin_one_profile.dart';
+import 'package:foodplanner/pages/admin/profiles/deactivate_accounts.dart';
 
 class AdminProfilesPage extends StatefulWidget {
   const AdminProfilesPage({super.key});
@@ -131,6 +133,12 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
                       });
                     }
                   ),
+                  clickable: true,
+                  ctaFunction: () async {
+                    setState(() {
+                      _users.removeAt(index);
+                    });
+                  },
                 )
               );
             }).toList(),
@@ -139,40 +147,42 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
               color: AppColors.background,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 1,
-                  horizontal: 5
+                  vertical: 10,
+                  horizontal: 10
                 ),
                 child: Column(
                   children: [
-                    ColoredBox(
-                      color: Colors.blue,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: CustomButton(
-                        onTab: null,
-                        text: "{konto_navn}",
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (c) => AdminOneProfilePage()));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
                         foregroundColor: AppColors.textPrimary,
-                        backgroundColor: AppColors.background,
-                        size: ButtonSize.medium,
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                       ),
-                    ),
-                    Container(
-                      width: 26,
-                      height: 26,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary, // Din orange
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '!',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text("{konto_navn}"),
+                          const SizedBox(width: 8),
+                          Container(
+                            width: 26,
+                            height: 26,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Center(
+                              child: Text(
+                                '!',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                     /*Text(
@@ -237,7 +247,7 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
                   height: 56,
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   decoration: BoxDecoration(
-                    color: Colors.white,                         // hvid som i Figma
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(50),     // pill-form
                     boxShadow: [
                       BoxShadow(

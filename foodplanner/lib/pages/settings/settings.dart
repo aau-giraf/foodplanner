@@ -14,7 +14,7 @@ import 'package:foodplanner/pages/settings/SchoolClasses.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:provider/provider.dart';
-import 'package:foodplanner/pages/admin/profiles/deactivate_accounts.dart';
+import 'package:foodplanner/pages/admin/profiles/admin_all_profiles.dart';
 import 'package:go_router/go_router.dart';
 
 
@@ -104,7 +104,7 @@ class _SettingsPage extends State<Settings> {
           'ctaFunction': () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => DeactivateAccountsPage()),
+              MaterialPageRoute(builder: (context) => AdminAllProfilesPage()),
             );
           }
         },
