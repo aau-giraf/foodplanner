@@ -117,20 +117,20 @@ class ChildService {
 
   Future<List<ChildWithClassname>> fetchChildrenInAllClass() async {
     try {
+      List<dynamic> jsonList = [];
       final jwtToken = await AuthProvider().retrieveToken();
-      print("JWT ROken: $jwtToken");
 
-      final apiClient = ApiClient(basePath: ApiConfig.baseUrl);
+      var apiClient = ApiClient(basePath: ApiConfig.baseUrl);
       apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
 
       final childrensApi = ChildrensApi(apiClient);
 
       final response = await childrensApi.apiChildrensGetAllChildrenClassesGetWithHttpInfo(); 
-      print("RAW API RESPONSE: ${response}");
       print("RAW API RESPONSE: ${response.body}");
-      if (response.body == null) return [];
       
-      final jsonList = response.body as List<dynamic>;
+      jsonList = response.body is List ? response.body : json.decode(response.body);
+
+      print("SEE HERE IS THE LIST: $jsonList");
 
       for (var item in jsonList) {
         print("Child fetched: $item");
