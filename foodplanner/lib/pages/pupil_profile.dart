@@ -15,6 +15,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:foodplanner/pages/choose_guardian.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user_roles.dart';
+import 'package:foodplanner/pages/choose_guardian.dart';
 
 class PupilProfile extends StatefulWidget {
   final Pupil pupil;
@@ -75,7 +76,7 @@ class PupilProfileState extends State<PupilProfile>
     updatedLastName = widget.pupil.lastName;
     selectedClassId = widget.pupil.classId.toString();
     initialClassId = widget.pupil.classId.toString();
-    fetchGuardian();
+    //fetchGuardian();
     selectedGuardian = guardian;
     selectedGuardianId = widget.pupil.guardianId;
     initialGuardianId = widget.pupil.guardianId;

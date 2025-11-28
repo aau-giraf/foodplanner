@@ -154,11 +154,9 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
     });
   }
 
-  void deleteUser(int userId) async {
-    var error = await Settings.userService.deleteUser(userId);
+  void deleteLoggedInUser() async {
+    var error = await Settings.userService.deleteLoggedInUser();
     if (error != null) {
-      print('Her');
-      // Her vi skal slette
       context.go(LOGIN_PAGE);
     }
   }
@@ -720,8 +718,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       print('buildcontext was unmounted in $runtimeType');
                       return;
                     }
-
-                    context.go(LOGIN_PAGE);
+                    GoRouter.of(context).go(LOGIN_PAGE);
                   },
                   foregroundColor: AppColors.textFieldBorderFocus,
                   backgroundColor: AppColors.background,
@@ -739,7 +736,8 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       confirmText: 'Ja',
                       cancelText: 'Nej',
                       onConfirm: (){
-                        deleteUser(user.id);
+                        deleteLoggedInUser();
+                        print('User successfully deleted ${user.id}');
                         Navigator.of(context).pop();
                       },
                       onCancel: (){

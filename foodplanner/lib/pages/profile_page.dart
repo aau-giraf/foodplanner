@@ -42,12 +42,12 @@ class GuardianProfileState extends State<GuardianProfile>
       role: UserRoles.empty(),
       archived: false);
 
-  /*Pupil pupil = Pupil(
+  Pupil pupil = Pupil(
       pupilId: 0,
       firstName: 'Unknown',
       lastName: 'Unknown',
       guardianId: 0,
-      classId: 0);*/
+      classId: 0);
 
   bool isEditingFirstName = false;
   bool isEditingLastName = false;

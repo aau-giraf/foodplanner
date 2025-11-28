@@ -274,10 +274,10 @@ class UserService {
     return response;
   }
 
-  Future<dynamic> deleteUser(int userId) async {
+  Future<dynamic> deleteLoggedInUser() async {
     final jwtToken = await AuthProvider().retrieveToken();
-    final response = await http.delete(
-      Uri.parse('$apiUrl/api/Users/Delete/$userId'),
+    final response = await http.put(
+      Uri.parse('$apiUrl/api/Users/DeleteLoggedInUser'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $jwtToken',
