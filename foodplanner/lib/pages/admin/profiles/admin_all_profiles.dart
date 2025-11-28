@@ -11,16 +11,17 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 
-class DeactivateAccountsPage extends StatefulWidget {
+class AdminAllProfilesPage extends StatefulWidget {
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-  const DeactivateAccountsPage({super.key});
+  const AdminAllProfilesPage({super.key});
 
   @override
-  _DeactivateAccountsPageState createState() => _DeactivateAccountsPageState();
+  _AdminAllProfilesPageState createState() => _AdminAllProfilesPageState();
 }
 
-class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
+class _AdminAllProfilesPageState extends State<AdminAllProfilesPage> {
   bool isSwitched = true;
   TextEditingController searchController = TextEditingController();
 
@@ -42,8 +43,9 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
     super.dispose();
   }
 
+  // Tror måske den her skal ændres
   void fetchAllUsers() {
-    DeactivateAccountsPage.userService.fetchAllUsers().then((result) {
+    AdminAllProfilesPage.userService.fetchAllUsers().then((result) {
       setState(() {
         users = result;
         filteredUsers = result;
@@ -55,7 +57,7 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
   }
 
   void updateArchived(int id) async {
-    var error = await DeactivateAccountsPage.userService.updateArchived(id);
+    var error = await AdminAllProfilesPage.userService.updateArchived(id);
     
     if (!mounted){
       developer.log('buildcontext is not mounted, in $runtimeType');
@@ -81,6 +83,7 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
     }
   }
 
+  // Tror ikke den her virker
   void filterUsers() {
     final query = searchController.text.toLowerCase();
     setState(() {
@@ -120,45 +123,54 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: InkWell(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Row(
-              children: [
-                SFIcon(SFIcons.sf_chevron_backward),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  'Indstillinger',
-                  style: AppTextStyles.headline4,
-                  textAlign: TextAlign.left,
-                ),
-              ],
-            ),
+        backgroundColor: Colors.white,
+        toolbarHeight: 225,
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 70),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Administrér',
+                style: TextStyle(fontSize: 36),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                'profiler',
+                style: TextStyle(fontSize: 36),
+                textAlign: TextAlign.center,
+              ),
+              Icon(
+                Icons.manage_accounts_outlined,
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Alle profiler',
+                    style: TextStyle(fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              )
+            ],
           ),
         ),
-        leadingWidth: 200,
-        backgroundColor: Colors.white,
-        scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SettingsWidget(
+            /*SettingsWidget(
               leftIcon: SFIcons.sf_person_crop_circle_fill_badge_minus,
               title: 'Deaktiver profiler',
               subTitle:
                   'Administrer profiler. Her kan du deaktivere eller genaktivere brugere.',
               type: SettingsType.header,
-            ),
-            SizedBox(
-              height: 20,
-            ),
+            ),*/
+            SizedBox(height: 10),
             SearchField(
               controller: searchController,
               hintText: 'Søg efter bruger',
@@ -199,6 +211,7 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
           ],
         ),
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }
