@@ -777,7 +777,6 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       cancelText: 'Nej',
                       onConfirm: (){
                         deleteLoggedInUser();
-                        Navigator.of(context).pop();
                       },
                       onCancel: (){
                         Navigator.of(context).pop();
