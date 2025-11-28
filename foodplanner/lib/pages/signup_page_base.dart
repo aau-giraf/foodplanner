@@ -9,7 +9,7 @@ import 'package:foodplanner/services/user_service.dart';
 
 class SignupPageBase extends StatefulWidget {
   final String title, buttonText;
-  final Widget selection;
+  final Widget? selection;
   final Future<void> Function(Map<String, String>) onSubmit;
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
@@ -17,7 +17,7 @@ class SignupPageBase extends StatefulWidget {
     super.key,
     required this.title,
     required this.buttonText,
-    required this.selection,
+    this.selection,
     required this.onSubmit,
   });
 
@@ -350,7 +350,7 @@ class SignupPageBaseState extends State<SignupPageBase> {
                     ),
                   ),
                   SizedBox(height: 15),
-                  widget.selection,
+                  if (widget.selection != null) widget.selection!,
                 ],
               ),
             ),

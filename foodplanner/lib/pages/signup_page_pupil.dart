@@ -3,17 +3,20 @@ import 'dart:convert';
 import 'package:dropdown_button2/dropdown_button2.dart' show ButtonStyleData, DropdownButton2, IconStyleData, DropdownStyleData, MenuItemStyleData;
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/pages/signup_page_base.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/user_service.dart';
+import 'package:provider/provider.dart';
+import 'dart:developer' as developer;
 
 class CreatePupilPage extends StatefulWidget {
+
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   static final SchoolClassService schoolClassService = SchoolClassService(apiUrl: ApiConfig.baseUrl);
   static final PupilService pupilService = PupilService(apiUrl: ApiConfig.baseUrl);
@@ -26,22 +29,74 @@ class CreatePupilPage extends StatefulWidget {
 
 class _CreatePupilPageState extends State<CreatePupilPage> {
 
-  PupilService pupilService = CreatePupilPage.pupilService;
+  late AuthProvider authProvider;
 
   Future<List<SchoolClass>> classesFuture = CreatePupilPage.schoolClassService.fetchAllClasses();
 
   List<SchoolClass> classes = [];
 
+  List<int> parentIds = [];
+
   String? selectedValue;
+  int parentId = 0;
 
   @override
   void initState() {
     super.initState();
+    authProvider = Provider.of<AuthProvider>(context, listen: false);
     classesFuture.then((classes) {
       setState(() {
         this.classes = classes;
       });
     });
+  }
+
+
+  Future<int?> loadLoggedInParentId () async {
+    try {
+      await authProvider.loadFromStorage();
+      print('Loaded user ID: ${authProvider.userId}');
+      print('Loaded user role: ${authProvider.userRole}');
+
+      final int? parentId = authProvider.userId ?? await authProvider.loadFromStorage().then((_) => authProvider.userId);
+      print(parentId);
+      return parentId;
+    } catch (e) {
+      developer.log('No logged in parentID found.');
+    }
+    return null;
+  }
+
+  /*Future<void> createGuardianPupilRelation (int childId, int parentId) async {
+    try {
+      final relationResponse = await CreatePupilPage.pupilService.addParentToChild(childId, parentId);
+
+      if(relationResponse.statusCode == 200) {
+          developer.log('Parent-child relation created succesfully');
+      } else if (relationResponse.statusCode == 409) {
+          developer.log('Parent-child relation already exists');
+      } 
+
+    } catch (e) {
+      developer.log("Failed to add parent to child.");
+    }
+  }*/
+
+  Future<String> createPupilUser (String firstName, String lastName, String email, String password, List<int> parentIds, int classId) async {
+    try {
+      final userResponse = await SignupPageBase.userService.createUserPupil(firstName, lastName, email, password, parentIds, classId);
+
+      if (userResponse.statusCode != 201) {
+        var error = jsonDecode(userResponse.body);
+        (context as Element).findAncestorStateOfType<SignupPageBaseState>()?.handleErrors(error);
+      }
+      print(userResponse.body);
+      return userResponse.body;
+
+    } catch (e) {
+      developer.log("User for pupil could not be created.");
+    }
+    return '';
   }
 
   // Sign up logic for a Pupil 
@@ -51,44 +106,41 @@ class _CreatePupilPageState extends State<CreatePupilPage> {
     String lastName, 
     String email, 
     String password, 
-    String role, 
     int classId) async {
 
       try {
-        
-        final userResponse = await SignupPageBase.userService.createUser(firstName, lastName, email, password, role);
 
-        if (userResponse.statusCode != 201) {
-          var error = jsonDecode(userResponse.body);
-          (context as Element).findAncestorStateOfType<SignupPageBaseState>()?.handleErrors(error);
-          return;
+        final int? parentId = await loadLoggedInParentId();
+        if (parentId == null) {
+          throw Exception("Parent ID is null");
         }
 
-        final Map<String, dynamic> userJson = jsonDecode(userResponse.body);
-        final int userID = userJson['id'];
+        print(parentId);
 
-        final Pupil pupil = await pupilService.getByPupilId(userID);
+        parentIds = [parentId];
+        
+        final userResponseBody = await createPupilUser(firstName, lastName, email, password, parentIds, classId);
 
-        //updating the classID for the pupil 
-        final updateClassResponse = await pupilService.updatePupilsClass(pupil.pupilId, classId);
+        if (userResponseBody == "") {
+          throw Exception("User creation failed.");
+        }
+
+        /*final int childId = jsonDecode(userResponseBody);
 
 
-        /*final childResponse = await CreatePupilPage.pupilService.createPupil(firstName, lastName, classId);*/
+        await createGuardianPupilRelation(childId, parentId);*/
 
-        if (updateClassResponse.statusCode == 201){
-          ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Barn oprettet!'),
               backgroundColor: Colors.green,
               duration: Duration(seconds: 5),
             ),
           );
-          await Future.delayed(const Duration(seconds: 1)); // buffer
-          Navigator.pop(context, true);
-        } else {
-          var error = jsonDecode(updateClassResponse.body);
-          (context as Element).findAncestorStateOfType<SignupPageBaseState>()?.handleErrors(error);
-        }
+        
+        await Future.delayed(const Duration(seconds: 1)); // buffer
+        Navigator.pop(context, true);
+
       } catch (e) {
         if (!context.mounted) {
           return;
@@ -100,6 +152,7 @@ class _CreatePupilPageState extends State<CreatePupilPage> {
             duration: Duration(seconds: 5),
           )
         );
+
       }
   }
 
@@ -219,7 +272,6 @@ class _CreatePupilPageState extends State<CreatePupilPage> {
           fields["lastName"]!,
           fields["email"]!,
           fields["password"]!,
-          "Child",
           int.parse(selectedValue!),
         );
       }

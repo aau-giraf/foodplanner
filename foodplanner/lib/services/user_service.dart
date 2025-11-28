@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:foodplanner/auth/auth_provider.dart';
 
 class UserService {
   final String apiUrl;
@@ -127,6 +126,28 @@ class UserService {
         'role': role
       }),
     );
+
+    return response;
+  }
+
+  Future<http.Response> createUserPupil(String firstName, String lastName,
+      String email, String password, List<int> parentIds, int classId) async {
+    final response = await http.post(
+      Uri.parse('$apiUrl/api/Users/CreateUserChildren'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+        'password': password,
+        'parentIds': parentIds,
+        'classId': classId,
+      }),
+    );
+
+    print(classId);
 
     return response;
   }

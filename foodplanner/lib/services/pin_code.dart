@@ -26,10 +26,11 @@ class PinService {
           final String jwt = data['jwt'];
           final bool roleApproved = data['roleApproved'];
           String role = data['role'];
+          int id = data['id'];
 
           UserRoles authRole = UserRoles.fromString(role);
 
-        await AuthProvider().login(authRole, jwt, roleApproved);
+        await AuthProvider().login(authRole, jwt, roleApproved, id);
         return null;
       } else {
         var error = jsonDecode(response.body);
