@@ -71,8 +71,9 @@ class ParentMainPageState extends State<ParentMainPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             InkWell(
-              hoverColor: Colors.transparent,
+              hoverColor: const Color.fromRGBO(0, 0, 0, 0),
               onTap: (){
+                debugPrint('navStrategy = $navStrategy');
                 navStrategy?.goToPage(CHOOSE_CHILD_PARENT, context);
                 //GoRouter.of(context).go(CHOOSE_CHILD_PARENT);
               },
@@ -118,6 +119,7 @@ class ParentMainPageState extends State<ParentMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
+                debugPrint('navStrategy = $navStrategy');
                 navStrategy?.goToPage(CHOOSE_CHILD_PARENT, context);
                 //nav.navigate(2, context);
                 //GoRouter.of(context).go(SETTINGS_PAGE);
