@@ -6,8 +6,10 @@ import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
+import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -27,6 +29,7 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
   String? _error;
   List<Meal> _templates = const [];
   final Set<int> _expandedTemplateIds = <int>{};
+  List<int> selectedTemplates = <int>[];
 
   @override
   void initState() {
@@ -155,10 +158,45 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
                                    else
                   ..._templates.map(_buildTemplateCard),
                                    const SizedBox(height: 20),
+                                   
+                                   
                                    CustomButton(
                  text: 'Brug skabeloner',
                  size: ButtonSize.medium,
-                 onTab: () {},
+                 onTab: ()  async {
+               
+                   try {
+                     final List<Ingredient> res = await useTemplatesWithIDs(
+                       context.read<AuthProvider>(),
+                       selectedTemplates,
+                     );
+
+                     
+                     final List<Map<String, dynamic>> mappedIngredients =
+                         res.map((ing) {
+                       return {
+                         'id': ing.id,
+                         'name': ing.name,
+                         'foodImageId': ing.foodImageId,
+                       };
+                     }).toList();
+
+                     
+                     
+                       Navigator.pop(context, mappedIngredients);
+                     
+                   } catch (e) {
+                     if (!mounted) return;
+
+
+                     ScaffoldMessenger.of(context).showSnackBar(
+                       const SnackBar(
+                         content: Text(
+                             'Der ipstod en fejl ved hentning af ingredienser fra skabelonerside'),
+                       ),
+                     );
+                   }
+                 },
                                    ),
                        
                      ],
@@ -245,6 +283,7 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
 
   Widget _buildTemplateCard(Meal meal) {
     final bool isExpanded = _expandedTemplateIds.contains(meal.id);
+    final bool isSelected = selectedTemplates.contains(meal.id);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 18),
@@ -265,13 +304,32 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
             onTap: () => _toggleExpanded(meal.id),
             borderRadius: BorderRadius.circular(24),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Row(
                 children: [
+                
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (isSelected) {
+                          selectedTemplates.remove(meal.id);
+                        } else {
+                          selectedTemplates.add(meal.id);
+                        }
+                      });
+                    },
+                    child: Icon(
+                      isSelected
+                          ? Icons.check_circle
+                          : Icons.radio_button_unchecked,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       meal.name,
@@ -281,11 +339,14 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
                       ),
                     ),
                   ),
+
+
                   Icon(
                     isExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     color: Colors.white,
+                      size: 35,
                   ),
                 ],
               ),
