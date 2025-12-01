@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 import 'package:http/http.dart' as http;
 
-class ChildService {
+class PupilService {
   final String apiUrl;
 
-  ChildService({required this.apiUrl});
+  PupilService({required this.apiUrl});
 
-  Future<List<Child>> fetchChild() async {
+  Future<List<Pupil>> fetchPupil() async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(
         Uri.parse('$apiUrl/api/Admin/GetAllChildren'),
@@ -20,7 +20,7 @@ class ChildService {
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = jsonDecode(response.body) as List<dynamic>;
       var responseList = jsonResponse
-          .map((child) => Child.fromJson(child as Map<String, dynamic>))
+          .map((pupil) => Pupil.fromJson(pupil as Map<String, dynamic>))
           .toList();
       return responseList;
     } else if (response.statusCode == 403) {
@@ -30,7 +30,7 @@ class ChildService {
     }
   }
 
-  Future<Child> fetchChildById() async {
+  Future<Pupil> fetchPupilById() async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(
       Uri.parse('$apiUrl/api/Childrens/GetChildrenByParentId'),
@@ -41,13 +41,13 @@ class ChildService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return Child.fromJson(data);
+      return Pupil.fromJson(data);
     } else {
       throw Exception('Failed to load child data');
     }
   }
 
-  Future<http.Response> createChild(
+  Future<http.Response> createPupil(
       String firstName, String lastName, int classId) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.post(
@@ -65,7 +65,7 @@ class ChildService {
     return response;
   }
 
-  Future<http.Response> updateChild(int id, String firstName, String lastName,
+  Future<http.Response> updatePupil(int id, String firstName, String lastName,
       int parentId, int classId) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
@@ -86,7 +86,7 @@ class ChildService {
     return response;
   }
 
-  Future<http.Response> deleteChild(int id) async {
+  Future<http.Response> deletePupil(int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.delete(
       Uri.parse('$apiUrl/api/Childrens/Delete/$id'),
@@ -98,7 +98,7 @@ class ChildService {
     return response;
   }
 
-  Future<Child> getByChildId(int id) async {
+  Future<Pupil> getByPupilId(int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(
         Uri.parse('$apiUrl/api/Childrens/GetChildFromChildId/$id'),
@@ -108,10 +108,7 @@ class ChildService {
     if (response.statusCode == 200) {
       //debugPrint('response.body: ${response.body}', wrapWidth: 2048);
       final data = json.decode(response.body);
-      //debugPrint('child data: ${data}');
-      final child = Child.fromJson(data);
-      //debugPrint('child from data: ${child}');
-      return child;
+      return Pupil.fromJson(data);
     } else {
       throw Exception('Failed to load child data');
     }

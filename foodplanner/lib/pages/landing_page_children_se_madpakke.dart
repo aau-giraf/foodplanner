@@ -6,16 +6,16 @@ import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
 import 'package:provider/provider.dart';
 
-class ChildLandingPageSeMadpakke extends StatefulWidget {
-  const ChildLandingPageSeMadpakke({super.key});
+class PupilLandingPageSeMadpakke extends StatefulWidget {
+  const PupilLandingPageSeMadpakke({super.key});
 
   @override
-  _ChildLandingPageSeMadpakkeState createState() =>
-      _ChildLandingPageSeMadpakkeState();
+  _PupilLandingPageSeMadpakkeState createState() =>
+      _PupilLandingPageSeMadpakkeState();
 }
 
-class _ChildLandingPageSeMadpakkeState
-    extends State<ChildLandingPageSeMadpakke> {
+class _PupilLandingPageSeMadpakkeState
+    extends State<PupilLandingPageSeMadpakke> {
   bool isDraggingOver = false; // Add this line to define the variable
 
   List<PackedIngredient> packedIngredients = [];

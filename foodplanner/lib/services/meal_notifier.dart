@@ -46,13 +46,9 @@ class MealNotifier with ChangeNotifier {
     
     //debugPrint('Step3: Retrieving role..');
     final role = await AuthProvider().retrieveRole();
-    //debugPrint('Step3 done: role = $role');
-
-    if(role == null){developer.log("Role was null"); return;} 
+    if(role == null){developer.log("Role was null"); return;}
     Meal? mealData;
-
-    if (role.hasRole(Role.student)|| role.hasRole(Role.parent) || role.hasRole(Role.child)) {
-      //debugPrint('Step4: Fetching mealData for student...');
+    if (role.hasRole(Role.pupil)||role.hasRole(Role.guardian)) {
       mealData = await mealService
           .fetchMealData(DateFormat('yyyy-MM-dd').format(selectedDate));
       //debugPrint('Step4 done: mealdata = $mealData');
