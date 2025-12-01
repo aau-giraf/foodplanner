@@ -140,7 +140,10 @@ Future<void> updateTemplateStatus(AuthProvider authProvider, int id,
   }
 }
 
-Future<List<Ingredient>> fetchUniqueIngredientsFromMeals(
+
+
+
+Future<List<Ingredient>> useTemplatesWithIDs(
     AuthProvider authProvider, List<int> mealIds,
     {http.Client? client}) async {
   if (mealIds.isEmpty) return const [];
@@ -154,11 +157,12 @@ Future<List<Ingredient>> fetchUniqueIngredientsFromMeals(
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer $jwtToken',
     },
-    body: jsonEncode({'mealIds': mealIds}),
+    body: jsonEncode(mealIds),
   );
 
+  
   if (response.statusCode != 200) {
-    throw Exception('Kunne ikke hente ingredienser');
+    throw Exception('Kunne ikke hente ingredienser ');
   }
 
   final List<dynamic> jsonResponse = jsonDecode(response.body) as List<dynamic>;
