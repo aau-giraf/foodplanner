@@ -301,40 +301,31 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
       child: Column(
         children: [
           InkWell(
-            onTap: () => _toggleExpanded(meal.id),
+            onTap: () => {_toggleExpanded(meal.id),
+           
+           if(isSelected){
+             selectedTemplates.remove(meal.id)
+            } else {
+              selectedTemplates.add(meal.id)
+            },
+            
+            },
             borderRadius: BorderRadius.circular(24),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: !isSelected? AppColors.secondary: AppColors.primary,
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Row(
                 children: [
                 
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (isSelected) {
-                          selectedTemplates.remove(meal.id);
-                        } else {
-                          selectedTemplates.add(meal.id);
-                        }
-                      });
-                    },
-                    child: Icon(
-                      isSelected
-                          ? Icons.check_circle
-                          : Icons.radio_button_unchecked,
-                      color: Colors.white,
-                    ),
-                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       meal.name,
                       style: AppTextStyles.bigText.copyWith(
-                        color: Colors.white,
+                        color: Colors.black,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
