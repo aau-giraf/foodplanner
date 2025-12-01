@@ -66,7 +66,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                   onPressed: () async {
                     await AuthProvider().setRole(UserRoles.of([Role.pupil]));
                     await AuthProvider().loadFromStorage();
-                    if(!context.mounted) {
+                    if (!context.mounted) {
                       return;
                     }
                     GoRouter.of(context).go('/');
@@ -106,11 +106,11 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                                 mealNotifier.fetchMealData();
                               });
                             },
-                            icon: SFIcon(
+                            /*icon: SFIcon(
                               SFIcons.sf_plus,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                            ),
+                            ),*/
                           ))
                       : Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -20,7 +20,9 @@ import 'package:foodplanner/pages/settings/SchoolClasses.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/pages/profile_page.dart';
-import 'package:foodplanner/pages/signup_page.dart';
+import 'package:foodplanner/pages/signup_page_adult.dart';
+import 'package:foodplanner/pages/signup_page_base.dart';
+import 'package:foodplanner/pages/signup_page_pupil.dart';
 import 'package:foodplanner/pages/main_page_student.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
@@ -123,7 +125,7 @@ final router = GoRouter(
     ),
 
     GoRoute(path: CHOOSE_CHILD_PARENT,
-      builder: (context, state) => ChooseChildParent(),
+      builder: (context, state) => ChooseChildGuardian(),
     ),
    /* 
     GoRoute(path: CHOOSE_CHILD_TEACHER,

@@ -82,11 +82,10 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
     }
   }
 
-
   Future<void> caller() async {
-    final mealNotifier = Provider.of<MealNotifier>(context, listen: false);
-
-    await MealNotifier().teacherUpdateChildId(_pupil!.guardianId);
+    if(_pupil?.guardianId != null) {
+      await MealNotifier().teacherUpdateChildId(_pupil!.guardianId!);
+    }
     await MealNotifier().updateDate(DateTime.now());
   }
 

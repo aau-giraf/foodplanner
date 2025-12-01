@@ -667,7 +667,6 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                               ...generalSettings.map((setting) {
                                 return SettingsWidget(
                                   leftIcon: setting['leftIcon'],
-                                  rightIcon : setting['rightIcon'],
                                   title: setting['title'],
                                   isEditable: setting['isEditable'],
                                   cta: setting['cta'],

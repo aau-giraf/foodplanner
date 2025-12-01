@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:foocplanner/api/openapi/lib/api.dart';
+import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/pupil.dart';

@@ -55,7 +55,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         surfaceTintColor: AppColors.background,
         child: Row(
           children: [
-            if (widget.rightIcon != null)
+            if (widget.leftIcon != null)
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10.0, vertical: 15.0),
