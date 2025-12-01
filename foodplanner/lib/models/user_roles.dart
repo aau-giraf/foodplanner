@@ -45,6 +45,18 @@ class UserRoles {
       String() => throw InvalidRoleStringException(str),
     }));
 
+  factory UserRoles.fromInt(int value){
+    var userRole = UserRoles.empty();
+    for (var role in Role.values){
+      int roleBit = 1 << role.index;
+      if((value & roleBit) != 0){
+        userRole = userRole.add(role);
+      }
+    }
+    print("role from int: $userRole"); // for debugging purposes
+    return userRole;
+  }
+
   @override
   String toString() => roles.map((r) => switch(r) {
     Role.guardian => "parent",

@@ -9,11 +9,13 @@ enum SettingsType { items, header, inlineItems }
 class SettingsWidget extends StatefulWidget {
   final IconData? leftIcon;
   final Widget? leftWidget;
+  final IconData? rightIcon;
   final String title;
   final String subTitle;
   final dynamic cta;
   final SettingsType type;
   final bool divider;
+  final bool isBold;
   final bool clickable;
   final VoidCallback? ctaFunction;
   final bool isEditable;
@@ -24,11 +26,13 @@ class SettingsWidget extends StatefulWidget {
     super.key,
     this.leftIcon,
     this.leftWidget,
+    this.rightIcon,
     required this.title,
     this.subTitle = '',
     this.cta,
     required this.type,
     this.divider = true,
+    this.isBold = false,
     this.clickable = false,
     this.ctaFunction,
     this.controller,
@@ -53,6 +57,27 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         surfaceTintColor: AppColors.background,
         child: Row(
           children: [
+            if (widget.rightIcon != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10.0, vertical: 15.0),
+                  child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(8.0), // Add rounded corners
+                  child: Container(
+                    color: AppColors.primary,
+                    width: 50,
+                    height: 50,
+                    child: Center(
+                      child: SFIcon(
+                        widget.leftIcon!,
+                        fontSize: 30,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             if (widget.showIcon)
             if (widget.leftWidget != null)
               Padding(
@@ -92,7 +117,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                       )
                     : Text(
                         widget.title,
-                        style: AppTextStyles.bigText,
                         softWrap: true, // Allow text to wrap
                       )),
             widget.cta ?? Container(),
@@ -141,7 +165,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                           SizedBox(width: 10),
                           Text(
                             widget.title,
-                            style: AppTextStyles.bigText,
                           ),
                           widget.showSpacer ? Spacer() : Container(),
                           widget.cta ?? Container(),
@@ -158,7 +181,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             ? Divider(
                 color: Colors.black,
                 thickness: 0.25,
-                indent: 70,
+                indent: 90,
+                endIndent: 8,
               )
             : Container()
       ],
@@ -199,9 +223,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 Text(
                   widget.title,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.bigText.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
                   softWrap: true, // Allow text to wrap
                 ),
                 SizedBox(height: 10),

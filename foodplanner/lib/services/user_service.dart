@@ -255,7 +255,7 @@ class UserService {
 
   Future<http.Response> updateUser(
       int id, String firstName, String lastName, String email) async {
-    print("Knapp trykket på");
+   developer.log("Knap trykket på");
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
       Uri.parse('$apiUrl/api/Users/UpdateLoggedIn'),
@@ -268,6 +268,19 @@ class UserService {
         'lastName': lastName,
         'email': email,
       }),
+    );
+
+    return response;
+  }
+
+  Future<dynamic> deleteLoggedInUser() async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.delete(
+      Uri.parse('$apiUrl/api/Users/DeleteLoggedInUser'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $jwtToken',
+        'accept': '*/*'
+      }
     );
 
     return response;

@@ -166,7 +166,7 @@ class _NavBarState extends State<NavBar> {
                       }
                     case 1:
                       if (snapshot.data?.hasRole(Role.teacher) ?? false) {
-                        GoRouter.of(context).go('/');
+                        GoRouter.of(context).go('/profile');
                         break;
                       } else {
                         GoRouter.of(context).go('/profile');
@@ -174,7 +174,7 @@ class _NavBarState extends State<NavBar> {
                       }
                     case 2:
                       if (snapshot.data?.hasRole(Role.guardian) ?? false) {
-                        GoRouter.of(context).go('/profile');
+                        GoRouter.of(context).go('/settings');
                         break;
                       } else {
                         GoRouter.of(context).go('/settings');

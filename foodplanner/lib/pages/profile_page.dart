@@ -492,11 +492,11 @@ class GuardianProfileState extends State<GuardianProfile>
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SettingsHeader(
+            /*SettingsHeader(
               icon: SFIcons.sf_person_fill,
               title: '${guardian.firstName} ${guardian.lastName}',
               subtitle: 'Her kan du redigere dine oplysninger.',
-            ),
+            ),*/
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(

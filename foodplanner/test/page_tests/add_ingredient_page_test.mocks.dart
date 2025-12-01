@@ -466,7 +466,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
       ) as _i4.Future<void>);
 
   @override
-  _i4.Future<bool> hasOneOfRoles(List<_i10.Role>? roles) => (super.noSuchMethod(
+  _i4.Future<bool> hasRoles(List<_i10.UserRoles>? roles) => (super.noSuchMethod(
         Invocation.method(
           #hasOneOfRoles,
           [roles],
@@ -475,16 +475,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
       ) as _i4.Future<bool>);
 
   @override
-  _i4.Future<bool> hasRole(_i10.Role? role) => (super.noSuchMethod(
-        Invocation.method(
-          #hasRole,
-          [role],
-        ),
-        returnValue: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
-
-  @override
-  _i4.Future<bool> hasAllRoles(Iterable<_i10.Role>? roles) =>
+  _i4.Future<bool> hasRolesUnapproved(List<_i10.UserRoles>? roles) =>
       (super.noSuchMethod(
         Invocation.method(
           #hasAllRoles,
@@ -494,14 +485,13 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
       ) as _i4.Future<bool>);
 
   @override
-  _i4.Future<bool> hasOneOfRolesUnapproved(List<_i10.Role>? roles) =>
-      (super.noSuchMethod(
+  /*bool hasRole(List<_i10.UserRoles>? roles) => (super.noSuchMethod(
         Invocation.method(
           #hasOneOfRolesUnapproved,
           [roles],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: false,
+      ) as bool);*/
 
   @override
   _i4.Future<void> setRole(_i10.UserRoles? role) => (super.noSuchMethod(
