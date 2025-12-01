@@ -31,6 +31,8 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
   final Set<int> _expandedTemplateIds = <int>{};
   List<int> selectedTemplates = <int>[];
 
+  bool _isEditMode = false;
+
   @override
   void initState() {
     super.initState();
@@ -110,14 +112,23 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20),
-            child: Text(
-              'Redigér',
-              style: AppTextStyles.headline4.copyWith(
-                color: AppColors.textPrimary,
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _isEditMode = !_isEditMode;
+                });
+              },
+              child: Text(
+                _isEditMode ? 'Færdig' :
+                'Redigér',
+                style: AppTextStyles.headline4.copyWith(
+                  color: AppColors.textPrimary,
+                ),
               ),
             ),
-          ),
-        ],
+            ),
+          ],
+        
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
       ),
@@ -136,7 +147,7 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Text(
-                      'Vælg skabelon(er)',
+                      'Vælg skabeloner',
                       style: AppTextStyles.headline2,
                       textAlign: TextAlign.center,
                     ),
@@ -270,7 +281,7 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
       padding: const EdgeInsets.only(top: 40),
       child: Column(
         children: [
-          const Icon(Icons.inbox, size: 48, color: Colors.grey),
+        const Icon(Icons.inbox_sharp, size: 48, color: Colors.grey),
           const SizedBox(height: 12),
           Text(
             'Ingen skabeloner at vise',
@@ -332,13 +343,32 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
                   ),
 
 
+                  !_isEditMode ?
                   Icon(
                     isExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     color: Colors.white,
                       size: 35,
+                  ): 
+                  InkWell(
+                    onTap: () {
+                      setState(()  {
+                       updateTemplateStatus(
+                          context.read<AuthProvider>(),
+                          meal.id,
+                          false,
+                        );
+                      _templates.removeWhere((template) => template.id == meal.id);
+                      });
+                    },
+                    child: Icon(
+                     Icons.delete,
+                      color: Colors.red,
+                      size: 30,
+                    ),
                   ),
+
                 ],
               ),
             ),
