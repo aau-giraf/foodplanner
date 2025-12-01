@@ -171,49 +171,53 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
                                    const SizedBox(height: 20),
                                    
                                    
-                                   CustomButton(
-                 text: 'Brug skabeloner',
-                 size: ButtonSize.medium,
-                 onTab: ()  async {
-               
-                   try {
-                     final List<Ingredient> res = await useTemplatesWithIDs(
-                       context.read<AuthProvider>(),
-                       selectedTemplates,
-                     );
-
-                     
-                     final List<Map<String, dynamic>> mappedIngredients =
-                         res.map((ing) {
-                       return {
-                         'id': ing.id,
-                         'name': ing.name,
-                         'foodImageId': ing.foodImageId,
-                       };
-                     }).toList();
-
-                     
-                     
-                       Navigator.pop(context, mappedIngredients);
-                     
-                   } catch (e) {
-                     if (!mounted) return;
-
-
-                     ScaffoldMessenger.of(context).showSnackBar(
-                       const SnackBar(
-                         content: Text(
-                             'Der ipstod en fejl ved hentning af ingredienser fra skabelonerside'),
-                       ),
-                     );
-                   }
-                 },
-                                   ),
-                       
+                                  
                      ],
                    ),
                  ),
                ),   
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CustomButton(
+                   text:  'Brug skabeloner',
+                   size: ButtonSize.medium,
+                   onTab: ()  async {
+                                 
+                     try {
+                       final List<Ingredient> res = await useTemplatesWithIDs(
+                         context.read<AuthProvider>(),
+                         selectedTemplates,
+                       );
+                  
+                       
+                       final List<Map<String, dynamic>> mappedIngredients =
+                           res.map((ing) {
+                         return {
+                           'id': ing.id,
+                           'name': ing.name,
+                           'foodImageId': ing.foodImageId,
+                         };
+                       }).toList();
+                  
+                       
+                       
+                         Navigator.pop(context, mappedIngredients);
+                       
+                     } catch (e) {
+                       if (!mounted) return;
+                  
+                  
+                       ScaffoldMessenger.of(context).showSnackBar(
+                         const SnackBar(
+                           content: Text(
+                               'Der ipstod en fejl ved hentning af ingredienser fra skabelonerside'),
+                         ),
+                       );
+                     }
+                   },
+                                     ),
+                ),
+                       
                 ],
               ),
             ),
