@@ -1,35 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
-
+import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/meal.dart';
+import 'package:foodplanner/services/meal_services.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class FoodTemplatePage extends StatefulWidget {
-
-
-
-
-
-
-
-
-
-
-  const FoodTemplatePage({
-    super.key,
-  });
+  const FoodTemplatePage({super.key});
 
   @override
   State<FoodTemplatePage> createState() => _FoodTemplatePage();
 }
 
 class _FoodTemplatePage extends State<FoodTemplatePage> {
+  final TextEditingController _searchController = TextEditingController();
+  final http.Client _client = http.Client();
 
-final TextEditingController textEditingController = TextEditingController();
+  bool _isLoading = true;
+  String? _error;
+  List<Meal> _templates = const [];
+  final Set<int> _expandedTemplateIds = <int>{};
 
+  @override
+  void initState() {
+    super.initState();
+    _loadTemplates();
+  }
 
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _client.close();
+    super.dispose();
+  }
 
+  Future<void> _loadTemplates() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final authProvider = context.read<AuthProvider>();
+      final templates =
+          await fetchMealTemplates(authProvider, client: _client);
+
+      if (!mounted) return;
+      setState(() {
+        _templates = templates;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'Noget gik galt. Prøv igen.';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _toggleExpanded(int templateId) {
+    setState(() {
+      if (_expandedTemplateIds.contains(templateId)) {
+        _expandedTemplateIds.remove(templateId);
+      } else {
+        _expandedTemplateIds.add(templateId);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +105,10 @@ final TextEditingController textEditingController = TextEditingController();
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20),
-            child: InkWell(
-              onTap: () {},
-              child: Text(
-                'Redigér',
-                style: AppTextStyles.headline4.copyWith(
-                  color: AppColors.textPrimary,
-                ),
+            child: Text(
+              'Redigér',
+              style: AppTextStyles.headline4.copyWith(
+                color: AppColors.textPrimary,
               ),
             ),
           ),
@@ -73,74 +117,259 @@ final TextEditingController textEditingController = TextEditingController();
         scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
-
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Text(
-                    'Vælg Skabelon',
-                    style: AppTextStyles.headline2,
-                    textAlign: TextAlign.center,
+      body: _isLoading
+          ? const Center(
+              child: LoadingAnimation(imagePath: 'assets/images/logo.png'),
+            )
+          : RefreshIndicator(
+              onRefresh: _loadTemplates,
+              child: ListView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      'Vælg skabelon(er)',
+                      style: AppTextStyles.headline2,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Card(
+               Card(
                     elevation: 2,
                     color: AppColors.background,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Column(
-                      children: [
-                        TextField(
-  controller: textEditingController,
-  
-  textInputAction: TextInputAction.done,
-  decoration: InputDecoration(
-    hintText: 'Søg',
-    
-    filled: true,
-    fillColor: Colors.white,
-    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(20),
-      borderSide: BorderSide.none,
-    ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: const BorderSide(color: Colors.blue, width: 2),
-      ),
-  ),
-),
-                        
-
-                      ],
-                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        children: [
+                  _buildSearchField(),
+                  const SizedBox(height: 12),
+                  if (_error != null) _buildErrorBanner(),
+                  if (_templates.isEmpty)
+                    _buildEmptyState()
+                  else
+                     ..._templates.map(_buildTemplateCard),
+                  const SizedBox(height: 20),
+                  CustomButton(
+                    text: 'Brug skabeloner',
+                    size: ButtonSize.medium,
+                    onTab: () {},
                   ),
-                ),
+                          
+                        ],
+                      ),
+                    ),
+                  ),   
+                ],
+              ),
+            ),
+    );
+  }
 
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: CustomButton(text: 'Brug Skabelon', size: ButtonSize.medium,
-                    onTab: (){
-                  
-                  }),
-                )
-              ],
+  Widget _buildSearchField() {
+    return TextField(
+      controller: _searchController,
+      readOnly: true,
+      decoration: InputDecoration(
+        hintText: 'Søg',
+        filled: true,
+        fillColor: Colors.white,
+        prefixIcon: const Icon(Icons.search),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide:
+              BorderSide(color: Colors.grey.shade300, width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorBanner() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.red.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.red.shade200),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.error_outline, color: Colors.red),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              _error ?? '',
+              style: AppTextStyles.buttonTextSmall.copyWith(color: Colors.red),
             ),
           ),
-        ),
+          TextButton(
+            onPressed: _loadTemplates,
+            child: const Text('Prøv igen'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 40),
+      child: Column(
+        children: [
+          const Icon(Icons.inbox, size: 48, color: Colors.grey),
+          const SizedBox(height: 12),
+          Text(
+            'Ingen skabeloner at vise',
+            style: AppTextStyles.mediumText,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTemplateCard(Meal meal) {
+    final bool isExpanded = _expandedTemplateIds.contains(meal.id);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () => _toggleExpanded(meal.id),
+            borderRadius: BorderRadius.circular(24),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      meal.name,
+                      style: AppTextStyles.bigText.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          AnimatedCrossFade(
+            duration: const Duration(milliseconds: 200),
+            crossFadeState: isExpanded
+                ? CrossFadeState.showSecond
+                : CrossFadeState.showFirst,
+            firstChild: const SizedBox.shrink(),
+            secondChild: _buildExpandedContent(meal),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExpandedContent(Meal meal) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 22),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AspectRatio(
+            aspectRatio: 4 / 3,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: AppColors.lightSecondary),
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.image_outlined,
+                  size: 86,
+                  color: AppColors.secondary,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 18),
+          Text(
+            'Ingredienser',
+            style: AppTextStyles.bigText.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          if (meal.ingredients.isEmpty)
+            Text(
+              'Ingen ingredienser fundet',
+              style: AppTextStyles.mediumText.copyWith(color: Colors.grey),
+            )
+          else
+            ...meal.ingredients.map(
+              (packedIngredient) => Container(
+                margin: const EdgeInsets.symmetric(vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.image_outlined,
+                      size: 22,
+                      color: AppColors.secondary,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        packedIngredient.ingredient.name,
+                        style: AppTextStyles.mediumText,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: AppColors.secondary,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

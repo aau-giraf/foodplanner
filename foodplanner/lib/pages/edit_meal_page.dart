@@ -35,8 +35,8 @@ class _EditMealPageState extends State<EditMealPage> {
   XFile? _tempImgFile;
   List<Map<String, dynamic>>? _tempIng;
   bool _isSaving = false;
-  bool isTemplate = false;
-
+  
+bool isTemplate = false;
  
 
   @override
@@ -45,8 +45,9 @@ class _EditMealPageState extends State<EditMealPage> {
     final meal = context.read<MealNotifier>().meal;
     _nameController.text = meal?.name.isNotEmpty == true ? meal!.name : 'madpakke';
 
-
-
+   
+  isTemplate = meal?.template  ?? false; 
+  
   
   }
 
@@ -167,6 +168,7 @@ class _EditMealPageState extends State<EditMealPage> {
 
       await _persistIngUpdate(currentMeal);
 
+     
       final updatedMeal = Meal(
         id: currentMeal.id,
         name: _nameController.text.trim().isNotEmpty
@@ -175,7 +177,9 @@ class _EditMealPageState extends State<EditMealPage> {
         foodImageId: updatedFoodImageId,
         date: currentMeal.date,
         ingredients: currentMeal.ingredients,
+        template: isTemplate,
       );
+    
 
       await updateMeal(http.Client(), context.read(), updatedMeal);
       await mealNotifier.fetchMealData();
@@ -278,7 +282,9 @@ class _EditMealPageState extends State<EditMealPage> {
                           })
                       .toList());
           final bool showNoMealData = meal == null && _tempIng == null;
-
+          
+      
+         
 
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -462,8 +468,10 @@ class _EditMealPageState extends State<EditMealPage> {
                             CupertinoSwitch(
                               value: isTemplate,
                               onChanged: (value) {
+                               
                                 setState(() {
-                                  isTemplate = value;
+                                 isTemplate = value;
+                               
                                  
                                 });
                               },
@@ -484,6 +492,7 @@ class _EditMealPageState extends State<EditMealPage> {
                 const SizedBox(height: 10),
                 CustomButton(
                   onTab: () async{
+                    
                     if (_isSaving) return;
                   await _saveEverything();
                     Navigator.pop(context);

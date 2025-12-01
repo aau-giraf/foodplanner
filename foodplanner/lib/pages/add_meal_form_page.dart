@@ -141,12 +141,14 @@ class _MealFormPageState extends State<MealFormPage> {
   Future<void> createMealWithIngredients() async {
     final selectedIngredientsIds = retrieveSelectedIngredients();
     final mealTitle = retrieveMealName();
+    final templateStatus = saveAsTemplate;
     final authProvider =
         AuthProvider(); // Ensure you have an instance of AuthProvider
 
     final response = await createMeal(
       authProvider,
       mealTitle,
+      templateStatus,
       foodImageId,
       date,
     );

@@ -1,6 +1,7 @@
 import 'dart:developer' as developer;
 import 'dart:convert';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/meal.dart';
 import 'package:http/http.dart' as http;
 import 'package:foodplanner/services/api_config.dart';
@@ -33,7 +34,7 @@ Future<Meal> fetchMeal(
 // Creates a new meal on the server.
 // Takes an HTTP client, meal title, optional image URL, optional date, and a list of ingredients.
 // Returns the server's response.
-Future<http.Response> createMeal(AuthProvider authProvider, final String name,
+Future<http.Response> createMeal(AuthProvider authProvider, final String name, final bool templateStatus,
     final int? foodImageId, final DateTime? date, {http.Client? client}) async {
       
   // Optional client for tests
@@ -54,6 +55,7 @@ Future<http.Response> createMeal(AuthProvider authProvider, final String name,
       'id': 0,
       'name': name, // Meal title.
       'food_image_id': foodImageId,
+      'template': templateStatus,
       'date':
           DateFormat('yyyy-MM-dd').format(date!), // Optional date for the meal.
     }),
@@ -68,6 +70,7 @@ Future<http.Response> createMeal(AuthProvider authProvider, final String name,
 Future<http.Response> updateMeal(
     http.Client client, AuthProvider authProvider, final Meal meal) async {
   final jwtToken = await authProvider.retrieveToken();
+   
   // Sending a POST request to the API endpoint to create a new meal.
   final response = await client.put(
     Uri.parse(
@@ -77,6 +80,8 @@ Future<http.Response> updateMeal(
           'application/json; charset=UTF-8', // Specify that the content is JSON.
       'Authorization': 'Bearer $jwtToken'
     },
+
+
     // Encode the meal data as JSON for the request bodyy with date formatted as yyyy-MM-dd 
     body: jsonEncode({
       'id': meal.id,
@@ -84,10 +89,83 @@ Future<http.Response> updateMeal(
       'food_image_id': meal.foodImageId,
       'date': meal.date != null ? DateFormat('yyyy-MM-dd').format(meal.date!) : null,
       'ingredients': meal.ingredients.map((e) => e.toJson()).toList(),
+      'template': meal.template,
     }) 
   );
  developer.log('Statuscode: ${response.statusCode} body:${response.body}');
   return response; // Return the response from the server.
+}
+
+Future<List<Meal>> fetchMealTemplates(AuthProvider authProvider,
+    {http.Client? client}) async {
+  client ??= http.Client();
+  final jwtToken = await authProvider.retrieveToken();
+  final response = await client.get(
+    Uri.parse('${ApiConfig.baseUrl}/api/Meals/GetAllTemplates'),
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $jwtToken',
+    },
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Kunne ikke hente skabeloner');
+  }
+
+  final List<dynamic> jsonResponse = jsonDecode(response.body) as List<dynamic>;
+  return jsonResponse
+      .map((dynamic mealJson) =>
+          Meal.fromJson(mealJson as Map<String, dynamic>))
+      .toList();
+}
+
+Future<void> updateTemplateStatus(AuthProvider authProvider, int id,
+    bool templateStatus,
+    {http.Client? client}) async {
+  client ??= http.Client();
+  final jwtToken = await authProvider.retrieveToken();
+
+  final response = await client.put(
+    Uri.parse(
+        '${ApiConfig.baseUrl}/api/Meals/UpdateTemplateStatus/$id/template'),
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $jwtToken',
+    },
+    body: jsonEncode({'template': templateStatus}),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Kunne ikke opdatere skabelonen');
+  }
+}
+
+Future<List<Ingredient>> fetchUniqueIngredientsFromMeals(
+    AuthProvider authProvider, List<int> mealIds,
+    {http.Client? client}) async {
+  if (mealIds.isEmpty) return const [];
+
+  client ??= http.Client();
+  final jwtToken = await authProvider.retrieveToken();
+
+  final response = await client.post(
+    Uri.parse('${ApiConfig.baseUrl}/api/Meals/GetUniqueIngredientsFromMeals'),
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $jwtToken',
+    },
+    body: jsonEncode({'mealIds': mealIds}),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Kunne ikke hente ingredienser');
+  }
+
+  final List<dynamic> jsonResponse = jsonDecode(response.body) as List<dynamic>;
+  return jsonResponse
+      .map((dynamic ingredientJson) =>
+          Ingredient.fromJson(ingredientJson as Map<String, dynamic>))
+      .toList();
 }
 
 // Deletes a meal from the server by its ID.
