@@ -125,10 +125,10 @@ final router = GoRouter(
     GoRoute(path: CHOOSE_CHILD_PARENT,
       builder: (context, state) => ChooseChildParent(),
     ),
-    
+   /* 
     GoRoute(path: CHOOSE_CHILD_TEACHER,
       builder: (context, state) => ChooseChildTeacher(),
-    ),
+    ), */
 
     GoRoute(path: ADMIN_TEACHER_ROOT,
       builder: (context, state) => TeacherMainPage(),
@@ -372,7 +372,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
-          future: authProvider.hasOneOfRoles([Role.child, Role.student]),
+          future: authProvider.hasOneOfRoles([Role.pupil, Role.pupil]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

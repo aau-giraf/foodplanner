@@ -55,11 +55,12 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
     Pupil? childData;
 
       if (authProvider.userRole!.hasRole(Role.pupil) || authProvider.userRole!.hasRole(Role.guardian)) {
-        final loggedInUser = UserService.fetchLoggedInUser();
+        final userService = UserService(apiUrl: ApiConfig.baseUrl);
+        final loggedInUser = await userService.fetchLoggedInUser();
         
         int userId = loggedInUser.id;
 
-        childData = await childService.getByPupilId(userId);
+        childData = await pupilService.getByPupilId(userId);
 
         setState(() {
           _pupil = childData;
@@ -85,8 +86,8 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
   Future<void> caller() async {
     final mealNotifier = Provider.of<MealNotifier>(context, listen: false);
 
-    await mealNotifier().teacherUpdateChildId(_pupil!.guardianId);
-    await mealNotifier().updateDate(DateTime.now());
+    await MealNotifier().teacherUpdateChildId(_pupil!.guardianId);
+    await MealNotifier().updateDate(DateTime.now());
   }
 
   @override
@@ -137,7 +138,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           
-                          if(_child == null){
+                          if(_pupil == null){
                             return Text('Data for barnet kunne ikke hentes');
                           }
 

@@ -64,7 +64,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
               ),
               IconButton(
                   onPressed: () async {
-                    await AuthProvider().setRole(UserRoles.of([Role.student]));
+                    await AuthProvider().setRole(UserRoles.of([Role.pupil]));
                     await AuthProvider().loadFromStorage();
                     if(!context.mounted) {
                       return;

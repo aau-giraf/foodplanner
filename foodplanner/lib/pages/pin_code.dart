@@ -120,10 +120,10 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
       if (role.hasOnlyRole(Role.teacher)) {
         navigationStrategy.goToPage(TEACHER_ROOT, context);
     
-      } else if (role.hasOnlyRole(Role.parent)) {
+      } else if (role.hasOnlyRole(Role.guardian)) {
         navigationStrategy.goToPage(PARENT_ROOT, context);
 
-      } else if (role.hasOnlyRole(Role.student)
+      } else if (role.hasOnlyRole(Role.pupil)
       //|| role.hasOnlyRole(Role.child)
       ) {
         navigationStrategy.goToPage(STUDENT_UNLOCKED, context);
@@ -316,7 +316,7 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
     );
   }
   
-  UserRoles role = UserRoles.of([Role.student]);
+  UserRoles role = UserRoles.of([Role.pupil]);
   //final usernameController = TextEditingController();
   //String emailError = '';
   
