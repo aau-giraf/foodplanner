@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/meal.dart';
+import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -137,33 +139,32 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
                     ),
                   ),
                Card(
-                    elevation: 2,
-                    color: AppColors.background,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        children: [
-                  _buildSearchField(),
-                  const SizedBox(height: 12),
-                  if (_error != null) _buildErrorBanner(),
-                  if (_templates.isEmpty)
-                    _buildEmptyState()
-                  else
-                     ..._templates.map(_buildTemplateCard),
-                  const SizedBox(height: 20),
-                  CustomButton(
-                    text: 'Brug skabeloner',
-                    size: ButtonSize.medium,
-                    onTab: () {},
-                  ),
-                          
-                        ],
-                      ),
-                    ),
-                  ),   
+                color: AppColors.background,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                 child: Padding(
+                   padding: const EdgeInsets.all(12.0),
+                   child: Column(
+                     children: [
+                                   _buildSearchField(),
+                                   const SizedBox(height: 12),
+                                   if (_error != null) _buildErrorBanner(),
+                                   if (_templates.isEmpty)
+                 _buildEmptyState()
+                                   else
+                  ..._templates.map(_buildTemplateCard),
+                                   const SizedBox(height: 20),
+                                   CustomButton(
+                 text: 'Brug skabeloner',
+                 size: ButtonSize.medium,
+                 onTab: () {},
+                                   ),
+                       
+                     ],
+                   ),
+                 ),
+               ),   
                 ],
               ),
             ),
@@ -304,28 +305,29 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
   }
 
   Widget _buildExpandedContent(Meal meal) {
+
+      int imgId = meal.foodImageId ?? 0;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AspectRatio(
-            aspectRatio: 4 / 3,
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: AppColors.lightSecondary),
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.image_outlined,
-                  size: 86,
-                  color: AppColors.secondary,
-                ),
-              ),
+
+          
+              Center(
+              child: imgId == 0 ?
+              
+              Icon(
+                Icons.image_outlined,
+                size: 86,
+                color: AppColors.secondary,
+              ) : FoodImage(foodImageId: imgId)
+              
+              
+              
             ),
-          ),
+          
           const SizedBox(height: 18),
           Text(
             'Ingredienser',
@@ -339,38 +341,50 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
             )
           else
             ...meal.ingredients.map(
-              (packedIngredient) => Container(
-                margin: const EdgeInsets.symmetric(vertical: 6),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                decoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.image_outlined,
-                      size: 22,
-                      color: AppColors.secondary,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        packedIngredient.ingredient.name,
-                        style: AppTextStyles.mediumText,
-                      ),
-                    ),
-                    const Icon(
-                      Icons.chevron_right,
-                      color: AppColors.secondary,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ],
+              (packedIngredient) => 
+  
+                  _buildIngredientItem(packedIngredient),
+
+       ) ],
       ),
     );
   }
+}
+Widget _buildIngredientItem(PackedIngredient packedIngredient) {
+  int ingImgID = packedIngredient.ingredient.foodImageId ?? 0;
+  
+  return Container( 
+    margin: const EdgeInsets.symmetric(vertical: 6),
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+    decoration: BoxDecoration(
+      color: AppColors.background,
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Row(
+      children: [
+        ingImgID != 0 ? 
+         
+        FoodImage(
+          foodImageId: ingImgID,
+          width: 40,
+          height: 40,
+          ): Icon(
+          Icons.image_outlined,
+          size: 22,
+          color: AppColors.secondary,
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            packedIngredient.ingredient.name,
+            style: AppTextStyles.mediumText,
+          ),
+        ),
+        const Icon(
+          Icons.chevron_right,
+          color: AppColors.secondary,
+        ),
+      ],
+    ),
+  );
 }
