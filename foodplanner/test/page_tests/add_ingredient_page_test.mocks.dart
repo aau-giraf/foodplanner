@@ -11,6 +11,7 @@ import 'dart:ui' as _i11;
 import 'package:foodplanner/auth/auth_provider.dart' as _i9;
 import 'package:foodplanner/models/ingredient.dart' as _i3;
 import 'package:foodplanner/models/user_roles.dart' as _i10;
+import 'package:foodplanner/models/user_roles.dart' as _i10;
 import 'package:foodplanner/services/ingredient_services.dart' as _i8;
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
@@ -487,6 +488,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
   @override
   /*bool hasRole(List<_i10.UserRoles>? roles) => (super.noSuchMethod(
         Invocation.method(
+          #hasOneOfRolesUnapproved,
           #hasOneOfRolesUnapproved,
           [roles],
         ),

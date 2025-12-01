@@ -66,7 +66,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/signup',
-      builder: (context, state) => SignupPage(),
+      builder: (context, state) => SignupPageAdult(),
     ),
     GoRoute(
       path: '/signup/create-child',
@@ -241,7 +241,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const Settings(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const Settings();
             } else {
               return const UnauthorizedPage();
             }
@@ -291,7 +291,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const FeedbackChatPage(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const FeedbackChatPage();
             } else {
               return const UnauthorizedPage();
             }

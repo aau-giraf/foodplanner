@@ -242,7 +242,7 @@ class _MealFormPageState extends State<MealFormPage> {
                         backgroundColor: Colors.white,
                         foregroundColor: AppColors.textPrimary,
                         size: ButtonSize.medium,
-                        trailingIcon: SFIcon(SFIcons.sf_chevron_right),
+                        sfTrailingIcon: SFIcon(SFIcons.sf_chevron_right),
                       ),
                     ),
 
@@ -389,7 +389,7 @@ class _MealFormPageState extends State<MealFormPage> {
                           }
                         },
                         text: 'Fjern eller tilføj ingredienser',
-                        trailingIcon: SFIcon(SFIcons.sf_chevron_right),
+                        sfTrailingIcon: SFIcon(SFIcons.sf_chevron_right),
                         size: ButtonSize.medium,
                         backgroundColor: Colors.white,
                         foregroundColor: AppColors.textPrimary,

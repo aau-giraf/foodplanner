@@ -78,8 +78,8 @@ class PupilProfileState extends State<PupilProfile>
     initialClassId = widget.pupil.classId.toString();
     //fetchGuardian();
     selectedGuardian = guardian;
-    selectedGuardianId = widget.pupil.guardianId;
-    initialGuardianId = widget.pupil.guardianId;
+    /*selectedGuardianId = widget.pupil.guardianId;
+    initialGuardianId = widget.pupil.guardianId;*/
 
     PupilProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
@@ -512,7 +512,7 @@ class PupilProfileState extends State<PupilProfile>
                               updatedLastName.isNotEmpty
                                   ? updatedLastName
                                   : widget.pupil.lastName,
-                              selectedGuardianId ?? widget.pupil.guardianId,
+                              selectedGuardianId ?? widget.pupil.guardianId!,
                               int.parse(selectedClassId!))
                           .then((response) {
 

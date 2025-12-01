@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/pages/landing_page_guardian.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/pages/main_page_parent.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';

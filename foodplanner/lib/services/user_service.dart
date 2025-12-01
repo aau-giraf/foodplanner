@@ -130,6 +130,28 @@ class UserService {
     return response;
   }
 
+  Future<http.Response> createUserPupil(String firstName, String lastName,
+      String email, String password, List<int> parentIds, int classId) async {
+    final response = await http.post(
+      Uri.parse('$apiUrl/api/Users/CreateUserChildren'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+        'password': password,
+        'parentIds': parentIds,
+        'classId': classId,
+      }),
+    );
+
+    print(classId);
+
+    return response;
+  }
+
   Future<http.Response> loginUser(String email, String password) async {
     final response = await http.post(
       Uri.parse('$apiUrl/api/Users/Login'),

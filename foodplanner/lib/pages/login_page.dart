@@ -149,7 +149,7 @@ class LoginPageState extends State<LoginPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SignupPage(),
+        builder: (context) => SignupPageAdult(),
       ),
     );
   }
