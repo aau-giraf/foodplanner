@@ -255,7 +255,7 @@ class UserService {
 
   Future<http.Response> updateUser(
       int id, String firstName, String lastName, String email) async {
-   developer.log("Knap trykket på");
+   //developer.log("Knap trykket på");
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
       Uri.parse('$apiUrl/api/Users/UpdateLoggedIn'),
