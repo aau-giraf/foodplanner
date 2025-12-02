@@ -424,7 +424,7 @@ class _SchoolClasses extends State<SchoolClasses> {
 
                 print("DEBUG: Cheking class ${schoolClass.className} (id ${schoolClass.classId})");
 
-                final childrenInClass = students.where((child) => child.classId == schoolClass.classId).toList();
+                List<Pupil> childrenInClass = filterChildrenByClass(schoolClass.classId);
 
                 print("Found ${childrenInClass.length} children in this class");
 
