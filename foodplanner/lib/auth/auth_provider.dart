@@ -24,7 +24,7 @@ class AuthProvider with ChangeNotifier {
   String? get jwtToken => _jwtToken;
   int? get userId => _userId;
 
-  Future<void> login(UserRoles role, String token, bool isApproved, int userId) async {
+  Future<void> login(UserRoles role, String token, bool isApproved/*, int userId*/) async {
     _isApproved = isApproved;
     _isLoggedIn = true;
     _userRole = role;
@@ -48,7 +48,7 @@ class AuthProvider with ChangeNotifier {
     await _secureStorage.delete(key: 'isLoggedIn');
     await _secureStorage.delete(key: 'userRole');
     await _secureStorage.delete(key: 'jwtToken');
-    await _secureStorage.delete(key: 'userId');
+    /*await _secureStorage.delete(key: 'userId');*/
     notifyListeners();
   }
   
@@ -102,6 +102,5 @@ class AuthProvider with ChangeNotifier {
     await loadFromStorage();
     return _userRole;
   }
-
 
 }

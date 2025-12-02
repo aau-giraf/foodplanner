@@ -149,7 +149,6 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
         children: [
           Padding( padding: EdgeInsetsGeometry.only(top: 15)),
           // component for search field and collapsible list
-          if (_children.length > 1)
           CardContainer(
               clipBehavior: Clip.antiAlias,
               color: AppColors.background,
