@@ -102,7 +102,7 @@ Widget _buildExpanded() {
                 ),
                 IconButton(
                   icon: SFIcon(
-                    SFIcons.sf_doc_on_doc_fill,
+                    SFIcons.sf_document_on_clipboard_fill,
                     color: AppColors.textPrimary,
                     fontSize: 20,
                   ),
