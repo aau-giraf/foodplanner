@@ -20,7 +20,6 @@ import 'package:foodplanner/pages/admin_administration/EditClasses.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
-import 'package:foodplanner/services/child_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
@@ -31,9 +30,6 @@ class SchoolClasses extends StatefulWidget {
   //final String apiUrl;
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
-      
-  static final ChildService childService = 
-      ChildService(apiUrl: ApiConfig.baseUrl);
 
   const SchoolClasses({super.key});
 
@@ -44,14 +40,11 @@ class SchoolClasses extends StatefulWidget {
 class _SchoolClasses extends State<SchoolClasses> {
   Future<List<SchoolClass>> classesFuture =
       SchoolClasses.schoolClassService.fetchAllClasses();
-  //List<SchoolClass> schoolClasses = [];
-  //List<ChildWithClassname> students = [];
-  //List<ChildWithClassname> filteredStudents = [];
+  List<SchoolClass> schoolClasses = [];
+  List<ChildWithClassname> students = [];
+  List<ChildWithClassname> filteredStudents = [];
   Set<int> selectedClassIds = {};
   Set<String> highlightedStudentIds = {};
-  List<Pupil> children = [];
-  List<SchoolClass> schoolClasses = [];
-  List<Pupil> filteredChildren = [];
 
   TextEditingController searchController = TextEditingController();
 
@@ -65,7 +58,7 @@ class _SchoolClasses extends State<SchoolClasses> {
   @override
   void initState() {
     super.initState();
-    fetchChildren();
+    fetchChildrenData();
     classesFuture.then((classes) {
       setState(() {
         schoolClasses = classes;
@@ -77,48 +70,7 @@ class _SchoolClasses extends State<SchoolClasses> {
             TextEditingController(text: c.className);
       }
     });
-
-    SchoolClasses.schoolClassService.fetchAllClasses().then((result) {
-      setState(() {
-        schoolClasses = result;
-      });
-    }).catchError((error) {
-      throw (error);
-    });
-
-    searchController.addListener(_filterChildren);
   }
-
-  void fetchChildren() {
-    SchoolClasses.childService.fetchChild().then((result) {
-      setState(() {
-        children = result;
-        filteredChildren = result;
-      });
-    }).catchError((error) {
-      throw (error);
-    });
-  }
-
-  String getClassName(int classId) {
-    final schoolClass = schoolClasses.firstWhere(
-        (schoolClass) => schoolClass.classId == classId,
-        orElse: () => SchoolClass(classId: 0, className: 'Unknown'));
-    return schoolClass.className;
-  }
-
-  void _filterChildren() {
-    final query = searchController.text.toLowerCase();
-    setState(() {
-      filteredChildren = children.where((child) {
-        final name = '${child.firstName} ${child.lastName}'.toLowerCase();
-        final className = getClassName(child.classId).toLowerCase();
-        return name.contains(query) || className.contains(query);
-      }).toList();
-    });
-  }
-
-
 
   /*Future<Child> GetChildrenByClassId (int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
@@ -140,13 +92,11 @@ class _SchoolClasses extends State<SchoolClasses> {
     }
   }*/
 
-
-
-  /*Future<void> fetchChildrenData() async {
+  Future<void> fetchChildrenData() async {
     try {
       print("UserRoles: ${UserRoles.fromString("Student")}");
       //print("Fetching children from API");
-      students = await ChildService(apiUrl: ApiConfig.baseUrl).fetchChild();
+      students = await ChildService(apiUrl: ApiConfig.baseUrl).fetchChildrenInAllClass();
       print("Students: ${students}");
       //print("fetched ${students.length} children");
       print("Students.isEmpty: ${students.isEmpty}");
@@ -168,7 +118,7 @@ class _SchoolClasses extends State<SchoolClasses> {
     } catch (e) {
       print('Error fetching children: $e');
     }
-  }*/
+  }
 
   /*Future<void> fetchChildrenData() async {
     try {
@@ -229,7 +179,7 @@ class _SchoolClasses extends State<SchoolClasses> {
 
     GoRouter.of(context).go('/student-details', extra: filteredStudent);
   }
-/*
+
   void filterStudents(String query) {
     final lowerCaseQuery = query.toLowerCase();
     setState(() {
@@ -250,7 +200,7 @@ class _SchoolClasses extends State<SchoolClasses> {
       }
     });
   }
-*/
+
   void collapseAll() {
     setState(() {
       if (selectedClassIds.isEmpty) {
@@ -259,7 +209,7 @@ class _SchoolClasses extends State<SchoolClasses> {
       } else {
         selectedClassIds.clear();
         searchController.clear();
-        filteredChildren = children;
+        filteredStudents = students;
       }
     });
   }
@@ -474,7 +424,7 @@ class _SchoolClasses extends State<SchoolClasses> {
 
                 print("DEBUG: Cheking class ${schoolClass.className} (id ${schoolClass.classId})");
 
-                final childrenInClass = children.where((child) => child.classId == schoolClass.classId).toList();
+                final childrenInClass = students.where((child) => child.classId == schoolClass.classId).toList();
 
                 print("Found ${childrenInClass.length} children in this class");
 
@@ -485,7 +435,7 @@ class _SchoolClasses extends State<SchoolClasses> {
                   children: [
                     if (childrenInClass.isNotEmpty)
                       ...childrenInClass.map((child){
-                        print("Student: ${child.firstName} in ${child.classId}");
+                        print("Student: ${child.firstName} in ${child.className}");
                         return ListTile(
                           title: Text('${child.firstName} ${child.lastName}'),
                         );

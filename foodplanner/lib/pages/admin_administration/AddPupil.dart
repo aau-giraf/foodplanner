@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:image/image.dart';
@@ -51,19 +52,46 @@ class AddPupil extends StatelessWidget {
                       ),
                     )
                   ),
-                  SizedBox(height: 60,),
-
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () {
-
-                      }, 
-                      style: TextButton.styleFrom(backgroundColor: AppColors.background),
-                      child: Text("Gem"),
+                ]
+              ),
+              SizedBox(height: 60,),
+              Align(
+                alignment: AlignmentGeometry.centerLeft,
+                child: Column(
+                  children: [
+                    Text(
+                      "Vælg klasse:"
+                    ),
+                    Expanded(
+                      child: ExpansionTile(
+                        title: Text(""),
+                      )
                     )
-                  )
-                ],
-              )
+                  ],
+
+                ),              
+              ),
+
+              Align(
+                alignment: AlignmentGeometry.centerRight,
+                child: TextButton(
+                  onPressed: () {
+
+                  }, 
+                  style: TextButton.styleFrom(backgroundColor: AppColors.background),
+                  child: Text("Gem"),
+                ),
+              ),
+              Align(
+                alignment: AlignmentGeometry.centerLeft,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: TextButton.styleFrom(backgroundColor: AppColors.background),
+                  child: Text("Annulere"),
+                ),
+              ),
             ],
           )
         ),
