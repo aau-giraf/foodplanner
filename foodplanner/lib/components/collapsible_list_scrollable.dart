@@ -13,9 +13,9 @@ class CollapsibleListScrollable<T> extends StatelessWidget {
   final Pupil? pupil;
   final SchoolClass? schoolClass;
   final ValueChanged<int?> onExpansionChanged;
-  final VoidCallback onFeedback;
-  final VoidCallback onLunch;
-  final VoidCallback onSettings;
+  final VoidCallback? onFeedback;
+  final VoidCallback? onLunch;
+  final VoidCallback? onSettings;
 
   const CollapsibleListScrollable({
     super.key,
@@ -25,9 +25,9 @@ class CollapsibleListScrollable<T> extends StatelessWidget {
     this.pupil,
     this.schoolClass,
     required this.onExpansionChanged,
-    required this.onFeedback,
-    required this.onLunch,
-    required this.onSettings,
+    this.onFeedback,
+    this.onLunch,
+    this.onSettings,
   });
 
   @override

@@ -7,29 +7,45 @@ class SearchField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final ValueChanged<String>? onChanged;
+  final Color? backgroundColor;
+  final double? elevation;
+  final double horizontalPadding;
+  final double verticalPadding;
+  final Color? cursorColor;
+  final double borderRadius;
+  final List<BoxShadow>? boxShadow;
 
   const SearchField({
     super.key,
     required this.controller,
     this.hintText = 'Søg...',
     this.onChanged,
+    this.backgroundColor = AppColors.background,
+    this.elevation = 2,
+    this.horizontalPadding = 20,
+    this.verticalPadding = 0,
+    this.cursorColor,
+    this.borderRadius = 8,
+    this.boxShadow,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
       child: SizedBox(
         width: double.infinity,
         child: Card(
-          elevation: 2,
+          elevation: elevation,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
             decoration: BoxDecoration(
-              color: AppColors.background,
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(borderRadius),
+              boxShadow: boxShadow,
             ),
             child: Row(
               children: [
@@ -47,6 +63,7 @@ class SearchField extends StatelessWidget {
                     ),
                     style: AppTextStyles.bigText,
                     onChanged: onChanged,
+                    cursorColor: cursorColor,
                   ),
                 ),
               ],

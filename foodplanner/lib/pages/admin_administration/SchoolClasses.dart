@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 
@@ -17,10 +15,12 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/child_with_classname.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/models/pupil.dart';
+import 'package:foodplanner/pages/admin_administration/AddPupil.dart';
 import 'package:foodplanner/pages/admin_administration/EditClasses.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
+import 'package:foodplanner/services/child_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
@@ -31,6 +31,9 @@ class SchoolClasses extends StatefulWidget {
   //final String apiUrl;
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
+      
+  static final ChildService childService = 
+      ChildService(apiUrl: ApiConfig.baseUrl);
 
   const SchoolClasses({super.key});
 
@@ -41,11 +44,14 @@ class SchoolClasses extends StatefulWidget {
 class _SchoolClasses extends State<SchoolClasses> {
   Future<List<SchoolClass>> classesFuture =
       SchoolClasses.schoolClassService.fetchAllClasses();
-  List<SchoolClass> schoolClasses = [];
-  List<ChildWithClassname> students = [];
-  List<ChildWithClassname> filteredStudents = [];
+  //List<SchoolClass> schoolClasses = [];
+  //List<ChildWithClassname> students = [];
+  //List<ChildWithClassname> filteredStudents = [];
   Set<int> selectedClassIds = {};
   Set<String> highlightedStudentIds = {};
+  List<Pupil> children = [];
+  List<SchoolClass> schoolClasses = [];
+  List<Pupil> filteredChildren = [];
 
   TextEditingController searchController = TextEditingController();
 
@@ -59,7 +65,7 @@ class _SchoolClasses extends State<SchoolClasses> {
   @override
   void initState() {
     super.initState();
-    fetchChildrenData();
+    fetchChildren();
     classesFuture.then((classes) {
       setState(() {
         schoolClasses = classes;
@@ -71,7 +77,48 @@ class _SchoolClasses extends State<SchoolClasses> {
             TextEditingController(text: c.className);
       }
     });
+
+    SchoolClasses.schoolClassService.fetchAllClasses().then((result) {
+      setState(() {
+        schoolClasses = result;
+      });
+    }).catchError((error) {
+      throw (error);
+    });
+
+    searchController.addListener(_filterChildren);
   }
+
+  void fetchChildren() {
+    SchoolClasses.childService.fetchChild().then((result) {
+      setState(() {
+        children = result;
+        filteredChildren = result;
+      });
+    }).catchError((error) {
+      throw (error);
+    });
+  }
+
+  String getClassName(int classId) {
+    final schoolClass = schoolClasses.firstWhere(
+        (schoolClass) => schoolClass.classId == classId,
+        orElse: () => SchoolClass(classId: 0, className: 'Unknown'));
+    return schoolClass.className;
+  }
+
+  void _filterChildren() {
+    final query = searchController.text.toLowerCase();
+    setState(() {
+      filteredChildren = children.where((child) {
+        final name = '${child.firstName} ${child.lastName}'.toLowerCase();
+        final className = getClassName(child.classId).toLowerCase();
+        return name.contains(query) || className.contains(query);
+      }).toList();
+    });
+  }
+
+
 
   /*Future<Child> GetChildrenByClassId (int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
@@ -93,11 +140,13 @@ class _SchoolClasses extends State<SchoolClasses> {
     }
   }*/
 
-  Future<void> fetchChildrenData() async {
+
+
+  /*Future<void> fetchChildrenData() async {
     try {
       print("UserRoles: ${UserRoles.fromString("Student")}");
       //print("Fetching children from API");
-      students = await ChildService(apiUrl: ApiConfig.baseUrl).fetchChildrenInAllClass();
+      students = await ChildService(apiUrl: ApiConfig.baseUrl).fetchChild();
       print("Students: ${students}");
       //print("fetched ${students.length} children");
       print("Students.isEmpty: ${students.isEmpty}");
@@ -119,7 +168,7 @@ class _SchoolClasses extends State<SchoolClasses> {
     } catch (e) {
       print('Error fetching children: $e');
     }
-  }
+  }*/
 
   /*Future<void> fetchChildrenData() async {
     try {
@@ -180,7 +229,7 @@ class _SchoolClasses extends State<SchoolClasses> {
 
     GoRouter.of(context).go('/student-details', extra: filteredStudent);
   }
-
+/*
   void filterStudents(String query) {
     final lowerCaseQuery = query.toLowerCase();
     setState(() {
@@ -201,7 +250,7 @@ class _SchoolClasses extends State<SchoolClasses> {
       }
     });
   }
-
+*/
   void collapseAll() {
     setState(() {
       if (selectedClassIds.isEmpty) {
@@ -210,7 +259,7 @@ class _SchoolClasses extends State<SchoolClasses> {
       } else {
         selectedClassIds.clear();
         searchController.clear();
-        filteredStudents = students;
+        filteredChildren = children;
       }
     });
   }
@@ -425,7 +474,7 @@ class _SchoolClasses extends State<SchoolClasses> {
 
                 print("DEBUG: Cheking class ${schoolClass.className} (id ${schoolClass.classId})");
 
-                final childrenInClass = students.where((child) => child.classId == schoolClass.classId).toList();
+                final childrenInClass = children.where((child) => child.classId == schoolClass.classId).toList();
 
                 print("Found ${childrenInClass.length} children in this class");
 
@@ -436,7 +485,7 @@ class _SchoolClasses extends State<SchoolClasses> {
                   children: [
                     if (childrenInClass.isNotEmpty)
                       ...childrenInClass.map((child){
-                        print("Student: ${child.firstName} in ${child.className}");
+                        print("Student: ${child.firstName} in ${child.classId}");
                         return ListTile(
                           title: Text('${child.firstName} ${child.lastName}'),
                         );
@@ -446,8 +495,21 @@ class _SchoolClasses extends State<SchoolClasses> {
                         title: Text("Ingen børn"),
                       ),
 
-                    const ListTile(
-                      title: Text("Tilføj barn"),
+                    ListTile(
+                      onTap:() {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddPupil()
+                          ),
+                        );
+                      },
+                      title: Text(
+                        "Tilføj barn",
+                        style: AppTextStyles.mediumText.copyWith(
+                          color: Colors.blue.shade700,
+                          fontWeight: FontWeight.w600,
+                        ),)
                     )
                   ]
                 );
@@ -546,3 +608,420 @@ class _SchoolClasses extends State<SchoolClasses> {
     );
   }
 } 
+
+/*
+class SchoolClasses extends StatefulWidget {
+  //final String apiUrl;
+  static final SchoolClassService schoolClassService =
+      SchoolClassService(apiUrl: ApiConfig.baseUrl);
+
+  const SchoolClasses({super.key});
+
+  @override
+  State<SchoolClasses> createState() => _SchoolClasses();
+}
+
+class _SchoolClasses extends State<SchoolClasses> {
+  Future<List<SchoolClass>> classesFuture =
+      SchoolClasses.schoolClassService.fetchAllClasses();
+  List<SchoolClass> schoolClasses = [];
+  List<ChildWithClassname> students = [];
+  List<ChildWithClassname> filteredStudents = [];
+  Set<int> selectedClassIds = {};
+  Set<String> highlightedStudentIds = {};
+
+  TextEditingController searchController = TextEditingController();
+
+  final _scrollController = ScrollController();
+  final _searchFieldController = TextEditingController();
+
+  final controller = TextEditingController();
+
+  Map<int, bool> isEditing = {};
+  Map<int, TextEditingController> controllers = {};
+  int? _currentlyExpandedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchChildrenData();
+    classesFuture.then((classes) {
+      setState(() {
+        schoolClasses = classes;
+      });
+      // Initialize the Map with classIds
+      for (var c in classes) {
+        isEditing[c.classId] = false;
+        controllers[c.classId] =
+            TextEditingController(text: c.className);
+      }
+    });
+  }
+
+  /*Future<Child> GetChildrenByClassId (int id) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = http.get(
+      Uri.parse('$apiUrl/api/Admin/GetAllChildrenClassesAsync'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $jwtToken',
+      }
+    );
+
+    if(response.statusCode == 200){
+      List<dynamic> jsonResponse = jsonDecode(reponse.body) as List<dynamic>;
+      var responseList = jsonResponse.map((child) => Child.fromJson(child as Map<String, dynamic>)).toList();
+      return responseList;
+    } else if (response.statusCode == 403){
+      throw Exception('Du er ikke autherized til denne funktion');
+    } else {
+      throw Exception('Børn kunne ikke hentes');
+    }
+  }*/
+
+  Future<void> fetchChildrenData() async {
+    try {
+      print("UserRoles: ${UserRoles.fromString("Student")}");
+      //print("Fetching children from API");
+      students = await ChildService(apiUrl: ApiConfig.baseUrl).fetchChildrenInAllClass();
+      print("Students: ${students}");
+      //print("fetched ${students.length} children");
+      print("Students.isEmpty: ${students.isEmpty}");
+      if (students.isEmpty) {
+        print("No children where fetched!");
+      } else {
+        for (var child in students) {
+          print ("Child: ${child.firstName} ${child.lastName}, classId: ${child.classId}, className: ${child.className}");
+        }
+      }
+      /*if(UserRoles.fromString("Student")) {
+        
+      }*/
+      filteredStudents = students;
+
+      setState(() {
+        filteredStudents = students;
+      });
+    } catch (e) {
+      print('Error fetching children: $e');
+    }
+  }
+
+  /*Future<void> fetchChildrenData() async {
+    try {
+      String? jwtToken = await AuthProvider().retrieveToken();
+      var apiClient = ApiClient(basePath: ApiConfig.baseUrl);
+      apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
+      final childrensApi = ChildrensApi(apiClient);
+      final List<ChildrenGetAllDTO>? data =
+          await childrensApi.apiChildrensGetAllChildrenClassesGet();
+      
+      if (data != null) {
+        setState(() {
+          students = data.map((ChildrenGetAllDTO e) => {
+            'id': e.childId.toString(),
+            'name': '${e.firstName} ${e.lastName}',
+            'classId': e.classId.toString(),
+            'className': e.className,
+          }).toList();
+          filteredStudents = students;
+
+          final uniqueClasses = <int, String>{};
+          for (var student in students) {
+            if(student['classId'] != null && student['className'] != null) {
+              final id = int.tryParse(student['classId']!) ?? -1;
+              if (id > 0) uniqueClasses[id] = student['className']!;
+            }
+          }
+          for (var entry in uniqueClasses.entries) {
+            final exists = schoolClasses.any((c) => c.classId == entry.key);
+            if (!exists) {
+              schoolClasses.add(SchoolClass(classId: entry.key, className: entry.value));
+            }
+          }
+          schoolClasses.sort((a,b) => a.className.compareTo(b.className));
+        });
+      } else {
+        throw Exception('Failed to load children data');
+      }
+    } catch (e){
+      print('Error fetching children data: $e');
+    }
+  }*/
+
+  void toggleClassStudents(int classId) {
+    setState(() {
+      if (selectedClassIds.contains(classId)) {
+        selectedClassIds.remove(classId);
+      } else {
+        selectedClassIds.add(classId);
+      }
+    });
+  }
+
+  void navigateToStudentDetails(Map<String, String?> student) {
+    // Filter out null values from the student map
+    final filteredStudent =
+        student.map((key, value) => MapEntry(key, value ?? ''));
+
+    GoRouter.of(context).go('/student-details', extra: filteredStudent);
+  }
+
+  void filterStudents(String query) {
+    final lowerCaseQuery = query.toLowerCase();
+    setState(() {
+      if (lowerCaseQuery.isEmpty) {
+        filteredStudents = students;
+        selectedClassIds.clear();
+      } else {
+        filteredStudents = students.where((student) {
+          final studentName = '${student.firstName} ${student.lastName}'.toLowerCase();
+          return studentName.contains(lowerCaseQuery);
+        }).toList();
+
+        // Automatically expand the classes containing the searched students
+        selectedClassIds.clear();
+        for (var student in filteredStudents) {
+          selectedClassIds.add(student.classId);
+        }
+      }
+    });
+  }
+
+  void collapseAll() {
+    setState(() {
+      if (selectedClassIds.isEmpty) {
+        selectedClassIds =
+            schoolClasses.map((schoolClass) => schoolClass.classId).toSet();
+      } else {
+        selectedClassIds.clear();
+        searchController.clear();
+        filteredStudents = students;
+      }
+    });
+  }
+
+  void searchFunction(String input) {
+  }
+
+
+  // Update the editing state
+  void setEditingState(int classId, bool editing) {
+    if (isEditing.containsKey(classId)) {
+      setState(() {
+        isEditing[classId] = editing;
+      });
+    }
+  }
+
+  void addClass() {
+    final messenger = ScaffoldMessenger.of(context);
+    SchoolClasses.schoolClassService
+        .createClass(controller.text)
+        .then((newClass) {
+      setState(() {
+        schoolClasses.add(newClass);
+        isEditing[newClass.classId] = false;
+        controllers[newClass.classId] =
+            TextEditingController(text: newClass.className);
+        controller.clear();
+      });
+
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text('Klassen ${newClass.className} er blevet tilføjet'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.green,
+        ),
+      );
+    });
+  }
+
+  void updateClass(int classId) async {
+     final messenger = ScaffoldMessenger.of(context);
+    var error = await SchoolClasses.schoolClassService
+        .updateClass(classId, controllers[classId]!.text);
+
+    if (error != null) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(error['Message'][0]),
+          duration: Duration(seconds: 2),
+          backgroundColor: AppColors.errorText,
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text('Klassen er blevet opdateret'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  void deleteClass(int classId) async {
+    final messenger = ScaffoldMessenger.of(context);
+    var error = await SchoolClasses.schoolClassService.deleteClass(classId);
+    if (error != null) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(error['Message'][0]),
+          duration: Duration(seconds: 2),
+          backgroundColor: AppColors.errorText,
+        ),
+      );
+    } else {
+      setState(() {
+        schoolClasses
+            .removeWhere((schoolClass) => schoolClass.classId == classId.toString());
+      });
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text('Klassen er blevet slettet'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  Widget cta(int schoolClassId) {
+    return Row(
+      children: [
+        if (isEditing[schoolClassId]!) ...[
+          IconButton(
+            onPressed: () {
+              updateClass(schoolClassId);
+              setEditingState(schoolClassId, false);
+            },
+            icon: SFIcon(
+              SFIcons.sf_checkmark_square_fill,
+              color: Colors.green,
+              fontSize: 36,
+            ),
+            padding: EdgeInsets.zero,
+          ),
+        ] else ...[
+          IconButton(
+            onPressed: () {
+              setEditingState(schoolClassId, !isEditing[schoolClassId]!);
+            },
+            icon: SFIcon(
+              SFIcons.sf_pencil,
+              color: Colors.blue.shade700,
+              fontSize: 36,
+            ),
+            padding: EdgeInsets.zero,
+          ),
+          IconButton(
+            onPressed: () {
+              //deleteClass(schoolClassId);
+              showIPhonePopupBox(
+                context: context,
+                title: 'Slet klasse',
+                message: 'Er du sikker på, at du vil slette denne klasse?',
+                confirmText: 'Ja',
+                cancelText: 'Nej',
+                onConfirm: () {
+                  deleteClass(schoolClassId);
+                  Navigator.of(context).pop(); // Close the popup
+                },
+                onCancel: () {
+                  Navigator.of(context).pop(); // Close the popup
+                },
+              );
+            },
+            icon: SFIcon(
+              SFIcons.sf_x_square_fill,
+              color: AppColors.errorText,
+              fontSize: 36,
+            ),
+            padding: EdgeInsets.zero,
+          ),
+        ]
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: "Administrér klasser",
+      ),
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          Padding(padding: EdgeInsetsGeometry.only(top: 15)),
+          CardContainer(
+            color: AppColors.background, 
+            childWidget: Column(
+              children: [
+                SearchField(
+                  hintText: "Søg i alle børn",
+                  controller: _searchFieldController,
+                  onChanged: searchFunction,
+                  borderRadius: 30,
+                  backgroundColor: Colors.white,
+                  horizontalPadding: 5,
+                  verticalPadding: 5,
+                ),
+              ],
+            )
+          ),
+          
+          SizedBox(height: 20),
+          Expanded(
+            child: CardContainer(
+              color: AppColors.background, 
+              childWidget: ListView.builder(
+                itemCount: schoolClasses.length,
+                itemBuilder: (context, index) {
+                  final schoolClass = schoolClasses[index];
+                  //print("Found ${childrenInClass.length} children in this class");
+                  print("DEBUG: Cheking class ${schoolClass.className} (id ${schoolClass.classId})");
+                  final childrenInClass = students.where((child) => child.classId == schoolClass.classId).toList();
+
+                  return ExpansionTile(
+                    title: Text(schoolClass.className,
+                    style: TextStyle(fontSize: 16),
+                    ),
+                    
+                  );
+                }
+              )
+            )
+          ),  
+                      /*child: SettingsWidget(
+                        title: controllers[schoolClass.classId]!.text,
+                        type: SettingsType.items,
+                        cta: cta(schoolClass.classId),
+                        isEditable: isEditing[schoolClass.classId]!,
+                        controller: controllers[schoolClass.classId],
+                      )*/            
+          SizedBox(
+            child: Row(
+              children: [
+                RightIconButton(
+                  buttonText: "Tilføj Klasse",
+                  onTab: addClass,
+                ),
+
+                RightIconButton(
+                  buttonText: "Redigere klasse",
+                  onTab: () {Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EditClasses())
+                  );},
+                ),
+              ] 
+            ),
+          ) 
+        ],
+      ),
+      bottomNavigationBar: NavBar(),
+    );
+  }
+} 
+*/

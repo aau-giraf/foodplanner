@@ -12,9 +12,9 @@ class CollapsibleList extends StatelessWidget {
   final String headerText;
   final bool isExpanded;
   
-  final VoidCallback onFeedback;
-  final VoidCallback onLunch;
-  final VoidCallback onSettings;
+  final VoidCallback? onFeedback;
+  final VoidCallback? onLunch;
+  final VoidCallback? onSettings;
   final VoidCallback onHeaderTap;
 
   const CollapsibleList ({
@@ -25,9 +25,9 @@ class CollapsibleList extends StatelessWidget {
     required this.headerText,
     required this.isExpanded,
 
-    required this.onFeedback,
-    required this.onLunch,
-    required this.onSettings,
+    this.onFeedback,
+    this.onLunch,
+    this.onSettings,
     required this.onHeaderTap,
   });
 
@@ -67,21 +67,21 @@ class CollapsibleList extends StatelessWidget {
         "Madpakke",
         iconType: 'Icon',
         icon: Icons.lunch_dining, // not sure if this should be outlined
-        onTap: onLunch
+        onTap: onLunch!
       ),
       const Divider(height: 1),
       _buildBodyButton(
         "Feedback",
         iconType: 'SFIcon',
         icon: SFIcons.sf_message,
-        onTap: onFeedback
+        onTap: onFeedback!
       ),
       const Divider(height: 1),
       _buildBodyButton(
         "Indstillinger",
         iconType: 'Icon',
         icon: Icons.settings_outlined,
-        onTap: onSettings
+        onTap: onSettings!
       ),
     ];
     return childrenWidgets;     

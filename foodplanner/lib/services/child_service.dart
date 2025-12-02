@@ -115,10 +115,11 @@ class ChildService {
     }
   }
 
-  Future<List<ChildWithClassname>> fetchChildrenInAllClass() async {
+   Future<List<ChildWithClassname>> fetchChildrenInAllClass() async {
     try {
       List<dynamic> jsonList = [];
       final jwtToken = await AuthProvider().retrieveToken();
+
 
       var apiClient = ApiClient(basePath: ApiConfig.baseUrl);
       apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
@@ -126,8 +127,10 @@ class ChildService {
       final childrensApi = ChildrensApi(apiClient);
 
       final response = await childrensApi.apiChildrensGetAllChildrenClassesGetWithHttpInfo(); 
+
       print("RAW API RESPONSE: ${response.body}");
-      
+
+
       jsonList = response.body is List ? response.body : json.decode(response.body);
 
       print("SEE HERE IS THE LIST: $jsonList");
@@ -142,5 +145,5 @@ class ChildService {
       return[];
     }
   }
-    
+
 }
