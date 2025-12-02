@@ -24,7 +24,7 @@ class AuthProvider with ChangeNotifier {
   String? get jwtToken => _jwtToken;
   int? get userId => _userId;
 
-  Future<void> login(UserRoles role, String token, bool isApproved) async {
+  Future<void> login(UserRoles role, String token, bool isApproved, int userId) async {
     _isApproved = isApproved;
     _isLoggedIn = true;
     _userRole = role;
