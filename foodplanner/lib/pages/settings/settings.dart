@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
@@ -58,12 +59,16 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
 
   UserRoles? userRole;
 
+  List<User> totalAdminUsers = [];
+  int edits = 0;
+
   @override
   void initState(){
     super.initState();
 
     AuthProvider().retrieveRole().then((role) {
       fetchUser();
+      print(role);
       userRole = role;
     });
   }
@@ -144,6 +149,22 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
         }
   }
 
+  void showDeletionPopUp(){
+    showIPhonePopupBox(
+      context: context,
+      title: 'Slet bruger',
+      message: 'Er du sikker på, at du vil slette din konto?',
+      confirmText: 'Ja',
+      cancelText: 'Nej',
+      onConfirm: (){
+        deleteLoggedInUser();
+      },
+      onCancel: (){
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
   Future<void> resetPage() async {
     await fetchUser();
     setState(() {
@@ -200,6 +221,47 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
     }
   }
 
+    Future<List<User>> findOtherAdminUsers() async {
+    var allUsers = await Settings.userService.fetchAllUsers();
+    print(allUsers);
+    for (var user in allUsers){
+      if (user.role.hasRole(Role.admin)){
+        totalAdminUsers.add(user);
+        print(totalAdminUsers.length);
+      }
+    }
+    return totalAdminUsers;
+  }
+
+  void deleteLoggedInAdminUser() async {
+    List<User> totalAdminUsers = await findOtherAdminUsers();
+    if (totalAdminUsers.length < 2){
+      showCupertinoDialog<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('Du kan ikke slette din bruger'),
+        content: const Text('For at slette din konto skal du først tildele adminrollen til en anden lærer'),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+      );
+    } else {
+      showDeletionPopUp();
+    }
+  }
+
+  int numberOfEdits(){
+    return edits;
+  }
+  
+
   // These things are notifications and biometric, and they do not have some functions yet
   //Set<String> selectedSegment = {'daily'};
   //bool notifications = true;
@@ -234,6 +296,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                           onChanged: (value){
                             updatedFirstName = value;
                             onFieldChanged();
+                            edits++;
                           }
                         )
                       )
@@ -259,6 +322,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       isEditingFirstName = true;
                     });
                     onFieldChanged();
+                    edits++;
                   },
                 ),
               ],
@@ -288,8 +352,10 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                         obscureText: false,
                         color: Colors.transparent,
                         onChanged: (value){
+                          isEditingLastName = true;
                           updatedLastName = value;
                           onFieldChanged();
+                          edits++;
                         },
                       )
                     )
@@ -315,6 +381,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       isEditingLastName = true;
                     });
                     onFieldChanged();
+                    edits++;
                   },
                 )
               ]
@@ -346,6 +413,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                         onChanged: (value) {
                           updatedEmail = value;
                           onFieldChanged();
+                          edits++;
                         },
                       )
                     )
@@ -371,6 +439,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       isEditingEmail = true;
                     });
                     onFieldChanged();
+                    edits++;
                   },
                 )
               ],
@@ -402,6 +471,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                         onChanged: (value) {
                           updatedPassword = value;
                           onFieldChanged();
+                          edits++;
                         }
                       )
                     )
@@ -428,6 +498,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       passwordController.clear();
                     });
                     onFieldChanged();
+                    edits++;
                   },
                 )
               ]
@@ -459,6 +530,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                         onChanged: (value) {
                           updatedPincode = value;
                           onFieldChanged();
+                          edits++;
                         },
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
@@ -489,6 +561,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       pincodeController.clear();
                     });
                     onFieldChanged();
+                    edits++;
                   },
                 )
               ]
@@ -686,7 +759,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                         children: [
                           SizedBox(height: 20),
                           CustomButton(
-                            text: 'Gem ændring',
+                            text: edits > 1 ? 'Gem ændringer' : 'Gem ændring',
                             onTab: () async {
                               await saveChanges();
                               await resetPage();
@@ -768,19 +841,11 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                 child: CustomButton(
                   text: "Slet konto",
                   onTab: () {
-                    showIPhonePopupBox(
-                      context: context,
-                      title: 'Slet bruger',
-                      message: 'Er du sikker på, at du vil slette din konto?',
-                      confirmText: 'Ja',
-                      cancelText: 'Nej',
-                      onConfirm: (){
-                        deleteLoggedInUser();
-                      },
-                      onCancel: (){
-                        Navigator.of(context).pop();
-                      },
-                    );
+                    if(user.role.hasRole(Role.admin)){
+                      deleteLoggedInAdminUser();
+                    } else {
+                    showDeletionPopUp();
+                    }
                   },
                   foregroundColor: AppColors.errorText,
                   backgroundColor: AppColors.background,
