@@ -45,6 +45,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
   List<Pupil> _filteredChildren = [];
 
   bool _isLoading = true;
+  bool _isExpanded = false;
   int? _currentlyExpandedIndex;
 
   @override
@@ -154,6 +155,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
               color: AppColors.background,
               childWidget: Column(
                 children: [
+                  if(_children.length > 1)
                   SearchField(
                     controller: _searchFieldController, 
                     onChanged: searchFunction, 
@@ -170,7 +172,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
                     ],
                   ),
                   SizedBox(
-                    height: math.min(_children.length * 65.0, 250),
+                    height: _isExpanded ? math.min(_children.length * 65.0 + 130, 250) : math.min(_children.length * 65.0, 250),
                     child: 
                   CollapsibleListScrollable(
                     elements: _filteredChildren, 
@@ -184,6 +186,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
                     // ensures that only one element is expanded at the time 
                     onExpansionChanged: (newIndex) => setState(() {
                       _currentlyExpandedIndex = newIndex;
+                      _isExpanded == false ? _isExpanded = true : _isExpanded = false;
                     }),
                   ),
                   ),
