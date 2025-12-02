@@ -24,7 +24,12 @@ import 'package:foodplanner/services/food_image_service.dart';
 class MealFormPage extends StatefulWidget {
   const MealFormPage({
     super.key,
+    this.selectedIngredients,
   });
+
+
+
+  final List<Map<String, dynamic>>? selectedIngredients;
 
   @override
   _MealFormPageState createState() =>
@@ -48,6 +53,11 @@ class _MealFormPageState extends State<MealFormPage> {
     super.initState(); // Call the superclass initState method.
     foodImageId = retrieveFoodImageId();
     _initializeDate();
+    if (widget.selectedIngredients != null) {
+      selectedIngredients
+        ..clear()
+        ..addAll(widget.selectedIngredients!);
+    }
     selectedIngredientsIds = retrieveSelectedIngredients();
   }
 
@@ -141,6 +151,7 @@ class _MealFormPageState extends State<MealFormPage> {
   Future<void> createMealWithIngredients() async {
     final selectedIngredientsIds = retrieveSelectedIngredients();
     final mealTitle = retrieveMealName();
+    final templateStatus = saveAsTemplate;
     final authProvider =
         AuthProvider(); // Ensure you have an instance of AuthProvider
 
@@ -149,6 +160,7 @@ class _MealFormPageState extends State<MealFormPage> {
       mealTitle,
       foodImageId,
       date,
+      templateStatus,
     );
 
     final Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -233,9 +245,18 @@ class _MealFormPageState extends State<MealFormPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => FoodTemplatePage(),
+                              builder: (context) => const FoodTemplatePage(),
                             ),
-                          );
+                          ).then((result) {
+                            if (result != null &&
+                                result is List<Map<String, dynamic>>) {
+                              setState(() {
+                                selectedIngredients
+                                  ..clear()
+                                  ..addAll(result);
+                              });
+                            }
+                          });
                         },
                         text: "Brug Skabelon",
                         backgroundColor: Colors.white,

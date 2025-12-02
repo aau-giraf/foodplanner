@@ -34,7 +34,7 @@ Future<Meal> fetchMeal(
 // Takes an HTTP client, meal title, optional image URL, optional date, and a list of ingredients.
 // Returns the server's response.
 Future<http.Response> createMeal(AuthProvider authProvider, final String name,
-    final int? foodImageId, final DateTime? date, {http.Client? client}) async {
+    final int? foodImageId, final DateTime? date, final bool templateStatus, {http.Client? client}) async {
       
   // Optional client for tests
   client ??= http.Client();
@@ -56,6 +56,7 @@ Future<http.Response> createMeal(AuthProvider authProvider, final String name,
       'food_image_id': foodImageId,
       'date':
           DateFormat('yyyy-MM-dd').format(date!), // Optional date for the meal.
+      'template': templateStatus,
     }),
   );
  developer.log('Statuscode: ${response.statusCode} body:${response.body}');
