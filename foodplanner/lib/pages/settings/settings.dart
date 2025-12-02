@@ -60,7 +60,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
   UserRoles? userRole;
 
   List<User> totalAdminUsers = [];
-
+  int edits = 0;
   
   @override
   void initState(){
@@ -149,6 +149,22 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
         }
   }
 
+  void showDeletionPopUp(){
+    showIPhonePopupBox(
+      context: context,
+      title: 'Slet bruger',
+      message: 'Er du sikker på, at du vil slette din konto?',
+      confirmText: 'Ja',
+      cancelText: 'Nej',
+      onConfirm: (){
+        deleteLoggedInUser();
+      },
+      onCancel: (){
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
   Future<void> resetPage() async {
     await fetchUser();
     setState(() {
@@ -158,6 +174,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
       isEditingPassword = false;
       isEditingPincode = false;
       hasChanges = false;
+      edits = 0;
     });
   }
 
@@ -224,7 +241,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
         title: const Text('Du kan ikke slette din bruger'),
-        content: const Text('Du er nødt til at assigne admin rollen til en anden bruger'),
+        content: const Text('For at slette din konto skal du først tildele admin rollen til en anden lærer'),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
             isDefaultAction: true,
@@ -237,22 +254,14 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
       ),
       );
     } else {
-      showIPhonePopupBox(
-        context: context,
-        title: 'Slet bruger',
-        message: 'Er du sikker på, at du vil slette din konto?',
-        confirmText: 'Ja',
-        cancelText: 'Nej',
-        onConfirm: (){
-          deleteLoggedInUser();
-        },
-        onCancel: (){
-          Navigator.of(context).pop();
-        },
-      );
+      showDeletionPopUp();
     }
   }
-  
+
+  int numberOfEdits(){
+
+    return edits;
+  }
 
   // These things are notifications and biometric, and they do not have some functions yet
   //Set<String> selectedSegment = {'daily'};
@@ -288,6 +297,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                           onChanged: (value){
                             updatedFirstName = value;
                             onFieldChanged();
+                            edits++;
                           }
                         )
                       )
@@ -313,6 +323,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       isEditingFirstName = true;
                     });
                     onFieldChanged();
+                    edits++;
                   },
                 ),
               ],
@@ -342,8 +353,9 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                         obscureText: false,
                         color: Colors.transparent,
                         onChanged: (value){
-                          updatedLastName = value;
+                          isEditingLastName = true;
                           onFieldChanged();
+                          edits++;
                         },
                       )
                     )
@@ -369,6 +381,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       isEditingLastName = true;
                     });
                     onFieldChanged();
+                    edits++;
                   },
                 )
               ]
@@ -400,6 +413,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                         onChanged: (value) {
                           updatedEmail = value;
                           onFieldChanged();
+                          edits++;
                         },
                       )
                     )
@@ -425,6 +439,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       isEditingEmail = true;
                     });
                     onFieldChanged();
+                    edits++;
                   },
                 )
               ],
@@ -456,6 +471,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                         onChanged: (value) {
                           updatedPassword = value;
                           onFieldChanged();
+                          edits++;
                         }
                       )
                     )
@@ -482,6 +498,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       passwordController.clear();
                     });
                     onFieldChanged();
+                    edits++;
                   },
                 )
               ]
@@ -513,6 +530,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                         onChanged: (value) {
                           updatedPincode = value;
                           onFieldChanged();
+                          edits++;
                         },
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
@@ -543,6 +561,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                       pincodeController.clear();
                     });
                     onFieldChanged();
+                    edits++;
                   },
                 )
               ]
@@ -741,7 +760,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                         children: [
                           SizedBox(height: 20),
                           CustomButton(
-                            text: 'Gem ændring',
+                            text: edits > 1 ? 'Gem ændringer' : 'Gem ændring',
                             onTab: () async {
                               await saveChanges();
                               await resetPage();
@@ -826,19 +845,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                     if(user.role.hasRole(Role.admin)){
                       deleteLoggedInAdminUser();
                     } else {
-                    showIPhonePopupBox(
-                      context: context,
-                      title: 'Slet bruger',
-                      message: 'Er du sikker på, at du vil slette din konto?',
-                      confirmText: 'Ja',
-                      cancelText: 'Nej',
-                      onConfirm: (){
-                        deleteLoggedInUser();
-                      },
-                      onCancel: (){
-                        Navigator.of(context).pop();
-                      },
-                    );
+                    showDeletionPopUp();
                     }
                   },
                   foregroundColor: AppColors.errorText,
