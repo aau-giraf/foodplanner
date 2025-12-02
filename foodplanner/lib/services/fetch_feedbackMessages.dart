@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../auth/auth_provider.dart';
@@ -27,7 +26,7 @@ class FeedbackService{
       throw Exception('Failed to load feedback message data');
     }
   } catch (e) {
-   developer.log('problem with feedback messages: $e');
+    print('problem with feedback messages: $e');
     return [];
   }
 }
@@ -58,13 +57,13 @@ Future<void> fetchSendFeedbackMessage({
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-     developer.log('Message sent successfully: ${response.body}');
+      print('Message sent successfully: ${response.body}');
     } else {
-     developer.log('Failed to send message. Status code: ${response.statusCode}');
+      print('Failed to send message. Status code: ${response.statusCode}');
       throw Exception('Failed to send feedback message.');
     }
   } catch (e) {
-   developer.log('Problem with sending feedback message: $e');
+    print('Problem with sending feedback message: $e');
     rethrow;
   }
 }
@@ -90,7 +89,7 @@ Future<void> fetchSendFeedbackMessage({
         throw Exception('Failed to load chat thread id and user id');
       }
     } catch (e) {
-     developer.log('problem with chat thread id and user id: $e');
+      print('problem with chat thread id and user id: $e');
       rethrow;
     }
   }
@@ -117,7 +116,7 @@ Future<void> fetchSendFeedbackMessage({
         throw Exception('Failed to load chat thread id and user id');
       }
     } catch (e) {
-     developer.log('problem with chat thread id and user id: $e');
+      print('problem with chat thread id and user id: $e');
       rethrow;
     }
   }
@@ -134,12 +133,12 @@ Future<void> fetchArchieveMessageFromMessageID(int messageId, AuthProvider authP
       },
     );
     if (response.statusCode == 200) {
-     developer.log('Message archived successfully');
+      print('Message archived successfully');
     } else {
       throw Exception('Failed to archive message');
     }
   } catch (e) {
-   developer.log('problem with archiving message: $e');
+    print('problem with archiving message: $e');
     rethrow;
   }
 }
@@ -161,13 +160,13 @@ Future<bool> fetchUpdateMessageFromMessageID(int messageId, String content, Auth
       body: jsonEncode(requestBody),
     );
     if (response.statusCode == 200) {
-     developer.log('Message updated successfully');
+      print('Message updated successfully');
       return true;
     } else {
       throw Exception('Failed to update message');
     }
   } catch (e) {
-   developer.log('problem with updating message: $e');
+    print('problem with updating message: $e');
     return false;
   }
 }
@@ -192,7 +191,7 @@ Future<int> fetchGetChatThreadIdByChildId (int childId, AuthProvider authProvide
       throw Exception('Failed to load chat thread id');
     }
   } catch (e) {
-   developer.log('problem with chat thread id: $e');
+    print('problem with chat thread id: $e');
     rethrow;
   }
 }

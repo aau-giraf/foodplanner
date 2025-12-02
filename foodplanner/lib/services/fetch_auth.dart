@@ -1,5 +1,8 @@
-import 'dart:developer' as developer;
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:foodplanner/pages/main_page_admin_teacher.dart';
+import 'package:foodplanner/routes/paths.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import '../auth/auth_provider.dart';
 import '../models/user_roles.dart';
@@ -34,6 +37,8 @@ Future<UserRoles> fetchAuthData(String email, String password) async {
       }),
     );
 
+    print(response.body);
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final String jwt = data['jwt'];
@@ -49,7 +54,7 @@ Future<UserRoles> fetchAuthData(String email, String password) async {
       throw AuthException(error['Message'] ?? 'Failed to load auth data');
     }
   } catch (e) {
-   developer.log('Error fetching auth data: $e');
+    print('Error fetching auth data: $e');
     throw NetworkException('Forkert email eller adgangskode');
   }
 }

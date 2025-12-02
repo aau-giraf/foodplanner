@@ -9,7 +9,12 @@ enum ButtonSize { small, medium, large }
 class CustomButton extends StatelessWidget {
   final Function()? onTab;
   final String text;
-  final SFIcon? icon;
+  final SFIcon? sfIcon;
+  final SFIcon? sfTrailingIcon;
+  final Icon? materialIcon;
+  final ImplicitlyAnimatedWidget? animatedWidget;
+  final MainAxisAlignment mainAxisAlignment;
+  final MainAxisSize mainAxisSize;
   final Color backgroundColor;
   final Color foregroundColor;
   final ButtonSize? size; // Optional size parameter
@@ -20,13 +25,42 @@ class CustomButton extends StatelessWidget {
     super.key,
     required this.onTab,
     this.text = '',
-    this.icon,
+    this.sfIcon,
+    this.sfTrailingIcon,
+    this.materialIcon,
+    this.animatedWidget,
+    this.mainAxisAlignment = MainAxisAlignment.center,
+    this.mainAxisSize = MainAxisSize.min,
     this.backgroundColor = AppColors.primary, // Default background color
     this.foregroundColor = AppColors.textSecondary, // Default foreground color
     this.size, // Size parameter
     this.customWidth, // Custom width
     this.customHeight, // Custom height
   });
+
+
+// Helper to icons and text simultaneously
+Widget _textAndIcon(TextStyle textStyle) {
+
+  if (sfTrailingIcon != null && text.isNotEmpty) {
+      return Stack(
+        children: [
+          Center(
+            child: Text(text, style: textStyle),
+          ),
+          
+          Align(
+            alignment: Alignment.centerRight,
+            child: sfTrailingIcon!,
+          ),
+        ],
+      );
+    }
+    
+    
+    
+    return Text(text, style: textStyle);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,14 +133,21 @@ class CustomButton extends StatelessWidget {
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
           disabledForegroundColor: foregroundColor.withValues(alpha: 0.5),
-          elevation: 3,
+          elevation: 5,
           padding: buttonPadding, // Set the padding for the button
         ),
-        child: icon ??
-            Text(
-              text,
-              style: buttonTextStyle, // Use the determined text style
-            ),
+        child: Row(
+          mainAxisAlignment: mainAxisAlignment, 
+          mainAxisSize: mainAxisSize,
+          children: [
+            if (sfIcon != null) sfIcon!,
+            if (materialIcon != null) materialIcon!,
+            if (animatedWidget != null) animatedWidget!,
+            if (sfIcon != null || materialIcon != null)
+              const SizedBox(width: 8),
+            _textAndIcon(buttonTextStyle),
+          ],
+        )
       ),
     );
   }

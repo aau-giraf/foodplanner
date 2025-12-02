@@ -37,29 +37,44 @@ class MealNotifier with ChangeNotifier {
   }
 
   Future<void> fetchMealData() async {
-    selectedDate = DateTime.parse(
-        await _secureStorage.read(key: '_selectedDate') ??
+    //debugPrint('Step1: Start fetchMealData()');
+    selectedDate = DateTime.parse(await _secureStorage.read(key: '_selectedDate') ??
             DateFormat('yyyy-MM-dd').format(DateTime.now()));
+    //debugPrint('Step2: selectedDate = $selectedDate');
+    
     final mealService = MealService(apiUrl: baseUrl);
+    
+    //debugPrint('Step3: Retrieving role..');
     final role = await AuthProvider().retrieveRole();
-    if(role == null){developer.log("Role was null"); return;} 
+    if(role == null){developer.log("Role was null"); return;}
     Meal? mealData;
-    if (role.hasRole(Role.student)||role.hasRole(Role.parent)) {
+    if (role.hasRole(Role.pupil)||role.hasRole(Role.guardian)) {
       mealData = await mealService
           .fetchMealData(DateFormat('yyyy-MM-dd').format(selectedDate));
-    } else {
+      //debugPrint('Step4 done: mealdata = $mealData');
+    } else if(role.hasRole(Role.teacher) || role.hasRole(Role.admin)) {
+      //debugPrint('Step5: Reading teacherChildId from storage...');
       final teacherChildIdStr =
           await _secureStorage.read(key: '_teacherChildId');
+      //debugPrint('Step5 done: teacherChildStr = $teacherChildIdStr');
+
       if (teacherChildIdStr != null) {
         teacherChildId = int.parse(teacherChildIdStr);
+      } else {
+        debugPrint('ERROR: eacherChildIdStr was NULL');
       }
 
+      //debugPrint('Step6: Fetching teacher mealData');
       mealData = await mealService.fetchMealDataTeacher(
           DateFormat('yyyy-MM-dd').format(selectedDate), teacherChildId!);
+      //debugPrint('Step 6: mealData = $mealData');
     }
 
+    //debugPrint('Step 7');
     meal = mealData;
     notifyListeners();
+
+    //debugPrint('Step 7 done');
   }
 
   Future<DateTime> retrieveDate() async {

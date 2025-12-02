@@ -67,7 +67,7 @@ class CustomElevatedButton extends StatelessWidget {
         boxShadow: [
             // Adding shadow effect to the button for a raised appearance
             BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.5), // Shadow color with opacity
+              color: Colors.grey.withOpacity(0.5), // Shadow color with opacity
               spreadRadius: 1, // Spread of the shadow
               blurRadius: 1, // Blur radius for the shadow
               offset: Offset(0, 2), // changes position of shadow
@@ -75,6 +75,7 @@ class CustomElevatedButton extends StatelessWidget {
           ],
       ),
       child: ElevatedButton(
+        child: widget, // The child widget (e.g., text) inside the button
         onPressed: onTab, // Function to call on button press
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor, // Set background color of the 
@@ -83,7 +84,6 @@ class CustomElevatedButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(height/2)  // Rounded shape of the button
           ),
         ),
-        child: widget,
       ),
     );
   }

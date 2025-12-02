@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:foodplanner/models/packed_ingredient.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
+import 'package:foodplanner/models/ingredient.dart';
 import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
 import 'package:foodplanner/components/button.dart';
 
 @GenerateMocks([http.Client])
 void main() {
+  final List<Ingredient> ingredients = [
+    Ingredient(id: 0, name: 'æble', foodImageId: null),
+    Ingredient(id: 1, name: 'knækbrød', foodImageId: 1),
+    Ingredient(id: 2, name: 'franskbrød', foodImageId: 2),
+  ];
+  final List<PackedIngredient> packedIngredients = [
+    PackedIngredient(id: 0, mealId: 0, ingredient: ingredients[0]),
+    PackedIngredient(id: 1, mealId: 0, ingredient: ingredients[1]),
+    PackedIngredient(id: 2, mealId: 0, ingredient: ingredients[2]),
+  ];
 
   MealFormPage createWidgetUnderTest() {
     return MealFormPage(

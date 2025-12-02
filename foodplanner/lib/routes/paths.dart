@@ -1,11 +1,14 @@
 // main root and auth root
 
 const String MAIN_ROOT = '/';
+const String ADMIN_ROLES_ROOT = '/admin_roles';
 const String ADMIN_ROOT = '/admin';
+const String ADMIN_TEACHER_ROOT = '/admin_teacher';
 const String TEACHER_ROOT = '/teacher';
 const String STUDENT_ROOT = '/student';
 const String PARENT_ROOT = '/parent';
 const String UNAUTHORIZED = '/unauthorized';
+
 // additional pages
 const String MAIN_PAGE = '/home';
 const String LOGIN_PAGE = '/login';
@@ -18,6 +21,13 @@ const String FEEDBACK_Page = '/feedbackPage';
 const String ADD_MEAL = '/create';
 const String EDIT_MEAL = '/edit';
 const String NO_MEAL = '/empy';
+const String CHOOSE_CHILD = '/choose_child';
+const String PARENT_MAIN = '/parent_landing_page';
+const String STUDENT_UNLOCKED = "/student_unlocked";
+const String CHOOSE_CHILD_PARENT = '/choose_child_parent';
+const String CHOOSE_CHILD_TEACHER = '/choose_child_teacher';
+const String ADMIN_PROFILES_PAGE = '/admin_profiles_page';
+const String ADMIN_SCHOOL = '/admin_school';
 
 // routing through concat of pages from above (lavet baseret på vores p3 dont ask why)
 const String MAIN_PAGE_ROUTE = MAIN_PAGE;

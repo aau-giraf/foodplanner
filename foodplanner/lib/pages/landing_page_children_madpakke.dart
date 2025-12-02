@@ -1,35 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/meal_box.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 
 import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
+import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class ChildLandingPageMadpakke extends StatefulWidget {
-  final Map<String, String> student;
-  const ChildLandingPageMadpakke(
-      {super.key, /* required Map<String, String> */ required this.student});
+class PupilLandingPageMadpakke extends StatefulWidget {
+  final Map<String, String> pupil;
+  const PupilLandingPageMadpakke(
+      {super.key, /* required Map<String, String> */ required this.pupil});
 
   @override
-  State<ChildLandingPageMadpakke> createState() =>
-      _ChildLandingPageMadpakkeState();
+  State<PupilLandingPageMadpakke> createState() =>
+      _PupilLandingPageMadpakkeState();
 }
 
-class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
+class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
   //ignore: unused_field 
   late Future<bool> _hasRolesFuture;
-  Child? _child;
-  final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
+  Pupil? _pupil;
+  final PupilService pupilService = PupilService(apiUrl: ApiConfig.baseUrl);
   UserRoles? userRole;
   Future<void>? _callerFuture;
 
@@ -42,33 +44,48 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   Future<void> _initialize() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final role = await authProvider.retrieveRole();
+    //debugPrint('Brugerrolle: $role');
+
     setState(() {
       userRole = role;
       _hasRolesFuture =
-          authProvider.hasOneOfRoles([Role.parent, Role.student, Role.teacher]);
+          authProvider.hasOneOfRoles([Role.guardian, Role.pupil, Role.teacher]);
     });
 
-    if (authProvider.userRole == Role.student ||
-        authProvider.userRole == Role.parent) {
-      final childData = await childService.fetchChildById();
+    Pupil? childData;
+
+      if (authProvider.userRole!.hasRole(Role.pupil) || authProvider.userRole!.hasRole(Role.guardian)) {
+        final userService = UserService(apiUrl: ApiConfig.baseUrl);
+        final loggedInUser = await userService.fetchLoggedInUser();
+        
+        int userId = loggedInUser.id;
+
+        childData = await pupilService.getByPupilId(userId);
+
+        setState(() {
+          _pupil = childData;
+        });
+    } else if (authProvider.userRole!.hasRole(Role.teacher)) {
+      int tempChildId = int.parse(widget.pupil['id']!);
+      final childData = await pupilService.getByPupilId(tempChildId);
       setState(() {
-        _child = childData;
-      });
-    } else if (authProvider.userRole == Role.teacher) {
-      int tempChildId = int.parse(widget.student['id']!);
-      final childData = await childService.getByChildId(tempChildId);
-      setState(() {
-        _child = childData;
+        _pupil = childData;
       });
     }
 
-    setState(() {
-      _callerFuture = caller();
-    });
+    if(childData != null) {
+      setState(() {
+        _callerFuture = caller();
+      });
+    } else if (childData == null) {
+      throw Exception('ChildData er null');
+    }
   }
 
   Future<void> caller() async {
-    await MealNotifier().teacherUpdateChildId(_child!.parentId);
+    if(_pupil?.guardianId != null) {
+      await MealNotifier().teacherUpdateChildId(_pupil!.guardianId!);
+    }
     await MealNotifier().updateDate(DateTime.now());
   }
 
@@ -76,7 +93,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: userRole == Role.teacher || userRole == Role.admin
+        leading: userRole!.hasRole(Role.teacher) ||userRole!.hasRole(Role.admin)
             ? IconButton(
                 onPressed: () {
                   GoRouter.of(context).go(TEACHER_ROOT);
@@ -85,11 +102,11 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
               )
             : null,
         title: Text(
-          '${_child?.firstName} ${_child?.lastName}',
+          '${_pupil?.firstName} ${_pupil?.lastName}',
           style: AppTextStyles.headline4,
         ),
         centerTitle: true,
-        actions: userRole != Role.teacher && userRole != Role.admin
+        actions: !(userRole!.hasRole(Role.teacher)) && !(userRole!.hasRole(Role.admin))
             ? [
                 IconButton(
                   onPressed: () {
@@ -119,6 +136,11 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                       future: _callerFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
+                          
+                          if(_pupil == null){
+                            return Text('Data for barnet kunne ikke hentes');
+                          }
+
                           return ReusableMealBox();
                         } else {
                           return CircularProgressIndicator();
@@ -136,7 +158,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                             FEEDBACK_Page,
                             extra: {
                               'from': TEACHER_ROOT,
-                              'childId': _child!.childId.toString()
+                              'childId': _pupil!.pupilId.toString()
                             },
                           );
                         },

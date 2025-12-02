@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
@@ -10,7 +9,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/components/custom_list_item.dart';
+import 'package:foodplanner/components/Custom_List_Item.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user.dart' as model;
 import 'package:foodplanner/services/user_service.dart';
@@ -43,7 +42,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
   @override
   void initState() {
     super.initState();
-    fetchChildrenData();
+    fetchPupilsData();
     fetchUser();
   }
 
@@ -54,7 +53,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
     });
   }
 
-  Future<void> fetchChildrenData() async {
+  Future<void> fetchPupilsData() async {
     try {
       String? jwtToken = await AuthProvider().retrieveToken();
       var apiClient = ApiClient(basePath: ApiConfig.baseUrl);
@@ -91,7 +90,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
         throw Exception('Failed to load children data');
       }
     } catch (e) {
-     developer.log('Error fetching children data: $e');
+      print('Error fetching children data: $e');
     }
   }
 

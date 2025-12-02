@@ -1,4 +1,4 @@
-import 'dart:convert';
+/*import 'dart:convert';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
@@ -9,22 +9,23 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/pages/create_child_page_one_time_password.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 
-class CreateChildPage extends StatefulWidget {
-  const CreateChildPage({super.key});
+class CreatePupilPage extends StatefulWidget {
+  const CreatePupilPage({super.key});
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
-  static final ChildService childService =
-      ChildService(apiUrl: ApiConfig.baseUrl);
+  static final PupilService childService =
+      PupilService(apiUrl: ApiConfig.baseUrl);
 
   @override
-  State<CreateChildPage> createState() => _SignupChildState();
+  State<CreatePupilPage> createState() => _SignupChildState();
 }
 
-class _SignupChildState extends State<CreateChildPage> {
+class _SignupChildState extends State<CreatePupilPage> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
 
@@ -32,11 +33,11 @@ class _SignupChildState extends State<CreateChildPage> {
   String firstNameError = '';
   String lastNameError = '';
 
-  //Regular expression for vildationg full name, Email, password¨
+  //Regular expression for vildationg full name, Email, password
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
 
   Future<List<SchoolClass>> classesFuture =
-      CreateChildPage.schoolClassService.fetchAllClasses();
+      CreatePupilPage.schoolClassService.fetchAllClasses();
   List<SchoolClass> classes = [];
 
   @override
@@ -127,6 +128,7 @@ class _SignupChildState extends State<CreateChildPage> {
 
     //proceed with sign-up logic if everything is correct
     createChildHandler(context, firstName, lastName, selectedClassId);
+    Navigator.pop(context);
   }
 
   //Placeholder function for sign-up logic
@@ -137,8 +139,8 @@ class _SignupChildState extends State<CreateChildPage> {
     int classId,
   ) async {
     try {
-      final response = await CreateChildPage.childService
-          .createChild(firstName, lastName, classId);
+      final response = await CreatePupilPage.childService
+          .createPupil(firstName, lastName, classId);
 
       if (!context.mounted) return;
 
@@ -373,6 +375,7 @@ class _SignupChildState extends State<CreateChildPage> {
           ),
         ),
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
-}
+}*/

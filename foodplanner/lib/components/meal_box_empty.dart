@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MealBoxEmpty extends StatelessWidget {
   final Size size;
-  const MealBoxEmpty({super.key, required this.size});
+  const MealBoxEmpty({Key? key, required this.size}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

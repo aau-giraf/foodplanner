@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'user_roles.dart';
 
 class User {
@@ -16,8 +18,7 @@ class User {
     required this.role,
     required this.archived,
   });
-
-
+  
   factory User.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
@@ -27,7 +28,7 @@ class User {
         'email': String email,
         'role': String role,
         'archived': bool archived,
-      } =>
+      } => 
         User(
           id: id,
           firstName: firstName,

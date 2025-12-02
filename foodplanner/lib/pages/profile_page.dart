@@ -7,10 +7,10 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/child.dart';
+import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/models/user_roles.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/components/settings_header.dart';
@@ -22,20 +22,20 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/routes/paths.dart';
 
-class ParentProfile extends StatefulWidget {
-  const ParentProfile({super.key});
+class GuardianProfile extends StatefulWidget {
+  const GuardianProfile({super.key});
 
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-  static final ChildService childService =
-      ChildService(apiUrl: ApiConfig.baseUrl);
+  static final PupilService pupilService =
+      PupilService(apiUrl: ApiConfig.baseUrl);
 
   @override
-  ParentProfileState createState() => ParentProfileState();
+  GuardianProfileState createState() => GuardianProfileState();
 }
 
-class ParentProfileState extends State<ParentProfile>
+class GuardianProfileState extends State<GuardianProfile>
     with SingleTickerProviderStateMixin {
-  User parent = User(
+  User guardian = User(
       id: 0,
       email: 'Unknown',
       firstName: 'Unknown',
@@ -43,11 +43,11 @@ class ParentProfileState extends State<ParentProfile>
       role: UserRoles.empty(),
       archived: false);
 
-  Child child = Child(
-      childId: 0,
+  Pupil pupil = Pupil(
+      pupilId: 0,
       firstName: 'Unknown',
       lastName: 'Unknown',
-      parentId: 0,
+      guardianId: 0,
       classId: 0);
 
   List<String> oneTimePaswords = [
@@ -92,54 +92,54 @@ class ParentProfileState extends State<ParentProfile>
       if ((role?.hasRole(Role.teacher) ?? false) || (role?.hasRole(Role.admin) ?? false)) {
         fetchAdminAndTeacher();
       } else {
-        fetchParentAndChild();
+        fetchGuardianAndPupil();
       }
       userRole = role;
     });
   }
 
   Future<void> fetchAdminAndTeacher() async {
-    final userInfo = await ParentProfile.userService.fetchLoggedInUser();
+    final userInfo = await GuardianProfile.userService.fetchLoggedInUser();
     setState(() {
-      parent = userInfo;
-      firstNameController.text = parent.firstName;
-      lastNameController.text = parent.lastName;
-      emailController.text = parent.email;
-      updatedFirstName = parent.firstName;
-      updatedLastName = parent.lastName;
-      updatedEmail = parent.email;
+      guardian = userInfo;
+      firstNameController.text = guardian.firstName;
+      lastNameController.text = guardian.lastName;
+      emailController.text = guardian.email;
+      updatedFirstName = guardian.firstName;
+      updatedLastName = guardian.lastName;
+      updatedEmail = guardian.email;
     });
   }
 
-  Future<void> fetchParentAndChild() async {
-    final userInfo = await ParentProfile.userService.userInfo(parent.id);
-    final fetchedChild = await ParentProfile.childService.fetchChildById();
+  Future<void> fetchGuardianAndPupil() async {
+    final userInfo = await GuardianProfile.userService.userInfo(guardian.id);
+    final fetchedPupil = await GuardianProfile.pupilService.fetchPupilById();
     setState(() {
-      parent = userInfo;
-      child = fetchedChild;
-      firstNameController.text = parent.firstName;
-      lastNameController.text = parent.lastName;
-      emailController.text = parent.email;
-      updatedFirstName = parent.firstName;
-      updatedLastName = parent.lastName;
-      updatedEmail = parent.email;
+      guardian = userInfo;
+      pupil = fetchedPupil;
+      firstNameController.text = guardian.firstName;
+      lastNameController.text = guardian.lastName;
+      emailController.text = guardian.email;
+      updatedFirstName = guardian.firstName;
+      updatedLastName = guardian.lastName;
+      updatedEmail = guardian.email;
     });
   }
 
   Future<void> updatePassword() async {
     final userInfo =
-        await ParentProfile.userService.updatePassword(updatedPassword);
+        await GuardianProfile.userService.updatePassword(updatedPassword);
     setState(() {
-      parent = userInfo;
+      guardian = userInfo;
       updatedPassword = passwordController.text;
     });
   }
 
   Future<void> updatePincode() async {
     final userInfo =
-        await ParentProfile.userService.updatePincode(updatedPincode);
+        await GuardianProfile.userService.updatePincode(updatedPincode);
     setState(() {
-      parent = userInfo;
+      guardian = userInfo;
       updatedPincode = pincodeController.text;
     });
   }
@@ -165,18 +165,18 @@ class ParentProfileState extends State<ParentProfile>
     if (updatedFirstName.isNotEmpty ||
         updatedLastName.isNotEmpty ||
         updatedEmail.isNotEmpty) {
-      await ParentProfile.userService.updateUser(
-        parent.id,
-        updatedFirstName.isNotEmpty ? updatedFirstName : parent.firstName,
-        updatedLastName.isNotEmpty ? updatedLastName : parent.lastName,
-        updatedEmail.isNotEmpty ? updatedEmail : parent.email,
+      await GuardianProfile.userService.updateUser(
+        guardian.id,
+        updatedFirstName.isNotEmpty ? updatedFirstName : guardian.firstName,
+        updatedLastName.isNotEmpty ? updatedLastName : guardian.lastName,
+        updatedEmail.isNotEmpty ? updatedEmail : guardian.email,
       );
     }
   }
 
   Future<void> resetPage() async {
-    if ((userRole?.hasRole(Role.parent) ?? false)) {
-      await fetchParentAndChild();
+    if ((userRole?.hasRole(Role.guardian) ?? false)) {
+      await fetchGuardianAndPupil();
       setState(() {
         isEditingFirstName = false;
         isEditingLastName = false;
@@ -197,7 +197,7 @@ class ParentProfileState extends State<ParentProfile>
     }
   }
 
-  List<Map<String, dynamic>> get parentProfileItems => [
+  List<Map<String, dynamic>> get guardianProfileItems => [
         {
           'title': 'Fornavn: ',
           'showIcon': false,
@@ -231,7 +231,7 @@ class ParentProfileState extends State<ParentProfile>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              parent.firstName,
+                              guardian.firstName,
                               style: AppTextStyles.bigText,
                             ),
                           ],
@@ -287,7 +287,7 @@ class ParentProfileState extends State<ParentProfile>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              parent.lastName,
+                              guardian.lastName,
                               style: AppTextStyles.bigText,
                             ),
                           ],
@@ -343,7 +343,7 @@ class ParentProfileState extends State<ParentProfile>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              parent.email,
+                              guardian.email,
                               style: AppTextStyles.bigText,
                             ),
                           ],
@@ -537,11 +537,11 @@ class ParentProfileState extends State<ParentProfile>
           ),
           'showSpacer': false,
         },
-        if (userRole?.hasRole(Role.parent) ?? false)
+        if (userRole?.hasRole(Role.guardian) ?? false)
           {
             'title': 'Barn',
             'isEditable': false,
-            'cta': Text('${child.firstName} ${child.lastName}'),
+            'cta': Text('${pupil.firstName} ${pupil.lastName}'),
             'divider': false,
           },
       ];
@@ -562,11 +562,11 @@ class ParentProfileState extends State<ParentProfile>
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SettingsHeader(
+            /*SettingsHeader(
               icon: SFIcons.sf_person_fill,
-              title: '${parent.firstName} ${parent.lastName}',
+              title: '${guardian.firstName} ${guardian.lastName}',
               subtitle: 'Her kan du redigere dine oplysninger.',
-            ),
+            ),*/
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
@@ -581,7 +581,7 @@ class ParentProfileState extends State<ParentProfile>
                         child: Column(
                           children: [
                             SizedBox(height: 10),
-                            ...parentProfileItems.map((item) {
+                            ...guardianProfileItems.map((item) {
                               return SettingsWidget(
                                 title: item['title'],
                                 isEditable: item['isEditable'],

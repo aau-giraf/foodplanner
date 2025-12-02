@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/pages/landing_page_parent.dart';
+import 'package:foodplanner/pages/landing_page_guardian.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/pages/main_page_parent.dart';
 import 'landing_page_children_madpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'landing_page_teacher.dart';
+import 'package:foodplanner/pages/main_page_teacher.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -44,8 +45,8 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ChildLandingPageMadpakke(
-                            student: {},
+                      builder: (context) => const PupilLandingPageMadpakke(
+                            pupil: {},
                           )),
                 );
               },
@@ -57,7 +58,7 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ParentLandingPageMadpakke()),
+                      builder: (context) => const GuardianLandingPageMadpakke()),
                 );
               },
               child: const Text('Go to Parent Landing Page'),
@@ -68,7 +69,7 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const TeacherLandingPage()),
+                      builder: (context) => const TeacherMainPage()),
                 );
               },
               child: const Text('Go to Teacher Landing Page'),
@@ -86,7 +87,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 final authProvider =
                     Provider.of<AuthProvider>(context, listen: false);
-                authProvider.setRole(UserRoles.of({Role.parent}));
+                authProvider.setRole(UserRoles.of({Role.guardian}));
               },
               child: const Text('Set role to parent'),
             ),
@@ -100,7 +101,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 final authProvider =
                     Provider.of<AuthProvider>(context, listen: false);
-                if (authProvider.userRole?.hasRole(Role.parent) ?? false) {
+                if (authProvider.userRole?.hasRole(Role.guardian) ?? false) {
                   context.go(NO_MEAL);
                 } else {
                   context.go('/unauthorized');

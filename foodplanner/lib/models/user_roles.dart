@@ -1,4 +1,4 @@
-enum Role { admin, teacher, parent, student, child }
+enum Role { admin, teacher, guardian, pupil }
 
 class UserRoles {
   final Set<Role> roles;
@@ -29,19 +29,47 @@ class UserRoles {
     return false;
   }
 
+  bool hasOnlyRole(Role role) {
+    return roles.contains(role) && roles.length == 1;
+  }
+
   UserRoles add(Role role) => UserRoles._({...roles, role});
 
-  factory UserRoles.fromString(String value) {
-    List<String> roleValues = value.split(",").map((s) => s.trim().toLowerCase()).toList();
+  factory UserRoles.fromString(String value) =>
+      UserRoles.of(value.split(",").map((str) =>
+    switch (str.trim().toLowerCase()){
+      "admin" => Role.admin,
+      "teacher" => Role.teacher,
+      "parent" => Role.guardian,
+      "child" => Role.pupil,
+      String() => throw InvalidRoleStringException(str),
+    }));
+
+  factory UserRoles.fromInt(int value){
     var userRole = UserRoles.empty();
     for (var role in Role.values){
-      if(roleValues.contains(role.name)){  // role.name is already lowercase
+      int roleBit = 1 << role.index;
+      if((value & roleBit) != 0){
         userRole = userRole.add(role);
       }
     }
+    print("role from int: $userRole"); // for debugging purposes
     return userRole;
   }
 
   @override
-  String toString() => roles.map((r) => r.name).join(",");
+  String toString() => roles.map((r) => switch(r) {
+    Role.guardian => "parent",
+    Role.pupil => "child",
+    _ => r.name
+  } ).join(",");
+}
+
+class InvalidRoleStringException implements Exception {
+  final String message;
+
+  InvalidRoleStringException(this.message);
+
+  @override
+  String toString() => 'InvalidRoleStringException: $message';
 }
