@@ -64,7 +64,7 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = 'Noget gik galt. Prøv igen.';
+        _error = 'Kunne loade templates';
       });
     } finally {
       if (mounted) {
@@ -307,7 +307,7 @@ class _FoodTemplatePage extends State<FoodTemplatePage> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: .08),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
