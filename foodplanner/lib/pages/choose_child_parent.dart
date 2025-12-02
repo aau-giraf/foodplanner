@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:foodplanner/components/card_container.dart';
+import 'package:foodplanner/components/collapsible_list.dart';
 import 'package:foodplanner/components/collapsible_list_scrollable.dart';
 import 'package:foodplanner/components/custom_app_bar.dart';
 import 'package:foodplanner/components/loading_animation.dart';
@@ -90,6 +91,8 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
   // method for filtering the collapsible list based on input in search field
   void searchFunction(String input){
     setState(() {
+      _currentlyExpandedIndex = null;
+      _isExpanded = false;
       _filteredChildren = _children.where((child) {
         // pass both strings as lowercase to ensure case-insensitivity
         final fullName = "${child.firstName} ${child.lastName}".toLowerCase(); 
@@ -123,8 +126,75 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
     );
   }
 
+  Widget buildSearchField(){
+    return SearchField(
+      controller: _searchFieldController, 
+      onChanged: searchFunction, 
+      borderRadius: 30, 
+      backgroundColor: Colors.white, 
+      horizontalPadding: 5, 
+      verticalPadding: 5, 
+      boxShadow: [
+        BoxShadow(
+          color: AppColors.textFieldBorderFocus.withAlpha(100),
+          blurRadius: 6,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    );
+  }
+
+  Widget buildScrollableView(double screenHeight){
+    return CardContainer(
+      clipBehavior: Clip.antiAlias,
+      color: AppColors.background,
+      childWidget: Column(
+        children: [
+          buildSearchField(),
+          SizedBox(
+            height: math.min(_children.length * 75.0, 250),
+            child:  CollapsibleListScrollable(
+              elements: _filteredChildren, 
+              controller: _scrollController, 
+              currentlyExpandedIndex: _currentlyExpandedIndex,
+              // redirection corresponding to the buttons; OBS: change this to the correct ones 
+              onFeedback: () => Navigator.push(context, MaterialPageRoute(builder: (_) => FeedbackChatPage())), 
+              onLunch: () => Navigator.push(context, MaterialPageRoute(builder: (_) => GuardianLandingPageMadpakke())), 
+              onSettings: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChooseChildGuardian())), 
+
+              // ensures that only one element is expanded at the time 
+              onExpansionChanged: (newIndex) => setState(() {
+                _currentlyExpandedIndex = newIndex;
+                _isExpanded == false ? _isExpanded = true : _isExpanded = false;
+              }),
+            ),
+          ),
+        ],
+      )
+    );
+  }
+
+  Widget buildSinglePupilView(double screenWidth){
+    return CollapsibleList(
+      pupil: _filteredChildren[0],
+      headerText: "${_filteredChildren[0].firstName} ${_filteredChildren[0].lastName}", 
+      isExpanded: _isExpanded, 
+      headerColor: AppColors.background,
+      headerWidth: screenWidth - 30,
+      bodyWidth: screenWidth - 95,
+      onFeedback: () => Navigator.push(context, MaterialPageRoute(builder: (_) => FeedbackChatPage())), 
+      onLunch: () => Navigator.push(context, MaterialPageRoute(builder: (_) => GuardianLandingPageMadpakke())), 
+      onSettings: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChooseChildGuardian())),
+      onHeaderTap: () => setState(() {
+        _isExpanded == false ? _isExpanded = true : _isExpanded = false;
+      }) 
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     // animation shown if the children are still being loaded
     if(_isLoading) {
@@ -149,50 +219,9 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
       body: Column (
         children: [
           Padding( padding: EdgeInsetsGeometry.only(top: 15)),
-          // component for search field and collapsible list
-          CardContainer(
-              clipBehavior: Clip.antiAlias,
-              color: AppColors.background,
-              childWidget: Column(
-                children: [
-                  if(_children.length > 1)
-                  SearchField(
-                    controller: _searchFieldController, 
-                    onChanged: searchFunction, 
-                    borderRadius: 30, 
-                    backgroundColor: Colors.white, 
-                    horizontalPadding: 5, 
-                    verticalPadding: 5, 
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.textFieldBorderFocus.withAlpha(100),
-                        blurRadius: 6,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: _isExpanded ? math.min(_children.length * 65.0 + 130, 250) : math.min(_children.length * 65.0, 250),
-                    child: 
-                  CollapsibleListScrollable(
-                    elements: _filteredChildren, 
-                    controller: _scrollController, 
-                    currentlyExpandedIndex: _currentlyExpandedIndex,
-                    // redirection corresponding to the buttons; OBS: change this to the correct ones 
-                    onFeedback: () => Navigator.push(context, MaterialPageRoute(builder: (_) => FeedbackChatPage())), 
-                    onLunch: () => Navigator.push(context, MaterialPageRoute(builder: (_) => GuardianLandingPageMadpakke())), 
-                    onSettings: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChooseChildGuardian())), 
 
-                    // ensures that only one element is expanded at the time 
-                    onExpansionChanged: (newIndex) => setState(() {
-                      _currentlyExpandedIndex = newIndex;
-                      _isExpanded == false ? _isExpanded = true : _isExpanded = false;
-                    }),
-                  ),
-                  ),
-                ],
-              ),
-            ),
+          // component for search field and collapsible list
+          _children.length > 1 ? buildScrollableView(screenHeight) : buildSinglePupilView(screenWidth),
 
           // "Opret barn" button
           RightIconButton(

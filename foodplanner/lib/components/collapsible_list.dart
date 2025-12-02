@@ -8,6 +8,9 @@ import 'package:foodplanner/models/schoolClass.dart';
 class CollapsibleList extends StatelessWidget {
   final Pupil? pupil;
   final SchoolClass? schoolClass;
+  final Color? headerColor;
+  final double? headerWidth;
+  final double? bodyWidth;
 
   final String headerText;
   final bool isExpanded;
@@ -21,6 +24,9 @@ class CollapsibleList extends StatelessWidget {
     super.key,
     this.pupil,
     this.schoolClass,
+    this.headerColor = Colors.white,
+    this.headerWidth,
+    this.bodyWidth,
 
     required this.headerText,
     required this.isExpanded,
@@ -110,14 +116,14 @@ class CollapsibleList extends StatelessWidget {
       onTap: onHeaderTap,
       borderRadius: BorderRadius.circular(30),
       child: Container(
-        width: screenWidth - 90, // this fixes the width of each button, such that the scrollbar does not overlap - could be changed to a dynamic animation
+        width: headerWidth ?? screenWidth - 90, // this fixes the width of each button, such that the scrollbar does not overlap - could be changed to a dynamic animation
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
-          color: isExpanded? AppColors.primary : Colors.white,
+          color: isExpanded? AppColors.primary : headerColor,
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
-              color: AppColors.textFieldBorderFocus.withAlpha(100),
+              color: AppColors.textFieldBorderFocus.withAlpha(70),
               blurRadius: 6,
               offset: const Offset(0, 4),
             ),
@@ -168,13 +174,13 @@ class CollapsibleList extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 12),
               child: Center(
                 child: Container (
-                  width: screenWidth - 155,
+                  width: bodyWidth ?? screenWidth - 155,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.textFieldBorderFocus.withAlpha(100),
+                        color: AppColors.textFieldBorderFocus.withAlpha(70),
                         blurRadius: 6,
                         offset: const Offset(0, 4),
                       ),
