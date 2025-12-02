@@ -29,10 +29,12 @@ class AuthProvider with ChangeNotifier {
     _isLoggedIn = true;
     _userRole = role;
     _jwtToken = token;
+    _userId = userId;
     await _secureStorage.write(key: 'isApproved', value: isApproved.toString());
     await _secureStorage.write(key: 'isLoggedIn', value: 'true');
     await _secureStorage.write(key: 'userRole', value: role.toString());
     await _secureStorage.write(key: 'jwtToken', value: token);
+    await _secureStorage.write(key: 'userId', value: userId.toString());
     notifyListeners();
   }
 
