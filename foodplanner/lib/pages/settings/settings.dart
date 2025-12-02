@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
@@ -58,12 +59,16 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
 
   UserRoles? userRole;
 
+  List<User> totalAdminUsers = [];
+
+  
   @override
   void initState(){
     super.initState();
 
     AuthProvider().retrieveRole().then((role) {
       fetchUser();
+      print(role);
       userRole = role;
     });
   }
@@ -199,6 +204,55 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
         );
     }
   }
+
+  Future<List<User>> findOtherAdminUsers() async {
+    var allUsers = await Settings.userService.fetchAllUsers();
+    print(allUsers);
+    for (var user in allUsers){
+      if (user.role.hasRole(Role.admin)){
+        totalAdminUsers.add(user);
+        print(totalAdminUsers.length);
+      }
+    }
+    return totalAdminUsers;
+  }
+
+  void deleteLoggedInAdminUser() async {
+    List<User> totalAdminUsers = await findOtherAdminUsers();
+    if (totalAdminUsers.length < 2){
+      showCupertinoDialog<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('Du kan ikke slette din bruger'),
+        content: const Text('Du er nødt til at assigne admin rollen til en anden bruger'),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+      );
+    } else {
+      showIPhonePopupBox(
+        context: context,
+        title: 'Slet bruger',
+        message: 'Er du sikker på, at du vil slette din konto?',
+        confirmText: 'Ja',
+        cancelText: 'Nej',
+        onConfirm: (){
+          deleteLoggedInUser();
+        },
+        onCancel: (){
+          Navigator.of(context).pop();
+        },
+      );
+    }
+  }
+  
 
   // These things are notifications and biometric, and they do not have some functions yet
   //Set<String> selectedSegment = {'daily'};
@@ -769,6 +823,9 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                 child: CustomButton(
                   text: "Slet konto",
                   onTab: () {
+                    if(user.role.hasRole(Role.admin)){
+                      deleteLoggedInAdminUser();
+                    } else {
                     showIPhonePopupBox(
                       context: context,
                       title: 'Slet bruger',
@@ -782,6 +839,7 @@ class _SettingsPage extends State<Settings> with SingleTickerProviderStateMixin 
                         Navigator.of(context).pop();
                       },
                     );
+                    }
                   },
                   foregroundColor: AppColors.errorText,
                   backgroundColor: AppColors.background,
