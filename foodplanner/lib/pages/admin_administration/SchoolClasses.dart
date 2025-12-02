@@ -100,6 +100,11 @@ class _SchoolClasses extends State<SchoolClasses> {
     });
   }
 
+  List<Pupil> filterChildrenByClass(int schoolClassId) {
+    List<Pupil> childrenInClass = children.where((child) => child.classId == schoolClassId).toList();
+    return childrenInClass;
+  }
+
   String getClassName(int classId) {
     final schoolClass = schoolClasses.firstWhere(
         (schoolClass) => schoolClass.classId == classId,
@@ -474,7 +479,7 @@ class _SchoolClasses extends State<SchoolClasses> {
 
                 print("DEBUG: Cheking class ${schoolClass.className} (id ${schoolClass.classId})");
 
-                final childrenInClass = children.where((child) => child.classId == schoolClass.classId).toList();
+                List<Pupil> childrenInClass = filterChildrenByClass(schoolClass.classId);
 
                 print("Found ${childrenInClass.length} children in this class");
 
