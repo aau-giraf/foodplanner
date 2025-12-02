@@ -1,4 +1,5 @@
 import 'dart:developer' as developer;
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,6 +49,21 @@ class ParentProfileState extends State<ParentProfile>
       lastName: 'Unknown',
       parentId: 0,
       classId: 0);
+
+  List<String> oneTimePaswords = [
+    "aG7K2p",
+    "Q9mL4v",
+    "tR8b1Z",
+    "Xf2D6q",
+    "wH3s9P",
+    "J7uK0r",
+    "nP6Q4x",
+    "B2cV8m",
+    "zT1yR5",
+    "Kp9F3a",
+  ];
+
+  late String oneTimePasword = oneTimePaswords[Random().nextInt(oneTimePaswords.length - 1)];
 
   bool isEditingFirstName = false;
   bool isEditingLastName = false;
@@ -462,6 +478,60 @@ class ParentProfileState extends State<ParentProfile>
                     });
                   },
                 ),
+              ],
+            ),
+          ),
+          'showSpacer': false,
+        },
+        {
+          'title': 'Engangskode: ',
+          'showIcon': false,
+          'isEditable': isEditingFirstName,
+          'cta': Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                // Expanded(
+                  DecoratedBox(
+                    decoration: BoxDecoration(border: BoxBorder.all()),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                          child: Text(
+                            oneTimePasword,
+                            style: AppTextStyles.bigText,
+                          ),
+                        ),
+                        IconButton(
+                          icon: SFIcon(
+                            SFIcons.sf_doc_on_doc_fill,
+                            color: AppColors.textPrimary,
+                            fontSize: 20,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              Clipboard.setData(ClipboardData(text: oneTimePasword));
+                            });
+                          },
+                        ),
+                        IconButton(
+                          icon: SFIcon(
+                            SFIcons.sf_arrow_2_squarepath,
+                            color: AppColors.textPrimary,
+                            fontSize: 24,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              oneTimePasword = oneTimePaswords[Random().nextInt(oneTimePaswords.length - 1)]; 
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                // ),
               ],
             ),
           ),

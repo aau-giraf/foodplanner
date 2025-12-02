@@ -7,6 +7,7 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/pages/create_child_page_one_time_password.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
@@ -329,6 +330,36 @@ class _SignupChildState extends State<CreateChildPage> {
                         ),
                       ),
                     ),
+                                          const SizedBox(height: 25),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Flexible(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            CreateChildPageOneTimePassword()),
+                                  );
+                                },
+                                child: Text(
+                                  "Jeg har allerede et registreret barn",
+                                  style: AppTextStyles.standard.copyWith(
+                                    color: AppColors.secondary,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: AppColors.secondary,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     SizedBox(height: 20),
                   ],
                 ),

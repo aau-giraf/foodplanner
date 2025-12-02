@@ -1,11 +1,12 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/login_page_pupil.dart';
+import 'package:foodplanner/pages/one_time_password_page.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
@@ -15,15 +16,15 @@ import 'package:go_router/go_router.dart';
 import 'package:foodplanner/models/user_roles.dart';
 
 //test push
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginPagePupil extends StatefulWidget {
+  const LoginPagePupil({super.key});
   static final AuthService authService = AuthService(apiUrl: ApiConfig.baseUrl);
 
   @override
-  LoginPageState createState() => LoginPageState();
+  LoginPagePupilState createState() => LoginPagePupilState();
 }
 
-class LoginPageState extends State<LoginPage> {
+class LoginPagePupilState extends State<LoginPagePupil> {
   // Text editing controllers
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -82,7 +83,7 @@ class LoginPageState extends State<LoginPage> {
       });
     }
     try {
-      final role = await LoginPage.authService
+      final role = await LoginPagePupil.authService
           .fetchAuthData(usernameController.text, passwordController.text);
       
       if (!context.mounted){
@@ -165,11 +166,9 @@ class LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             const SizedBox(height: 35),
-            Flexible(
-              child: Image(
-                image: AssetImage('assets/images/logo.png'),
-                height: 160,
-              ),
+            Image(
+              image: AssetImage('assets/images/logo.png'),
+              height: 160,
             ),
             const SizedBox(height: 35),
             Column(
@@ -188,61 +187,78 @@ class LoginPageState extends State<LoginPage> {
                         'Log ind',
                         style: AppTextStyles.headline3.copyWith(fontSize: 22),
                       ),
-                      const SizedBox(height: 30),
-                      Text(
-                        'Email',
-                        style: AppTextStyles.headline4.copyWith(fontSize: 18),
+                      const SizedBox(height: 30),                   
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: 
+                        [
+                          Text(
+                            'Engangskode',
+                            style: AppTextStyles.headline4.copyWith(fontSize: 18),
+                          ),
+                          SizedBox(width: 5),
+                          IconButton(icon: SFIcon(SFIcons.sf_info_circle), onPressed: () => 
+                            showDialog(context: context, builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      textAlign: TextAlign.center,
+                                      "For at generere en engangskode skal du logge ind som forældre."
+                                    ),
+                                    SizedBox(height: 15,),
+                                    CustomButton(
+                                      text: "Ok", 
+                                      onTab: () => Navigator.of(context).pop(),
+                                      customHeight: MediaQuery.of(context).size.height * 0.06,
+                                      customWidth: MediaQuery.of(context).size.width * 0.12
+                                    )
+                                  ]
+                                ),
+                              );
+                            })
+                          ),
+                        ]
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: CustomTextField(
-                            hintText: "Email",
-                            controller: usernameController,
-                            errorText: emailError),
-                      ),
-                      const SizedBox(height: 50),
-                      Text(
-                        'Adgangskode',
-                        style: AppTextStyles.headline4.copyWith(fontSize: 18),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: CustomTextField(
-                            hintText: "Adgangskode",
-                            obscureText: true,
+                            hintText: "Engangskode",
+                            // obscureText: false,
                             controller: passwordController,
                             errorText: passwordError),
                       ),
                       const SizedBox(height: 25),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Flexible(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ForgotPasswordPage()),
-                                  );
-                                },
-                                child: Text(
-                                  "Glemt adgangskode?",
-                                  style: AppTextStyles.standard.copyWith(
-                                    color: AppColors.secondary,
-                                    decoration: TextDecoration.underline,
-                                    decorationColor: AppColors.secondary,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.symmetric(horizontal: 20),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.end,
+                      //     children: [
+                      //       Flexible(
+                      //         child: GestureDetector(
+                      //           onTap: () {
+                      //             Navigator.push(
+                      //               context,
+                      //               MaterialPageRoute(
+                      //                   builder: (context) =>
+                      //                       ForgotPasswordPage()),
+                      //             );
+                      //           },
+                      //           child: Text(
+                      //             "Glemt adgangskode?",
+                      //             style: AppTextStyles.standard.copyWith(
+                      //               color: AppColors.secondary,
+                      //               decoration: TextDecoration.underline,
+                      //               decorationColor: AppColors.secondary,
+                      //               fontSize: 14,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                       const SizedBox(height: 25),
                     ],
                   ),
@@ -255,12 +271,17 @@ class LoginPageState extends State<LoginPage> {
                       children: [
                         Expanded(
                           child: CustomButton(
-                            onTab: () => directSignUpPage(context),
+                          onTab: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OneTimePasswordPage(),
+                              ),
+                            ),
                             text: 'Opret',
                             backgroundColor: AppColors.secondary,
                           ),
                         ),
-                        // SizedBox(width: 15),
+                        SizedBox(width: 15),
                         Expanded(
                           child: CustomButton(
                             text: "Login",
@@ -270,17 +291,11 @@ class LoginPageState extends State<LoginPage> {
                         // SizedBox(width: 15),
                       ],
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 15,),
                     // Expanded(
                       CustomButton(
-                        text: "Login som barn",
-                        onTab: () => 
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                             builder: (context) => LoginPagePupil(),
-                            ),
-                          )
+                        text: "Login som voksen",
+                        onTab: () => Navigator.pop(context)
                       ),
                     // ),
                   ],
