@@ -54,10 +54,12 @@ class _CreatePupilPageState extends State<CreatePupilPage> {
 
   Future<int?> loadLoggedInParentId () async {
     try {
+
       await authProvider.loadFromStorage();
+      
       print('Loaded user ID: ${authProvider.userId}');
       print('Loaded user role: ${authProvider.userRole}');
-
+      
       final int? parentId = authProvider.userId ?? await authProvider.loadFromStorage().then((_) => authProvider.userId);
       print(parentId);
       return parentId;

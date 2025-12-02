@@ -441,6 +441,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
     _i10.UserRoles? role,
     String? token,
     bool? isApproved,
+    int? userId,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -449,6 +450,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
             role,
             token,
             isApproved,
+            userId,
           ],
         ),
         returnValue: _i4.Future<void>.value(),
