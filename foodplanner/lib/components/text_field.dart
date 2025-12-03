@@ -28,7 +28,7 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     this.inputFormatters,
     this.focusNode,
-    this.borderShown = false, //default value
+    this.borderShown = true, //default value
   });
 
   Widget defaultTextField() {
