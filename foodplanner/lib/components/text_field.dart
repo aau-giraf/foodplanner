@@ -15,6 +15,7 @@ class CustomTextField extends StatelessWidget {
   final Function(String)? onChanged;
   final List<TextInputFormatter>? inputFormatters;
   final FocusNode? focusNode;
+  final bool? borderShown;
 
   const CustomTextField({
     super.key,
@@ -27,6 +28,7 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     this.inputFormatters,
     this.focusNode,
+    this.borderShown = false, //default value
   });
 
   Widget defaultTextField() {
@@ -44,21 +46,21 @@ class CustomTextField extends StatelessWidget {
             filled: true,
             hintText: hintText,
             hintStyle: const TextStyle(color: AppColors.textFieldHint),
-            focusedBorder: UnderlineInputBorder(
+            focusedBorder: borderShown == true ? UnderlineInputBorder(
               borderSide: BorderSide(
                   color: errorText.isEmpty
                       ? AppColors.textFieldBorderFocus
                       : AppColors.errorText),
-            ),
-            enabledBorder: UnderlineInputBorder(
+            ) : InputBorder.none, 
+            enabledBorder: borderShown == true ? UnderlineInputBorder(
               borderSide: BorderSide(
                   color: errorText.isEmpty
                       ? AppColors.textFieldBorder
                       : AppColors.errorText),
-            ),
-            errorBorder: UnderlineInputBorder(
+            ) : InputBorder.none, 
+            errorBorder: borderShown == true ? UnderlineInputBorder(
               borderSide: BorderSide(color: AppColors.errorText),
-            ),
+            ) : InputBorder.none,
           ),
           onChanged: onChanged,
           focusNode: focusNode,

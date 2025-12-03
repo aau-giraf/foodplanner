@@ -89,6 +89,7 @@ class _EditableSettingsTileState extends State<EditableSettingsTile> {
             color: Colors.transparent,
             focusNode: _focusNode,
             onChanged: widget.onChanged,
+            borderShown: false,
           ),
         ),
       );
