@@ -175,86 +175,52 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 3,
-                      bottom: 3,
-                      left: 5,
-                      right: 5,
-                    ),
+                    padding: const EdgeInsets.all(12),
                     child: _isLoading
+                    // if _isLoading is true, it will inset a loading symbol
                     ? const Center(child: CircularProgressIndicator())
+                    // is false, it will check if the _users is empty
                     : _users.isEmpty
-                    ? const Center(child: Text('Ingen anmodninger lige nu'))
-                    : ListView.separated(
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: _users.length,
-                      separatorBuilder: (_, __) =>
-                        const SizedBox(height: 0),
-                      itemBuilder: (context, index) {
-                        final user = _users[index];
-                        return Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(12),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (c) => AdminOneProfilePage(/* user.id */),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
+                      // if it's empty, it will shows a message
+                      ? const Center(child: Text('Ingen anmodninger lige nu'))
+                      // But if it's not empty, it will make a ListView
+                      : ListView.separated(
+                        itemBuilder: (context, index) {
+                          final user = _users[index];
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 3),
+                            //margin: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            child: ListTile(
+                              tileColor: Colors.white,
+                              shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.08),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      '${user.firstName} ${user.lastName}',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 22,
-                                    height: 22,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primary,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Center(
-                                      child: Text(
-                                        '!',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => AdminOneProfilePage(/* user.id */)),
+                                );
+                              },
+                              title: Text(
+                                // Evt en bedre måde at vise hvilken rolle de har? Tænker det kan godt være væsentligt rart at have det med
+                                '(${user.role}) ${user.firstName} ${user.lastName}',
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                              ),
+                              trailing: CircleAvatar(
+                                radius: 11,
+                                backgroundColor: AppColors.primary,
+                                child: const Text('!', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        },
+                        separatorBuilder: (_, __) => const SizedBox(height: 8),
+                        // ListView must have the itemCount, so it know how many columns it needs
+                        itemCount: _users.length,
+                      ),
                   ),
                 ),
               ),

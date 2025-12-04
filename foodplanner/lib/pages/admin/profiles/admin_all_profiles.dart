@@ -12,6 +12,7 @@ import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/pages/admin/profiles/admin_one_profile.dart';
 
 class AdminAllProfilesPage extends StatefulWidget {
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
@@ -160,54 +161,48 @@ class _AdminAllProfilesPageState extends State<AdminAllProfilesPage> {
         ),
       ),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
+      body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            /*SettingsWidget(
-              leftIcon: SFIcons.sf_person_crop_circle_fill_badge_minus,
-              title: 'Deaktiver profiler',
-              subTitle:
-                  'Administrer profiler. Her kan du deaktivere eller genaktivere brugere.',
-              type: SettingsType.header,
-            ),*/
             SizedBox(height: 10),
             SearchField(
               controller: searchController,
               hintText: 'Søg efter bruger',
             ),
-            ...filteredUsers.map(
-              (user) {
-                return SettingsWidget(
-                  // if approve == 0 then !
-                  title: '${user.firstName} ${user.lastName}',
-                  type: SettingsType.items,
-                  leftIcon: user.role == 'Teacher'
-                      ? SFIcons.sf_graduationcap_fill
-                      : SFIcons.sf_figure_and_child_holdinghands,
-                  cta: Stack(
-                    children: [
-                      AdvancedSwitch(
-                        activeColor: AppColors.primary,
-                        width: 60,
-                        initialValue: controllers[user.id]!,
-                        onChanged: (value) {
-                          // Do nothing here
-                        },
-                      ),
-                      Positioned.fill(
-                        child: GestureDetector(
-                          onTap: () {
-                            showPopup(!controllers[user.id]!, user, user.id);
-                          },
-                          child: Container(
-                            color: Colors.transparent,
-                          ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: Card(
+                elevation: 2,
+                margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 22),
+                color: AppColors.background,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: ListView.separated(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: filteredUsers.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    itemBuilder: (context, index) {
+                      final user = filteredUsers[index];
+                      // onTap(), så man går til en specifik side
+                      return Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ),
-                    ],
+                        child: Text('(${user.role}) ${user.firstName} ${user.lastName}'),
+                      );
+                      
+                    },
                   ),
-                );
-              },
+                ),
+              ),
             ),
           ],
         ),

@@ -85,6 +85,7 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
                 ),
               ),
             ),
+            // Er den approved?
             // Nuværende rolle: {UserRoles}
             // Tilknytning: {barn}
             Card(
