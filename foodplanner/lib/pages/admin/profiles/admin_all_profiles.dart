@@ -178,6 +178,7 @@ class _AdminAllProfilesPageState extends State<AdminAllProfilesPage> {
             ...filteredUsers.map(
               (user) {
                 return SettingsWidget(
+                  // if approve == 0 then !
                   title: '${user.firstName} ${user.lastName}',
                   type: SettingsType.items,
                   leftIcon: user.role == 'Teacher'

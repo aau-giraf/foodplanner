@@ -14,6 +14,7 @@ import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/admin/profiles/admin_one_profile.dart';
 import 'package:foodplanner/pages/admin/profiles/deactivate_accounts.dart';
+import 'package:foodplanner/components/popup_box.dart';
 
 class AdminProfilesPage extends StatefulWidget {
   const AdminProfilesPage({super.key});
@@ -46,6 +47,55 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
         _isLoading = false;
       });
     }
+  }
+
+  // Function to remove a user after approval or denial
+  void _approveUser(int userId) async {
+    try {
+      //final messenger = ScaffoldMessenger.of(context);
+      final bool success =
+          await AdminProfilesPage.userService.updateApproveUsers(userId);
+      if (success) {
+        final List<User> updatedUsers =
+            await AdminProfilesPage.userService.fetchApproveUsers();
+        setState(() {
+          _users = updatedUsers;
+        });
+      }
+    } catch (e) {
+      print('Error approving user: $e');
+    }
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Brugeren er blevet godkendt'),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+// Function to remove a user
+  void _removeUser(int userId) async {
+    try {
+      final bool success =
+          await AdminProfilesPage.userService.unapproveUsers(userId);
+      if (success) {
+        final List<User> updatedUsers =
+            await AdminProfilesPage.userService.fetchApproveUsers();
+        setState(() {
+          _users = updatedUsers;
+        });
+      }
+    } catch (e) {
+      print('Error removing user: $e');
+    }
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Brugeren er blevet fjernet'),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   @override
@@ -87,20 +137,20 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
                     width: 26,
                     height: 26,
                     decoration: BoxDecoration(
-                      color: AppColors.primary, // Din orange
+                      color: AppColors.primary,
                       shape: BoxShape.circle,
                     ),
-                    child: Center(
+                    child: Center (
                       child: Text(
-                        '2',
+                        '${_users.length}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
-                      ),
-                    ),
-                  ),
+                      )
+                    )
+                  )
                 ]
               ),
             ],
@@ -108,40 +158,157 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
         ),
       ),
       backgroundColor: Colors.white,
-      body: Padding(
+      body: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal:20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Card(
+                  elevation: 2,
+                  color: AppColors.background,
+                  clipBehavior: Clip.hardEdge,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 3,
+                      bottom: 3,
+                      left: 5,
+                      right: 5,
+                    ),
+                    child: _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _users.isEmpty
+                    ? const Center(child: Text('Ingen anmodninger lige nu'))
+                    : ListView.separated(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: _users.length,
+                      separatorBuilder: (_, __) =>
+                        const SizedBox(height: 0),
+                      itemBuilder: (context, index) {
+                        final user = _users[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (c) => AdminOneProfilePage(/* user.id */),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '${user.firstName} ${user.lastName}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 22,
+                                    height: 22,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        '!',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AdminAllProfilesPage()),
+                    );
+                  },
+                  child: Container(
+                    height: 40,
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 6,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: const [
+                        Text(
+                          'Alle profiler',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SFIcon(SFIcons.sf_chevron_forward),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: NavBar(),
+      /*body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const SizedBox(height: 10,),
-            ..._users.asMap().entries.map((entry) {
-              final index = entry.key;
-              final user = entry.value;
-              return Padding(
-                padding: const EdgeInsets.symmetric(),
-                child: SettingsWidget(
-                  title: '${user.firstName} ${user.lastName}', 
-                  type: SettingsType.inlineItems,
-                  cta: IconButton( 
-                    icon: const SFIcon(
-                      SFIcons.sf_checkmark_circle_fill
-                    ),
-                    onPressed: () async {
-                      setState(() {
-                        _users.removeAt(index);
-                      });
-                    }
-                  ),
-                  clickable: true,
-                  ctaFunction: () async {
-                    setState(() {
-                      _users.removeAt(index);
-                    });
-                  },
-                )
-              );
-            }).toList(),
             Card(
               elevation: 2,
               color: AppColors.background,
@@ -152,84 +319,25 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
                 ),
                 child: Column(
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (c) => AdminOneProfilePage()));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: AppColors.textPrimary,
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Text("{konto_navn}"),
-                          const SizedBox(width: 8),
-                          Container(
-                            width: 26,
-                            height: 26,
-                            decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Center(
-                              child: Text(
-                                '!',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    /*Text(
-                      'Administration',
-                      style: AppTextStyles.bigText.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    SettingsWidget(
-                      leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
-                      title: 'Godkend profiler',
-                      subTitle: 'Gå til godkendelse af nye profiler',
-                      type: SettingsType.inlineItems,
-                      cta: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          SFIcon(SFIcons.sf_chevron_forward),
-                          SizedBox(width: 10),
-                        ],
-                      ),
-                      clickable: true,
-                      ctaFunction: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const AdminApprovePage()),
-                        );
-                      },
-                    ),
-                    SettingsWidget(
-                      leftIcon: SFIcons.sf_person_fill_badge_minus,
-                      title: 'Deaktiver profiler',
-                      subTitle: 'Gå til deaktivering af profiler',
-                      type: SettingsType.inlineItems,
-                      cta: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          SFIcon(SFIcons.sf_chevron_forward),
-                          SizedBox(width: 10),
-                        ],
-                      ),
-                      clickable: true,
-                      ctaFunction: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const DeactivateAccountsPage()),
-                        );
-                      },
-                    ),*/
+                    ..._users.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final user = entry.value;
+                      return Card(
+                        color: Colors.white,
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        clipBehavior: Clip.antiAlias,
+                        child: SettingsWidget(
+                          title: '${user.firstName} ${user.lastName}', 
+                          type: SettingsType.inlineItems,
+                          divider: false,
+                          clickable: true,
+                          ctaFunction: () async {
+                            Navigator.push(context, MaterialPageRoute(builder: (c) => AdminOneProfilePage(/*${user.id}*/)));
+                          },
+                        ),
+                      );
+                    }).toList(),
                   ],
                 ),
               ),
@@ -248,10 +356,10 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(50),     // pill-form
+                    borderRadius: BorderRadius.circular(50),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.15),   // let skygge
+                        color: Colors.black.withOpacity(0.15),
                         blurRadius: 6,
                         offset: const Offset(0, 3),
                       ),
@@ -276,7 +384,7 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
           ],
         ),
       ),
-      bottomNavigationBar: NavBar(),
+      bottomNavigationBar: NavBar(),*/
     );
   }
 }
