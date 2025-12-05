@@ -281,7 +281,7 @@ class _SchoolClasses extends State<SchoolClasses> {
         final fullName = "${child.firstName} ${child.lastName}".toLowerCase(); 
         final className = getClassName(child.classId).toLowerCase();
         final searchInput = input.toLowerCase();
-        return fullName.contains(searchInput) || className.contains(searchInput); // return all elements where the input is part of the full name
+        return fullName.contains(searchInput) || className.contains(searchInput) || fullName.contains(searchInput) && className.contains(searchInput);  // return all elements where the input is part of the full name
       }).toList()
 
       ..sort((a,b) => ('${a.firstName} ${a.lastName}').compareTo('${b.firstName} ${b.lastName}'));
@@ -395,7 +395,7 @@ class _SchoolClasses extends State<SchoolClasses> {
                           itemBuilder: (context, index) {
                             final child = filteredChildren[index];
                             return ListTile(
-                              title: Text("${child.firstName} ${child.lastName}"),
+                              title: Text("${child.firstName} ${child.lastName} (${getClassName(child.classId)})"),
                               onTap: () {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => EditPupilInfo()
                                 ));
