@@ -46,39 +46,6 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
     final isAdmin = roles.contains('admin');
     final isTeacher = roles.contains('teacher');
 
-    /*
-    Card(
-      elevation: 2,
-      color: AppColors.background,
-      child: GestureDetector(
-        onTap: deleteProfile(),
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: EdgeInsets.all(10),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              const Text(
-                'Slet profil',
-                textAlign: TextAlign.center,
-              ),
-              Positioned(
-                right: 0,
-                child: SFIcon(
-                    SFIcons.sf_trash,
-                    fontSize: 16,
-                  ),
-                ),
-            ],
-          ),
-        )
-      )
-    )
-    */
-
     return Card(
       elevation: 2,
       color: AppColors.background,
@@ -144,16 +111,40 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Card(
+            /*Card(
               color: AppColors.background,
               elevation: 2,
               child: Column(
-                children: [
-                  ColoredBox(
-                    color: Colors.blue,
-                  ),
-                  Text('Navn navn anmoder om at blive accepteret'),
-                ],
+                child: Padding(
+                  padding: EdgeInsets.all(2),
+                  children: [
+                    ColoredBox(
+                      color: Colors.blue,
+                    ),
+                    Text('Navn navn anmoder om at blive accepteret'),
+                    Text('Navn navn anmoder om at blive accepteret'),
+                  ],
+                ),
+              ),
+            ),*/
+            Card(
+              color: AppColors.background,
+              elevation: 2,
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    Text('Navn navn anmoder om at blive accepteret'),
+                    Text('Navn navn anmoder om at blive accepteret'),
+                    TextButton(
+                      style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                      ),
+                      onPressed: () { },
+                      child: Text('TextButton'),
+                    )
+                  ],
+                ),
               ),
             ),
             Row(
