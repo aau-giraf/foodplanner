@@ -7,6 +7,7 @@ import 'package:foodplanner/components/editable_settings_tile.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/config/colors.dart';
+
 import 'package:foodplanner/models/settings_data.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:provider/provider.dart';

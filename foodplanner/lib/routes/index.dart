@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/loading_animation.dart';
-import 'package:foodplanner/pages/Admin_profiles.dart';
+import 'package:foodplanner/pages/admin/profiles/admin_profiles.dart';
 import 'package:foodplanner/pages/Change_Roll.dart';
 import 'package:foodplanner/pages/change_role_page.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';

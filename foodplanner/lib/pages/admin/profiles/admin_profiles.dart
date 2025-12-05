@@ -1,0 +1,273 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/pages/admin/profiles/admin_profiles.dart';
+import 'package:foodplanner/pages/admin/profiles/admin_all_profiles.dart'; 
+import 'package:foodplanner/pages/admin/profiles/admin_approve_page.dart'; 
+import 'package:go_router/go_router.dart';
+import 'package:foodplanner/models/user.dart';
+import 'package:foodplanner/services/user_service.dart';
+import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/pages/admin/profiles/admin_one_profile.dart';
+import 'package:foodplanner/pages/admin/profiles/deactivate_accounts.dart';
+import 'package:foodplanner/components/popup_box.dart';
+
+class AdminProfilesPage extends StatefulWidget {
+  const AdminProfilesPage({super.key});
+  static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
+
+  @override
+  State<AdminProfilesPage> createState() => _AdminProfilesPageState();
+}
+
+class _AdminProfilesPageState extends State<AdminProfilesPage> {
+  List<User> _users = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsers();
+  }
+
+  Future<void> _loadUsers() async {
+    try {
+      final users = await AdminProfilesPage.userService.fetchApproveUsers();
+      setState(() {
+        _users = users;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading users: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  // Function to remove a user after approval or denial
+  void _approveUser(int userId) async {
+    try {
+      //final messenger = ScaffoldMessenger.of(context);
+      final bool success =
+          await AdminProfilesPage.userService.updateApproveUsers(userId);
+      if (success) {
+        final List<User> updatedUsers =
+            await AdminProfilesPage.userService.fetchApproveUsers();
+        setState(() {
+          _users = updatedUsers;
+        });
+      }
+    } catch (e) {
+      print('Error approving user: $e');
+    }
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Brugeren er blevet godkendt'),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+// Function to remove a user
+  void _removeUser(int userId) async {
+    try {
+      final bool success =
+          await AdminProfilesPage.userService.unapproveUsers(userId);
+      if (success) {
+        final List<User> updatedUsers =
+            await AdminProfilesPage.userService.fetchApproveUsers();
+        setState(() {
+          _users = updatedUsers;
+        });
+      }
+    } catch (e) {
+      print('Error removing user: $e');
+    }
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Brugeren er blevet fjernet'),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        toolbarHeight: 225,
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 70),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Administrér',
+                style: TextStyle(fontSize: 36),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                'profiler',
+                style: TextStyle(fontSize: 36),
+                textAlign: TextAlign.center,
+              ),
+              Icon(
+                Icons.manage_accounts_outlined,
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Aktive anmodninger',
+                    style: TextStyle(fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(width: 10),
+                  Container(
+                    width: 26,
+                    height: 26,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center (
+                      child: Text(
+                        '${_users.length}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      )
+                    )
+                  )
+                ]
+              ),
+            ],
+          ),
+        ),
+      ),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal:20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Card(
+                  elevation: 2,
+                  color: AppColors.background,
+                  clipBehavior: Clip.hardEdge,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: _isLoading
+                    // if _isLoading is true, it will inset a loading symbol
+                    ? const Center(child: CircularProgressIndicator())
+                    // is false, it will check if the _users is empty
+                    : _users.isEmpty
+                      // if it's empty, it will shows a message
+                      ? const Center(child: Text('Ingen anmodninger lige nu'))
+                      // But if it's not empty, it will make a ListView
+                      : ListView.separated(
+                        itemBuilder: (context, index) {
+                          final user = _users[index];
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 3),
+                            //margin: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            child: ListTile(
+                              tileColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => AdminOneProfilePage(user: user)),
+                                );
+                              },
+                              title: Text(
+                                // Evt en bedre måde at vise hvilken rolle de har? Tænker det kan godt være væsentligt rart at have det med
+                                '(${user.role}) ${user.firstName} ${user.lastName}',
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                              ),
+                              trailing: CircleAvatar(
+                                radius: 11,
+                                backgroundColor: AppColors.primary,
+                                child: const Text('!', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (_, __) => const SizedBox(height: 8),
+                        // ListView must have the itemCount, so it know how many columns it needs
+                        itemCount: _users.length,
+                      ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AdminAllProfilesPage()),
+                    );
+                  },
+                  child: Container(
+                    height: 50,
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 6,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: const [
+                        Text(
+                          'Alle profiler',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        //SFIcon(SFIcons.sf_chevron_forward),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: NavBar(),
+    );
+  }
+}
