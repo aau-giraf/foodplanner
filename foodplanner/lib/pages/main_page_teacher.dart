@@ -66,7 +66,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        toolbarHeight: 200,
+        toolbarHeight: 225,
         centerTitle: true,
         title: Padding(
           padding: const EdgeInsets.only(top: 70),
@@ -79,234 +79,193 @@ class TeacherMainPageState extends State<TeacherMainPage> {
       ),
       backgroundColor: Colors.white,
       
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(vertical: 181),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            InkWell(
-              hoverColor: Colors.transparent,
-              onTap: (){
-                  navStrategy?.goToPage(CHOOSE_CHILD_TEACHER, context);
-
-              },
-              
-              child: Container(
-                height: 59,
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow:[
-                    BoxShadow(
-                      color: Color(0x3F000000),
-                      blurRadius: 4,
-                      offset: Offset(0, 4),
-                      spreadRadius: 0,
-                    )
-                  ]
-                ),
-                padding: const EdgeInsets.all(15),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    const Text(
-                      'Vælg elev',
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center
-                    ),
-                    const Positioned(
-                      right: 19,
-                      child: Icon(
-                        Icons.escalator_warning,
-                      ),
-                    ),
-                  ]
-                ),
-              ),
-            ),
-
-            SizedBox(height: 30),
-            InkWell(
-              hoverColor: Colors.transparent,
-              onTap: (){
-                navStrategy?.goToPage(SETTINGS_PAGE, context);
-              },
-              child: Container(
-                height: 59,
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow:[
-                    BoxShadow(
-                      color: Color(0x3F000000),
-                      blurRadius: 4,
-                      offset: Offset(0, 4),
-                      spreadRadius: 0,
-                    )
-                  ]
-                ),
-                padding: const EdgeInsets.all(15),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    const Text(
-                      'Indstillinger',
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center
-                    ),
-                    const Positioned(
-                      right: 19,
-                      child: Icon(
-                        Icons.settings,
-                      ),
-                    ),
-                  ]
-                ),
-              ),
-            ),
-            if (_user.role.hasRole(Role.admin)) ...[
-              SizedBox(height: 30),
-              InkWell(
-              hoverColor: Colors.transparent,
-              onTap: () async {
-                ActiveRoleService.setActiveRole(Role.admin);
-                GoRouter.of(context).go(ADMIN_ROOT);
-              },
-              child: Container(
-                height: 59,
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow:[
-                    BoxShadow(
-                      color: Color(0x3F000000),
-                      blurRadius: 4,
-                      offset: Offset(0, 4),
-                      spreadRadius: 0,
-                    )
-                  ]
-                ),
-                padding: const EdgeInsets.all(15),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    const Text(
-                      'Skift rolle',
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center
-                    ),
-                    const Positioned(
-                      right: 19,
-                      child: Icon(
-                        Icons.group,
-                      ),
-                    ),
-                  ]
-                ),
-              ),
-            ),
-            ],
-            /*
-            if(activeRole == Role.teacher && _user.hasAllRoles([Role.admin, Role.teacher])) ...[
-              SizedBox(height: 30),
-              InkWell(
-              hoverColor: Colors.transparent,
-              onTap: () async {
-                GoRouter.of(context).go(ADMIN_ROOT);
-              },
-              child: Container(
-                height: 59,
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow:[
-                    BoxShadow(
-                      color: Color(0x3F000000),
-                      blurRadius: 4,
-                      offset: Offset(0, 4),
-                      spreadRadius: 0,
-                    )
-                  ]
-                ),
-                padding: const EdgeInsets.all(15),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    const Text(
-                      'Skift rolle',
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center
-                    ),
-                    const Positioned(
-                      right: 19,
-                      child: Icon(
-                        Icons.group,
-                      ),
-                    ),
-                  ]
-                ),
-              ),
-            ),
-          ],*/
-
-            SizedBox(height: 30),
-            InkWell(
-              hoverColor: Colors.transparent,
-              onTap: () async {
-                final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                await authProvider.logout();
-                if(!context.mounted) {
-                  return;
-                }
-                context.go(LOGIN_PAGE);
-              },
-              child: Container(
-                height: 59,
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow:[
-                    BoxShadow(
-                      color: Color(0x3F000000),
-                      blurRadius: 4,
-                      offset: Offset(0, 4),
-                      spreadRadius: 0,
-                    )
-                  ]
-                ),
-                padding: const EdgeInsets.all(15),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    const Text(
-                      'Log ud',
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center
-                    ),
-                    const Positioned(
-                      right: 19,
-                      child: Icon(
-                        Icons.logout,
-                      ),
-                    ),
-                  ]
-                ),
-              ),
-            ),
-          ]
-        )
-      ),
       bottomNavigationBar: NavBar(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 10),
+              InkWell(
+                hoverColor: Colors.transparent,
+                onTap: (){
+                    navStrategy?.goToPage(CHOOSE_CHILD_TEACHER, context);
+
+                },
+
+                child: Container(
+                  height: 59,
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow:[
+                      BoxShadow(
+                        color: Color(0x3F000000),
+                        blurRadius: 4,
+                        offset: Offset(0, 4),
+                        spreadRadius: 0,
+                      )
+                    ]
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const Text(
+                        'Vælg elev',
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center
+                      ),
+                      const Positioned(
+                        right: 19,
+                        child: Icon(
+                          Icons.escalator_warning,
+                        ),
+                      ),
+                    ]
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 30),
+              InkWell(
+                hoverColor: Colors.transparent,
+                onTap: (){
+                  navStrategy?.goToPage(SETTINGS_PAGE, context);
+                },
+                child: Container(
+                  height: 59,
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow:[
+                      BoxShadow(
+                        color: Color(0x3F000000),
+                        blurRadius: 4,
+                        offset: Offset(0, 4),
+                        spreadRadius: 0,
+                      )
+                    ]
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const Text(
+                        'Indstillinger',
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center
+                      ),
+                      const Positioned(
+                        right: 19,
+                        child: Icon(
+                          Icons.settings,
+                        ),
+                      ),
+                    ]
+                  ),
+                ),
+              ),
+              if (_user.role.hasRole(Role.admin)) ...[
+                SizedBox(height: 30),
+                InkWell(
+                hoverColor: Colors.transparent,
+                onTap: () async {
+                  ActiveRoleService.setActiveRole(Role.admin);
+                  GoRouter.of(context).go(ADMIN_ROOT);
+                },
+                child: Container(
+                  height: 59,
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow:[
+                      BoxShadow(
+                        color: Color(0x3F000000),
+                        blurRadius: 4,
+                        offset: Offset(0, 4),
+                        spreadRadius: 0,
+                      )
+                    ]
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const Text(
+                        'Skift rolle',
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center
+                      ),
+                      const Positioned(
+                        right: 19,
+                        child: Icon(
+                          Icons.group,
+                        ),
+                      ),
+                    ]
+                  ),
+                ),
+              ),
+              ],
+      
+              SizedBox(height: 30),
+              InkWell(
+                hoverColor: Colors.transparent,
+                onTap: () async {
+                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  await authProvider.logout();
+                  if(!context.mounted) {
+                    return;
+                  }
+                  context.go(LOGIN_PAGE);
+                },
+                child: Container(
+                  height: 59,
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow:[
+                      BoxShadow(
+                        color: Color(0x3F000000),
+                        blurRadius: 4,
+                        offset: Offset(0, 4),
+                        spreadRadius: 0,
+                      )
+                    ]
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const Text(
+                        'Log ud',
+                        style: TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center
+                      ),
+                      const Positioned(
+                        right: 19,
+                        child: Icon(
+                          Icons.logout,
+                        ),
+                      ),
+                    ]
+                  ),
+                ),
+              ),
+            ]
+          )
+        ),
+      ),
     );
   }
 }
