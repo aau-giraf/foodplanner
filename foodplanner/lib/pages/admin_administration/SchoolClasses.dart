@@ -29,6 +29,7 @@ import 'package:go_router/go_router.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
+import 'package:foodplanner/models/pupil.dart';
 import 'package:http/http.dart' as http;
 
 class SchoolClasses extends StatefulWidget {
@@ -397,8 +398,10 @@ class _SchoolClasses extends State<SchoolClasses> {
                             return ListTile(
                               title: Text("${child.firstName} ${child.lastName} (${getClassName(child.classId)})"),
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => EditPupilInfo()
-                                ));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => EditPupilInfo(pupil: child)),
+                                );
                               },
 
                             );
@@ -432,7 +435,7 @@ class _SchoolClasses extends State<SchoolClasses> {
                                     title: Text('${child.firstName} ${child.lastName}'),
                                     trailing: IconButton(
                                       onPressed: () {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => EditPupilInfo()));
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => EditPupilInfo(pupil: child)));
                                       }, icon: SFIcon(SFIcons.sf_pencil, color: Colors.black)),
                                   );
                                   }),
