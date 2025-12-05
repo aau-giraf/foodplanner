@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
+import 'package:foodplanner/components/card_container.dart';
+import 'package:foodplanner/components/custom_app_bar.dart';
+import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/nav_bar.dart';
-import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/components/right_icon_button.dart';
+import 'package:foodplanner/components/scroll_bar.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/admin/profiles/admin_profiles.dart';
 import 'package:foodplanner/pages/admin/profiles/admin_all_profiles.dart'; 
-import 'package:foodplanner/pages/admin/profiles/admin_approve_page.dart'; 
-import 'package:go_router/go_router.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/admin/profiles/admin_one_profile.dart';
-import 'package:foodplanner/pages/admin/profiles/deactivate_accounts.dart';
-import 'package:foodplanner/components/popup_box.dart';
 
 class AdminProfilesPage extends StatefulWidget {
   const AdminProfilesPage({super.key});
@@ -28,6 +26,8 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
   List<User> _users = [];
   bool _isLoading = true;
 
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -37,235 +37,165 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
   Future<void> _loadUsers() async {
     try {
       final users = await AdminProfilesPage.userService.fetchApproveUsers();
+      if(!mounted) return;
       setState(() {
         _users = users;
         _isLoading = false;
       });
     } catch (e) {
       print('Error loading users: $e');
+      if(!mounted) return;
       setState(() {
         _isLoading = false;
       });
     }
   }
 
-  // Function to remove a user after approval or denial
-  void _approveUser(int userId) async {
-    try {
-      //final messenger = ScaffoldMessenger.of(context);
-      final bool success =
-          await AdminProfilesPage.userService.updateApproveUsers(userId);
-      if (success) {
-        final List<User> updatedUsers =
-            await AdminProfilesPage.userService.fetchApproveUsers();
-        setState(() {
-          _users = updatedUsers;
-        });
-      }
-    } catch (e) {
-      print('Error approving user: $e');
-    }
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Brugeren er blevet godkendt'),
-        backgroundColor: Colors.green,
+  Widget _buildRequestHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Aktive anmodninger',
+          style: TextStyle(fontSize: 18),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(width: 10),
+        Container(
+          width: 26,
+          height: 26,
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            shape: BoxShape.circle,
+          ),
+          child: Center (
+            child: Text(
+              '${_users.length}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUserTile(User user) {
+    return Padding( 
+      padding: EdgeInsets.only(right: 30, left: 5), 
+      child: RightIconButton(
+        backgroundColor: Colors.white,
+        foregroundColor: AppColors.textPrimary,
+        buttonText: '${user.firstName} ${user.lastName}',
+        alignment: MainAxisAlignment.spaceBetween,
+        trailingWidget: CircleAvatar(
+          radius: 11,
+          backgroundColor: AppColors.primary,
+          child: const Text('!', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+        ),
+        onTab: () async {
+          final changed = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => AdminOneProfilePage(user: user, isApproved: false)), // hardcoded info, should be changed
+          );
+          if (changed == true) {
+            _loadUsers(); // refresh list
+          }
+        },
       ),
     );
   }
 
-// Function to remove a user
-  void _removeUser(int userId) async {
-    try {
-      final bool success =
-          await AdminProfilesPage.userService.unapproveUsers(userId);
-      if (success) {
-        final List<User> updatedUsers =
-            await AdminProfilesPage.userService.fetchApproveUsers();
-        setState(() {
-          _users = updatedUsers;
-        });
-      }
-    } catch (e) {
-      print('Error removing user: $e');
+  Widget _buildRequestList() {
+
+    if (_users.isEmpty){
+      return const Center(
+                child: Text('Ingen anmodninger lige nu')
+              );
     }
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Brugeren er blevet fjernet'),
-        backgroundColor: Colors.green,
+
+    return ScrollConfiguration(
+      // this ensure that the default scrollbar is not shown
+      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), 
+      child: CustomScrollbar ( 
+        controller: _scrollController,
+        padding: EdgeInsets.all(10),
+        child: ListView.separated(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          clipBehavior: Clip.antiAlias,
+          itemCount: _users.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 8),
+          itemBuilder: (context, index) => _buildUserTile(_users[index]),
+        ),
       ),
+    );
+  }
+
+  Widget _buildAllProfilesButton() {
+    return Padding(
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+      child: CustomButton(
+        onTab: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AdminAllProfilesPage()
+            ),
+          );
+        },
+        text: 'Alle Profiler',
+        backgroundColor: AppColors.background,
+        foregroundColor: AppColors.textPrimary,
+        mainAxisAlignment: MainAxisAlignment.start,
+        size: ButtonSize.medium,
+        textStyle: AppTextStyles.buttonTextMedium.copyWith(fontWeight: FontWeight.normal),
+      )
     );
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    if (_isLoading){
+      return const Center(
+        child: LoadingAnimation(
+          imagePath: 'assets/images/logo.png',
+          size: 50.0, 
+        ),
+      );
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        toolbarHeight: 225,
-        centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 70),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Administrér',
-                style: TextStyle(fontSize: 36),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                'profiler',
-                style: TextStyle(fontSize: 36),
-                textAlign: TextAlign.center,
-              ),
-              Icon(
-                Icons.manage_accounts_outlined,
-              ),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Aktive anmodninger',
-                    style: TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(width: 10),
-                  Container(
-                    width: 26,
-                    height: 26,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center (
-                      child: Text(
-                        '${_users.length}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      )
-                    )
-                  )
-                ]
-              ),
-            ],
-          ),
-        ),
-      ),
       backgroundColor: Colors.white,
-      body: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal:20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Card(
-                  elevation: 2,
-                  color: AppColors.background,
-                  clipBehavior: Clip.hardEdge,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: _isLoading
-                    // if _isLoading is true, it will inset a loading symbol
-                    ? const Center(child: CircularProgressIndicator())
-                    // is false, it will check if the _users is empty
-                    : _users.isEmpty
-                      // if it's empty, it will shows a message
-                      ? const Center(child: Text('Ingen anmodninger lige nu'))
-                      // But if it's not empty, it will make a ListView
-                      : ListView.separated(
-                        itemBuilder: (context, index) {
-                          final user = _users[index];
-                          return Card(
-                            margin: const EdgeInsets.only(bottom: 3),
-                            //margin: EdgeInsets.zero,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            child: ListTile(
-                              tileColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (_) => AdminOneProfilePage(user: user)),
-                                );
-                              },
-                              title: Text(
-                                // Evt en bedre måde at vise hvilken rolle de har? Tænker det kan godt være væsentligt rart at have det med
-                                '(${user.role}) ${user.firstName} ${user.lastName}',
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-                              ),
-                              trailing: CircleAvatar(
-                                radius: 11,
-                                backgroundColor: AppColors.primary,
-                                child: const Text('!', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
-                              ),
-                            ),
-                          );
-                        },
-                        separatorBuilder: (_, __) => const SizedBox(height: 8),
-                        // ListView must have the itemCount, so it know how many columns it needs
-                        itemCount: _users.length,
-                      ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AdminAllProfilesPage()),
-                    );
-                  },
-                  child: Container(
-                    height: 50,
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          'Alle profiler',
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        //SFIcon(SFIcons.sf_chevron_forward),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+      appBar: CustomAppBar(
+        title: 'Administrér \n profiler',
+        materialIcon: Icon(
+          Icons.manage_accounts_outlined,
+          size: 30,
         ),
+        screenHeight: screenHeight,
+      ),
+      body: Column (
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(height: 15),
+          _buildRequestHeader(),
+          Expanded(
+              child: CardContainer(
+                color: AppColors.background,
+                childWidget: _buildRequestList(),
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: _buildAllProfilesButton(),
+          ),
+        ],
       ),
       bottomNavigationBar: NavBar(),
     );

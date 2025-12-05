@@ -1,13 +1,11 @@
-import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/components/card_container.dart';
+import 'package:foodplanner/components/custom_app_bar.dart';
+import 'package:foodplanner/components/loading_animation.dart';
+import 'package:foodplanner/components/right_icon_button.dart';
+import 'package:foodplanner/components/scroll_bar.dart';
 import 'package:foodplanner/components/search_field.dart';
-import 'package:foodplanner/components/settings_widget.dart';
-import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
@@ -19,73 +17,56 @@ class AdminAllProfilesPage extends StatefulWidget {
   const AdminAllProfilesPage({super.key});
 
   @override
-  _AdminAllProfilesPageState createState() => _AdminAllProfilesPageState();
+  State<AdminAllProfilesPage> createState() => _AdminAllProfilesPageState();
 }
 
 class _AdminAllProfilesPageState extends State<AdminAllProfilesPage> {
-  bool isSwitched = true;
   TextEditingController searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  bool _isLoading = false;
 
   List<User> users = [];
   List<User> filteredUsers = [];
 
-  Map<int, bool> controllers = {};
-
   @override
   void initState() {
     super.initState();
-    fetchAllUsers();
-    searchController.addListener(filterUsers);
+    _loadUsers();
+    searchController.addListener(_filterUsers);
   }
 
   @override
   void dispose() {
+    searchController.removeListener(_filterUsers);
     searchController.dispose();
     super.dispose();
   }
 
-  // Tror måske den her skal ændres
-  void fetchAllUsers() {
-    AdminAllProfilesPage.userService.fetchAllUsers().then((result) {
-      setState(() {
-        users = result;
-        filteredUsers = result;
-        for (var user in filteredUsers) {
-          controllers[user.id] = (!user.archived);
-        }
-      });
-    });
-  }
-
-  void updateArchived(int id) async {
-    var error = await AdminAllProfilesPage.userService.updateArchived(id);
+  void _loadUsers() async {
     
-    if (!mounted){
-      developer.log('buildcontext is not mounted, in $runtimeType');
-      return;
-    }
+    setState(() {
+      _isLoading = true;
+    });
 
-    if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error['Message'][0]),
-          duration: Duration(seconds: 2),
-          backgroundColor: AppColors.errorText,
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Brugeren er blevet opdateret'),
-          duration: Duration(seconds: 2),
-          backgroundColor: Colors.green,
-        ),
-      );
+    try {
+
+      users = await AdminAllProfilesPage.userService.fetchAllUsers();
+
+      setState(() {
+        filteredUsers = users;
+      });
+
+      await Future.delayed(Duration(milliseconds: 400)); // buffer to ensure enough time to fetch all users
+
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   // Tror ikke den her virker
-  void filterUsers() {
+  void _filterUsers() {
     final query = searchController.text.toLowerCase();
     setState(() {
       filteredUsers = users.where((user) {
@@ -95,65 +76,85 @@ class _AdminAllProfilesPageState extends State<AdminAllProfilesPage> {
     });
   }
 
-  void showPopup(bool isActive, User user, int userId) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return IPhonePopupBox(
-          title: isActive
-              ? 'Er du sikker på at du vil genaktivere brugeren'
-              : 'Er du sikker på at du vil deaktivere brugeren',
-          confirmText: 'Ja',
-          cancelText: 'Nej',
-          onConfirm: () {
-            Navigator.of(context).pop();
-            setState(() {
-              controllers[userId] = isActive;
-            });
-            updateArchived(user.id);
-          },
-          onCancel: () {
-            Navigator.of(context).pop();
-          },
-        );
-      },
+  Widget _buildUserTile(User user) {
+    return Padding( 
+      padding: EdgeInsetsGeometry.only(right: 30, left: 5), 
+      child: RightIconButton(
+        backgroundColor: Colors.white,
+        foregroundColor: AppColors.textPrimary,
+        buttonText: '${user.firstName} ${user.lastName}',
+        alignment: MainAxisAlignment.end,
+        onTab: () async {
+          final changed = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => AdminOneProfilePage(user: user, isApproved: true)), // hardcoded info, should be changed 
+          );
+          if (changed == true) {
+            _loadUsers(); // refresh list
+            searchController.clear(); // clear the controller
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildUserList(){
+    return ScrollConfiguration(
+      // this ensure that the default scrollbar is not shown
+      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), 
+      child: CustomScrollbar ( 
+        controller: _scrollController,
+        padding: EdgeInsets.all(10),
+        child: ListView.separated(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          clipBehavior: Clip.antiAlias,
+          itemCount: filteredUsers.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 8),
+          itemBuilder: (context, index) => _buildUserTile(filteredUsers[index]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchField(){
+    return SearchField(
+      controller: searchController, 
+      borderRadius: 30, 
+      backgroundColor: Colors.white, 
+      horizontalPadding: 5, 
+      verticalPadding: 5, 
+      boxShadow: [
+        BoxShadow(
+          color: AppColors.textFieldBorderFocus.withAlpha(100),
+          blurRadius: 6,
+          offset: const Offset(0, 4),
+        ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    if(_isLoading) {
+      return const Center(
+        child: LoadingAnimation(
+          imagePath: 'assets/images/logo.png',
+          size: 50.0, 
+        )
+      );
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        toolbarHeight: 225,
-        centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 70),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Administrér',
-                style: TextStyle(fontSize: 36),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                'profiler',
-                style: TextStyle(fontSize: 36),
-                textAlign: TextAlign.center,
-              ),
-              Icon(
-                Icons.manage_accounts_outlined,
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Alle profiler',
-                style: TextStyle(fontSize: 18),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+      appBar: CustomAppBar(
+        title: 'Administrér \n profiler',
+        materialIcon: Icon(
+          Icons.manage_accounts_outlined,
+          size: 30,
         ),
+        screenHeight: screenHeight,
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -162,60 +163,20 @@ class _AdminAllProfilesPageState extends State<AdminAllProfilesPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(height: 10),
-            SearchField(
-              controller: searchController,
-              hintText: 'Søg efter bruger',
+            Text(
+              'Alle profiler',
+              style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
+            Padding(
+              padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+              child: _buildSearchField(),
+            ),
             Expanded(
-              child: Card(
-                elevation: 2,
-                margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 22),
+              child: CardContainer(
                 color: AppColors.background,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: ListView.separated(
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: filteredUsers.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
-                    itemBuilder: (context, index) {
-                      final user = filteredUsers[index];
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 3),
-                        //margin: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        child: ListTile(
-                          tileColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => AdminOneProfilePage(user: user)),
-                            );
-                          },
-                          title: Text(
-                            // Evt en bedre måde at vise hvilken rolle de har? Tænker det kan godt være væsentligt rart at have det med
-                            '(${user.role}) ${user.firstName} ${user.lastName}',
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-                          ),
-                          // if not approve, then vis dette
-                          /*trailing: CircleAvatar(
-                            radius: 11,
-                            backgroundColor: AppColors.primary,
-                            child: const Text('!', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
-                          ),*/
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                childWidget: _buildUserList(),
               ),
             ),
           ],

@@ -337,6 +337,8 @@ class _SettingsState extends State<Settings> {
     final user = _currentUser;
     final data = _editedData;
 
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Indstillinger', 
@@ -346,6 +348,7 @@ class _SettingsState extends State<Settings> {
             size: 32.0,
             semanticLabel: 'Settings',
         ),
+        screenHeight: screenHeight,
       ),
       bottomNavigationBar: NavBar(),
       backgroundColor: Colors.white,

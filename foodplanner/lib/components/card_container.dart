@@ -18,7 +18,7 @@ class CardContainer extends StatelessWidget{
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadiusGeometry.circular(30),
+        borderRadius: BorderRadiusGeometry.circular(15),
       ),
       color: color,
       elevation: 3,

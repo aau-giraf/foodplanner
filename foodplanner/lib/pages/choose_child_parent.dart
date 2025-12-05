@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
 import 'package:foodplanner/components/card_container.dart';
 import 'package:foodplanner/components/collapsible_list.dart';
 import 'package:foodplanner/components/collapsible_list_scrollable.dart';
@@ -13,6 +12,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/pages/landing_page_guardian.dart';
+import 'package:foodplanner/pages/settings/administrate_pupils.dart';
 import 'package:foodplanner/pages/signup_page_pupil.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -144,15 +144,14 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
     );
   }
 
-  Widget buildScrollableView(double screenHeight){
+  Widget buildScrollableView(){
     return CardContainer(
       clipBehavior: Clip.antiAlias,
       color: AppColors.background,
       childWidget: Column(
         children: [
           buildSearchField(),
-          SizedBox(
-            height: math.min(_children.length * 75.0, 250),
+          Flexible(
             child:  CollapsibleListScrollable(
               elements: _filteredChildren, 
               controller: _scrollController, 
@@ -184,7 +183,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
       bodyWidth: screenWidth - 95,
       onFeedback: () => Navigator.push(context, MaterialPageRoute(builder: (_) => FeedbackChatPage())), 
       onLunch: () => Navigator.push(context, MaterialPageRoute(builder: (_) => GuardianLandingPageMadpakke())), 
-      onSettings: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChooseChildGuardian())),
+      onSettings: () => Navigator.push(context, MaterialPageRoute(builder: (_) => AdministratePupils())),
       onHeaderTap: () => setState(() {
         _isExpanded == false ? _isExpanded = true : _isExpanded = false;
       }) 
@@ -212,28 +211,33 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
         Icon(
           Icons.escalator_warning,
           size: 30,
-        )
+        ),
+        screenHeight: screenHeight,
       ),
       backgroundColor: Colors.white, 
 
       body: Column (
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Padding( padding: EdgeInsetsGeometry.only(top: 15)),
 
           // component for search field and collapsible list
-          _children.length > 1 ? buildScrollableView(screenHeight) : buildSinglePupilView(screenWidth),
+          _children.length > 1 ? Flexible(child: buildScrollableView()) : buildSinglePupilView(screenWidth),
 
           // "Opret barn" button
-          RightIconButton(
-            buttonText: "Tilføj barn",
-            onTab: () async {
-              bool? created = await Navigator.push(context, MaterialPageRoute(builder: (_) => CreatePupilPage()));
-              if (created == true){ // ensures that the children are loaded again, if a new child has been registered
-                _loadChildren();
-              }
-            },
-            materialIcon: Icon(Icons.add_reaction_outlined),
-          ),
+          Padding (
+            padding: EdgeInsetsGeometry.all(15),
+            child: RightIconButton(
+              buttonText: "Tilføj barn",
+              onTab: () async {
+                bool? created = await Navigator.push(context, MaterialPageRoute(builder: (_) => CreatePupilPage()));
+                if (created == true){ // ensures that the children are loaded again, if a new child has been registered
+                  _loadChildren();
+                }
+              },
+              materialIcon: Icon(Icons.add_reaction_outlined),
+            ),
+          ),         
+          
 
           // element for single-time use code functionality
           _buildSingleUseComponent(),
