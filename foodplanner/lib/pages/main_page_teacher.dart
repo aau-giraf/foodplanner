@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
 import 'package:foodplanner/navigation/navigation_service.dart';
@@ -11,6 +12,7 @@ import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/config/colors.dart';
+import 'package:foodplanner/models/user_roles.dart';
 
 class TeacherMainPage extends StatefulWidget {
   const TeacherMainPage({super.key});
@@ -51,6 +53,16 @@ class TeacherMainPageState extends State<TeacherMainPage> {
 
   @override
   Widget build(BuildContext context){
+    // wait for _user to be loaded 
+    if (_user == null){
+      return const Center(
+        child: LoadingAnimation(
+          imagePath: 'assets/images/logo.png',
+          size: 50.0, 
+        )
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -156,7 +168,50 @@ class TeacherMainPageState extends State<TeacherMainPage> {
                 ),
               ),
             ),
-
+            if (_user.role.hasRole(Role.admin)) ...[
+              SizedBox(height: 30),
+              InkWell(
+              hoverColor: Colors.transparent,
+              onTap: () async {
+                ActiveRoleService.setActiveRole(Role.admin);
+                GoRouter.of(context).go(ADMIN_ROOT);
+              },
+              child: Container(
+                height: 59,
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow:[
+                    BoxShadow(
+                      color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 4),
+                      spreadRadius: 0,
+                    )
+                  ]
+                ),
+                padding: const EdgeInsets.all(15),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Text(
+                      'Skift rolle',
+                      style: TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center
+                    ),
+                    const Positioned(
+                      right: 19,
+                      child: Icon(
+                        Icons.group,
+                      ),
+                    ),
+                  ]
+                ),
+              ),
+            ),
+            ],
             /*
             if(activeRole == Role.teacher && _user.hasAllRoles([Role.admin, Role.teacher])) ...[
               SizedBox(height: 30),
