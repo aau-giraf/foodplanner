@@ -111,22 +111,6 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            /*Card(
-              color: AppColors.background,
-              elevation: 2,
-              child: Column(
-                child: Padding(
-                  padding: EdgeInsets.all(2),
-                  children: [
-                    ColoredBox(
-                      color: Colors.blue,
-                    ),
-                    Text('Navn navn anmoder om at blive accepteret'),
-                    Text('Navn navn anmoder om at blive accepteret'),
-                  ],
-                ),
-              ),
-            ),*/
             Card(
               color: AppColors.background,
               elevation: 2,
@@ -141,7 +125,22 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
                         foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                       onPressed: () { },
-                      child: Text('TextButton'),
+                      child: SFIcon(
+                        SFIcons.sf_multiply,
+                        fontSize: 16,
+                      ),
+                      //Text('TextButton'),
+                    ),
+                    TextButton(
+                      style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                      ),
+                      onPressed: () { },
+                      child: SFIcon(
+                        SFIcons.sf_checkmark,
+                        fontSize: 16,
+                      ),
+                      //Text('TextButton'),
                     )
                   ],
                 ),
