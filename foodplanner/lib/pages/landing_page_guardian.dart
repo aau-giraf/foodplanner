@@ -110,7 +110,7 @@ class GuardianLandingPageMadpakkeState extends State<GuardianLandingPageMadpakke
                         mealNotifier.fetchMealData();
                       });
                     },
-                    icon: SFIcon(
+                    sfIcon: SFIcon(
                       SFIcons.sf_plus,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

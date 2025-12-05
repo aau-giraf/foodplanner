@@ -1,4 +1,5 @@
-import 'dart:developer' as developer;
+import 'dart:math' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/pages/pin_code.dart';
@@ -54,11 +55,11 @@ class LandingPageState extends State<LandingPage> {
       if (!authProvider.isLoggedIn) {
         if(context.mounted){
           context.go(LOGIN_PAGE);
-        } else {developer.log("Context was unmounted when trying to go to login page");}
+        } else {debugPrint("Context was unmounted when trying to go to login page");}
       } else if (authProvider.isApproved != true) {
         if(context.mounted){
           context.go('/unauthorized');
-        } else{developer.log("Context was unmounted when trying to go to unauthorized page");}
+        } else{debugPrint("Context was unmounted when trying to go to unauthorized page");}
       }
     });
 
@@ -81,10 +82,11 @@ class LandingPageState extends State<LandingPage> {
                       Provider.of<AuthProvider>(context, listen: false);
                   await authProvider
                       .logout(); // Just call it; don't try to store a result
-                 developer.log('Logged out'); // For debugging purposes
+
+                 debugPrint('Logged out'); // For debugging purposes
                  if(context.mounted){
                   context.go(LOGIN_PAGE);
-                 } else{developer.log("Context was unmounted when trying to log out");}
+                 } else{debugPrint("Context was unmounted when trying to log out");}
                 },
                 child: const Text('Logout'),
               ),

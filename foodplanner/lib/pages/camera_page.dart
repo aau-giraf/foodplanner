@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:developer' as developer;
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -111,6 +110,9 @@ class _MealPageState extends State<CameraPage> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            final size = MediaQuery.of(context).size;
+            final deviceRatio = size.width / size.height;
+
             return Stack(
               fit: StackFit.expand,
               children: [
@@ -147,7 +149,7 @@ class _MealPageState extends State<CameraPage> {
                             DisplayPictureScreen(image: XFile(image.path)),
                       ),
                     );
-                  } else {developer.log("Something went wrong when taking a picture");}
+                  } else {debugPrint("Something went wrong when taking a picture");}
                 });
               },
               backgroundColor: AppColors.primary,
@@ -175,7 +177,7 @@ class _MealPageState extends State<CameraPage> {
                     ),
                   );
                 } catch (e) {
-                 developer.log('Error taking picture: $e');
+                  print('Error taking picture: $e');
                 }
               },
               backgroundColor: AppColors.primary,
@@ -193,7 +195,6 @@ class _MealPageState extends State<CameraPage> {
 }
 
 // A widget that displays the picture taken by the user.
-// ignore: must_be_immutable
 class DisplayPictureScreen extends StatelessWidget {
   final XFile image;
   late MultipartFile croppedImage;
@@ -296,10 +297,10 @@ Future<Uint8List> cropImageToSquare(XFile image) async {
     final squareSize = width < height ? width : height;
     final croppedImage = img.copyCrop(
       decodedImage,
-      (width - squareSize) ~/ 2,
-      (height - squareSize) ~/ 2,
-      squareSize,
-      squareSize,
+      x: (width - squareSize) ~/ 2,
+      y: (height - squareSize) ~/ 2,
+      width: squareSize,
+      height: squareSize,
     );
     final croppedBytes = img.encodeJpg(croppedImage);
 

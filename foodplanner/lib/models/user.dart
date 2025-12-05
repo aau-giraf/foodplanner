@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'user_roles.dart';
 
 class User {
@@ -26,7 +28,7 @@ class User {
         'email': String email,
         'role': String role,
         'archived': bool archived,
-      } =>
+      } => 
         User(
           id: id,
           firstName: firstName,

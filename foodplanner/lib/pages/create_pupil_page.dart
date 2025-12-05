@@ -1,4 +1,4 @@
-import 'dart:convert';
+/*import 'dart:convert';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
@@ -11,6 +11,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:foodplanner/components/nav_bar.dart';
 
 class CreatePupilPage extends StatefulWidget {
   const CreatePupilPage({super.key});
@@ -31,7 +32,7 @@ class _SignupChildState extends State<CreatePupilPage> {
   String firstNameError = '';
   String lastNameError = '';
 
-  //Regular expression for vildationg full name, Email, password¨
+  //Regular expression for vildationg full name, Email, password
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
 
   Future<List<SchoolClass>> classesFuture =
@@ -126,6 +127,7 @@ class _SignupChildState extends State<CreatePupilPage> {
 
     //proceed with sign-up logic if everything is correct
     createChildHandler(context, firstName, lastName, selectedClassId);
+    Navigator.pop(context);
   }
 
   //Placeholder function for sign-up logic
@@ -342,6 +344,7 @@ class _SignupChildState extends State<CreatePupilPage> {
           ),
         ),
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
-}
+}*/

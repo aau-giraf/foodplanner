@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'dart:convert';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user.dart';
@@ -11,7 +10,7 @@ class UserService {
 
   Future<User> fetchUser(int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
-    final response = await http.get(Uri.parse('$apiUrl/api/Admin/Get/$id'),
+    final response = await http.get(Uri.parse('$apiUrl/api/Admin/Get/${id}'),
         headers: <String, String>{
           'Authorization': 'Bearer $jwtToken',
         });
@@ -106,7 +105,7 @@ class UserService {
     if (response.statusCode == 204) {
       return true;
     } else {
-     developer.log(
+      print(
           'Failed to unapprove users: ${response.statusCode} ${response.body}');
       throw Exception('Failed to unapprove users');
     }
@@ -127,6 +126,28 @@ class UserService {
         'role': role
       }),
     );
+
+    return response;
+  }
+
+  Future<http.Response> createUserPupil(String firstName, String lastName,
+      String email, String password, List<int> parentIds, int classId) async {
+    final response = await http.post(
+      Uri.parse('$apiUrl/api/Users/CreateUserChildren'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+        'password': password,
+        'parentIds': parentIds,
+        'classId': classId,
+      }),
+    );
+
+    print(classId);
 
     return response;
   }
@@ -256,7 +277,7 @@ class UserService {
 
   Future<http.Response> updateUser(
       int id, String firstName, String lastName, String email) async {
-   developer.log("Knap trykket på");
+   //developer.log("Knap trykket på");
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
       Uri.parse('$apiUrl/api/Users/UpdateLoggedIn'),

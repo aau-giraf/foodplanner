@@ -29,6 +29,10 @@ class UserRoles {
     return false;
   }
 
+  bool hasOnlyRole(Role role) {
+    return roles.contains(role) && roles.length == 1;
+  }
+
   UserRoles add(Role role) => UserRoles._({...roles, role});
 
   factory UserRoles.fromString(String value) =>

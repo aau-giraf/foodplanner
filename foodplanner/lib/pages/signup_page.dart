@@ -1,5 +1,4 @@
-import 'dart:convert';
-import 'dart:developer' as developer;
+/*import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
@@ -48,7 +47,7 @@ class _SignupState extends State<SignupPage> {
        isPasswordFocused = false,
        isConfirmPasswordFocused = false;
 
-  // Regular expressions for validating full name, email, and password
+  // Regular expressions for validating full name and email
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$'),
               emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
 
@@ -455,4 +454,4 @@ class _SignupState extends State<SignupPage> {
       ),
     );
   }
-}
+}*/

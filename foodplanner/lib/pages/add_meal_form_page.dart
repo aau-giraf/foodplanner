@@ -20,6 +20,7 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:foodplanner/services/food_image_service.dart';
 
+
 /// This class is used to create the meal page where the user can create an individual meal for their children.
 class MealFormPage extends StatefulWidget {
   const MealFormPage({
@@ -241,7 +242,7 @@ class _MealFormPageState extends State<MealFormPage> {
                         backgroundColor: Colors.white,
                         foregroundColor: AppColors.textPrimary,
                         size: ButtonSize.medium,
-                        trailingIcon: SFIcon(SFIcons.sf_chevron_right),
+                        sfTrailingIcon: SFIcon(SFIcons.sf_chevron_right),
                       ),
                     ),
 
@@ -344,12 +345,12 @@ class _MealFormPageState extends State<MealFormPage> {
                         
                           final ingredient = selectedIngredients[index];
                           return SettingsWidget(
-                            leftWidget: FoodImage(
+                            /*leftWidget: FoodImage(
                               foodImageId: ingredient['foodImageId'],
                               width: 50,
                               height: 50,
                               borderRadius: 8.0,
-                            ),
+                            ),*/
                             title: ingredient['name'],
                             type: SettingsType.items,
                           );
@@ -388,7 +389,7 @@ class _MealFormPageState extends State<MealFormPage> {
                           }
                         },
                         text: 'Fjern eller tilføj ingredienser',
-                        trailingIcon: SFIcon(SFIcons.sf_chevron_right),
+                        sfTrailingIcon: SFIcon(SFIcons.sf_chevron_right),
                         size: ButtonSize.medium,
                         backgroundColor: Colors.white,
                         foregroundColor: AppColors.textPrimary,

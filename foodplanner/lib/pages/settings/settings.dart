@@ -30,6 +30,9 @@ class _SettingsState extends State<Settings> {
   int _numberOfEdits = 0;
   List<User> totalAdminUsers = [];
 
+  List<User> totalAdminUsers = [];
+  int edits = 0;
+
   @override
   void initState(){
     super.initState();
@@ -137,6 +140,22 @@ class _SettingsState extends State<Settings> {
     } catch (e) {
       _showSnackBar('Fejl under gemning. Prøv igen', AppColors.errorText);
     }
+  }
+
+  void showDeletionPopUp(){
+    showIPhonePopupBox(
+      context: context,
+      title: 'Slet bruger',
+      message: 'Er du sikker på, at du vil slette din konto?',
+      confirmText: 'Ja',
+      cancelText: 'Nej',
+      onConfirm: (){
+        deleteLoggedInUser();
+      },
+      onCancel: (){
+        Navigator.of(context).pop();
+      },
+    );
   }
 
   Future<void> resetPage() async {
@@ -328,7 +347,7 @@ class _SettingsState extends State<Settings> {
             semanticLabel: 'Settings',
         ),
       ),
-      bottomNavigationBar: NavBar(currentPageIndex: 3),
+      bottomNavigationBar: NavBar(),
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'dart:convert';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/meal.dart';
@@ -58,7 +57,7 @@ Future<http.Response> createMeal(AuthProvider authProvider, final String name,
           DateFormat('yyyy-MM-dd').format(date!), // Optional date for the meal.
     }),
   );
- developer.log('Statuscode: ${response.statusCode} body:${response.body}');
+  print('Statuscode: ${response.statusCode} body:${response.body}');
   return response; // Return the response from the server.
 }
 
@@ -86,7 +85,7 @@ Future<http.Response> updateMeal(
       'ingredients': meal.ingredients.map((e) => e.toJson()).toList(),
     }) 
   );
- developer.log('Statuscode: ${response.statusCode} body:${response.body}');
+  print('Statuscode: ${response.statusCode} body:${response.body}');
   return response; // Return the response from the server.
 }
 

@@ -6,9 +6,11 @@
 import 'dart:async' as _i4;
 import 'dart:convert' as _i5;
 import 'dart:typed_data' as _i7;
+import 'dart:ui' as _i11;
 
 import 'package:foodplanner/auth/auth_provider.dart' as _i9;
 import 'package:foodplanner/models/ingredient.dart' as _i3;
+import 'package:foodplanner/models/user_roles.dart' as _i10;
 import 'package:foodplanner/models/user_roles.dart' as _i10;
 import 'package:foodplanner/services/ingredient_services.dart' as _i8;
 import 'package:http/http.dart' as _i2;
@@ -467,7 +469,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
   @override
   _i4.Future<bool> hasRoles(List<_i10.UserRoles>? roles) => (super.noSuchMethod(
         Invocation.method(
-          #hasRoles,
+          #hasOneOfRoles,
           [roles],
         ),
         returnValue: _i4.Future<bool>.value(false),
@@ -477,7 +479,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
   _i4.Future<bool> hasRolesUnapproved(List<_i10.UserRoles>? roles) =>
       (super.noSuchMethod(
         Invocation.method(
-          #hasRolesUnapproved,
+          #hasAllRoles,
           [roles],
         ),
         returnValue: _i4.Future<bool>.value(false),
@@ -486,7 +488,8 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
   @override
   /*bool hasRole(List<_i10.UserRoles>? roles) => (super.noSuchMethod(
         Invocation.method(
-          #hasRole,
+          #hasOneOfRolesUnapproved,
+          #hasOneOfRolesUnapproved,
           [roles],
         ),
         returnValue: false,
@@ -531,7 +534,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
       ) as _i4.Future<_i10.UserRoles?>);
 
   @override
-  void addListener(dynamic listener) => super.noSuchMethod(
+  void addListener(_i11.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -540,7 +543,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
       );
 
   @override
-  void removeListener(dynamic listener) => super.noSuchMethod(
+  void removeListener(_i11.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],

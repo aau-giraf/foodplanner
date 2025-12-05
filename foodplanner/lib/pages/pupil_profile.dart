@@ -78,8 +78,8 @@ class PupilProfileState extends State<PupilProfile>
     initialClassId = widget.pupil.classId.toString();
     //fetchGuardian();
     selectedGuardian = guardian;
-    selectedGuardianId = widget.pupil.guardianId;
-    initialGuardianId = widget.pupil.guardianId;
+    /*selectedGuardianId = widget.pupil.guardianId;
+    initialGuardianId = widget.pupil.guardianId;*/
 
     PupilProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
@@ -89,17 +89,18 @@ class PupilProfileState extends State<PupilProfile>
       throw (error);
     });
   }
-
-  void fetchParent() {
-    /*ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
+/*
+  void fetchGuardian() {
+    PupilProfile.userService.fetchUser(widget.pupil.guardianId).then((result) {
       setState(() {
         guardian = result;
         selectedGuardian = result;
       });
     }).catchError((error) {
       throw (error);
-    });*/
+    });
   }
+  */
 
   @override
   void dispose() {
@@ -511,7 +512,7 @@ class PupilProfileState extends State<PupilProfile>
                               updatedLastName.isNotEmpty
                                   ? updatedLastName
                                   : widget.pupil.lastName,
-                              selectedGuardianId ?? widget.pupil.guardianId,
+                              selectedGuardianId ?? widget.pupil.guardianId!,
                               int.parse(selectedClassId!))
                           .then((response) {
 
