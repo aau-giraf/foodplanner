@@ -172,6 +172,33 @@ class _SchoolClasses extends State<SchoolClasses> {
   }
 
   void addClass() {
+    /*IconButton(
+            onPressed: () {
+              //deleteClass(schoolClassId);
+              showIPhonePopupBox(
+                context: context,
+                title: 'Slet klasse',
+                message: 'Er du sikker på, at du vil slette denne klasse?',
+                confirmText: 'Ja',
+                cancelText: 'Nej',
+                onConfirm: () {
+                  SchoolClasses.schoolClassService
+                    .createClass(controller.text)
+                    .then((newClass) {
+                  setState(() {
+                    schoolClasses.add(newClass);
+        isEditing[newClass.classId] = false;
+        controllers[newClass.classId] =
+            TextEditingController(text: newClass.className);
+        controller.clear();
+      }); // Close the popup
+                },
+                onCancel: () {
+                  Navigator.of(context).pop(); // Close the popup
+                },
+              );
+            },
+   */
     final messenger = ScaffoldMessenger.of(context);
     SchoolClasses.schoolClassService
         .createClass(controller.text)
@@ -244,14 +271,23 @@ class _SchoolClasses extends State<SchoolClasses> {
     }
   }
 
+  bool showSearchDropdown = false;
+  bool hideSearchDropdown = true;
+
   void searchFunction(String input){
     setState(() {
       filteredChildren = children.where((child) {
         // pass both strings as lowercase to ensure case-insensitivity
         final fullName = "${child.firstName} ${child.lastName}".toLowerCase(); 
+        final className = getClassName(child.classId).toLowerCase();
         final searchInput = input.toLowerCase();
-        return fullName.contains(searchInput); // return all elements where the input is part of the full name
-      }).toList();
+        return fullName.contains(searchInput) || className.contains(searchInput); // return all elements where the input is part of the full name
+      }).toList()
+
+      ..sort((a,b) => ('${a.firstName} ${a.lastName}').compareTo('${b.firstName} ${b.lastName}'));
+
+      showSearchDropdown = input.isNotEmpty;
+
     });
   }
 
@@ -326,15 +362,16 @@ class _SchoolClasses extends State<SchoolClasses> {
           children: [
             Expanded(
               child: CardContainer(
+                clipBehavior: Clip.antiAlias,
                 color: AppColors.background,
                 childWidget: Column(
                   children: [
                     SearchField(
                       controller: _searchFieldController, 
                       hintText: "Søg i alle børn og klasser",
-                      onChanged: searchFunction, 
+                      onChanged: searchFunction,
                       borderRadius: 30, 
-                      backgroundColor: Colors.white, 
+                      backgroundColor: Colors.white,
                       horizontalPadding: 5, 
                       verticalPadding: 5, 
                       boxShadow: [
@@ -345,12 +382,38 @@ class _SchoolClasses extends State<SchoolClasses> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20,),
+                    if(showSearchDropdown)
+                      Container(
+                        constraints: BoxConstraints(maxHeight: 250),
+                        decoration: BoxDecoration(
+                          color: AppColors.textFieldBackground,
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: filteredChildren.length,
+                          itemBuilder: (context, index) {
+                            final child = filteredChildren[index];
+                            return ListTile(
+                              title: Text("${child.firstName} ${child.lastName}"),
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => EditPupilInfo()
+                                ));
+                              },
+
+                            );
+
+                          }
+                        )
+                      )
+                    else
                     Expanded(
                       child: Scrollbar(
+                        controller: _scrollController,
                         thumbVisibility: true,
                         child: ListView.builder(
                           shrinkWrap: true,
+                          controller: _scrollController,
                           itemCount: schoolClasses.length,
                           itemBuilder: (context, index) {
                             final schoolClass = schoolClasses[index]; 
