@@ -132,7 +132,7 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
                     style: TextStyle(fontSize: 18),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(width: 10,),
+                  SizedBox(width: 10),
                   Container(
                     width: 26,
                     height: 26,
@@ -196,18 +196,17 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (_) => AdminOneProfilePage(/* user.id */)),
+                                  MaterialPageRoute(builder: (_) => AdminOneProfilePage(user: user)),
                                 );
                               },
                               title: Text(
                                 // Evt en bedre måde at vise hvilken rolle de har? Tænker det kan godt være væsentligt rart at have det med
                                 '(${user.role}) ${user.firstName} ${user.lastName}',
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                               ),
                               trailing: CircleAvatar(
                                 radius: 11,
@@ -225,17 +224,17 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const AdminAllProfilesPage()),
+                        builder: (context) => const AdminAllProfilesPage()),
                     );
                   },
                   child: Container(
-                    height: 40,
+                    height: 50,
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -254,11 +253,11 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
                         Text(
                           'Alle profiler',
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 17,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        SFIcon(SFIcons.sf_chevron_forward),
+                        //SFIcon(SFIcons.sf_chevron_forward),
                       ],
                     ),
                   ),
@@ -269,88 +268,6 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
         ),
       ),
       bottomNavigationBar: NavBar(),
-      /*body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Card(
-              elevation: 2,
-              color: AppColors.background,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 10
-                ),
-                child: Column(
-                  children: [
-                    ..._users.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final user = entry.value;
-                      return Card(
-                        color: Colors.white,
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        clipBehavior: Clip.antiAlias,
-                        child: SettingsWidget(
-                          title: '${user.firstName} ${user.lastName}', 
-                          type: SettingsType.inlineItems,
-                          divider: false,
-                          clickable: true,
-                          ctaFunction: () async {
-                            Navigator.push(context, MaterialPageRoute(builder: (c) => AdminOneProfilePage(/*${user.id}*/)));
-                          },
-                        ),
-                      );
-                    }).toList(),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AdminAllProfilesPage()),
-                  );
-                },
-                child: Container(
-                  height: 56,
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        'Alle profiler',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      SFIcon(SFIcons.sf_chevron_forward),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: NavBar(),*/
     );
   }
 }

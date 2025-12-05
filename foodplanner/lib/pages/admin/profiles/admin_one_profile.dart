@@ -11,9 +11,11 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/services/user_service.dart';
+import 'package:foodplanner/models/user_roles.dart';
 
 class AdminOneProfilePage extends StatefulWidget {
-  const AdminOneProfilePage({super.key});
+  final User user;
+  const AdminOneProfilePage({super.key, required this.user});
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
   @override
@@ -21,16 +23,82 @@ class AdminOneProfilePage extends StatefulWidget {
 }
 
 class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
-  List<User> _users = [];
-  bool _isLoading = true;
-
   @override
   void initState() {
     super.initState();
   }
 
+  removeAdmin(){
+    print('Nu er du herher');
+  }
+
+  giveAdmin(){
+    print('Nu er du her');
+  }
+
+  Widget _checkRole(){
+    final roles = widget.user.role.toString().split(',');
+
+    final isAdmin = roles.contains('admin');
+    final isTeacher = roles.contains('teacher');
+
+    if (isAdmin) {
+      return GestureDetector(
+        onTap: removeAdmin,
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 6,
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
+          padding: EdgeInsets.all(10),
+          child: Text(
+            'Fjern administrator',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+          ),
+        ),
+      );
+    }
+
+    if (isTeacher && !isAdmin) {
+      return GestureDetector(
+        onTap: giveAdmin,
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 6,
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
+          padding: EdgeInsets.all(10),
+          child: Text(
+            'Tildel administrator',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+          ),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final roles = widget.user.role.toString().split(',');
+    final isAdmin = roles.contains('admin');
+    final isTeacher = roles.contains('teacher');
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -62,50 +130,56 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
       backgroundColor: Colors.white,
       body: Padding(
         // Popup med ting der skal fikses, fx: "Bob Olsen anmoder om tilknytning til Georg Olsen"
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: 
-        Column(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(height:20),
-            // Text: med navn og informationer om brugeren
             Card(
               color: Colors.grey,
               elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Column(
-                  children: [
-                    ColoredBox(
-                      color: Colors.blue,
-                    ),
-                    Text('Navn navn anmoder om at blive accepteret'),
-                  ],
-                ),
+              child: Column(
+                children: [
+                  ColoredBox(
+                    color: Colors.blue,
+                  ),
+                  Text('Navn navn anmoder om at blive accepteret'),
+                ],
               ),
             ),
-            // Er den approved?
-            // Nuværende rolle: {UserRoles}
-            // Tilknytning: {barn}
-            Card(
-              color: Colors.grey,
-              elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Column(
-                  children: [
-                    ColoredBox(
-                      color: Colors.blue,
-                    ),
-                    //if(UserRoles.fromString('Admin'))
-                      Text('Fjern administatorrolle'),
-                    //else if
-                      // Text('Tildel administratorrolle'),
-                  ],
-                ),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Fulde navn:'),
+                Text('${widget.user.firstName} ${widget.user.lastName}'),
+              ],
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Email:'),
+                Text('${widget.user.email}'),
+              ],
+            ),
+            // Text('Accepteret: ${widget.user.approved}'),
+            // Tjek parent, show this
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Nuværende rolle:'),
+                Text('${roles}'),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Tilknytning:'),
+                Text('barn'),
+              ],
+            ),
+            // Indsætter et tomt felt, og ved ikke hvordan man kan fjerne det
+            isAdmin || isTeacher ? _checkRole() : SizedBox(width: 0, height: 0),
+            
             Card(
               color: Colors.grey,
               elevation: 2,
@@ -118,33 +192,6 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
                     ),
                     Text('Slet profil'),
                   ],
-                ),
-              ),
-            ),
-            SettingsWidget(
-              title: 'hej', 
-              type: SettingsType.inlineItems,
-              divider: false,
-              clickable: true,
-              ctaFunction: () async {
-                Navigator.push(context, MaterialPageRoute(builder: (c) => AdminOneProfilePage()));
-              },
-            ),
-            Card(
-              color: Colors.white,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: () {
-                  
-                },
-                child: SettingsWidget(
-                  title: 'Slet profil',
-                  type: SettingsType.inlineItems,
-                  divider: false,
-                  cta: IconButton(
-                    icon: const SFIcon(SFIcons.sf_trash),
-                    onPressed: () {}, // valgfri
-                  ),
                 ),
               ),
             ),

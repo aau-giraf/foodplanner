@@ -146,16 +146,11 @@ class _AdminAllProfilesPageState extends State<AdminAllProfilesPage> {
                 Icons.manage_accounts_outlined,
               ),
               SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Alle profiler',
-                    style: TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              )
+              Text(
+                'Alle profiler',
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),
@@ -188,8 +183,7 @@ class _AdminAllProfilesPageState extends State<AdminAllProfilesPage> {
                     separatorBuilder: (_, __) => const SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       final user = filteredUsers[index];
-                      // onTap(), så man går til en specifik side
-                      return Container(
+                      /*return Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
                         decoration: BoxDecoration(
@@ -197,8 +191,37 @@ class _AdminAllProfilesPageState extends State<AdminAllProfilesPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text('(${user.role}) ${user.firstName} ${user.lastName}'),
+                      );*/
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 3),
+                        //margin: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        child: ListTile(
+                          tileColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => AdminOneProfilePage(user: user)),
+                            );
+                          },
+                          title: Text(
+                            // Evt en bedre måde at vise hvilken rolle de har? Tænker det kan godt være væsentligt rart at have det med
+                            '(${user.role}) ${user.firstName} ${user.lastName}',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                          ),
+                          // if not approve, then vis dette
+                          /*trailing: CircleAvatar(
+                            radius: 11,
+                            backgroundColor: AppColors.primary,
+                            child: const Text('!', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
+                          ),*/
+                        ),
                       );
-                      
                     },
                   ),
                 ),
