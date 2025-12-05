@@ -29,11 +29,15 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
   }
 
   removeAdmin(){
-    print('Nu er du herher');
+    print('Fjern admin');
   }
 
   giveAdmin(){
-    print('Nu er du her');
+    print('Give admin');
+  }
+
+  deleteProfile(){
+    print('Nu sletter du profilen');
   }
 
   Widget _checkRole(){
@@ -42,55 +46,60 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
     final isAdmin = roles.contains('admin');
     final isTeacher = roles.contains('teacher');
 
-    if (isAdmin) {
-      return GestureDetector(
-        onTap: removeAdmin,
+    /*
+    Card(
+      elevation: 2,
+      color: AppColors.background,
+      child: GestureDetector(
+        onTap: deleteProfile(),
         child: Container(
           decoration: BoxDecoration(
             color: AppColors.background,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                blurRadius: 6,
-                offset: Offset(0, 3),
-              ),
-            ],
           ),
           padding: EdgeInsets.all(10),
-          child: Text(
-            'Fjern administrator',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              const Text(
+                'Slet profil',
+                textAlign: TextAlign.center,
+              ),
+              Positioned(
+                right: 0,
+                child: SFIcon(
+                    SFIcons.sf_trash,
+                    fontSize: 16,
+                  ),
+                ),
+            ],
           ),
-        ),
-      );
-    }
+        )
+      )
+    )
+    */
 
-    if (isTeacher && !isAdmin) {
-      return GestureDetector(
-        onTap: giveAdmin,
+    return Card(
+      elevation: 2,
+      color: AppColors.background,
+      child: GestureDetector(
+        onTap:
+          isAdmin ? removeAdmin() :
+          isTeacher && !isAdmin ? giveAdmin : throw Exception('Fejl i at give en funktion'),
         child: Container(
           decoration: BoxDecoration(
             color: AppColors.background,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                blurRadius: 6,
-                offset: Offset(0, 3),
-              ),
-            ],
           ),
           padding: EdgeInsets.all(10),
-          child: Text(
-            'Tildel administrator',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-          ),
-        ),
-      );
-    }
-
-    return const SizedBox.shrink();
+          child: isAdmin
+          ? Text('Fjern administratorrolle')
+          : isTeacher && !isAdmin
+          ? Text('Tildel administratorrolle')
+          : const SizedBox.shrink()
+        )
+      )
+    );
   }
 
   @override
@@ -136,7 +145,7 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Card(
-              color: Colors.grey,
+              color: AppColors.background,
               elevation: 2,
               child: Column(
                 children: [
@@ -178,23 +187,37 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
               ],
             ),
             // Indsætter et tomt felt, og ved ikke hvordan man kan fjerne det
-            isAdmin || isTeacher ? _checkRole() : SizedBox(width: 0, height: 0),
-            
+            isAdmin || isTeacher ? _checkRole() : const SizedBox.shrink(),
             Card(
-              color: Colors.grey,
               elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Column(
-                  children: [
-                    ColoredBox(
-                      color: Colors.blue,
-                    ),
-                    Text('Slet profil'),
-                  ],
-                ),
-              ),
-            ),
+              color: AppColors.background,
+              child: GestureDetector(
+                onTap: deleteProfile(),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const Text(
+                        'Slet profil',
+                        textAlign: TextAlign.center,
+                      ),
+                      Positioned(
+                        right: 0,
+                        child: SFIcon(
+                            SFIcons.sf_trash,
+                            fontSize: 16,
+                          ),
+                        ),
+                    ],
+                  ),
+                )
+              )
+            )
           ],
         ),
       ),

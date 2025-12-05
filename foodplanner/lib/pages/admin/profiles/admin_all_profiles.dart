@@ -183,15 +183,6 @@ class _AdminAllProfilesPageState extends State<AdminAllProfilesPage> {
                     separatorBuilder: (_, __) => const SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       final user = filteredUsers[index];
-                      /*return Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text('(${user.role}) ${user.firstName} ${user.lastName}'),
-                      );*/
                       return Card(
                         margin: const EdgeInsets.only(bottom: 3),
                         //margin: EdgeInsets.zero,
