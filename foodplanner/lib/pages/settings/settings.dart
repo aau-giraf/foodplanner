@@ -30,7 +30,6 @@ class _SettingsState extends State<Settings> {
   int _numberOfEdits = 0;
   List<User> totalAdminUsers = [];
 
-  List<User> totalAdminUsers = [];
   int edits = 0;
 
   @override
