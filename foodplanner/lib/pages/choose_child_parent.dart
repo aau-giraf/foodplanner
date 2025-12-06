@@ -190,6 +190,39 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
     );
   }
 
+  Widget _buildBodyColumn(double screenWidth){
+    return Column (
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          
+          // component for search field and collapsible list
+          _children.length > 1 ? 
+          Flexible(child: buildScrollableView()) : 
+          buildSinglePupilView(screenWidth),
+
+          // "Opret barn" button
+          Padding (
+            padding: EdgeInsetsGeometry.all(15),
+            child: RightIconButton(
+              buttonText: "Tilføj barn",
+              onTab: () async {
+                bool? created = await Navigator.push(context, MaterialPageRoute(builder: (_) => CreatePupilPage()));
+                if (created == true){ // ensures that the children are loaded again, if a new child has been registered
+                  _loadChildren();
+                }
+              },
+              materialIcon: Icon(Icons.add_reaction_outlined),
+            ),
+          ),         
+          
+
+          // element for single-time use code functionality
+          _buildSingleUseComponent(),
+
+        ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -216,34 +249,13 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
       ),
       backgroundColor: Colors.white, 
 
-      body: Column (
-        mainAxisSize: MainAxisSize.min,
-        children: [
-
-          // component for search field and collapsible list
-          _children.length > 1 ? Flexible(child: buildScrollableView()) : buildSinglePupilView(screenWidth),
-
-          // "Opret barn" button
-          Padding (
-            padding: EdgeInsetsGeometry.all(15),
-            child: RightIconButton(
-              buttonText: "Tilføj barn",
-              onTab: () async {
-                bool? created = await Navigator.push(context, MaterialPageRoute(builder: (_) => CreatePupilPage()));
-                if (created == true){ // ensures that the children are loaded again, if a new child has been registered
-                  _loadChildren();
-                }
-              },
-              materialIcon: Icon(Icons.add_reaction_outlined),
-            ),
-          ),         
-          
-
-          // element for single-time use code functionality
-          _buildSingleUseComponent(),
-
-        ],
+      // If there is a single child, wrap the body in a scrollable view
+      body: _children.length > 1 
+      ? _buildBodyColumn(screenWidth) 
+      : SingleChildScrollView(
+        child: _buildBodyColumn(screenWidth)
       ),
+
       bottomNavigationBar: NavBar(currentPageIndex: 0), // OBS: the old navigation bar is used, must be updated
     );
   }

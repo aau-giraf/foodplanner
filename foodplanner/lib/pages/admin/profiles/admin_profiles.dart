@@ -124,6 +124,7 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
         controller: _scrollController,
         padding: EdgeInsets.all(10),
         child: ListView.separated(
+          controller: _scrollController,
           padding: const EdgeInsets.symmetric(vertical: 10),
           clipBehavior: Clip.antiAlias,
           itemCount: _users.length,
