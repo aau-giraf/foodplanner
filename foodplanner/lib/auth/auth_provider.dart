@@ -101,5 +101,4 @@ class AuthProvider with ChangeNotifier {
     return _userRole;
   }
 
-
 }

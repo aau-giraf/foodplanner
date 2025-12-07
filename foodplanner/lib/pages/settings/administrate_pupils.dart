@@ -29,7 +29,6 @@ class AdministratePupilsState extends State<AdministratePupils>
   List<SchoolClass> schoolClasses = [];
   List<Pupil> filteredPupils = [];
   TextEditingController searchController = TextEditingController();
-  }
 
   @override
   void initState() {
