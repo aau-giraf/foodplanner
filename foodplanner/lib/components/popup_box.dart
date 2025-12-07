@@ -8,6 +8,9 @@ class IPhonePopupBox extends StatelessWidget {
   final String cancelText;
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
+  final TextEditingController? inputcontroller;
+  final String? inputHint;
+  final bool showInput;
 
   IPhonePopupBox({
     required this.title,
@@ -16,6 +19,9 @@ class IPhonePopupBox extends StatelessWidget {
     required this.cancelText,
     required this.onConfirm,
     required this.onCancel,
+    this.inputcontroller,
+    this.inputHint,
+    this.showInput = false,
   });
 
   @override
@@ -36,6 +42,20 @@ class IPhonePopupBox extends StatelessWidget {
         children: [
           if (message.isNotEmpty)
             Text(message, style: AppTextStyles.mediumText),
+
+          if (showInput)
+            Padding(
+              padding: const EdgeInsets.only(top:10, bottom: 10),
+              child: TextField(
+                controller: inputcontroller,
+                decoration: InputDecoration(
+                  hintText: inputHint ?? "",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(0),
+                  ),
+                ),
+              ),
+            ),
           Divider(
             color: Colors.black,
             thickness: 0.25,
@@ -84,6 +104,9 @@ void showIPhonePopupBox({
   required String cancelText,
   required VoidCallback onConfirm,
   required VoidCallback onCancel,
+  TextEditingController? inputcontroller,
+  String? inputHint,
+  bool showInput = false,
 }) {
   showDialog(
     context: context,
@@ -95,6 +118,9 @@ void showIPhonePopupBox({
         cancelText: cancelText,
         onConfirm: onConfirm,
         onCancel: onCancel,
+        inputcontroller: inputcontroller,
+        inputHint: inputHint,
+        showInput: showInput,
       );
     },
   );

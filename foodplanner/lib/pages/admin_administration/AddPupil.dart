@@ -289,7 +289,6 @@ class _AddPupilState extends State<AddPupil>{
                               schoolClass.className,
                               style: const TextStyle(
                                 fontSize: 14,
-                                fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                               overflow: TextOverflow.ellipsis,
@@ -336,8 +335,8 @@ class _AddPupilState extends State<AddPupil>{
                       SFIcons.sf_chevron_down,
                     ),
                     iconSize: 16,
-                    iconEnabledColor: AppColors.textSecondary,
-                    iconDisabledColor: Colors.grey,
+                    iconEnabledColor: AppColors.secondary,
+                    iconDisabledColor: AppColors.secondary,
                   ),
                   dropdownStyleData: DropdownStyleData(
                     maxHeight: 200,
@@ -364,6 +363,7 @@ class _AddPupilState extends State<AddPupil>{
             CustomButton(
               text: 'Gem',
               onTab: showButton() ? () => validateInputs(context) : null,
+              foregroundColor: AppColors.textPrimary,
               backgroundColor: AppColors.background, 
             ),
             CustomButton(
@@ -371,6 +371,7 @@ class _AddPupilState extends State<AddPupil>{
               onTab: () {
                 Navigator.pop(context);
               },
+              foregroundColor: AppColors.textPrimary,
               backgroundColor: AppColors.background, 
             ),  
           ],

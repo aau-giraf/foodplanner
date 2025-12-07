@@ -173,53 +173,63 @@ class _SchoolClasses extends State<SchoolClasses> {
   }
 
   void addClass() {
-    /*IconButton(
-            onPressed: () {
-              //deleteClass(schoolClassId);
-              showIPhonePopupBox(
-                context: context,
-                title: 'Slet klasse',
-                message: 'Er du sikker på, at du vil slette denne klasse?',
-                confirmText: 'Ja',
-                cancelText: 'Nej',
-                onConfirm: () {
-                  SchoolClasses.schoolClassService
-                    .createClass(controller.text)
-                    .then((newClass) {
-                  setState(() {
-                    schoolClasses.add(newClass);
-        isEditing[newClass.classId] = false;
-        controllers[newClass.classId] =
-            TextEditingController(text: newClass.className);
-        controller.clear();
-      }); // Close the popup
-                },
-                onCancel: () {
-                  Navigator.of(context).pop(); // Close the popup
-                },
-              );
-            },
-   */
-    final messenger = ScaffoldMessenger.of(context);
-    SchoolClasses.schoolClassService
-        .createClass(controller.text)
-        .then((newClass) {
-      setState(() {
-        schoolClasses.add(newClass);
-        isEditing[newClass.classId] = false;
-        controllers[newClass.classId] =
-            TextEditingController(text: newClass.className);
-        controller.clear();
-      });
+    final TextEditingController classNameController = TextEditingController();
 
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text('Klassen ${newClass.className} er blevet tilføjet'),
-          duration: Duration(seconds: 2),
-          backgroundColor: Colors.green,
-        ),
-      );
-    });
+    showIPhonePopupBox(
+      context: context,
+      title: '',
+      message: '',
+      confirmText: 'Gem',
+      cancelText: 'Anullér',
+      showInput: true,
+      inputcontroller: classNameController,
+      inputHint: "Klassenavn",
+      onConfirm: () {
+        final ClassName = classNameController.text.trim();
+        if (ClassName.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Indtast venligst et klassenavn."),
+              duration: Duration(seconds: 6),
+              backgroundColor: AppColors.errorText
+            )
+          );
+          return;
+        }
+        SchoolClasses.schoolClassService
+          .createClass(ClassName)
+          .then((newClass) {
+          setState(() {
+            schoolClasses.add(newClass);
+            isEditing[newClass.classId] = false;
+            controllers[newClass.classId] =
+              TextEditingController(text: newClass.className);
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Klassen ${newClass.className} er blevet tilføjet"),
+              duration: Duration(seconds: 6),
+              backgroundColor: Colors.green
+            ),
+          );
+
+          classNameController.clear();
+          Navigator.of(context).pop();
+        }).catchError((error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Fejl ved oprettelse af klasse"),
+              duration: Duration(seconds: 6),
+              backgroundColor: AppColors.errorText
+            ),
+          );
+        });
+      },
+      onCancel: () {
+              Navigator.of(context).pop();
+      },
+    );
   }
 
   void updateClass(int classId) async {
@@ -273,20 +283,51 @@ class _SchoolClasses extends State<SchoolClasses> {
   }
 
   bool showSearchDropdown = false;
-  bool hideSearchDropdown = true;
 
   void searchFunction(String input){
+    final searchInput = input.toLowerCase();
     setState(() {
       filteredChildren = children.where((child) {
         // pass both strings as lowercase to ensure case-insensitivity
         final fullName = "${child.firstName} ${child.lastName}".toLowerCase(); 
         final className = getClassName(child.classId).toLowerCase();
-        final searchInput = input.toLowerCase();
-        return fullName.contains(searchInput) || className.contains(searchInput) || fullName.contains(searchInput) && className.contains(searchInput);  // return all elements where the input is part of the full name
+        
+        final nameMatch = fullName.contains(searchInput);
+        final classMatch = className.contains(searchInput);
+        final combinedMatch = "$fullName $className".contains(searchInput);
+        return nameMatch || classMatch || combinedMatch;// return all elements where the input is part of the full name
       }).toList()
 
-      ..sort((a,b) => ('${a.firstName} ${a.lastName}').compareTo('${b.firstName} ${b.lastName}'));
+      ..sort((a,b) {
+        final aFullName = "${a.firstName} ${a.lastName}".toLowerCase();
+        final bFullName = "${b.firstName} ${b.lastName}".toLowerCase();
+        final aClassName = getClassName(a.classId).toLowerCase();
+        final bClassName = getClassName(b.classId).toLowerCase();
 
+        int aNameIndex = aFullName.toLowerCase().indexOf(searchInput);
+        int bNameIndex = bFullName.toLowerCase().indexOf(searchInput);
+
+        if (aNameIndex == -1) aNameIndex = 9999;
+        if (bNameIndex == -1) bNameIndex = 9999;
+        if (aNameIndex != bNameIndex)
+        
+        return aNameIndex.compareTo(bNameIndex);
+
+        int aClassIndex = aClassName.indexOf(searchInput);
+        int bClassIndex = bClassName.indexOf(searchInput);
+        if (aClassIndex == -1) aClassIndex = 9999;
+        if (bClassIndex == -1) bClassIndex = 9999;
+        if (aClassIndex != bClassIndex) 
+        return aClassIndex.compareTo(bClassIndex);
+
+        int aCombinedIndex = "$aFullName $aClassName".indexOf(searchInput);
+        int bCombinedIndex = "$bFullName $bClassIndex".indexOf(searchInput);
+        if (aCombinedIndex != bCombinedIndex)
+        return aCombinedIndex.compareTo(bCombinedIndex);
+        
+        return aFullName.compareTo(bFullName); /*("${a.firstName} ${a.lastName}").toLowerCase().compareTo("${b.firstName} ${b.lastName}".toLowerCase()); */
+
+      });
       showSearchDropdown = input.isNotEmpty;
 
     });
@@ -403,9 +444,7 @@ class _SchoolClasses extends State<SchoolClasses> {
                                   MaterialPageRoute(builder: (_) => EditPupilInfo(pupil: child)),
                                 );
                               },
-
                             );
-
                           }
                         )
                       )
