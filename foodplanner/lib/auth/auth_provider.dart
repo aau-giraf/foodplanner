@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/user_roles.dart';
+
 class AuthProvider with ChangeNotifier {
   final FlutterSecureStorage _secureStorage;
   bool? _isApproved;
@@ -15,6 +16,7 @@ class AuthProvider with ChangeNotifier {
               iOptions:
                   IOSOptions(accessibility: KeychainAccessibility.first_unlock),
             );
+  
   bool? get isApproved => _isApproved;
   bool get isLoggedIn => _isLoggedIn;
   UserRoles? get userRole => _userRole;
@@ -31,6 +33,7 @@ class AuthProvider with ChangeNotifier {
     await _secureStorage.write(key: 'jwtToken', value: token);
     notifyListeners();
   }
+  
   Future<void> logout() async {
     _isApproved = null;
     _isLoggedIn = false;
@@ -49,12 +52,14 @@ class AuthProvider with ChangeNotifier {
     await loadFromStorage();
     return _isLoggedIn && _isApproved == true && await hasOneOfRolesUnapproved(roles);
   }
+  
   Future<bool> hasRole(Role role) async => (userRole?.hasRole(role) ?? false);
   Future<bool> hasAllRoles(Iterable<Role> roles) async => (userRole?.hasAllRoles(roles) ?? false);
   Future<bool> hasOneOfRolesUnapproved(List<Role> roles) async {
     await loadFromStorage();
     return _isLoggedIn && (userRole?.hasOneOfRoles(roles) ?? false);
   }
+  
   Future<void> setRole(UserRoles role) async {
     _isLoggedIn = true;
     _userRole = role;
