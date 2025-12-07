@@ -13,6 +13,24 @@ class PupilService {
 
   Future<List<Pupil>> fetchPupil() async {
     final jwtToken = await AuthProvider().retrieveToken();
+    print(jwtToken);
+
+    final response = await http.get(
+        Uri.parse('$apiUrl/api/Childrens/GetAll'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $jwtToken',
+        });
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = jsonDecode(response.body);
+      List<Pupil> pupils = jsonResponse.map((json) => Pupil.fromChildJson(json as Map<String, dynamic>)).toList();
+      return pupils;
+    } else {
+      throw Exception('Kunne ikke hente Børn');
+    }
+  }
+    /*final jwtToken = await AuthProvider().retrieveToken();
+    print(jwtToken);
     final response = await http.get(
         Uri.parse('$apiUrl/api/Admin/GetAllChildren'),
         headers: <String, String>{
@@ -30,7 +48,7 @@ class PupilService {
     } else {
       throw Exception('Børn kunne ikke hentes');
     }
-  }
+  }*/
 
   Future<Pupil> fetchPupilById() async {
     final jwtToken = await AuthProvider().retrieveToken();
