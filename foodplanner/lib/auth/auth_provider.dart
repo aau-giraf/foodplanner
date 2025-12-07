@@ -100,5 +100,4 @@ class AuthProvider with ChangeNotifier {
     await loadFromStorage();
     return _userRole;
   }
-
 }
