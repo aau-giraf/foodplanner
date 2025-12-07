@@ -61,6 +61,7 @@ class AuthProvider with ChangeNotifier {
     await _secureStorage.write(key: 'userRole', value: role.toString());
     notifyListeners();
   }
+  
   Future<void> loadFromStorage() async {
     String? isApproved = await _secureStorage.read(key: 'isApproved');
     String? isLoggedIn = await _secureStorage.read(key: 'isLoggedIn');
@@ -75,11 +76,13 @@ class AuthProvider with ChangeNotifier {
     _userRole = UserRoles.fromString(userRoleString);
     notifyListeners();
   }
+  
   Future<String?> retrieveToken() async {
     _jwtToken = await _secureStorage.read(key: 'jwtToken');
     notifyListeners();
     return _jwtToken;
   }
+  
   Future<UserRoles?> retrieveRole() async {
     await loadFromStorage();
     return _userRole;
