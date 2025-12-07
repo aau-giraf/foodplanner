@@ -130,6 +130,28 @@ class UserService {
     return response;
   }
 
+  Future<http.Response> createUserPupil(String firstName, String lastName,
+      String email, String password, List<int> parentIds, int classId) async {
+    final response = await http.post(
+      Uri.parse('$apiUrl/api/Users/CreateUserChildren'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+        'password': password,
+        'parentIds': parentIds,
+        'classId': classId,
+      }),
+    );
+
+    print(classId);
+
+    return response;
+  }
+
   Future<http.Response> loginUser(String email, String password) async {
     final response = await http.post(
       Uri.parse('$apiUrl/api/Users/Login'),
@@ -145,7 +167,7 @@ class UserService {
     return response;
   }
 
-  Future<List<User>> fetchAllParents() async {
+  Future<List<User>> fetchAllGuardians() async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http
         .get(Uri.parse('$apiUrl/api/Admin/GetAll'), headers: <String, String>{
@@ -255,7 +277,7 @@ class UserService {
 
   Future<http.Response> updateUser(
       int id, String firstName, String lastName, String email) async {
-    print("Knapp trykket på");
+   //developer.log("Knap trykket på");
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
       Uri.parse('$apiUrl/api/Users/UpdateLoggedIn'),
@@ -268,6 +290,19 @@ class UserService {
         'lastName': lastName,
         'email': email,
       }),
+    );
+
+    return response;
+  }
+
+  Future<dynamic> deleteLoggedInUser() async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.delete(
+      Uri.parse('$apiUrl/api/Users/DeleteLoggedInUser'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $jwtToken',
+        'accept': '*/*'
+      }
     );
 
     return response;

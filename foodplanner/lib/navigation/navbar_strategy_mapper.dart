@@ -23,11 +23,11 @@ class NavBarStrategyMapper {
       //debugPrint('Returning teacher nav strategy');
       return new TeacherNavStrategy();
     
-    } else if (role.hasOnlyRole(Role.parent)) {
+    } else if (role.hasOnlyRole(Role.guardian)) {
       //debugPrint('Returning parent nav strategy');
       return new ParentNavStrategy();
     
-    } else if (role.hasOnlyRole(Role.child) || role.hasOnlyRole(Role.student)) {
+    } else if (role.hasOnlyRole(Role.pupil) || role.hasOnlyRole(Role.pupil)) {
       //debugPrint('Returning student nav strategy');
       return new StudentUnlockedNavStrategy();
     

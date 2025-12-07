@@ -6,12 +6,10 @@
 import 'dart:async' as _i4;
 import 'dart:convert' as _i5;
 import 'dart:typed_data' as _i7;
-import 'dart:ui' as _i11;
 
 import 'package:foodplanner/auth/auth_provider.dart' as _i9;
 import 'package:foodplanner/models/ingredient.dart' as _i3;
-import 'package:foodplanner/models/user_roles.dart' as _i10;
-import 'package:foodplanner/models/user_roles.dart' as _i10;
+import 'package:foodplanner/routes/user_roles.dart' as _i10;
 import 'package:foodplanner/services/ingredient_services.dart' as _i8;
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
@@ -439,7 +437,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
 
   @override
   _i4.Future<void> login(
-    _i10.UserRoles? role,
+    _i10.ROLES? role,
     String? token,
     bool? isApproved,
   ) =>
@@ -467,36 +465,35 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
       ) as _i4.Future<void>);
 
   @override
-  _i4.Future<bool> hasRoles(List<_i10.UserRoles>? roles) => (super.noSuchMethod(
+  _i4.Future<bool> hasRoles(List<_i10.ROLES>? roles) => (super.noSuchMethod(
         Invocation.method(
-          #hasOneOfRoles,
+          #hasRoles,
           [roles],
         ),
         returnValue: _i4.Future<bool>.value(false),
       ) as _i4.Future<bool>);
 
   @override
-  _i4.Future<bool> hasRolesUnapproved(List<_i10.UserRoles>? roles) =>
+  _i4.Future<bool> hasRolesUnapproved(List<_i10.ROLES>? roles) =>
       (super.noSuchMethod(
         Invocation.method(
-          #hasAllRoles,
+          #hasRolesUnapproved,
           [roles],
         ),
         returnValue: _i4.Future<bool>.value(false),
       ) as _i4.Future<bool>);
 
   @override
-  /*bool hasRole(List<_i10.UserRoles>? roles) => (super.noSuchMethod(
+  bool hasRole(List<_i10.ROLES>? roles) => (super.noSuchMethod(
         Invocation.method(
-          #hasOneOfRolesUnapproved,
-          #hasOneOfRolesUnapproved,
+          #hasRole,
           [roles],
         ),
         returnValue: false,
-      ) as bool);*/
+      ) as bool);
 
   @override
-  _i4.Future<void> setRole(_i10.UserRoles? role) => (super.noSuchMethod(
+  _i4.Future<void> setRole(_i10.ROLES? role) => (super.noSuchMethod(
         Invocation.method(
           #setRole,
           [role],
@@ -525,16 +522,16 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
       ) as _i4.Future<String?>);
 
   @override
-  _i4.Future<_i10.UserRoles?> retrieveRole() => (super.noSuchMethod(
+  _i4.Future<_i10.ROLES?> retrieveRole() => (super.noSuchMethod(
         Invocation.method(
           #retrieveRole,
           [],
         ),
-        returnValue: _i4.Future<_i10.UserRoles?>.value(),
-      ) as _i4.Future<_i10.UserRoles?>);
+        returnValue: _i4.Future<_i10.ROLES?>.value(),
+      ) as _i4.Future<_i10.ROLES?>);
 
   @override
-  void addListener(_i11.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(dynamic listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -543,7 +540,7 @@ class MockAuthProvider extends _i1.Mock implements _i9.AuthProvider {
       );
 
   @override
-  void removeListener(_i11.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(dynamic listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],

@@ -4,7 +4,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
-Future<http.Response> UploadFoodImage(XFile image) async {
+Future<http.Response> uploadFoodImage(XFile image) async {
   final jwtToken =
       await AuthProvider().retrieveToken(); // Get the authorization token
   final client = http.Client();

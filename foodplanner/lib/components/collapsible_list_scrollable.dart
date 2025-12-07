@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/collapsible_list.dart';
 import 'package:foodplanner/components/scroll_bar.dart';
@@ -13,9 +12,9 @@ class CollapsibleListScrollable<T> extends StatelessWidget {
   final Pupil? pupil;
   final SchoolClass? schoolClass;
   final ValueChanged<int?> onExpansionChanged;
-  final VoidCallback? onFeedback;
-  final VoidCallback? onLunch;
-  final VoidCallback? onSettings;
+  final VoidCallback onFeedback;
+  final VoidCallback onLunch;
+  final VoidCallback onSettings;
 
   const CollapsibleListScrollable({
     super.key,
@@ -25,9 +24,9 @@ class CollapsibleListScrollable<T> extends StatelessWidget {
     this.pupil,
     this.schoolClass,
     required this.onExpansionChanged,
-    this.onFeedback,
-    this.onLunch,
-    this.onSettings,
+    required this.onFeedback,
+    required this.onLunch,
+    required this.onSettings,
   });
 
   @override

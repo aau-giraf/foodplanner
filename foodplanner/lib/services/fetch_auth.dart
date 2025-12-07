@@ -37,6 +37,8 @@ Future<UserRoles> fetchAuthData(String email, String password) async {
       }),
     );
 
+    print(response.body);
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final String jwt = data['jwt'];

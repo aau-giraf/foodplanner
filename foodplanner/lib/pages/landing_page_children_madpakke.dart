@@ -11,32 +11,27 @@ import 'package:foodplanner/pages/pin_code.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class ChildLandingPageMadpakke extends StatefulWidget {
-  final Map<String, String> student;
-  
-  const ChildLandingPageMadpakke(
-      {super.key,
-       /* required Map<String, String> */ 
-       required this.student}
-  );
+class PupilLandingPageMadpakke extends StatefulWidget {
+  final Map<String, String> pupil;
+  const PupilLandingPageMadpakke(
+      {super.key, /* required Map<String, String> */ required this.pupil});
 
   @override
-  State<ChildLandingPageMadpakke> createState() =>
-      _ChildLandingPageMadpakkeState();
+  State<PupilLandingPageMadpakke> createState() =>
+      _PupilLandingPageMadpakkeState();
 }
 
-class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
+class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
+  //ignore: unused_field 
   late Future<bool> _hasRolesFuture;
-  Pupil? _child;
-  User? _user;
-  final ChildService childService = ChildService(apiUrl: ApiConfig.baseUrl);
-  final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
+  Pupil? _pupil;
+  final PupilService pupilService = PupilService(apiUrl: ApiConfig.baseUrl);
   UserRoles? userRole;
   Future<void>? _callerFuture;
 
@@ -49,78 +44,48 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   Future<void> _initialize() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final role = await authProvider.retrieveRole();
-    debugPrint('Brugerrolle: $role');
+    //debugPrint('Brugerrolle: $role');
 
     setState(() {
       userRole = role;
-      _hasRolesFuture = authProvider.hasOneOfRoles([Role.parent, Role.student, Role.teacher]);
+      _hasRolesFuture =
+          authProvider.hasOneOfRoles([Role.guardian, Role.pupil, Role.teacher]);
     });
 
     Pupil? childData;
-    User? loggedInUser;
 
-    debugPrint('authProvider.userRole: ${authProvider.userRole}');
-    debugPrint('Role.student: ${Role.student}');
+      if (authProvider.userRole!.hasRole(Role.pupil) || authProvider.userRole!.hasRole(Role.guardian)) {
+        final userService = UserService(apiUrl: ApiConfig.baseUrl);
+        final loggedInUser = await userService.fetchLoggedInUser();
+        
+        int userId = loggedInUser.id;
 
-    //baseret på userRole henter den barnets data ud fra personens egen profil eller fra den map man sendte ind via widgetten.
-    if (authProvider.userRole == role || authProvider.userRole == Role.child ||
-        authProvider.userRole == Role.parent) {
-      final loggedInUser = await userService.fetchLoggedInUser();
-      debugPrint('loggedInUser: $loggedInUser');
+        childData = await pupilService.getByPupilId(userId);
 
-      int userId = loggedInUser.id;
-      debugPrint('uderId: $userId');
-
-      final childData = await childService.GetByChildId(userId);
-      debugPrint('childData = $childData');
-
-      try {
-        //final childData = await childService.fetchChildById();
-        //final loggedInUser = await userService.fetchLoggedInUser();
-        debugPrint('Fetch resultat: $loggedInUser');
-      } catch (e) {
-        debugPrint('Fejl ved fetchChildById: $e');
-      }
-      
+        setState(() {
+          _pupil = childData;
+        });
+    } else if (authProvider.userRole!.hasRole(Role.teacher)) {
+      int tempChildId = int.parse(widget.pupil['id']!);
+      final childData = await pupilService.getByPupilId(tempChildId);
       setState(() {
-        _child = childData;
-        //_user = loggedInUser as User?;
-      });
-    } else if (authProvider.userRole == Role.teacher) {
-      int tempChildId = int.parse(widget.student['id']!);
-      childData = await childService.GetByChildId(tempChildId);
-      
-      /*setState(() {
-        _child = childData;
-      });*/
-    }
-
-    if(childData == null){
-      debugPrint('childData er NULL - barn blev IKKE hentet!');
-      setState(() {
-        //_user = loggedInUser;
-        _child = childData;
-        _callerFuture = caller();
+        _pupil = childData;
       });
     }
 
-    if(_child != null) {
-      debugPrint('Barn fundet! kalder caller()');
+    if(childData != null) {
       setState(() {
-        //_user = loggedInUser;
-        _child = childData;
         _callerFuture = caller();
       });
-    } else {
-      debugPrint('Fejl: _child er fortsat null - _callerFuture bliver ikke sat!');
+    } else if (childData == null) {
+      throw Exception('ChildData er null');
     }
   }
 
-
   Future<void> caller() async {
-    /*if(_child?.parentId != null) {
-      await MealNotifier().teacherUpdateChildId(_child!.parentId);
-    }*/
+    if(_pupil?.guardianId != null) {
+      await MealNotifier().teacherUpdateChildId(_pupil!.guardianId!);
+    }
     await MealNotifier().updateDate(DateTime.now());
   }
 
@@ -128,7 +93,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: userRole == Role.teacher || userRole == Role.admin
+        leading: userRole!.hasRole(Role.teacher) ||userRole!.hasRole(Role.admin)
             ? IconButton(
                 onPressed: () {
                   GoRouter.of(context).go(TEACHER_ROOT);
@@ -137,11 +102,11 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
               )
             : null,
         title: Text(
-          '${_child?.firstName} ${_child?.lastName}',
+          '${_pupil?.firstName} ${_pupil?.lastName}',
           style: AppTextStyles.headline4,
         ),
         centerTitle: true,
-        actions: userRole != Role.teacher && userRole != Role.admin
+        actions: !(userRole!.hasRole(Role.teacher)) && !(userRole!.hasRole(Role.admin))
             ? [
                 IconButton(
                   onPressed: () {
@@ -172,7 +137,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           
-                          if(_child == null){
+                          if(_pupil == null){
                             return Text('Data for barnet kunne ikke hentes');
                           }
 
@@ -193,7 +158,7 @@ class _ChildLandingPageMadpakkeState extends State<ChildLandingPageMadpakke> {
                             FEEDBACK_Page,
                             extra: {
                               'from': TEACHER_ROOT,
-                              'childId': _child!.pupilId.toString()
+                              'childId': _pupil!.pupilId.toString()
                             },
                           );
                         },

@@ -6,35 +6,36 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/models/user.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:foodplanner/pages/choose_parent.dart';
+import 'package:foodplanner/pages/choose_guardian.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user_roles.dart';
+import 'package:foodplanner/pages/choose_guardian.dart';
 
-class ChildProfile extends StatefulWidget {
-  final Pupil child;
-  final VoidCallback? onChildChanged;
-  const ChildProfile({super.key, required this.child, this.onChildChanged});
+class PupilProfile extends StatefulWidget {
+  final Pupil pupil;
+  final VoidCallback? onPupilChanged;
+  const PupilProfile({super.key, required this.pupil, this.onPupilChanged});
 
-  static final ChildService childService =
-      ChildService(apiUrl: ApiConfig.baseUrl);
+  static final PupilService childService =
+      PupilService(apiUrl: ApiConfig.baseUrl);
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
   @override
-  ChildProfileState createState() => ChildProfileState();
+  PupilProfileState createState() => PupilProfileState();
 }
 
-class ChildProfileState extends State<ChildProfile>
+class PupilProfileState extends State<PupilProfile>
     with SingleTickerProviderStateMixin {
   List<SchoolClass> schoolClasses = [];
-  User parent = User(
+  User guardian = User(
       id: 0,
       email: 'Unknown',
       firstName: 'Unknown',
@@ -44,7 +45,7 @@ class ChildProfileState extends State<ChildProfile>
   bool isEditingFirstName = false;
   bool isEditingLastName = false;
   bool isEditingClass = false;
-  bool isEditingParents = false;
+  bool isEditingGuardians = false;
   bool hasChanges = false;
   bool classChanges = false;
   TextEditingController firstNameController = TextEditingController();
@@ -53,9 +54,9 @@ class ChildProfileState extends State<ChildProfile>
   String? initialClassId;
   String updatedFirstName = '';
   String updatedLastName = '';
-  int? selectedParentId;
-  int? initialParentId;
-  User? selectedParent;
+  int? selectedGuardianId;
+  int? initialGuardianId;
+  User? selectedGuardian;
 
   void onFieldChanged() {
     setState(() {
@@ -68,19 +69,19 @@ class ChildProfileState extends State<ChildProfile>
     super.initState();
 
     firstNameController.text =
-        TextEditingController(text: widget.child.firstName).text;
+        TextEditingController(text: widget.pupil.firstName).text;
     lastNameController.text =
-        TextEditingController(text: widget.child.lastName).text;
-    updatedFirstName = widget.child.firstName;
-    updatedLastName = widget.child.lastName;
-    selectedClassId = widget.child.classId.toString();
-    initialClassId = widget.child.classId.toString();
-    //fetchParent();
-    selectedParent = parent;
-    selectedParentId = widget.child.guardianId;
-    initialParentId = widget.child.guardianId;
+        TextEditingController(text: widget.pupil.lastName).text;
+    updatedFirstName = widget.pupil.firstName;
+    updatedLastName = widget.pupil.lastName;
+    selectedClassId = widget.pupil.classId.toString();
+    initialClassId = widget.pupil.classId.toString();
+    //fetchGuardian();
+    selectedGuardian = guardian;
+    /*selectedGuardianId = widget.pupil.guardianId;
+    initialGuardianId = widget.pupil.guardianId;*/
 
-    ChildProfile.schoolClassService.fetchAllClasses().then((result) {
+    PupilProfile.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
         schoolClasses = result;
       });
@@ -88,18 +89,19 @@ class ChildProfileState extends State<ChildProfile>
       throw (error);
     });
   }
-
-  /*void fetchParent() {
-    ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
+/*
+  void fetchGuardian() {
+    PupilProfile.userService.fetchUser(widget.pupil.guardianId).then((result) {
       setState(() {
-        parent = result;
-        selectedParent = result;
+        guardian = result;
+        selectedGuardian = result;
       });
     }).catchError((error) {
       throw (error);
     });
   }
-*/
+  */
+
   @override
   void dispose() {
     firstNameController.dispose();
@@ -142,7 +144,7 @@ class ChildProfileState extends State<ChildProfile>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              widget.child.firstName,
+                              widget.pupil.firstName,
                               style: AppTextStyles.bigText,
                             ),
                           ],
@@ -158,7 +160,7 @@ class ChildProfileState extends State<ChildProfile>
                     if (isEditingFirstName) {
                       setState(() {
                         isEditingFirstName = false;
-                        firstNameController.text = widget.child.firstName;
+                        firstNameController.text = widget.pupil.firstName;
                         if (!isEditingLastName &&
                             !isEditingClass &&
                             !classChanges) {
@@ -204,7 +206,7 @@ class ChildProfileState extends State<ChildProfile>
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              widget.child.lastName,
+                              widget.pupil.lastName,
                               style: AppTextStyles.bigText,
                             ),
                           ],
@@ -220,7 +222,7 @@ class ChildProfileState extends State<ChildProfile>
                     if (isEditingLastName) {
                       setState(() {
                         isEditingLastName = false;
-                        lastNameController.text = widget.child.lastName;
+                        lastNameController.text = widget.pupil.lastName;
                         if (!isEditingFirstName &&
                             !isEditingLastName &&
                             !isEditingClass &&
@@ -355,7 +357,7 @@ class ChildProfileState extends State<ChildProfile>
               ),
             ),
           ),
-          'value': getClassName(widget.child.classId),
+          'value': getClassName(widget.pupil.classId),
         },
         {
           'title': 'Forældre',
@@ -371,9 +373,9 @@ class ChildProfileState extends State<ChildProfile>
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          selectedParent != null
-              ? '${selectedParent!.firstName} ${selectedParent!.lastName}'
-              : '${parent.firstName} ${parent.lastName}',
+          selectedGuardian != null
+              ? '${selectedGuardian!.firstName} ${selectedGuardian!.lastName}'
+              : '${guardian.firstName} ${guardian.lastName}',
           style: AppTextStyles.bigText,
         ),
         IconButton(
@@ -384,31 +386,31 @@ class ChildProfileState extends State<ChildProfile>
             fontSize: 28,
           ),
           onPressed: () async {
-            final selectedParentId = await Navigator.push<int>(
+            final selectedGuardianId = await Navigator.push<int>(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ChooseParent(
-                          child: widget.child,
-                          onChildChanged: widget.onChildChanged,
+                    builder: (context) => ChooseGuardian(
+                          pupil: widget.pupil,
+                          onPupilChanged: widget.onPupilChanged,
                         )));
-            if (selectedParentId != null) {
-              final selectedParent =
-                  await ChildProfile.userService.fetchUser(selectedParentId);
+            if (selectedGuardianId != null) {
+              final selectedGuardian =
+                  await PupilProfile.userService.fetchUser(selectedGuardianId);
               setState(() {
-                if (selectedParentId == initialParentId) {
-                  isEditingParents = false;
+                if (selectedGuardianId == initialGuardianId) {
+                  isEditingGuardians = false;
                   if (!isEditingFirstName &&
                       !isEditingLastName &&
                       !isEditingClass &&
                       !classChanges) {
                     hasChanges = false;
                   }
-                  this.selectedParentId = selectedParentId;
-                  this.selectedParent = selectedParent;
+                  this.selectedGuardianId = selectedGuardianId;
+                  this.selectedGuardian = selectedGuardian;
                   return;
                 }
-                this.selectedParentId = selectedParentId;
-                this.selectedParent = selectedParent;
+                this.selectedGuardianId = selectedGuardianId;
+                this.selectedGuardian = selectedGuardian;
                 onFieldChanged();
               });
             }
@@ -437,9 +439,9 @@ class ChildProfileState extends State<ChildProfile>
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: SettingsWidget(
               leftIcon: SFIcons.sf_figure_and_child_holdinghands,
-              title: '${widget.child.firstName}s',
+              title: '${widget.pupil.firstName}s',
               subTitle:
-                  'Her kan du redigere ${widget.child.firstName}s profil og klasse. ',
+                  'Her kan du redigere ${widget.pupil.firstName}s profil og klasse. ',
               type: SettingsType.header,
             ),
           ),
@@ -501,16 +503,16 @@ class ChildProfileState extends State<ChildProfile>
                     text: 'Gem ændringer',
                     onTab: () {
                       final navigator = Navigator.of(context); 
-                      ChildProfile.childService
-                          .updateChild(
-                              widget.child.pupilId,
+                      PupilProfile.childService
+                          .updatePupil(
+                              widget.pupil.pupilId,
                               updatedFirstName.isNotEmpty
                                   ? updatedFirstName
-                                  : widget.child.firstName,
+                                  : widget.pupil.firstName,
                               updatedLastName.isNotEmpty
                                   ? updatedLastName
-                                  : widget.child.lastName,
-                              selectedParentId ?? widget.child.guardianId!,
+                                  : widget.pupil.lastName,
+                              selectedGuardianId ?? widget.pupil.guardianId!,
                               int.parse(selectedClassId!))
                           .then((response) {
 
@@ -533,10 +535,10 @@ class ChildProfileState extends State<ChildProfile>
                         classChanges = false;
                         hasChanges = false;
                         selectedClassId = initialClassId;
-                        selectedParentId = initialParentId;
-                        selectedParent = parent;
-                        firstNameController.text = widget.child.firstName;
-                        lastNameController.text = widget.child.lastName;
+                        selectedGuardianId = initialGuardianId;
+                        selectedGuardian = guardian;
+                        firstNameController.text = widget.pupil.firstName;
+                        lastNameController.text = widget.pupil.lastName;
                       }),
                     },
                     backgroundColor: Colors.white,

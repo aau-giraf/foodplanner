@@ -9,6 +9,7 @@ class AuthProvider with ChangeNotifier {
   bool _isLoggedIn = false;
   UserRoles? _userRole;
   String? _jwtToken;
+  int? _userId;
 
   AuthProvider({FlutterSecureStorage? secureStorage})
       : _secureStorage = secureStorage ??
@@ -21,8 +22,9 @@ class AuthProvider with ChangeNotifier {
   bool get isLoggedIn => _isLoggedIn;
   UserRoles? get userRole => _userRole;
   String? get jwtToken => _jwtToken;
+  int? get userId => _userId;
 
-  Future<void> login(UserRoles role, String token, bool isApproved) async {
+  Future<void> login(UserRoles role, String token, bool isApproved/*, int userId*/) async {
     _isApproved = isApproved;
     _isLoggedIn = true;
     _userRole = role;
@@ -39,10 +41,12 @@ class AuthProvider with ChangeNotifier {
     _isLoggedIn = false;
     _userRole = null;
     _jwtToken = null;
+    _userId = null;
     await _secureStorage.delete(key: 'isApproved');
     await _secureStorage.delete(key: 'isLoggedIn');
     await _secureStorage.delete(key: 'userRole');
     await _secureStorage.delete(key: 'jwtToken');
+    /*await _secureStorage.delete(key: 'userId');*/
     notifyListeners();
   }
   
@@ -71,9 +75,11 @@ class AuthProvider with ChangeNotifier {
     String? isApproved = await _secureStorage.read(key: 'isApproved');
     String? isLoggedIn = await _secureStorage.read(key: 'isLoggedIn');
     String? userRoleString = await _secureStorage.read(key: 'userRole');
+    String? userIdString = await _secureStorage.read(key: 'userId');
 
     _isApproved = isApproved == 'true';
     _isLoggedIn = isLoggedIn == 'true';
+    _userId = userIdString != null ? int.tryParse(userIdString) : null;
 
     if(userRoleString == null){
       return;
@@ -94,6 +100,5 @@ class AuthProvider with ChangeNotifier {
     await loadFromStorage();
     return _userRole;
   }
-
 
 }
