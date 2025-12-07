@@ -309,21 +309,23 @@ class _SchoolClasses extends State<SchoolClasses> {
 
         if (aNameIndex == -1) aNameIndex = 9999;
         if (bNameIndex == -1) bNameIndex = 9999;
-        if (aNameIndex != bNameIndex)
-        
-        return aNameIndex.compareTo(bNameIndex);
+        if (aNameIndex != bNameIndex) {
+          return aNameIndex.compareTo(bNameIndex);
+        }
 
         int aClassIndex = aClassName.indexOf(searchInput);
         int bClassIndex = bClassName.indexOf(searchInput);
         if (aClassIndex == -1) aClassIndex = 9999;
         if (bClassIndex == -1) bClassIndex = 9999;
-        if (aClassIndex != bClassIndex) 
-        return aClassIndex.compareTo(bClassIndex);
+        if (aClassIndex != bClassIndex){
+          return aClassIndex.compareTo(bClassIndex);
+        }
 
         int aCombinedIndex = "$aFullName $aClassName".indexOf(searchInput);
         int bCombinedIndex = "$bFullName $bClassIndex".indexOf(searchInput);
-        if (aCombinedIndex != bCombinedIndex)
-        return aCombinedIndex.compareTo(bCombinedIndex);
+        if (aCombinedIndex != bCombinedIndex){
+          return aCombinedIndex.compareTo(bCombinedIndex);
+        }
         
         return aFullName.compareTo(bFullName); /*("${a.firstName} ${a.lastName}").toLowerCase().compareTo("${b.firstName} ${b.lastName}".toLowerCase()); */
 
@@ -331,64 +333,6 @@ class _SchoolClasses extends State<SchoolClasses> {
       showSearchDropdown = input.isNotEmpty;
 
     });
-  }
-
-  Widget cta(int schoolClassId) {
-    return Row(
-      children: [
-        if (isEditing[schoolClassId]!) ...[
-          IconButton(
-            onPressed: () {
-              updateClass(schoolClassId);
-              setEditingState(schoolClassId, false);
-            },
-            icon: SFIcon(
-              SFIcons.sf_checkmark_square_fill,
-              color: Colors.green,
-              fontSize: 36,
-            ),
-            padding: EdgeInsets.zero,
-          ),
-        ] else ...[
-          IconButton(
-            onPressed: () {
-              setEditingState(schoolClassId, !isEditing[schoolClassId]!);
-            },
-            icon: SFIcon(
-              SFIcons.sf_pencil,
-              color: Colors.blue.shade700,
-              fontSize: 36,
-            ),
-            padding: EdgeInsets.zero,
-          ),
-          IconButton(
-            onPressed: () {
-              //deleteClass(schoolClassId);
-              showIPhonePopupBox(
-                context: context,
-                title: 'Slet klasse',
-                message: 'Er du sikker på, at du vil slette denne klasse?',
-                confirmText: 'Ja',
-                cancelText: 'Nej',
-                onConfirm: () {
-                  deleteClass(schoolClassId);
-                  Navigator.of(context).pop(); // Close the popup
-                },
-                onCancel: () {
-                  Navigator.of(context).pop(); // Close the popup
-                },
-              );
-            },
-            icon: SFIcon(
-              SFIcons.sf_x_square_fill,
-              color: AppColors.errorText,
-              fontSize: 36,
-            ),
-            padding: EdgeInsets.zero,
-          ),
-        ]
-      ],
-    );
   }
 
   @override
@@ -562,11 +506,3 @@ class _SchoolClasses extends State<SchoolClasses> {
     );
   }
 } 
-
-                      /*child: SettingsWidget(
-                        title: controllers[schoolClass.classId]!.text,
-                        type: SettingsType.items,
-                        cta: cta(schoolClass.classId),
-                        isEditable: isEditing[schoolClass.classId]!,
-                        controller: controllers[schoolClass.classId],
-                      )*/    

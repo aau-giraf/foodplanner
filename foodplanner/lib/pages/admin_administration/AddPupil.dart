@@ -91,8 +91,6 @@ class _AddPupilState extends State<AddPupil>{
   void validateInputs(BuildContext context) {
     String firstName = firstNameController.text.trim();
     String lastName = lastNameController.text.trim();
-    int selectedClassId =
-        selectedValue!.isNotEmpty ? int.parse(selectedValue!) : 0;
     //Step 1: Check om alle felter er udfyldt
     if (firstName.isEmpty || lastName.isEmpty || selectedValue == null) {
       // Show an error message if any field is empty
