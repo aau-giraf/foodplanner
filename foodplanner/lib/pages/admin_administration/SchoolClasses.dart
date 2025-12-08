@@ -480,14 +480,19 @@ class _SchoolClasses extends State<SchoolClasses> {
                     minimumSize: Size(177,59),
                     iconColor: AppColors.background
                   ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditClasses()
-                      ),
-                    );
-                  },
+                    onPressed: () async{
+                  final updatedClass = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditClasses()
+                    ),
+                  );
+                  if (updatedClass != null) {
+                    setState(() {
+                      schoolClasses = updatedClass;
+                    });
+                  }
+                },
                   child: Text(
                     "Redigér klasse",
                     style: AppTextStyles.mediumText.copyWith(
