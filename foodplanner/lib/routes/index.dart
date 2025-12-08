@@ -7,6 +7,7 @@ import 'package:foodplanner/pages/admin/profiles/admin_profiles.dart';
 import 'package:foodplanner/pages/Change_Roll.dart';
 import 'package:foodplanner/pages/change_role_page.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
+import 'package:foodplanner/pages/choose_child_teacher.dart';
 import 'package:foodplanner/pages/create_pupil_page.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
@@ -127,10 +128,10 @@ final router = GoRouter(
     GoRoute(path: CHOOSE_CHILD_PARENT,
       builder: (context, state) => ChooseChildGuardian(),
     ),
-   /* 
+   
     GoRoute(path: CHOOSE_CHILD_TEACHER,
       builder: (context, state) => ChooseChildTeacher(),
-    ), */
+    ),
 
     GoRoute(path: ADMIN_TEACHER_ROOT,
       builder: (context, state) => TeacherMainPage(),

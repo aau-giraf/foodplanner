@@ -120,7 +120,7 @@ class ParentMainPageState extends State<ParentMainPage> {
               hoverColor: Colors.transparent,
               onTap: (){
                 debugPrint('navStrategy = $navStrategy');
-                navStrategy?.goToPage(CHOOSE_CHILD_PARENT, context);
+                navStrategy?.goToPage(SETTINGS_PAGE, context);
                 //nav.navigate(2, context);
                 //GoRouter.of(context).go(SETTINGS_PAGE);
               },
