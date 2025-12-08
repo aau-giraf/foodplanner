@@ -22,7 +22,7 @@ class PupilProfile extends StatefulWidget {
   final VoidCallback? onPupilChanged;
   const PupilProfile({super.key, required this.pupil, this.onPupilChanged});
 
-  static final PupilService childService =
+  static final PupilService pupilService =
       PupilService(apiUrl: ApiConfig.baseUrl);
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
@@ -503,7 +503,8 @@ class PupilProfileState extends State<PupilProfile>
                     text: 'Gem ændringer',
                     onTab: () {
                       final navigator = Navigator.of(context); 
-                      PupilProfile.childService
+
+                      PupilProfile.pupilService
                           .updatePupil(
                               widget.pupil.pupilId,
                               updatedFirstName.isNotEmpty

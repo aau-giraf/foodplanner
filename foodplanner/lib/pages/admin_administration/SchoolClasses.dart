@@ -22,9 +22,8 @@ import 'package:foodplanner/pages/admin_administration/AddPupil.dart';
 import 'package:foodplanner/pages/admin_administration/EditClasses.dart';
 import 'package:foodplanner/pages/admin_administration/EditPupilInfo.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
-import 'package:foodplanner/services/child_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
@@ -37,8 +36,8 @@ class SchoolClasses extends StatefulWidget {
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
       
-  static final ChildService childService = 
-      ChildService(apiUrl: ApiConfig.baseUrl);
+  static final PupilService pupilService = 
+      PupilService(apiUrl: ApiConfig.baseUrl);
 
   const SchoolClasses({super.key});
 
@@ -99,7 +98,7 @@ class _SchoolClasses extends State<SchoolClasses> {
   }
 
   void fetchChildren() {
-    SchoolClasses.childService.fetchChild().then((result) {
+    SchoolClasses.pupilService.fetchPupil().then((result) {
       setState(() {
         children = result;
         filteredChildren = result;

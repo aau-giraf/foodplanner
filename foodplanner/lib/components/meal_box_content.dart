@@ -28,7 +28,7 @@ class Mealboxcontent extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            Padding(
+           /*  Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: CustomButton(
                 onTab: () {
@@ -42,7 +42,7 @@ class Mealboxcontent extends StatelessWidget {
                 text: 'Se madpakke',
                 size: ButtonSize.medium,
               ),
-            ),
+            ), */
           ],
         );
       },

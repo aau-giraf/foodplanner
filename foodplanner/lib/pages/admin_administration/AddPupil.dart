@@ -11,7 +11,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
@@ -20,8 +20,8 @@ class AddPupil extends StatefulWidget {
   const AddPupil({super.key});
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
-  static final ChildService childService =
-      ChildService(apiUrl: ApiConfig.baseUrl);
+  static final PupilService pupilService =
+      PupilService(apiUrl: ApiConfig.baseUrl);
 
   @override
   State<AddPupil> createState() => _AddPupilState();
