@@ -336,9 +336,13 @@ class _SchoolClasses extends State<SchoolClasses> {
 
   @override
   Widget build(BuildContext context) {
+    
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Administrer \n skole"
+        title: "Administrer \n skole",
+        screenHeight: screenHeight,
       ),
       backgroundColor: Colors.white,
       body: Padding(
