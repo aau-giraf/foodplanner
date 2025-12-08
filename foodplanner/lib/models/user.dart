@@ -18,8 +18,7 @@ class User {
     required this.role,
     required this.archived,
   });
-
-
+  
   factory User.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {

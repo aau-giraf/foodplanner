@@ -1,31 +1,31 @@
-/*import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/components/segment_button.dart';
+import 'package:foodplanner/components/password_requirements.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/login_page.dart';
-import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:foodplanner/services/user_service.dart';
-import 'package:go_router/go_router.dart';
-import 'package:foodplanner/components/password_requirements.dart';
 
-class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
-
+class SignupPageBase extends StatefulWidget {
+  final String title, buttonText;
+  final Widget? selection;
+  final Future<void> Function(Map<String, String>) onSubmit;
   static final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
 
+  const SignupPageBase({
+    super.key,
+    required this.title,
+    required this.buttonText,
+    this.selection,
+    required this.onSubmit,
+  });
+
   @override
-  State<SignupPage> createState() => _SignupState();
+  State<SignupPageBase> createState() => SignupPageBaseState();
 }
 
-class _SignupState extends State<SignupPage> {
-
+class SignupPageBaseState extends State<SignupPageBase> {
   // Variables for text field controllers 
   final firstNameController = TextEditingController(), 
         lastNameController = TextEditingController(),
@@ -55,7 +55,7 @@ class _SignupState extends State<SignupPage> {
   final RegExp upperCase = RegExp(r'[A-ZÆØÅ]'),
               lowerCase = RegExp(r'[a-zæøå]'),
               digit = RegExp(r'\d');
-  
+
   // Map for keeping track of password requirements
   Map<String, bool> passwordValidationStatus = {
     'hasUpperAndLowerCase': false,
@@ -78,21 +78,6 @@ class _SignupState extends State<SignupPage> {
     passwordError.isNotEmpty ||
     confirmPasswordError.isNotEmpty;
   }
-
-  Set<String> role = {'Parent'};
-
-  List<ButtonSegment<String>> segments = [
-    ButtonSegment(
-      value: 'Parent',
-      label: Text('Forældre'),
-      icon: SFIcon(SFIcons.sf_figure_and_child_holdinghands),
-    ),
-    ButtonSegment(
-      value: 'Teacher',
-      label: Text('Lærer'),
-      icon: SFIcon(SFIcons.sf_graduationcap_fill),
-    ),
-  ];
 
   @override
   void initState() {
@@ -130,12 +115,6 @@ class _SignupState extends State<SignupPage> {
       isEmailFocused = _emailFocus.hasFocus;
       isPasswordFocused = _passwordFocus.hasFocus;
       isConfirmPasswordFocused = _confirmPasswordFocus.hasFocus;
-    });
-  }
-
-  void roleChange(Set<String> value) {
-    setState(() {
-      role = value;
     });
   }
 
@@ -214,11 +193,18 @@ class _SignupState extends State<SignupPage> {
     validateEmail(email);
     validatePassword(password, confirmPassword);
 
-    // Proceed with sign-up logic if every input is validated
-    if(!hasError) {
-      signUserUp(
-        context, firstName, lastName, email, password, confirmPassword, role);
+    if (hasError){
+      return;
     }
+
+    final data = {
+      "firstName": firstNameController.text,
+      "lastName": lastNameController.text,
+      "email": emailController.text,
+      "password": passwordController.text,
+    };
+
+    widget.onSubmit(data);
   }
 
   void handleErrors(Map<String, dynamic> error) {
@@ -230,81 +216,18 @@ class _SignupState extends State<SignupPage> {
    });
   }
 
-  //Placeholder function for sign-up logic
-  void signUserUp(
-      BuildContext context,
-      String firstName,
-      String lastName,
-      String email,
-      String password,
-      String confirmPassword,
-      Set<String> role) async {
-    try {
-      final response = await SignupPage.userService
-          .createUser(firstName, lastName, email, password, role.first);
-
-      if (!context.mounted) return;
-
-      if (response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Bruger oprettet!'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 5),
-          ),
-        );
-        try {
-          final role = await LoginPage.authService.fetchAuthData(email, password);
-          
-          if (!context.mounted) {
-            developer.log('Context was unmounted after fetchAuthData in $runtimeType');
-            return;
-          }
-          
-
-        if(role.hasRole(Role.pupil)){GoRouter.of(context).go(STUDENT_CREATE);}
-        else if(role.hasRole(Role.guardian)){GoRouter.of(context).go('/signup/create-child');}
-        else {GoRouter.of(context).go(UNAUTHORIZED);}
-
-/*           switch (role) {
-            case Role.student:
-              GoRouter.of(context).go(STUDENT_CREATE);
-              break;
-            case Role.parent:  // Add parent case
-              GoRouter.of(context).go('/signup/create-child');
-              break;
-            default:
-              GoRouter.of(context).go(UNAUTHORIZED);
-              break;
-          } */
-        } catch (e) {
-          if (!context.mounted) {
-            developer.log('Context was unmounted during error handling in $runtimeType');
-            return;
-          }}
-      } else {
-        var error = jsonDecode(response.body);
-        handleErrors(error);
-      }
-    } catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Fejl ved oprettelse af bruger: $e'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
-        ),
-      );
-    }
-  }
-
   // check if any of the input fields are empty
   bool fieldsNotEmpty() {
-    return firstNameController.text.isNotEmpty &&
-        lastNameController.text.isNotEmpty &&
-        emailController.text.isNotEmpty &&
-        passwordController.text.isNotEmpty &&
-        confirmPasswordController.text.isNotEmpty;
+
+    List<String> req = [
+      firstNameController.text,
+      lastNameController.text,
+      emailController.text,
+      passwordController.text,
+      confirmPasswordController.text,
+    ];
+
+    return req.every((e) => e.isNotEmpty);
   }
 
   @override
@@ -334,7 +257,7 @@ class _SignupState extends State<SignupPage> {
               child: Column(
                 children: [
                   SizedBox(height: 10),
-                  Text('Opret mig', style: AppTextStyles.title),
+                  Text(widget.title, style: AppTextStyles.title),
                   SizedBox(height: 10),
                   Text(
                     'Fornavn',
@@ -427,26 +350,13 @@ class _SignupState extends State<SignupPage> {
                     ),
                   ),
                   SizedBox(height: 15),
-                  Text(
-                    'Jeg er',
-                    style: AppTextStyles.bigText
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: CustomSegmentButton(
-                      buttonSegments: segments,
-                      selected: role,
-                      onTab: roleChange,
-                    ),
-                  ),
-                  SizedBox(height: 15),
+                  if (widget.selection != null) widget.selection!,
                 ],
               ),
             ),
             SizedBox(height: 10),
             CustomButton(
-              text: 'Opret mig',
+              text: widget.buttonText,
               onTab: fieldsNotEmpty() && !hasError ? () => validateAllInputs(context) : null, // if fields are not empty and none has an error, activate the button for signing up
             ),
           ],
@@ -454,4 +364,4 @@ class _SignupState extends State<SignupPage> {
       ),
     );
   }
-}*/
+}

@@ -15,7 +15,7 @@ import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/child_with_classname.dart';
+import 'package:foodplanner/models/pupil_with_classname.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/pages/admin_administration/AddPupil.dart';

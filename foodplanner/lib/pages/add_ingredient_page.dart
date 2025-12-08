@@ -98,7 +98,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
       });
     } catch (e) {
       // Handle error
-     developer.log('Failed to fetch ingredients: $e');
+      developer.log('Failed to fetch ingredients: $e');
     }
   }
 

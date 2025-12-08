@@ -11,7 +11,10 @@ import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/active_role_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
-import 'signup_page.dart';
+import 'package:foodplanner/pages/signup_page_base.dart';
+import 'package:foodplanner/pages/signup_page_pupil.dart';
+import 'package:foodplanner/pages/signup_page.dart';
+import 'package:foodplanner/pages/signup_page_adult.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/models/user_roles.dart';
@@ -92,45 +95,17 @@ class LoginPageState extends State<LoginPage> {
         return;
       }
 
-        debugPrint('Login successful, role data: $role');
-        debugPrint('Has student role: ${role.hasRole(Role.child)}');
-        debugPrint('Has parent role: ${role.hasRole(Role.parent)}');
-        debugPrint('Has teacher role: ${role.hasRole(Role.teacher)}');
-        debugPrint('Has admin role: ${role.hasRole(Role.admin)}'); 
+        developer.log('Login successful, role data: $role');
+        developer.log('Has student role: ${role.hasRole(Role.pupil)}');
+        developer.log('Has parent role: ${role.hasRole(Role.guardian)}');
+        developer.log('Has teacher role: ${role.hasRole(Role.teacher)}');
+        developer.log('Has admin role: ${role.hasRole(Role.admin)}'); 
         var navStrategy = NavBarStrategyMapper.getNavBarStrategy(role);
         navStrategy.navigateToHomePage(context, role);
 
         /*
-        if(role.hasAllRoles([Role.admin, Role.teacher])) {
-          debugPrint('Navigating to admin teacher root');
-          ActiveRoleService.setActiveRole(Role.admin);
-          GoRouter.of(context).go(ADMIN_TEACHER_ROOT);
-        }
-
-        else if(role.hasOnlyRole(Role.teacher)){
-          debugPrint('Navigating to TEACHER_ROOT');
-          ActiveRoleService.setActiveRole(Role.teacher);
-          GoRouter.of(context).go(TEACHER_ROOT);
-        }
-        else if (role.hasOnlyRole(Role.admin)) {
-          ActiveRoleService.setActiveRole(Role.admin);
-          debugPrint('Navigating to ADMIN_ROOT');
-          GoRouter.of(context).go(ADMIN_ROOT);
-          }
-        else if (role.hasRole(Role.parent)){
-          ActiveRoleService.setActiveRole(Role.admin);
-          debugPrint('Navigating to PARENT_ROOT');
-          GoRouter.of(context).go(PARENT_ROOT);
-        }
-        else {
-          ActiveRoleService.setActiveRole(Role.student);
-          debugPrint('Navigating to STUDENT_ROOT');
-          GoRouter.of(context).go(STUDENT_ROOT);
-        }
-        */
-        /*
-        if(role.hasRole(Role.student)){GoRouter.of(context).go(STUDENT_CREATE);}
-        else if(role.hasRole(Role.parent)){GoRouter.of(context).go(PARENT_ROOT);}
+        if(role.hasRole(Role.pupil)){GoRouter.of(context).go(STUDENT_CREATE);}
+        else if(role.hasRole(Role.guardian)){GoRouter.of(context).go(PARENT_ROOT);}
         else if(role.hasRole(Role.teacher)){GoRouter.of(context).go(TEACHER_ROOT);}
         else if(role.hasRole(Role.admin)){GoRouter.of(context).go(ADMIN_ROOT);}
         else {GoRouter.of(context).go(LOGIN_PAGE);}
@@ -177,7 +152,7 @@ class LoginPageState extends State<LoginPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SignupPage(),
+        builder: (context) => SignupPageAdult(),
       ),
     );
   }

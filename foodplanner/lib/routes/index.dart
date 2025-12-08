@@ -7,8 +7,7 @@ import 'package:foodplanner/pages/Admin_profiles.dart';
 import 'package:foodplanner/pages/Change_Roll.dart';
 import 'package:foodplanner/pages/change_role_page.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
-import 'package:foodplanner/pages/choose_child_teacher.dart';
-import 'package:foodplanner/pages/create_child_page.dart';
+import 'package:foodplanner/pages/create_pupil_page.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
@@ -21,7 +20,9 @@ import 'package:foodplanner/pages/admin_administration/SchoolClasses.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/pages/profile_page.dart';
-import 'package:foodplanner/pages/signup_page.dart';
+import 'package:foodplanner/pages/signup_page_adult.dart';
+import 'package:foodplanner/pages/signup_page_base.dart';
+import 'package:foodplanner/pages/signup_page_pupil.dart';
 import 'package:foodplanner/pages/main_page_student.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
@@ -53,18 +54,12 @@ final router = GoRouter(
         if (!isLoggedIn) {
           return '/login';
         }
-        // developer.log('User go router roles: ${role.toString()}');
+        if(role == null){developer.log("Role was null"); return null;} 
 
-         if(role == null){developer.log("Role was null"); return null;} 
-        
-         if(role.hasAllRoles([Role.admin, Role.teacher])) {return ADMIN_TEACHER_ROOT;}
-
-         else if(role.hasOnlyRole(Role.teacher)){return TEACHER_ROOT;}
-         else if (role.hasOnlyRole(Role.admin)) {return ADMIN_ROOT;}
-         else if (role.hasRole(Role.parent)){return PARENT_ROOT;}
-         else {return STUDENT_ROOT;}
-        
-        */
+        if(role.hasOneOfRoles({Role.teacher, Role.admin})){return TEACHER_ROOT;}
+        else if (role.hasRole(Role.parent)){return PARENT_ROOT;}
+        else {return STUDENT_ROOT;}
+*/
       },
     ),
     GoRoute(
@@ -73,11 +68,11 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/signup',
-      builder: (context, state) => SignupPage(),
+      builder: (context, state) => SignupPageAdult(),
     ),
     GoRoute(
       path: '/signup/create-child',
-      builder: (context, state) => CreateChildPage(),
+      builder: (context, state) => CreatePupilPage(),
     ),
     GoRoute(
       path: '/unauthorized',
@@ -91,8 +86,8 @@ final router = GoRouter(
 
     GoRoute(
       path: '/children_se_madpakke',
-      builder: (context, state) => ChildLandingPageMadpakke(
-        student: {},
+      builder: (context, state) => PupilLandingPageMadpakke(
+        pupil: {},
       ),
     ),
 
@@ -124,18 +119,18 @@ final router = GoRouter(
       path: '/student-details',
       builder: (context, state) {
         final student = state.extra as Map<String, String?>;
-        return ChildLandingPageMadpakke(
-            student: student.cast<String, String>());
+        return PupilLandingPageMadpakke(
+            pupil: student.cast<String, String>());
       },
     ),
 
     GoRoute(path: CHOOSE_CHILD_PARENT,
-      builder: (context, state) => ChooseChildParent(),
+      builder: (context, state) => ChooseChildGuardian(),
     ),
-    
+   /* 
     GoRoute(path: CHOOSE_CHILD_TEACHER,
       builder: (context, state) => ChooseChildTeacher(),
-    ),
+    ), */
 
     GoRoute(path: ADMIN_TEACHER_ROOT,
       builder: (context, state) => TeacherMainPage(),
@@ -185,7 +180,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
-          future: authProvider.hasOneOfRoles([Role.child, Role.student, Role.admin]),
+          future: authProvider.hasOneOfRoles([Role.pupil, Role.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -196,10 +191,9 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const ChildLandingPageMadpakke(
-                student: {},
-              ); // im guessing this page, student_page is a dummy one it seems TODO
-              
+              return const PupilLandingPageMadpakke(
+                pupil: {},
+              ); //im guessing this page, student_page is a dummy page
             } else {
               return const UnauthorizedPage();
             }
@@ -213,7 +207,7 @@ final router = GoRouter(
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
-          future: authProvider.hasOneOfRolesUnapproved([Role.child]),
+          future: authProvider.hasOneOfRolesUnapproved([Role.pupil]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -224,7 +218,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const CreateChildPage(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const CreatePupilPage();
             } else {
               return const UnauthorizedPage();
             }
@@ -238,7 +232,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
           future:
-              authProvider.hasOneOfRoles([Role.parent, Role.teacher, Role.admin, Role.child, Role.student]),
+              authProvider.hasOneOfRoles([Role.guardian, Role.teacher, Role.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -249,7 +243,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const Settings(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const Settings();
             } else {
               return const UnauthorizedPage();
             }
@@ -263,7 +257,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
           future:
-              authProvider.hasOneOfRoles([Role.parent, Role.teacher, Role.admin]),
+              authProvider.hasOneOfRoles([Role.guardian, Role.teacher, Role.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -274,7 +268,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const ParentProfile();
+              return const GuardianProfile();
             } else {
               return const UnauthorizedPage();
             }
@@ -288,8 +282,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
           future:
-              authProvider.hasOneOfRoles([Role.parent, Role.teacher, Role.admin, Role.child, Role.student]),
-
+              authProvider.hasOneOfRoles([Role.guardian, Role.teacher, Role.admin]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -300,7 +293,7 @@ final router = GoRouter(
                 ),
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
-              return const FeedbackChatPage(); // im guessing this page, student_page is a dummy one it seems TODO
+              return const FeedbackChatPage();
             } else {
               return const UnauthorizedPage();
             }
@@ -347,7 +340,7 @@ final router = GoRouter(
           final authProvider =
               Provider.of<AuthProvider>(context, listen: false);
           return FutureBuilder<bool>(
-            future: authProvider.hasOneOfRoles([Role.parent, Role.admin, Role.child, Role.student]),
+            future: authProvider.hasOneOfRoles([Role.guardian, Role.admin]),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -370,17 +363,18 @@ final router = GoRouter(
         routes: [
           GoRoute(
             path: MADPAKKE,
-            builder: (context, state) => ParentMainPage(),
+            builder: (context, state) => ParentLandingPageMadpakke(),
           )
-        ]*/
-      ),
+        ]),
+  ],*/
+),
 
       GoRoute(
       path: STUDENT_UNLOCKED,
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
-          future: authProvider.hasOneOfRoles([Role.child, Role.student]),
+          future: authProvider.hasOneOfRoles([Role.pupil, Role.pupil]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -435,5 +429,3 @@ final router = GoRouter(
 
   ],
 );
-
-
