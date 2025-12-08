@@ -17,7 +17,7 @@ class CreatePupilPage extends StatefulWidget {
   const CreatePupilPage({super.key});
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
-  static final PupilService childService =
+  static final PupilService pupilService =
       PupilService(apiUrl: ApiConfig.baseUrl);
 
   @override
@@ -138,7 +138,7 @@ class _SignupChildState extends State<CreatePupilPage> {
     int classId,
   ) async {
     try {
-      final response = await CreatePupilPage.childService
+      final response = await CreatePupilPage.pupilService
           .createPupil(firstName, lastName, classId);
 
       if (!context.mounted) return;

@@ -24,9 +24,7 @@ class ParentNavStrategy extends NavigationStrategy {
   @override
   void navigate(int index, BuildContext context) async {
     switch(index) {
-      case 0:
-      case 1:
-      case 2:
+      case 0 || 1 || 2:
         super.navigate(index, context);
         break;
       case 3: 
