@@ -137,6 +137,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
               return;
             }
             GoRouter.of(context).go('/');
+            ActiveRoleService.setActiveRole(null);
           }
         },
       ];

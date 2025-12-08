@@ -231,6 +231,9 @@ class TeacherMainPageState extends State<TeacherMainPage> {
                     return;
                   }
                   context.go(LOGIN_PAGE);
+                  if (_user.role.hasRole(Role.admin)) {
+                    ActiveRoleService.setActiveRole(null);
+                  }
                 },
                 child: Container(
                   height: 59,
