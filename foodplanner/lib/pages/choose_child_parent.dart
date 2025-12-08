@@ -191,14 +191,37 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
   }
 
   Widget _buildBodyColumn(double screenWidth){
+    Widget content;
+
+    if(_children.isEmpty){
+      content = Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Text(
+          "Ingen børn fundet. Tilføj et barn nedenfor.",
+          textAlign: TextAlign.center,
+          style: AppTextStyles.mediumText,
+        ),
+      );
+    } else if(_children.length == 1) {
+      content = buildSinglePupilView(screenWidth);
+
+    } else if (_children.length > 1) {
+      content = Flexible(child: buildScrollableView());
+
+    } else {
+      throw Exception('Amount of children not handled');
+    }
+
     return Column (
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           
           // component for search field and collapsible list
-          _children.length > 1 ? 
-          Flexible(child: buildScrollableView()) : 
-          buildSinglePupilView(screenWidth),
+          //_children.length > 1 ? 
+          //Flexible(child: buildScrollableView()) : 
+          //buildSinglePupilView(screenWidth),
+          
+          content,
 
           // "Opret barn" button
           Padding (
@@ -256,7 +279,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
         child: _buildBodyColumn(screenWidth)
       ),
 
-      bottomNavigationBar: NavBar(currentPageIndex: 0), // OBS: the old navigation bar is used, must be updated
+      bottomNavigationBar: NavBar(),
     );
   }
 }
