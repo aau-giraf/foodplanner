@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/pupil.dart';
-import 'package:foodplanner/models/child_with_classname.dart';
+import 'package:foodplanner/models/pupil_with_classname.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:http/http.dart' as http;
 
@@ -133,7 +133,7 @@ class ChildService {
     }
   }
 
-   Future<List<ChildWithClassname>> fetchChildrenInAllClass() async {
+   Future<List<PupilWithClassname>> fetchChildrenInAllClass() async {
     try {
       List<dynamic> jsonList = [];
       final jwtToken = await AuthProvider().retrieveToken();
@@ -157,7 +157,7 @@ class ChildService {
         print("Child fetched: $item");
       }
 
-      return jsonList.map((jsonItem) => ChildWithClassname.fromJson(jsonItem)).toList();
+      return jsonList.map((jsonItem) => PupilWithClassname.fromJson(jsonItem)).toList();
     } catch (e) {
       print('Error fetching children: $e');
       return[];

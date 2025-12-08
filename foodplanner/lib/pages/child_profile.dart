@@ -12,7 +12,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:foodplanner/pages/choose_parent.dart';
+import 'package:foodplanner/pages/choose_guardian.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user_roles.dart';
 
@@ -387,9 +387,9 @@ class ChildProfileState extends State<ChildProfile>
             final selectedParentId = await Navigator.push<int>(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ChooseParent(
-                          child: widget.child,
-                          onChildChanged: widget.onChildChanged,
+                    builder: (context) => ChooseGuardian(
+                          pupil: widget.child,
+                          onPupilChanged: widget.onChildChanged,
                         )));
             if (selectedParentId != null) {
               final selectedParent =
