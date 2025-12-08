@@ -8,6 +8,7 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/components/settings_widget.dart';
+import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/meal.dart';
@@ -444,7 +445,7 @@ class _EditMealPageState extends State<EditMealPage> {
                         text: 'Fjern eller tilføj ingredienser',
                         foregroundColor: AppColors.textPrimary,
                         backgroundColor: Colors.white,
-                        trailingIcon: SFIcon(SFIcons.sf_chevron_right),
+                        //trailingIcon: SFIcon(SFIcons.sf_chevron_right),
                         size: ButtonSize.medium
                         
                         ),

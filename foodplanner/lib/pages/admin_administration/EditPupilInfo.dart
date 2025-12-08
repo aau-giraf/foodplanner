@@ -4,21 +4,18 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/models/schoolClass.dart';
-import 'package:foodplanner/components/custom_app_bar.dart';
-import 'package:foodplanner/components/popup_box.dart';
-import 'package:foodplanner/models/pupil_data.dart';
 
 class EditPupilInfo extends StatefulWidget {
   final Pupil pupil;
   const EditPupilInfo({super.key, required this.pupil});
-  static final SchoolClassService _schoolClassService =
+  static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
-  static final ChildService _pupilService =
-      ChildService(apiUrl: ApiConfig.baseUrl);
+  static final PupilService pupilService =
+      PupilService(apiUrl: ApiConfig.baseUrl);
 
   @override
   State<EditPupilInfo> createState() => _EditPupilState();
@@ -30,59 +27,13 @@ class _EditPupilState extends State<EditPupilInfo>{
     EditPupilInfo.schoolClassService.fetchAllClasses();
   List<SchoolClass> classes = [];
   bool loading = false;
-  late Pupil _currentPupil;
-  int _numberOfEdits = 0;
-
-  int edits = 0;
 
   @override
   void initState() {
     super.initState();
-    _currentPupil = Pupil(
-      id: 0.
-      firstName: 'Unknown',
-      lastName: 'Unknown',
-      email: 'Unknown',
-      classId: '',
-    );
-    _editedData = PupilData.fromPupil(_currentPupil);
-
     selectedValue = widget.pupil.classId?.toString();
     fetchClasses();
     //_loadChildren();
-  }
-
-  bool get hasChanges => _numberOfEdits > 0;
-
-  bool get isFirstNameEdited
-    => _editedData.firstName.trim()
-    != _currentPupil.firstName.trim();
-  bool get isLastNameEdited
-    => _editedData.lastName.trim()
-    != _currentPupil.lastName.trim();
-  bool get isEmailEdited
-    => _editedData.email.trim()
-    != _currentPupil.email.trim();
-  /*bool get isParentsEdit
-    => _editedData.parents.trim()
-    != _currentPupil.parents.trim();*/
-  bool get isClassIdEdited
-    => _editedData.classId.trim()
-    != _currentPupil.classId.trim();
-
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _showSnackBar(String text, Color color){
-    final messenger = ScaffoldMessenger.of(context);
-    return messenger.showSnackBar(
-      SnackBar(
-        content: Text(text),
-        backgroundColor: color,
-        duration: Duration(seconds: 5),
-      ),
-    );
-  }
-
-  void deleteCurrentPupil() async {
-
   }
 
   Future<void> fetchClasses() async {
@@ -130,127 +81,31 @@ class _EditPupilState extends State<EditPupilInfo>{
     }
   }*/
 
-  Future<void> saveChanges() async {
-    try {
-      await _pupilService.updatedPupil(
-        _currentPupil.id,
-        isFirstNameEdited ? _editedData.firstName : _currentPupil.firstName,
-        isLastNameEdited ? _editedData.lastName : _currentPupil.lastName,
-        isEmailEdited ? _editedData.email : _currentPupil.email,
-        //isParentsEdit
-        isClassIdEdited ? _editedData.classId : _currentPupil.classId,
-      );
-    }
-  }
-
-  void _calculateNumberOfEdits() {
-    setState((){
-      _numberOfEdits = 0;
-      if(isFirstNameEdited) _numberOfEdits++;
-      if(isLastNameEdited) _numberOfEdits++;
-      if(isEmailEdited) _numberOfEdits++;
-      // Parent
-      if(isClassIdEdited) _numberOfEdits++;
-    });
-  }
-
-  // Helper methods for updating data
-  void updateFirstName(String value) {
-    _editedData.firstName = value;
-    _calculateNumberOfEdits();
-  }
-
-  void updateLastName(String value){
-    _editedData.lastName = value;
-    _calculateNumberOfEdits();
-  }
-
-  void updateEmail(String value){
-    _editedData.email = value;
-    _calculateNumberOfEdits();
-  }
-
-  /*void updateParents(String value){
-    _editedData.parents = value;
-    _calculateNumberOfEdits();
-  }*/
-
-  void updateClassId(String value){
-    _editedData.classId(String value);
-    _calculateNumberOfEdits();
-  }
-
-  Widget _buildEditableFields(Pupil pupil){
-    return Column(
-      children: [
-        SizedBox(height:10),
-        EditablePupilInfoTile(
-          // fornavn
-          title: 'Fornavn',
-          initialValue: '',
-          onChanged: updatedFirstName,
-          hintText: _currentPupil.firstName,
-          obsure: false,
-        ),
-        EditablePupilInfoTile(
-          // efternavn
-          title: 'Efternavn',
-          initialValue: '',
-          onChanged: updatedLastName,
-          hintText: _currentPupil.lastName,
-          obsure: false,
-        ),
-        EditablePupilInfoTile(
-          // email
-          title: 'Email',
-          initialValue: '',
-          onChanged: updatedEmail,
-          hintText: _currentPupil.email,
-          obsure: false,
-        ),
-        EditablePupilInfoTile(
-          // klasse
-          title: 'Klasse',
-          initialValue: '',
-          onChanged: updatedClassName,
-          hintText: schoolClass.className,
-          obsure: false,
-        ),
-        EditablePupilInfoTile(
-          // forældre
-          title: 'Forældre',
-          initialValue: '',
-          onChanged: updatedParent,
-          //hintText: ${Widget.pupil.firstName},
-          obsure: false,
-        ),
-      ]
-    );
-  }
-
-  void showDeletetionPopUp(){
-    showIPhonePopupBox(
-      context: context,
-      title: 'Slet bruger',
-      message: 'Er du sikker på, at du vil slette din konto?',
-      confirmText: 'Ja',
-      cancelText: 'Nej',
-      onConfirm: (){
-        deleteCurrentPupil();
-      },
-      onCancel: (){
-        Navigator.of(context).pop();
-      }
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Rediger information\n om elev',
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        toolbarHeight: 200,
+        centerTitle: true,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 25),
+          child: Column(
+            children: [
+              Text(
+                'Redigere information',
+                style: TextStyle(fontSize: 30),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                'om elev',
+                style: TextStyle(fontSize: 30),
+                textAlign: TextAlign.center,
+              ),
+            ] 
+          )
+        ),
       ),
-      bottomNavigationBar: NavBar(),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
@@ -446,6 +301,7 @@ class _EditPupilState extends State<EditPupilInfo>{
           ),
         ),
       ),
+      bottomNavigationBar: NavBar(),
     );
   }
 }
