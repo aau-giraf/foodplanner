@@ -95,7 +95,7 @@ class UserService {
     }
   }
 
-  Future<bool> unapproveUsers(int id) async {
+  /*Future<bool> unapproveUsers(int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.delete(
       Uri.parse('$apiUrl/api/Admin/Delete/$id'),
@@ -111,7 +111,7 @@ class UserService {
           'Failed to unapprove users: ${response.statusCode} ${response.body}');
       throw Exception('Failed to unapprove users');
     }
-  }
+  }*/
 
   Future<http.Response> createUser(String firstName, String lastName,
       String email, String password, String role) async {
@@ -347,5 +347,36 @@ class UserService {
     await AuthProvider().login(authRole, jwt, roleApproved);
     
     return authRole;
+  }
+  
+  Future<List<GuardianUser>> fetchAllGuardiansByPupilUserId(int id) async {
+    final jwtToken = await AuthProvider().retrieveToken(); 
+    final response = await http.get( 
+      Uri.parse(
+        '$apiUrl/api/Childrens/GetParentsByChildId/$id/parents'), 
+        headers: <String, String>{
+         'accept': 'text/plain', 
+         'Authorization': 'Bearer $jwtToken', 
+        }
+    ); 
+    if (response.statusCode == 200) { 
+      final List<dynamic> usersJson = jsonDecode(response.body); 
+      final guardians = usersJson .map((json) => GuardianUser.fromJson(json as Map<String, dynamic>)) .toList(); 
+      return guardians; 
+    } else { 
+      throw Exception('Kunne ikke hente forældre'); 
+    }
+  }
+
+  Future<dynamic> deleteUser(int id) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.delete(
+      Uri.parse('$apiUrl/api/Admin/Delete/$id'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $jwtToken',
+        'accept': '*/*'
+      }
+    );
+    return response;
   }
 }

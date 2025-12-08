@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
@@ -68,7 +68,7 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
   }
 
 // Function to remove a user
-  void _removeUser(int userId) async {
+  /*void _removeUser(int userId) async {
     try {
       final bool success =
           await AdminApprovePage.userService.unapproveUsers(userId);
@@ -89,7 +89,7 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
         backgroundColor: Colors.green,
       ),
     );
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +206,7 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
                                     confirmText: 'Fjern',
                                     cancelText: 'Anuller',
                                     onConfirm: () {
-                                      _removeUser(user.id);
+                                      /*_removeUser(user.id);*/
                                       Navigator.of(context)
                                           .pop(); // Close the popup
                                     },
@@ -228,4 +228,4 @@ class _AdminApprovePageState extends State<AdminApprovePage> {
             ),
     );
   }
-}
+}*/

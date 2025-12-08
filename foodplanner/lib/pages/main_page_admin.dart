@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/active_role_service.dart';
+
+import 'package:foodplanner/components/search_field.dart';
+import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/models/schoolClass.dart';
+import 'package:foodplanner/pages/Change_Roll.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/nav_bar.dart';
@@ -12,6 +19,10 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/models/user.dart' as model;
 import 'package:foodplanner/services/user_service.dart';
 import 'package:provider/provider.dart';
+
+//import 'package:foodplanner/pages/settings/deactivate_accounts.dart';
+//import 'package:foodplanner/pages/Admin_profiles.dart';
+import 'package:foodplanner/pages/admin_administration/SchoolClasses.dart';
 
 class AdminLandingPage extends StatefulWidget {
   const AdminLandingPage({super.key});
@@ -126,6 +137,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
               return;
             }
             GoRouter.of(context).go('/');
+            ActiveRoleService.setActiveRole(null);
           }
         },
       ];
