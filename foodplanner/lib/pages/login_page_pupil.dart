@@ -8,7 +8,6 @@ import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
-import 'package:foodplanner/pages/one_time_password_page.dart';
 import 'package:foodplanner/pages/signup_page_adult.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -308,19 +307,6 @@ class LoginPagePupilState extends State<LoginPagePupil> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Expanded(
-                          child: CustomButton(
-                          customHeight: customButtonHeight,
-                          onTab: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => OneTimePasswordPage(),
-                              ),
-                            ),
-                            text: 'Opret',
-                            backgroundColor: AppColors.secondary,
-                          ),
-                        ),
                         SizedBox(width: 15),
                         Expanded(
                           child: CustomButton(
