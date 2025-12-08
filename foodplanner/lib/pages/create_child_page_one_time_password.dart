@@ -8,16 +8,18 @@ import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/services/child_service.dart';
+import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:go_router/go_router.dart';
+
+// WIP. WILL PROBABLY BE DELETED.
 
 class CreateChildPageOneTimePassword extends StatefulWidget {
   const CreateChildPageOneTimePassword({super.key});
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
-  static final ChildService childService =
-      ChildService(apiUrl: ApiConfig.baseUrl);
+  static final PupilService pupilService =
+      PupilService(apiUrl: ApiConfig.baseUrl);
 
   @override
   State<CreateChildPageOneTimePassword> createState() => _CreateChildPageOneTimePasswordState();
@@ -136,8 +138,7 @@ class _CreateChildPageOneTimePasswordState extends State<CreateChildPageOneTimeP
     int classId,
   ) async {
     try {
-      final response = await CreateChildPageOneTimePassword.childService
-          .createChild(firstName, lastName, classId);
+      final response = await CreateChildPageOneTimePassword.pupilService.createPupil(firstName, lastName, classId);
 
       if (!context.mounted) return;
 

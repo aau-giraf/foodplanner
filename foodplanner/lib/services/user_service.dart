@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user.dart';
+import 'package:foodplanner/models/user_roles.dart';
+import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:http/http.dart' as http;
 
 class UserService {
@@ -306,5 +308,44 @@ class UserService {
     );
 
     return response;
+  }
+
+  /// The endpoint currently requires an email. In the future, would be nice if it didn't.
+  Future<UserRoles> loginPupil(String email, String code) async {
+    print("calling LoginChild with $code and $email");
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.post(
+      Uri.parse('$apiUrl/api/Users/LoginChild'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $jwtToken',
+      },
+      body: jsonEncode({
+        'email': email,
+        'code': code
+      }),
+    );
+
+
+    if (response.statusCode != 200) {
+      print(response.body);
+      var error = jsonDecode(response.body);
+      throw AuthException(error['Message'] ?? 'Failed to load auth data');
+    }
+    
+    final data = jsonDecode(response.body);
+    final String jwt = data['jwt'];
+    final bool roleApproved = data['roleApproved'];
+    String roleValueString = data['role'];
+
+    // print(jwt);
+    // print(roleApproved);
+    // print(roleValueString);
+
+    UserRoles authRole = UserRoles.fromString(roleValueString);
+
+    await AuthProvider().login(authRole, jwt, roleApproved);
+    
+    return authRole;
   }
 }

@@ -121,17 +121,21 @@ class PupilService {
 
   Future<Pupil> getByPupilId(int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
+    // print("getting id $id");
+    print(jwtToken);
     final response = await http.get(
         Uri.parse('$apiUrl/api/Childrens/GetChildFromChildId/$id'),
         headers: <String, String>{
           'Authorization': 'Bearer $jwtToken',
         });
+
     if (response.statusCode == 200) {
       //debugPrint('response.body: ${response.body}', wrapWidth: 2048);
       final data = json.decode(response.body);
       return Pupil.fromJson(data);
     } else {
-      throw Exception('Failed to load child data');
+      print("getPupilByID");
+      throw Exception('Failed to load child data: ${response.statusCode}');
     }
   }
 
@@ -157,5 +161,39 @@ class PupilService {
     } else {
       throw Exception('Failed to load children (status ${response.statusCode})');
     }
+  }
+
+
+  /// userId is from the User table.
+  Future<http.Response> createOneTimePassword(int userId) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.post(
+      Uri.parse('$apiUrl/api/OneTimePassword/Create?childUser=$userId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $jwtToken',
+      },
+    );
+
+    // print(jsonDecode(response.body));
+    // // return jsonDecode(response.body);
+    return response;
+  }
+
+
+    /// userId is from the User table.
+  Future<http.Response> redeemOneTimePassword(int code) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.post(
+      Uri.parse('$apiUrl/api/OneTimePassword/Redeem?code=$code'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $jwtToken',
+      },
+    );
+
+    // print(jsonDecode(response.body));
+    // // return jsonDecode(response.body);
+    return response;
   }
 }

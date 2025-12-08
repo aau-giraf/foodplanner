@@ -12,6 +12,7 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/pages/landing_page_guardian.dart';
+import 'package:foodplanner/pages/settings/pupil_settings.dart';
 import 'package:foodplanner/pages/signup_page_pupil.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -181,7 +182,32 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
                     // redirection corresponding to the buttons; OBS: change this to the correct ones 
                     onFeedback: () => Navigator.push(context, MaterialPageRoute(builder: (_) => FeedbackChatPage())), 
                     onLunch: () => Navigator.push(context, MaterialPageRoute(builder: (_) => GuardianLandingPageMadpakke())), 
-                    onSettings: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChooseChildGuardian())), 
+                    onSettings: () async {
+                      Pupil currentPupil = _filteredChildren.elementAt(_currentlyExpandedIndex!);
+
+                      final Pupil? updatedPupil = await Navigator.push<Pupil?>(context, MaterialPageRoute(
+                        builder: (_) =>  PupilSettings(pupil: currentPupil)
+                      ));
+
+                      // When the user uses the navbar to exit settings instead.
+                      // The user currently can't return to "Choose child" page using the navbar
+                      // This works as long as that^ remains true..
+                      if(updatedPupil == null) {
+                        return;
+                      }
+
+                      // print("UPDATEDPUPIL: ${updatedPupil}");
+                      // print("CURRENTPUPIL: $currentPupil");
+
+                      final bool firstNameEquality = updatedPupil!.firstName == currentPupil.firstName;
+                      final bool lastNameEquality = updatedPupil!.lastName == currentPupil.lastName;
+
+                      if(!firstNameEquality || !lastNameEquality) {
+                        await _loadChildren();
+                        // currentPupil = updatedPupil;
+                        // _filteredChildren.elementAt(_currentlyExpandedIndex!).firstName = "Yep";
+                      }
+                    },
 
                     // ensures that only one element is expanded at the time 
                     onExpansionChanged: (newIndex) => setState(() {

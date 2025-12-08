@@ -30,6 +30,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
+  late double customButtonHeight = MediaQuery.of(context).size.height * 0.08;
+
   // Text editing controllers
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -175,14 +177,14 @@ class LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           children: [
-            const SizedBox(height: 35),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             Flexible(
               child: Image(
                 image: AssetImage('assets/images/logo.png'),
                 height: 160,
               ),
             ),
-            const SizedBox(height: 35),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             Column(
               children: [
                 Card(
@@ -266,14 +268,16 @@ class LoginPageState extends State<LoginPage> {
                       children: [
                         Expanded(
                           child: CustomButton(
+                            customHeight: customButtonHeight,
                             onTab: () => directSignUpPage(context),
                             text: 'Opret',
                             backgroundColor: AppColors.secondary,
                           ),
                         ),
-                        // SizedBox(width: 15),
+                        SizedBox(width: 15),
                         Expanded(
                           child: CustomButton(
+                            customHeight: customButtonHeight,
                             text: "Login",
                             onTab: () => signUserIn(context),
                           ),
@@ -283,15 +287,19 @@ class LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(height: 15),
                     // Expanded(
-                      CustomButton(
-                        text: "Login som barn",
-                        onTab: () => 
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                             builder: (context) => LoginPagePupil(),
-                            ),
-                          )
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        child: CustomButton(
+                          customHeight: customButtonHeight,
+                          text: "Login som barn",
+                          onTab: () => 
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                               builder: (context) => LoginPagePupil(),
+                              ),
+                            )
+                        ),
                       ),
                     // ),
                   ],

@@ -2,15 +2,20 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
+import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
 import 'package:foodplanner/pages/one_time_password_page.dart';
 import 'package:foodplanner/pages/signup_page_adult.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
+import 'package:foodplanner/services/pupil_service.dart';
+import 'package:foodplanner/services/user_service.dart';
+import 'package:http/http.dart';
 import 'signup_page.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:go_router/go_router.dart';
@@ -26,6 +31,7 @@ class LoginPagePupil extends StatefulWidget {
 }
 
 class LoginPagePupilState extends State<LoginPagePupil> {
+  late double customButtonHeight = MediaQuery.of(context).size.height * 0.08;
   // Text editing controllers
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -60,51 +66,65 @@ class LoginPagePupilState extends State<LoginPagePupil> {
   }
 
   void signUserIn(BuildContext context) async {
-    if(usernameController.text.isEmpty && passwordController.text.isEmpty){
-      setState(() {
-        emailError = 'Email mangler';
-        passwordError = 'Adgangskode mangler';
-      });
+    // print("Pressed");
 
-    } else if (usernameController.text.isEmpty){
-      setState(() {
-        emailError  = 'Email mangler';
-        passwordError = '';
-      });
+    PupilService pupilService = PupilService(apiUrl: ApiConfig.baseUrl);
+    UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
+    
+  
+  
+    // if(usernameController.text.isEmpty && passwordController.text.isEmpty){
+    //   setState(() {
+    //     emailError = 'Email mangler';
+    //     passwordError = 'Adgangskode mangler';
+    //   });
 
-    }else if(passwordController.text.isEmpty){
-      setState(() {
-        emailError = '';
-        passwordError = 'Adgangskode mangler';
-      });
-    } else {
-      setState(() {
-        emailError = '';
-        passwordError = '';
-      });
-    }
+    // } else if (usernameController.text.isEmpty){
+    //   setState(() {
+    //     emailError  = 'Email mangler';
+    //     passwordError = '';
+    //   });
+
+    // }else if(passwordController.text.isEmpty){
+    //   setState(() {
+    //     emailError = '';
+    //     passwordError = 'Adgangskode mangler';
+    //   });
+    // } else {
+    //   setState(() {
+    //     emailError = '';
+    //     passwordError = '';
+    //   });
+    // }'x
     try {
-      final role = await LoginPagePupil.authService
-          .fetchAuthData(usernameController.text, passwordController.text);
+      final role = await userService.loginPupil(usernameController.text, passwordController.text);
+
+      // final role = await LoginPagePupil.authService
+      //     .fetchAuthData(usernameController.text, passwordController.text);
       
+      // final role = UserRoles.of({Role.pupil});
+
       if (!context.mounted){
         developer.log('buildcontext is not mounted, in $runtimeType');
         return;
       }
 
-        developer.log('Login successful, role data: $role');
-        developer.log('Has student role: ${role.hasRole(Role.pupil)}');
-        developer.log('Has parent role: ${role.hasRole(Role.guardian)}');
-        developer.log('Has teacher role: ${role.hasRole(Role.teacher)}');
-        developer.log('Has admin role: ${role.hasRole(Role.admin)}'); 
+      developer.log('Login successful maybeXD?, role data: $role');
+      developer.log('Has student role: ${role.hasRole(Role.pupil)}');
+      developer.log('Has parent role: ${role.hasRole(Role.guardian)}');
+      developer.log('Has teacher role: ${role.hasRole(Role.teacher)}');
+      developer.log('Has admin role: ${role.hasRole(Role.admin)}'); 
+      // var navStrategy = NavBarStrategyMapper.getNavBarStrategy(role);
+      // navStrategy.navigateToHomePage(context, role);
+    
 
-        if(role.hasRole(Role.pupil)){GoRouter.of(context).go(STUDENT_CREATE);}
-        else if(role.hasRole(Role.guardian)){GoRouter.of(context).go(PARENT_ROOT);}
-        else if(role.hasRole(Role.teacher)){GoRouter.of(context).go(TEACHER_ROOT);}
-        else if(role.hasRole(Role.admin)){GoRouter.of(context).go(ADMIN_ROOT);}
-        else {GoRouter.of(context).go(LOGIN_PAGE);}
-
-  }
+      GoRouter.of(context).go(STUDENT_UNLOCKED);
+      // if(role.hasRole(Role.pupil)){GoRouter.of(context).go(STUDENT_CREATE);}
+      // else if(role.hasRole(Role.guardian)){GoRouter.of(context).go(PARENT_ROOT);}
+      // else if(role.hasRole(Role.teacher)){GoRouter.of(context).go(TEACHER_ROOT);}
+      // else if(role.hasRole(Role.admin)){GoRouter.of(context).go(ADMIN_ROOT);}
+      // else {GoRouter.of(context).go(LOGIN_PAGE);}
+    }
     catch (e) {
       if (e is AuthException) {
         handleErrors({'Message': [e.message]});
@@ -166,12 +186,14 @@ class LoginPagePupilState extends State<LoginPagePupil> {
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           children: [
-            const SizedBox(height: 35),
-            Image(
-              image: AssetImage('assets/images/logo.png'),
-              height: 160,
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+            Flexible(
+              child: Image(
+                image: AssetImage('assets/images/logo.png'),
+                height: 160,
+              ),
             ),
-            const SizedBox(height: 35),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             Column(
               children: [
                 Card(
@@ -188,7 +210,21 @@ class LoginPagePupilState extends State<LoginPagePupil> {
                         'Log ind',
                         style: AppTextStyles.headline3.copyWith(fontSize: 22),
                       ),
-                      const SizedBox(height: 30),                   
+                      const SizedBox(height: 30),
+                      Text(
+                        'Email',
+                        style: AppTextStyles.headline4.copyWith(fontSize: 18),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: CustomTextField(
+                          hintText: "Email",
+                          // obscureText: false,
+                          controller: usernameController,
+                          errorText: emailError
+                        ),
+                      ),   
+                      const SizedBox(height: 50),                
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: 
@@ -212,8 +248,8 @@ class LoginPagePupilState extends State<LoginPagePupil> {
                                     CustomButton(
                                       text: "Ok", 
                                       onTab: () => Navigator.of(context).pop(),
-                                      customHeight: MediaQuery.of(context).size.height * 0.06,
-                                      customWidth: MediaQuery.of(context).size.width * 0.12
+                                      customHeight: customButtonHeight / 2,
+                                      customWidth: customButtonHeight 
                                     )
                                   ]
                                 ),
@@ -226,11 +262,13 @@ class LoginPagePupilState extends State<LoginPagePupil> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: CustomTextField(
                             hintText: "Engangskode",
-                            // obscureText: false,
+                            obscureText: false,
                             controller: passwordController,
-                            errorText: passwordError),
+                            errorText: passwordError
+                          ),
                       ),
                       const SizedBox(height: 25),
+          
                       // Padding(
                       //   padding: const EdgeInsets.symmetric(horizontal: 20),
                       //   child: Row(
@@ -272,6 +310,7 @@ class LoginPagePupilState extends State<LoginPagePupil> {
                       children: [
                         Expanded(
                           child: CustomButton(
+                          customHeight: customButtonHeight,
                           onTab: () => Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -285,6 +324,7 @@ class LoginPagePupilState extends State<LoginPagePupil> {
                         SizedBox(width: 15),
                         Expanded(
                           child: CustomButton(
+                            customHeight: customButtonHeight,
                             text: "Login",
                             onTab: () => signUserIn(context),
                           ),
@@ -294,9 +334,13 @@ class LoginPagePupilState extends State<LoginPagePupil> {
                     ),
                     SizedBox(height: 15,),
                     // Expanded(
-                      CustomButton(
-                        text: "Login som voksen",
-                        onTab: () => Navigator.pop(context)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        child: CustomButton(
+                          customHeight: customButtonHeight,
+                          text: "Login som voksen",
+                          onTab: () => Navigator.pop(context)
+                        ),
                       ),
                     // ),
                   ],
