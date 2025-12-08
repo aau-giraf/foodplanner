@@ -197,7 +197,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
       content = Padding(
         padding: const EdgeInsets.all(20.0),
         child: Text(
-          "Ingen børn fundet. Tilføj et barn nedenfor.",
+          "Du har lige nu ingen børn tilknyttet. Tilføj et barn eller en relation (med engangskode) nedenfor.",
           textAlign: TextAlign.center,
           style: AppTextStyles.mediumText,
         ),
