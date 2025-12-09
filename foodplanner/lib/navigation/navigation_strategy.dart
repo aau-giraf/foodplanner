@@ -10,7 +10,7 @@ abstract class NavigationStrategy {
   
   void navigate(int index, BuildContext context) {
     String goToPage = pages[index];
-    GoRouter.of(context).go(goToPage);
+    context.go(goToPage);
 
     NavigationService.setCurrentPage(index);
   }
@@ -20,7 +20,7 @@ abstract class NavigationStrategy {
   void goToPage(String goToPage, BuildContext context) {
     for (int i = 0; i < pages.length ; i++) {
       if(pages[i] == goToPage) {
-        GoRouter.of(context).go(goToPage); 
+        context.go(goToPage); 
         NavigationService.setCurrentPage(i);
         //debugPrint('i is $i which is page $goToPage');
       }

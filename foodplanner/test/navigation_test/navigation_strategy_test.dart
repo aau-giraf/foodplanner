@@ -1,15 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/models/user_roles.dart';
-
-import 'navigation_service_test.mocks.dart';
 
 class TestNavigationStrategy extends NavigationStrategy {
   TestNavigationStrategy({required List<String> testPages}) {
@@ -22,59 +17,98 @@ class TestNavigationStrategy extends NavigationStrategy {
   }
 }
 
-@GenerateMocks([BuildContext, GoRouter])
+/// Test widget der giver os et BuildContext med en GoRouter
+class TestApp extends StatelessWidget {
+  final GoRouter router;
+  final Widget child;
+
+  const TestApp({required this.router, required this.child, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      routerConfig: router,
+    );
+  }
+}
+
 void main() {
-
-
-
   late TestNavigationStrategy strategy;
-  late List<String> testPages;
-  late MockBuildContext mockContext;
 
   setUp(() {
-    //arrange 1
     NavigationService.setCurrentPage(0);
-
-    //arrange 2
-    testPages = ['/', '/profil', '/indstillinger'];
-    strategy = TestNavigationStrategy(testPages: testPages);
-    mockContext = MockBuildContext();
-
+    strategy = TestNavigationStrategy(
+      testPages: ['/', '/profil', '/indstillinger'],
+    );
   });
 
-  group('NavigationStrategy Core Logic', () {
-    test('navigate should update NavigationService with the correct index', () {
-      const targetIndex = 2;
-      
-      //act 1
-      strategy.navigate(targetIndex, mockContext);
+  group("NavigationStrategy with real GoRouter", () {
+    testWidgets('navigate updates NavigationService', (tester) async {
+      final router = GoRouter(
+        initialLocation: '/',
+        routes: [
+          GoRoute(path: '/', builder: (_, __) => const SizedBox()),
+          GoRoute(path: '/profil', builder: (_, __) => const SizedBox()),
+          GoRoute(path: '/indstillinger', builder: (_, __) => const SizedBox()),
+        ],
+      );
 
-      //assert 1
-      expect(NavigationService.getCurrentPage(), targetIndex, reason: 'NavigationService should update to index 2');
-      
-      //eventuelt tjek med et andet index
+      await tester.pumpWidget(TestApp(router: router, child: const SizedBox()));
+      await tester.pump();
+
+      final context = tester.element(find.byType(SizedBox).first);
+
+      strategy.navigate(2, context);
+      await tester.pumpAndSettle();
+
+      expect(NavigationService.getCurrentPage(), 2);
+      expect(router.routerDelegate.currentConfiguration.uri.toString(), '/indstillinger');
     });
 
-    test('goToPage should find the correct index based on path and update NavigationService', () {
-      const targetPage = '/profil';
+    testWidgets('goToPage sets correct index', (tester) async {
+      final router = GoRouter(
+        initialLocation: '/',
+        routes: [
+          GoRoute(path: '/', builder: (_, __) => const SizedBox()),
+          GoRoute(path: '/profil', builder: (_, __) => const SizedBox()),
+          GoRoute(path: '/indstillinger', builder: (_, __) => const SizedBox()),
+        ],
+      );
 
-      //act 2
-      strategy.goToPage(targetPage, mockContext);
+      await tester.pumpWidget(TestApp(router: router, child: const SizedBox()));
+      await tester.pump();
 
-      //assert 2
-      expect(NavigationService.getCurrentPage(), 1, reason: 'NavigationService should update to index 1 which is the page /profil');
+      final context = tester.element(find.byType(SizedBox).first);
+
+      strategy.goToPage('/profil', context);
+      await tester.pumpAndSettle();
+
+      expect(NavigationService.getCurrentPage(), 1);
+      expect(router.routerDelegate.currentConfiguration.uri.toString(), '/profil');
     });
 
-    test('navigateToHomePage should navigate to the first page (index 0) and update NavigationService', () {
-      //arrange
+    testWidgets('navigateToHomePage goes to index 0', (tester) async {
+      final router = GoRouter(
+        initialLocation: '/indstillinger',
+        routes: [
+          GoRoute(path: '/', builder: (_, __) => const SizedBox()),
+          GoRoute(path: '/profil', builder: (_, __) => const SizedBox()),
+          GoRoute(path: '/indstillinger', builder: (_, __) => const SizedBox()),
+        ],
+      );
+
+      await tester.pumpWidget(TestApp(router: router, child: const SizedBox()));
+      await tester.pump();
+
+      final context = tester.element(find.byType(SizedBox).first);
+
       NavigationService.setCurrentPage(99);
-      final UserRoles dummyRole = UserRoles.empty();
 
-      //act
-      strategy.navigateToHomePage(mockContext, dummyRole);
+      strategy.navigateToHomePage(context, UserRoles.empty());
+      await tester.pumpAndSettle();
 
-      //assert
-      expect(NavigationService.getCurrentPage(), 0, reason: 'The page should always be index 0 in this implementation');
+      expect(NavigationService.getCurrentPage(), 0);
+      expect(router.routerDelegate.currentConfiguration.uri.toString(), '/');
     });
   });
 }
