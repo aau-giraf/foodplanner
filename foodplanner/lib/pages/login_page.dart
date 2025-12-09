@@ -91,10 +91,9 @@ class LoginPageState extends State<LoginPage> {
         developer.log('buildcontext is not mounted, in $runtimeType');
         return;
       }
-
         debugPrint('Login successful, role data: $role');
-        debugPrint('Has student role: ${role.hasRole(Role.child)}');
-        debugPrint('Has parent role: ${role.hasRole(Role.parent)}');
+        debugPrint('Has student role: ${role.hasRole(Role.pupil)}');
+        debugPrint('Has parent role: ${role.hasRole(Role.guardian)}');
         debugPrint('Has teacher role: ${role.hasRole(Role.teacher)}');
         debugPrint('Has admin role: ${role.hasRole(Role.admin)}'); 
         var navStrategy = NavBarStrategyMapper.getNavBarStrategy(role);
