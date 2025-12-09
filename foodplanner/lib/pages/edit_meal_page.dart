@@ -444,7 +444,7 @@ class _EditMealPageState extends State<EditMealPage> {
                         text: 'Fjern eller tilføj ingredienser',
                         foregroundColor: AppColors.textPrimary,
                         backgroundColor: Colors.white,
-                        trailingIcon: SFIcon(SFIcons.sf_chevron_right),
+                        sfTrailingIcon: SFIcon(SFIcons.sf_chevron_right),
                         size: ButtonSize.medium
                         
                         ),
