@@ -6,16 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/nav_bar.dart';
-import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-import 'package:image/image.dart';
 class AddPupil extends StatefulWidget {
   const AddPupil({super.key});
   static final SchoolClassService schoolClassService =

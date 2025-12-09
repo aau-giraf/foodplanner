@@ -215,12 +215,6 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
     return Column (
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          
-          // component for search field and collapsible list
-          //_children.length > 1 ? 
-          //Flexible(child: buildScrollableView()) : 
-          //buildSinglePupilView(screenWidth),
-          
           content,
 
           // "Opret barn" button

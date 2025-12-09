@@ -1,5 +1,3 @@
-import 'dart:math' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/pages/pin_code.dart';

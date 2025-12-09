@@ -93,24 +93,6 @@ class UserService {
     }
   }
 
-  /*Future<bool> unapproveUsers(int id) async {
-    final jwtToken = await AuthProvider().retrieveToken();
-    final response = await http.delete(
-      Uri.parse('$apiUrl/api/Admin/Delete/$id'),
-      headers: {
-        'Authorization': 'Bearer $jwtToken',
-        'Content-Type': 'application/json',
-      },
-    );
-    if (response.statusCode == 204) {
-      return true;
-    } else {
-      print(
-          'Failed to unapprove users: ${response.statusCode} ${response.body}');
-      throw Exception('Failed to unapprove users');
-    }
-  }*/
-
   Future<http.Response> createUser(String firstName, String lastName,
       String email, String password, String role) async {
     final response = await http.post(
@@ -277,7 +259,6 @@ class UserService {
 
   Future<http.Response> updateUser(
       int id, String firstName, String lastName, String email) async {
-   //developer.log("Knap trykket på");
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
       Uri.parse('$apiUrl/api/Users/UpdateLoggedIn'),

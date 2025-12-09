@@ -89,17 +89,6 @@ class ChildProfileState extends State<ChildProfile>
     });
   }
 
-  /*void fetchParent() {
-    ChildProfile.userService.fetchUser(widget.child.parentId).then((result) {
-      setState(() {
-        parent = result;
-        selectedParent = result;
-      });
-    }).catchError((error) {
-      throw (error);
-    });
-  }
-*/
   @override
   void dispose() {
     firstNameController.dispose();
@@ -421,7 +410,6 @@ class ChildProfileState extends State<ChildProfile>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //bottomNavigationBar: NavBar(),
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text(

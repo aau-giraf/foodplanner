@@ -66,7 +66,6 @@ class AdminTeacherNavStrategy extends NavigationStrategy {
                     SizedBox(height: 4),
                     Text('Skift rolle', style: AppTextStyles.standardWithoutColor,),
                   ],
-                  //(leading: Icon(Icons.home), title: Text('home')),
                 ),
               ),
               onTap: () => {
@@ -118,7 +117,6 @@ class AdminTeacherNavStrategy extends NavigationStrategy {
           ],
           elevation: 8.0,
           color: AppColors.background,
-          //menuPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8))),
         );

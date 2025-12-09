@@ -37,7 +37,6 @@ class RightIconButton extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
-      /*margin: const EdgeInsets.all(15),*/
       // wrapping the button in a Directionality to ensure that the icon is on the right-hand side
       child: Directionality(
         textDirection: TextDirection.rtl, 

@@ -65,7 +65,6 @@ class _AdminAllProfilesPageState extends State<AdminAllProfilesPage> {
     }
   }
 
-  // Tror ikke den her virker
   void _filterUsers() {
     final query = searchController.text.toLowerCase();
     setState(() {

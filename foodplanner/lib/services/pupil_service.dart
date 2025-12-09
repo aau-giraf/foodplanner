@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:foodplanner/api/openapi/lib/api.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/pupil_with_classname.dart';
@@ -30,26 +29,6 @@ class PupilService {
       throw Exception('Kunne ikke hente Børn');
     }
   }
-    /*final jwtToken = await AuthProvider().retrieveToken();
-    print(jwtToken);
-    final response = await http.get(
-        Uri.parse('$apiUrl/api/Admin/GetAllChildren'),
-        headers: <String, String>{
-          'Authorization': 'Bearer $jwtToken',
-        });
-
-    if (response.statusCode == 200) {
-      List<dynamic> jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      var responseList = jsonResponse
-          .map((pupil) => Pupil.fromJson(pupil as Map<String, dynamic>))
-          .toList();
-      return responseList;
-    } else if (response.statusCode == 403) {
-      throw Exception('Du er ikke autherized til denne funktion');
-    } else {
-      throw Exception('Børn kunne ikke hentes');
-    }
-  }*/
 
   Future<Pupil> fetchPupilById() async {
     final jwtToken = await AuthProvider().retrieveToken();
@@ -146,7 +125,6 @@ class PupilService {
           'Authorization': 'Bearer $jwtToken',
         });
     if (response.statusCode == 200) {
-      //debugPrint('response.body: ${response.body}', wrapWidth: 2048);
       final data = json.decode(response.body);
       return Pupil.fromJson(data);
     } else {

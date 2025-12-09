@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/nav_bar.dart';
-import 'package:flutter/material.dart';
-import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/choose_child_parent.dart';
-import 'package:foodplanner/pages/login_page.dart';
-import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
 import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
@@ -31,9 +26,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   dynamic _user;
 
-  //var activeRole = ActiveRoleService.activeRole;
   NavigationStrategy? navStrategy; 
-
 
   @override
   void initState() {
@@ -49,7 +42,6 @@ class TeacherMainPageState extends State<TeacherMainPage> {
             _user = userData;
             navStrategy = NavBarStrategyMapper.getNavBarStrategy(userData.role);
             debugPrint('navStrategy $navStrategy');
-            //debugPrint('_user ${_user.role}');
           });
         });
       });

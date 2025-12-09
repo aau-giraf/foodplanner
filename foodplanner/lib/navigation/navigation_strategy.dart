@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:go_router/go_router.dart';
@@ -22,14 +21,12 @@ abstract class NavigationStrategy {
       if(pages[i] == goToPage) {
         GoRouter.of(context).go(goToPage); 
         NavigationService.setCurrentPage(i);
-        //debugPrint('i is $i which is page $goToPage');
       }
     }
   }
 
   void navigateToHomePage(BuildContext context, UserRoles role) {
     var pageToVisit = pages[0];
-    //debugPrint('Navigating to home page ');
     goToPage(pageToVisit, context);
   }  
 }

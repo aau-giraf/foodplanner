@@ -337,7 +337,6 @@ class _FeedbackChatPageState extends State<FeedbackChatPage> {
         ),
       ),
       bottomNavigationBar: NavBar(currentPageIndex: 0),
-      //backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

@@ -1,18 +1,13 @@
-import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/pages/admin/profiles/admin_profiles.dart';
-import 'package:foodplanner/pages/Change_Roll.dart';
 import 'package:foodplanner/pages/change_role_page.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/choose_child_teacher.dart';
-import 'package:foodplanner/pages/create_pupil_page.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
 import 'package:foodplanner/pages/home_page.dart';
-import 'package:foodplanner/pages/main_page_admin_teacher.dart';
 import 'package:foodplanner/pages/main_page_admin.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
 import 'package:foodplanner/pages/main_page_parent.dart';
@@ -22,7 +17,6 @@ import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/pages/profile_page.dart';
 import 'package:foodplanner/pages/signup_page_adult.dart';
-import 'package:foodplanner/pages/signup_page_base.dart';
 import 'package:foodplanner/pages/signup_page_pupil.dart';
 import 'package:foodplanner/pages/main_page_student.dart';
 import 'package:foodplanner/routes/paths.dart';
@@ -50,17 +44,7 @@ final router = GoRouter(
         }
 
         return null;
-        /*final role = await authProvider.retrieveRole();
-        final isLoggedIn = authProvider.isLoggedIn;
-        if (!isLoggedIn) {
-          return '/login';
-        }
-        if(role == null){developer.log("Role was null"); return null;} 
-
-        if(role.hasOneOfRoles({Role.teacher, Role.admin})){return TEACHER_ROOT;}
-        else if (role.hasRole(Role.parent)){return PARENT_ROOT;}
-        else {return STUDENT_ROOT;}
-*/
+  
       },
     ),
     GoRoute(
@@ -145,11 +129,6 @@ final router = GoRouter(
     GoRoute(path: ADMIN_SCHOOL, 
       builder: (context, state) => SchoolClasses(),
     ),
-/*
-    GoRoute(path: '/madpakke',
-      builder: (context, state) => EditMealFormPage();
-    ),
-*/
 
     //no need for wildcard handling as flutter already does it
     GoRoute(
@@ -319,14 +298,6 @@ final router = GoRouter(
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
                 return const AdminLandingPage();
-
-              /*return Column(
-                children: [
-                  const Text('Admin Page'),
-                  NavBar(),
-                ],
-              ); // another dummy page, I think Dressi is making a new one TODO
-              */
             } else {
               return const UnauthorizedPage();
             }
@@ -359,15 +330,6 @@ final router = GoRouter(
             },
           );
         },
-        //whats this?
-        /*
-        routes: [
-          GoRoute(
-            path: MADPAKKE,
-            builder: (context, state) => ParentLandingPageMadpakke(),
-          )
-        ]),
-  ],*/
 ),
 
       GoRoute(
@@ -413,13 +375,6 @@ final router = GoRouter(
               ); // Show loading while waiting
             } else if (snapshot.hasData && snapshot.data == true) {
                 return const RoleSelectionPage();
-              /*return Column(
-                children: [
-                  const Text('Admin Page'),
-                  NavBar(),
-                ],
-              ); // another dummy page, I think Dressi is making a new one TODO
-              */
             } else {
               return const UnauthorizedPage();
             }

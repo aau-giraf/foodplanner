@@ -68,21 +68,6 @@ class _CreatePupilPageState extends State<CreatePupilPage> {
     return null;
   }
 
-  /*Future<void> createGuardianPupilRelation (int childId, int parentId) async {
-    try {
-      final relationResponse = await CreatePupilPage.pupilService.addParentToChild(childId, parentId);
-
-      if(relationResponse.statusCode == 200) {
-          developer.log('Parent-child relation created succesfully');
-      } else if (relationResponse.statusCode == 409) {
-          developer.log('Parent-child relation already exists');
-      } 
-
-    } catch (e) {
-      developer.log("Failed to add parent to child.");
-    }
-  }*/
-
   Future<String> createPupilUser (String firstName, String lastName, String email, String password, List<int> parentIds, int classId) async {
     try {
       final userResponse = await SignupPageBase.userService.createUserPupil(firstName, lastName, email, password, parentIds, classId);
@@ -125,11 +110,6 @@ class _CreatePupilPageState extends State<CreatePupilPage> {
         if (userResponseBody == "") {
           throw Exception("User creation failed.");
         }
-
-        /*final int childId = jsonDecode(userResponseBody);
-
-
-        await createGuardianPupilRelation(childId, parentId);*/
 
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

@@ -31,7 +31,7 @@ class _EditPupilState extends State<EditPupilInfo>{
   @override
   void initState() {
     super.initState();
-    selectedValue = widget.pupil.classId?.toString();
+    selectedValue = widget.pupil.classId.toString();
     fetchClasses();
     //_loadChildren();
   }
@@ -49,37 +49,11 @@ class _EditPupilState extends State<EditPupilInfo>{
         }
       });
     } catch (e) {
-      // Håndter fejl (fx vis snackbar). Debug print kan hjælpe under udvikling.
-      // debugPrint('fetchClasses error: $e');
+      // as of now no specific error is created
     } finally {
       setState(() => loading = false);
     }
   }
-
-  // Næste trin jeg skal igennem
-  /*Future<void> _loadChildren() async {
-    setState(() => loading = true); // ensures that a loading animation is shown as long as the children are being loaded
-    try {
-      await authProvider.loadFromStorage();
-
-      try {
-        _children = await pupilService.fetchPupilByParent();
-      } catch (e) {
-        developer.log('Could not fetch children: $e');
-      }
-
-      await Future.delayed(Duration(milliseconds: 400)); // buffer to ensure enough time to fetch all children
-
-      if (mounted) { // checks whether the object is part of a tree
-        setState(() {
-          _filteredChildren = _children; // ensures that all children are shown
-          loading = false;
-        });
-      }
-    } catch (e) {
-      developer.log('Error initializing children: $e'); 
-    }
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -227,7 +201,6 @@ class _EditPupilState extends State<EditPupilInfo>{
                 elevation: 2,
                 color: AppColors.background,
                 child: GestureDetector(
-                  //onTap: deleteProfile(),
                   child: Container(
                     decoration: BoxDecoration(
                       color: AppColors.background,

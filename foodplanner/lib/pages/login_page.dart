@@ -1,22 +1,14 @@
 import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
-import 'package:foodplanner/routes/paths.dart';
-import 'package:foodplanner/services/active_role_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
-import 'package:foodplanner/pages/signup_page_base.dart';
-import 'package:foodplanner/pages/signup_page_pupil.dart';
-import 'package:foodplanner/pages/signup_page.dart';
 import 'package:foodplanner/pages/signup_page_adult.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
-import 'package:go_router/go_router.dart';
 import 'package:foodplanner/models/user_roles.dart';
 
 //test push
@@ -102,15 +94,6 @@ class LoginPageState extends State<LoginPage> {
         developer.log('Has admin role: ${role.hasRole(Role.admin)}'); 
         var navStrategy = NavBarStrategyMapper.getNavBarStrategy(role);
         navStrategy.navigateToHomePage(context, role);
-
-        /*
-        if(role.hasRole(Role.pupil)){GoRouter.of(context).go(STUDENT_CREATE);}
-        else if(role.hasRole(Role.guardian)){GoRouter.of(context).go(PARENT_ROOT);}
-        else if(role.hasRole(Role.teacher)){GoRouter.of(context).go(TEACHER_ROOT);}
-        else if(role.hasRole(Role.admin)){GoRouter.of(context).go(ADMIN_ROOT);}
-        else {GoRouter.of(context).go(LOGIN_PAGE);}
-        */
-
   }
     catch (e) {
       debugPrint('Could not sign user in');

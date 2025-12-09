@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
@@ -10,7 +8,6 @@ import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/pin_code.dart';
-import 'package:go_router/go_router.dart';
 
 
 class PinCode extends StatefulWidget {
@@ -131,22 +128,6 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
       } else {
         throw Exception("No pin navigation is handled for this role $role");
       }
-      
-      /*switch(role) {
-        case Role.parent: 
-          navigationStrategy.goToPage(PARENT_ROOT, context);
-          //GoRouter.of(context).go(PARENT_ROOT);
-          break;
-        case Role.teacher: 
-          navigationStrategy.goToPage(TEACHER_ROOT, context);
-          //GoRouter.of(context).go(TEACHER_ROOT);
-          break;
-        case Role.student:
-          navigationStrategy.goToPage(STUDENT_UNLOCKED, context);
-          //GoRouter.of(context).go(STUDENT_UNLOCKED);
-        default:
-          break;
-      }*/
     }
 
   void handleCreatePin(String type, int number) async {
@@ -317,26 +298,11 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
   }
   
   UserRoles role = UserRoles.of([Role.pupil]);
-  //final usernameController = TextEditingController();
-  //String emailError = '';
   
   Widget chooseRole() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        /*Text(
-          'Email',
-          style: AppTextStyles.headline4.copyWith(fontSize: 18),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: CustomTextField(
-              hintText: "Email",
-              controller: usernameController,
-              errorText: emailError),
-        ),
-*/      ],
     );
   }
 

@@ -2,20 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/card_container.dart';
 import 'package:foodplanner/components/custom_app_bar.dart';
-
 import 'package:foodplanner/components/nav_bar.dart';
-
-import 'package:foodplanner/api/openapi/lib/api.dart';
-import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/components/Custom_List_Item.dart';
-
 import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/components/search_field.dart';
-import 'package:foodplanner/components/settings_widget.dart';
-import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/models/pupil_with_classname.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/pages/admin_administration/AddPupil.dart';
@@ -25,11 +16,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:go_router/go_router.dart';
-import 'package:foodplanner/models/user_roles.dart';
-import 'package:foodplanner/api/openapi/lib/api.dart';
-import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/models/pupil.dart';
-import 'package:http/http.dart' as http;
+
 
 class SchoolClasses extends StatefulWidget {
   //final String apiUrl;
@@ -326,7 +313,7 @@ class _SchoolClasses extends State<SchoolClasses> {
           return aCombinedIndex.compareTo(bCombinedIndex);
         }
         
-        return aFullName.compareTo(bFullName); /*("${a.firstName} ${a.lastName}").toLowerCase().compareTo("${b.firstName} ${b.lastName}".toLowerCase()); */
+        return aFullName.compareTo(bFullName); 
 
       });
       showSearchDropdown = input.isNotEmpty;

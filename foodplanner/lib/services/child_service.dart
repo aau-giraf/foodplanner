@@ -29,26 +29,6 @@ class ChildService {
       throw Exception('Kunne ikke hente Børn');
     }
   }
-    /*final jwtToken = await AuthProvider().retrieveToken();
-    print(jwtToken);
-    final response = await http.get(
-        Uri.parse('$apiUrl/api/Admin/GetAllChildren'),
-        headers: <String, String>{
-          'Authorization': 'Bearer $jwtToken',
-        });
-
-    if (response.statusCode == 200) {
-      List<dynamic> jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      var responseList = jsonResponse
-          .map((child) => Pupil.fromJson(child as Map<String, dynamic>))
-          .toList();
-      return responseList;
-    } else if (response.statusCode == 403) {
-      throw Exception('Du er ikke autherized til denne funktion');
-    } else {
-      throw Exception('Børn kunne ikke hentes');
-    }
-  }*/
 
   Future<Pupil> fetchChildById() async {
     final jwtToken = await AuthProvider().retrieveToken();

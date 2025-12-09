@@ -51,7 +51,7 @@ class AdminNavStrategy extends NavigationStrategy {
   }  
 
   
-  //alt funktionalitet for case 3 lig den herunder og kald denne funktion under case 3
+  //alt funktionalitet for case 3, funktion kaldt under case 3
   void openMenu(BuildContext context){
     showMenu<String> (
           context: context, 
@@ -119,7 +119,6 @@ class AdminNavStrategy extends NavigationStrategy {
           ],
           elevation: 8.0,
           color: AppColors.background,
-          //menuPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8))),
         );

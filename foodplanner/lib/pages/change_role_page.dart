@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user_roles.dart';
-import 'package:foodplanner/pages/main_page_admin.dart';
-import 'package:foodplanner/pages/main_page_admin_teacher.dart';
-import 'package:foodplanner/pages/main_page_parent.dart';
-import 'package:foodplanner/pages/main_page_teacher.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/active_role_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/config/colors.dart';
-import 'package:foodplanner/models/user.dart'; // as model;
 import 'package:foodplanner/services/user_service.dart';
 import 'package:provider/provider.dart';
 
@@ -33,38 +28,6 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
   Set<String> highlightedStudentIds = {};
   TextEditingController searchController = TextEditingController();
 
-  String? _selectedRole;
-
-  Future<void> _selectRole(String role) async {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    await auth.setRole(role as UserRoles);
-    await auth.loadFromStorage();
-    setState(() => _selectedRole = role);
-  }
-  /*
-  Future<void> fetchUser() async {
-    final userInfo = await RoleSelectionPage.userService.fetchLoggedInUser();
-    setState(() {
-      admin = userInfo;
-    });
-  }
-  */
-  /*
-  model.User admin = model.User(
-      id: 0,
-      email: 'Unknown',
-      firstName: 'Unknown',
-      lastName: 'Unknown',
-      role: UserRoles.Unknown,
-      archived: false);
-    */
-  
-  /*@override
-  void initState() {
-    super.initState();
-    fetchUser();
-  }*/
-
   List<Map<String, dynamic>> get adminActions  => [
         {
           'title': "Admin",
@@ -76,10 +39,6 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
           'ctaFunction': () {
             ActiveRoleService.setActiveRole(Role.admin); 
             context.go(ADMIN_ROOT);
-            /*Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AdminLandingPage()),
-            );*/
           }
         },
         {
@@ -92,10 +51,6 @@ class _SelectionPageRoleState extends State<RoleSelectionPage> {
           'ctaFunction': () {
             ActiveRoleService.setActiveRole(Role.teacher);
             context.go(ADMIN_TEACHER_ROOT);
-            /*Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const TeacherMainPage()),
-            );*/
           }
         },
         {

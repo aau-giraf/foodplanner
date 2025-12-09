@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
@@ -12,7 +11,6 @@ import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
-import 'package:foodplanner/components/settings_header.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:go_router/go_router.dart';
@@ -492,11 +490,6 @@ class GuardianProfileState extends State<GuardianProfile>
       body: SingleChildScrollView(
         child: Column(
           children: [
-            /*SettingsHeader(
-              icon: SFIcons.sf_person_fill,
-              title: '${guardian.firstName} ${guardian.lastName}',
-              subtitle: 'Her kan du redigere dine oplysninger.',
-            ),*/
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
