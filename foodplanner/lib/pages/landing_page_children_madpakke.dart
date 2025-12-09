@@ -54,7 +54,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
       _hasRolesFuture = authProvider.hasOneOfRoles([Role.guardian, Role.pupil, Role.teacher]);
     });
 
-    Pupil? childData;
+    Pupil? pupilData;
 
     //debugPrint('authProvider.userRole: ${authProvider.userRole}');
     //debugPrint('Role.student: ${Role.student}');
@@ -68,28 +68,28 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
       int userId = loggedInUser.id;
       //debugPrint('uderId: $userId');
 
-      childData = await pupilService.getByPupildId(userId);
-      //debugPrint('childData = $childData');
+      pupilData = await pupilService.getByPupilId(userId);
+      //debugPrint('pupilData = $pupilData');
       
       setState(() {
-        _pupil = childData;
+        _pupil = pupilData;
       });
 
     } else if (authProvider.userRole!.hasRole(Role.teacher)) {
-      int tempChildId = int.parse(widget.pupil['id']!);
-      childData = await pupilService.getByPupilId(tempChildId);
+      int tempPupilId = int.parse(widget.pupil['id']!);
+      pupilData = await pupilService.getByPupilId(tempPupilId);
   
       setState(() {
-        _pupil = childData;
+        _pupil = pupilData;
       });
     }
 
-    if(childData != null) {
+    if(pupilData != null) {
       setState(() {
         _callerFuture = caller();
       });
-    } else if (childData == null) {
-      throw Exception('ChildData er null');
+    } else if (pupilData == null) {
+      throw Exception('pupilData er null');
     }
   }
 
@@ -168,7 +168,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
                       child: CustomButton(
                         onTab: () {
                           GoRouter.of(context).go(
-                            FEEDBACK_Page,
+                            FEEDBACK_PAGE,
                             extra: {
                               'from': TEACHER_ROOT,
                               'childId': _pupil!.pupilId.toString()

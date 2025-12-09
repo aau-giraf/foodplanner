@@ -6,9 +6,9 @@ import 'package:foodplanner/navigation/navigation_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 
-class StudentUnlockedNavStrategy extends NavigationStrategy {
+class PupilUnlockedNavStrategy extends NavigationStrategy {
 
-  List<String> _pages = [FEEDBACK_Page, STUDENT_UNLOCKED, SETTINGS_PAGE, STUDENT_ROOT];
+  List<String> _pages = [FEEDBACK_PAGE, PUPIL_UNLOCKED, SETTINGS_PAGE, PUPIL_ROOT];
 
   @override
   set pages(List<String> pages) {
@@ -30,7 +30,7 @@ class StudentUnlockedNavStrategy extends NavigationStrategy {
   
   @override 
   void navigateToHomePage(BuildContext context, UserRoles role) {
-    String pageToVisit =  STUDENT_ROOT;
+    String pageToVisit =  PUPIL_ROOT;
     goToPage(pageToVisit, context);
   }
   

@@ -75,7 +75,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                  navStrategy?.goToPage(CHOOSE_CHILD_TEACHER, context);
+                  navStrategy?.goToPage(CHOOSE_PUPIL_TEACHER, context);
 
               },
               

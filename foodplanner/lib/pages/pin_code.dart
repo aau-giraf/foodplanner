@@ -120,33 +120,17 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
       if (role.hasOnlyRole(Role.teacher)) {
         navigationStrategy.goToPage(TEACHER_ROOT, context);
     
-      } else if (role.hasOnlyRole(Role.parent)) {
-        navigationStrategy.goToPage(PARENT_ROOT, context);
+      } else if (role.hasOnlyRole(Role.guardian)) {
+        navigationStrategy.goToPage(GUARDIAN_ROOT, context);
 
-      } else if (role.hasOnlyRole(Role.student)
+      } else if (role.hasOnlyRole(Role.pupil)
       //|| role.hasOnlyRole(Role.child)
       ) {
-        navigationStrategy.goToPage(STUDENT_UNLOCKED, context);
+        navigationStrategy.goToPage(PUPIL_UNLOCKED, context);
     
       } else {
         throw Exception("No pin navigation is handled for this role $role");
       }
-      
-      /*switch(role) {
-        case Role.parent: 
-          navigationStrategy.goToPage(PARENT_ROOT, context);
-          //GoRouter.of(context).go(PARENT_ROOT);
-          break;
-        case Role.teacher: 
-          navigationStrategy.goToPage(TEACHER_ROOT, context);
-          //GoRouter.of(context).go(TEACHER_ROOT);
-          break;
-        case Role.student:
-          navigationStrategy.goToPage(STUDENT_UNLOCKED, context);
-          //GoRouter.of(context).go(STUDENT_UNLOCKED);
-        default:
-          break;
-      }*/
     }
 
   void handleCreatePin(String type, int number) async {
@@ -316,7 +300,7 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
     );
   }
   
-  UserRoles role = UserRoles.of([Role.student]);
+  UserRoles role = UserRoles.of([Role.pupil]);
   //final usernameController = TextEditingController();
   //String emailError = '';
   

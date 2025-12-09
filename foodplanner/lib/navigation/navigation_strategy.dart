@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/navigation/navigation_service.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:go_router/go_router.dart';

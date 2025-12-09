@@ -19,10 +19,10 @@ class _FooterBarState extends State<FooterBar> {
     Widget page;
     switch (index) {
       case 0:
-        GoRouter.of(context).go(FEEDBACK_Page);
+        GoRouter.of(context).go(FEEDBACK_PAGE);
         break;
       case 1:
-        GoRouter.of(context).go(PARENT_ROOT);
+        GoRouter.of(context).go(GUARDIAN_ROOT);
         break;
       case 2:
         GoRouter.of(context).go(PROFILE_PAGE);
