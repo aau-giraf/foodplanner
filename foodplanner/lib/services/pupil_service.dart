@@ -151,9 +151,10 @@ class PupilService {
     if (response.statusCode == 200) {
       //debugPrint('response.body: ${response.body}', wrapWidth: 2048);
       final data = json.decode(response.body);
-      return Pupil.fromJson(data);
+
+      // fromChildJson will cause issues if trying to include guardianId. Use fromJson instead.
+      return Pupil.fromChildJson(data);
     } else {
-      print("getPupilByID");
       throw Exception('Failed to load child data: ${response.statusCode}');
     }
   }
@@ -215,7 +216,7 @@ class PupilService {
     // // return jsonDecode(response.body);
     return response;
   }
-  
+
   Future<List<PupilWithClassname>> fetchChildrenInAllClass() async {
     try {
       List<dynamic> jsonList = [];

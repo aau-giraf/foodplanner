@@ -44,7 +44,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
   Future<void> _initialize() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final role = await authProvider.retrieveRole();
-    //debugPrint('Brugerrolle: $role');
+    // debugPrint('Brugerrolle: $role');
 
     setState(() {
       userRole = role;
@@ -57,7 +57,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
       if (authProvider.userRole!.hasRole(Role.pupil) || authProvider.userRole!.hasRole(Role.guardian)) {
         final userService = UserService(apiUrl: ApiConfig.baseUrl);
         final loggedInUser = await userService.fetchLoggedInUser();
-        
+  
         int userId = loggedInUser.id;
 
         childData = await pupilService.getByPupilId(userId);

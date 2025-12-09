@@ -63,6 +63,30 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
     _scrollController.dispose();
     super.dispose();
   }
+
+  Future<void> onSettingsTap({required bool hasOnePupil}) async {
+    Pupil currentPupil = hasOnePupil ? 
+      _filteredChildren.elementAt(0) :
+      _filteredChildren.elementAt(_currentlyExpandedIndex!);
+
+    final Pupil? updatedPupil = await Navigator.push<Pupil?>(context, MaterialPageRoute(
+      builder: (_) =>  PupilSettings(pupil: currentPupil!)
+    ));
+
+    // updatedPupil will be null when the user uses the navbar to exit settings instead.
+    // The user currently can't return to "Choose child" page using the navbar
+    // This works as long as that^ remains true..
+    if(updatedPupil == null) {
+      return;
+    }
+
+    final bool firstNameEquality = updatedPupil!.firstName == currentPupil.firstName;
+    final bool lastNameEquality = updatedPupil!.lastName == currentPupil.lastName;
+
+    if(!firstNameEquality || !lastNameEquality) {
+      await _loadChildren();
+    }
+  }
   
   // method for retrieving the children of the logged in parent
   Future<void> _loadChildren() async {
@@ -160,29 +184,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
               // redirection corresponding to the buttons; OBS: change this to the correct ones 
               onFeedback: () => Navigator.push(context, MaterialPageRoute(builder: (_) => FeedbackChatPage())), 
               onLunch: () => Navigator.push(context, MaterialPageRoute(builder: (_) => GuardianLandingPageMadpakke())), 
-              onSettings: () async {
-                Pupil currentPupil = _filteredChildren.elementAt(_currentlyExpandedIndex!);
-
-                final Pupil? updatedPupil = await Navigator.push<Pupil?>(context, MaterialPageRoute(
-                  builder: (_) =>  PupilSettings(pupil: currentPupil)
-                ));
-
-                // When the user uses the navbar to exit settings instead.
-                // The user currently can't return to "Choose child" page using the navbar
-                // This works as long as that^ remains true..
-                if(updatedPupil == null) {
-                  return;
-                }
-
-                final bool firstNameEquality = updatedPupil!.firstName == currentPupil.firstName;
-                final bool lastNameEquality = updatedPupil!.lastName == currentPupil.lastName;
-
-                if(!firstNameEquality || !lastNameEquality) {
-                  await _loadChildren();
-                  // currentPupil = updatedPupil;
-                  // _filteredChildren.elementAt(_currentlyExpandedIndex!).firstName = "Yep";
-                }
-              },
+              onSettings: () => onSettingsTap(hasOnePupil: false),
               // ensures that only one element is expanded at the time 
               onExpansionChanged: (newIndex) => setState(() {
                 _currentlyExpandedIndex = newIndex;
@@ -205,7 +207,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
       bodyWidth: screenWidth - 95,
       onFeedback: () => Navigator.push(context, MaterialPageRoute(builder: (_) => FeedbackChatPage())), 
       onLunch: () => Navigator.push(context, MaterialPageRoute(builder: (_) => GuardianLandingPageMadpakke())), 
-      onSettings: () => Navigator.push(context, MaterialPageRoute(builder: (_) => AdministratePupils())),
+      onSettings: () => onSettingsTap(hasOnePupil: true),
       onHeaderTap: () => setState(() {
         _isExpanded == false ? _isExpanded = true : _isExpanded = false;
       }) 

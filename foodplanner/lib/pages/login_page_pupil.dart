@@ -65,36 +65,31 @@ class LoginPagePupilState extends State<LoginPagePupil> {
   }
 
   void signUserIn(BuildContext context) async {
-    // print("Pressed");
-
-    PupilService pupilService = PupilService(apiUrl: ApiConfig.baseUrl);
     UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-    
   
-  
-    // if(usernameController.text.isEmpty && passwordController.text.isEmpty){
-    //   setState(() {
-    //     emailError = 'Email mangler';
-    //     passwordError = 'Adgangskode mangler';
-    //   });
+    if(usernameController.text.isEmpty && passwordController.text.isEmpty){
+      setState(() {
+        emailError = 'Email mangler';
+        passwordError = 'Engangskode mangler';
+      });
 
-    // } else if (usernameController.text.isEmpty){
-    //   setState(() {
-    //     emailError  = 'Email mangler';
-    //     passwordError = '';
-    //   });
+    } else if (usernameController.text.isEmpty){
+      setState(() {
+        emailError  = 'Email mangler';
+        passwordError = '';
+      });
 
-    // }else if(passwordController.text.isEmpty){
-    //   setState(() {
-    //     emailError = '';
-    //     passwordError = 'Adgangskode mangler';
-    //   });
-    // } else {
-    //   setState(() {
-    //     emailError = '';
-    //     passwordError = '';
-    //   });
-    // }'x
+    }else if(passwordController.text.isEmpty){
+      setState(() {
+        emailError = '';
+        passwordError = 'Engangskode mangler';
+      });
+    } else {
+      setState(() {
+        emailError = '';
+        passwordError = '';
+      });
+    }
     try {
       final role = await userService.loginPupil(usernameController.text, passwordController.text);
 
@@ -117,7 +112,7 @@ class LoginPagePupilState extends State<LoginPagePupil> {
       // navStrategy.navigateToHomePage(context, role);
     
 
-      GoRouter.of(context).go(STUDENT_UNLOCKED);
+      GoRouter.of(context).go(STUDENT_ROOT);
       // if(role.hasRole(Role.pupil)){GoRouter.of(context).go(STUDENT_CREATE);}
       // else if(role.hasRole(Role.guardian)){GoRouter.of(context).go(PARENT_ROOT);}
       // else if(role.hasRole(Role.teacher)){GoRouter.of(context).go(TEACHER_ROOT);}
@@ -241,7 +236,7 @@ class LoginPagePupilState extends State<LoginPagePupil> {
                                   children: [
                                     Text(
                                       textAlign: TextAlign.center,
-                                      "For at generere en engangskode skal du logge ind som forældre."
+                                      "Du skal logge ind som forælder for at generere en engangskode. \nEngangskoden findes under indstillinger for dit barn."
                                     ),
                                     SizedBox(height: 15,),
                                     CustomButton(
@@ -307,11 +302,10 @@ class LoginPagePupilState extends State<LoginPagePupil> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        SizedBox(width: 15),
                         Expanded(
                           child: CustomButton(
                             customHeight: customButtonHeight,
-                            text: "Login",
+                            text: "Log ind",
                             onTab: () => signUserIn(context),
                           ),
                         ),

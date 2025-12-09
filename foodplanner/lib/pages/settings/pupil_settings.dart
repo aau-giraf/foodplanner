@@ -3,16 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/nav_bar.dart';
-import 'package:foodplanner/components/popup_box.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/services/pupil_service.dart';
-import 'package:provider/provider.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/services/user_service.dart';
@@ -33,20 +30,7 @@ class PupilSettings extends StatefulWidget {
 }
 
 class _PupilSettingsPage extends State<PupilSettings> with SingleTickerProviderStateMixin {
-    List<String> oneTimePasswords = [
-    "aG7K2p",
-    "Q9mL4v",
-    "tR8b1Z",
-    "Xf2D6q",
-    "wH3s9P",
-    "J7uK0r",
-    "nP6Q4x",
-    "B2cV8m",
-    "zT1yR5",
-    "Kp9F3a",
-  ];
-
-  late String oneTimePassword = oneTimePasswords[Random().nextInt(oneTimePasswords.length - 1)];
+  String? oneTimePassword;
   
   // Why do we user User instead of Pupil?
   // User has a userId which we need to make changes to the Pupil in the database
@@ -77,19 +61,6 @@ class _PupilSettingsPage extends State<PupilSettings> with SingleTickerProviderS
   String updatedEmail = '';
   String updatedPassword = '';
   String updatedPincode = '';
-
-  // UserRoles? userRole;
-
-  // @override
-  // void initState(){
-  //   super.initState();
-  //   // user = AuthProvider().
-
-  //   AuthProvider().retrieveRole().then((role) {
-  //     fetchUser();
-  //     userRole = role;
-  //   });
-  // }
   
   Future<void> fetchUser() async {
     setState(() {
@@ -138,12 +109,6 @@ class _PupilSettingsPage extends State<PupilSettings> with SingleTickerProviderS
       archived: user.archived,
       email: user.email
     );
-
-    print(updatedFirstName.isNotEmpty ||
-        updatedLastName.isNotEmpty ||
-        updatedEmail.isNotEmpty);
-
-    // print(updatedFirstName);
 
     if(updatedFirstName.isNotEmpty ||
         updatedLastName.isNotEmpty ||
@@ -351,7 +316,6 @@ class _PupilSettingsPage extends State<PupilSettings> with SingleTickerProviderS
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                // Expanded(
                   DecoratedBox(
                     decoration: BoxDecoration(border: BoxBorder.symmetric()),
                     child: Row(
@@ -372,7 +336,10 @@ class _PupilSettingsPage extends State<PupilSettings> with SingleTickerProviderS
                           ),
                           onPressed: () {
                             setState(() {
-                              Clipboard.setData(ClipboardData(text: oneTimePassword));
+                              if(oneTimePassword == null) {
+                                return;
+                              }
+                              Clipboard.setData(ClipboardData(text: oneTimePassword!));
                             });
                           },
                         ),
@@ -384,23 +351,17 @@ class _PupilSettingsPage extends State<PupilSettings> with SingleTickerProviderS
                           ),
                           onPressed: () async {
                             PupilService pupilService = PupilService(apiUrl: ApiConfig.baseUrl);
-                            // print(user.id);
-                            // print(widget.pupil.pupilId);
 
-                            // ID IS ALWAYS 4
                             var createdOneTimePassword = await pupilService.createOneTimePassword(widget.pupil.pupilId);
                             
-                            // print(createdOneTimePassword);
                             setState(() {
                               oneTimePassword = createdOneTimePassword.body;
-                              // oneTimePassword = oneTimePasswords[Random().nextInt(oneTimePasswords.length - 1)]; 
                             });
                           },
                         ),
                       ],
                     ),
                   ),
-                // ),
               ],
             ),
           ),
@@ -409,8 +370,6 @@ class _PupilSettingsPage extends State<PupilSettings> with SingleTickerProviderS
       ];
 
   _handlePopWithSave() {
-    // print("VIND!");
-    // print("RESULT: $result");
 
     Future.microtask(() =>
       Navigator.pop(context, widget.pupil)
@@ -419,8 +378,8 @@ class _PupilSettingsPage extends State<PupilSettings> with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final messenger = ScaffoldMessenger.of(context);
+    // final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    // final messenger = ScaffoldMessenger.of(context);
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, Pupil? result) {
@@ -443,31 +402,6 @@ class _PupilSettingsPage extends State<PupilSettings> with SingleTickerProviderS
               textAlign: TextAlign.center,
             ),
           ),
-          
-          // Padding(
-          //   padding: const EdgeInsets.only(top: 25),
-          //   child: Column(
-          //     mainAxisSize: MainAxisSize.min,
-          //     crossAxisAlignment: CrossAxisAlignment.center,
-          //     children: [
-          //       FittedBox(
-          //         child: Text(
-          //           'Indstillinger for ${updatedFirstName.isNotEmpty ? updatedFirstName : "${widget.pupil.firstName}"}',
-          //           softWrap: true,
-          //           style: TextStyle(fontSize: 36),
-          //           textAlign: TextAlign.center,
-          //         ),
-          //       ),
-          //       // SizedBox(height: 8),
-          //       // Icon(
-          //       //   Icons.settings_outlined,
-          //       //   color: AppColors.textPrimary,
-          //       //   size: 32.0,
-          //       //   semanticLabel: 'Settings',
-          //       // ),
-          //     ],
-          //   ),
-          // ),
         ),
         bottomNavigationBar: NavBar(currentPageIndex: 0,),
         backgroundColor: Colors.white,
