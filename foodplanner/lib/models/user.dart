@@ -69,3 +69,55 @@ class UserLogin {
     };
   }
 }
+
+class GuardianUser {
+  final int id;
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String? password;
+  final UserRoles role;
+  final bool roleApproved;
+  final int? pinCode;
+  final bool archived;
+
+  const GuardianUser({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    this.password,
+    required this.role,
+    required this.roleApproved,
+    this.pinCode,
+    required this.archived,
+  });
+  
+  factory GuardianUser.fromJson(Map<String, dynamic> json) {
+    return switch (json) {
+      {
+        'id': int id,
+        'firstName': String firstName,
+        'lastName': String lastName,
+        'email': String email,
+        'password': String password,
+        'role': int role,
+        'roleApproved': bool roleApproved,
+        'pinCode': int? pinCode,
+        'archived': bool archived,
+      } => 
+        GuardianUser(
+          id: id,
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password,
+          role: UserRoles.fromInt(role),
+          roleApproved: roleApproved,
+          pinCode: pinCode,
+          archived: archived,
+        ),
+      _ => throw const FormatException('Bruger kunne ikke findes.'),
+    };
+  }
+}

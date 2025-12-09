@@ -11,10 +11,8 @@ class CollapsibleList extends StatelessWidget {
   final Color? headerColor;
   final double? headerWidth;
   final double? bodyWidth;
-
   final String headerText;
   final bool isExpanded;
-  
   final VoidCallback onFeedback;
   final VoidCallback onLunch;
   final VoidCallback onSettings;
@@ -30,7 +28,6 @@ class CollapsibleList extends StatelessWidget {
 
     required this.headerText,
     required this.isExpanded,
-
     required this.onFeedback,
     required this.onLunch,
     required this.onSettings,

@@ -91,15 +91,15 @@ class LoginPageState extends State<LoginPage> {
           .fetchAuthData(usernameController.text, passwordController.text);
 
       if (!context.mounted){
-        developer.log('buildcontext is not mounted, in $runtimeType');
+        //developer.log('buildcontext is not mounted, in $runtimeType');
         return;
       }
 
-        developer.log('Login successful, role data: $role');
-        developer.log('Has student role: ${role.hasRole(Role.pupil)}');
-        developer.log('Has parent role: ${role.hasRole(Role.guardian)}');
-        developer.log('Has teacher role: ${role.hasRole(Role.teacher)}');
-        developer.log('Has admin role: ${role.hasRole(Role.admin)}'); 
+        //developer.log('Login successful, role data: $role');
+        //developer.log('Has student role: ${role.hasRole(Role.pupil)}');
+        //developer.log('Has parent role: ${role.hasRole(Role.guardian)}');
+        //developer.log('Has teacher role: ${role.hasRole(Role.teacher)}');
+        //developer.log('Has admin role: ${role.hasRole(Role.admin)}'); 
         var navStrategy = NavBarStrategyMapper.getNavBarStrategy(role);
         navStrategy.navigateToHomePage(context, role);
 

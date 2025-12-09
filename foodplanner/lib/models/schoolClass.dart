@@ -1,8 +1,8 @@
 class SchoolClass {
   final int classId;
-  final String className;
+  String className;
 
-  const SchoolClass({
+  SchoolClass({
     required this.classId,
     required this.className,
   });

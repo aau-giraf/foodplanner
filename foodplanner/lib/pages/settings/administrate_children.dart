@@ -5,38 +5,37 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/schoolClass.dart';
-import 'package:foodplanner/services/pupil_service.dart';
+import 'package:foodplanner/services/child_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/pages/pupil_profile.dart';
+import 'package:foodplanner/pages/child_profile.dart';
 import 'package:foodplanner/components/search_field.dart';
 
-class AdministratePupils extends StatefulWidget {
-  const AdministratePupils({super.key});
+class AdministrateChildren extends StatefulWidget {
+  const AdministrateChildren({super.key});
 
-  static final PupilService pupilService =
-      PupilService(apiUrl: ApiConfig.baseUrl);
+  static final ChildService childService =
+      ChildService(apiUrl: ApiConfig.baseUrl);
   static final SchoolClassService schoolClassService =
       SchoolClassService(apiUrl: ApiConfig.baseUrl);
 
   @override
-  AdministratePupilsState createState() => AdministratePupilsState();
+  AdministrateChildrenState createState() => AdministrateChildrenState();
 }
 
-class AdministratePupilsState extends State<AdministratePupils>
+class AdministrateChildrenState extends State<AdministrateChildren>
     with SingleTickerProviderStateMixin {
-  List<Pupil> pupils = [];
+  List<Pupil> children = [];
   List<SchoolClass> schoolClasses = [];
-  List<Pupil> filteredPupils = [];
+  List<Pupil> filteredChildren = [];
   TextEditingController searchController = TextEditingController();
-  
 
   @override
   void initState() {
     super.initState();
-    fetchPupils();
+    fetchChildren();
 
-    AdministratePupils.schoolClassService.fetchAllClasses().then((result) {
+    AdministrateChildren.schoolClassService.fetchAllClasses().then((result) {
       setState(() {
         schoolClasses = result;
       });
@@ -47,11 +46,11 @@ class AdministratePupilsState extends State<AdministratePupils>
     searchController.addListener(_filterChildren);
   }
 
-  void fetchPupils() {
-    AdministratePupils.pupilService.fetchPupil().then((result) {
+  void fetchChildren() {
+    AdministrateChildren.childService.fetchChild().then((result) {
       setState(() {
-        pupils = result;
-        filteredPupils = result;
+        children = result;
+        filteredChildren = result;
       });
     }).catchError((error) {
       throw (error);
@@ -68,15 +67,15 @@ class AdministratePupilsState extends State<AdministratePupils>
   void _filterChildren() {
     final query = searchController.text.toLowerCase();
     setState(() {
-      filteredPupils = pupils.where((pupil) {
-        final name = '${pupil.firstName} ${pupil.lastName}'.toLowerCase();
-        final className = getClassName(pupil.classId).toLowerCase();
+      filteredChildren = children.where((child) {
+        final name = '${child.firstName} ${child.lastName}'.toLowerCase();
+        final className = getClassName(child.classId).toLowerCase();
         return name.contains(query) || className.contains(query);
       }).toList();
     });
   }
 
-  Widget ctaButtons(Pupil pupil) {
+  Widget ctaButtons(Pupil child) {
     return Row(
       children: [
         IconButton(
@@ -90,13 +89,13 @@ class AdministratePupilsState extends State<AdministratePupils>
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PupilProfile(
-                  pupil: pupil,
-                  onPupilChanged: fetchPupils,
+                builder: (context) => ChildProfile(
+                  child: child,
+                  onChildChanged: fetchChildren,
                 ),
               ),
             ).then((_) {
-              fetchPupils();
+              fetchChildren();
             });
           },
         ),
@@ -151,13 +150,13 @@ class AdministratePupilsState extends State<AdministratePupils>
               controller: searchController,
               hintText: 'Søg efter bruger',
             ),
-            ...filteredPupils.map(
-              (pupil) {
+            ...filteredChildren.map(
+              (child) {
                 return SettingsWidget(
                   leftIcon: SFIcons.sf_figure_child,
                   title:
-                      '${pupil.firstName} ${pupil.lastName} - ${getClassName(pupil.classId)}',
-                  cta: ctaButtons(pupil),
+                      '${child.firstName} ${child.lastName} - ${getClassName(child.classId)}',
+                  cta: ctaButtons(child),
                   type: SettingsType.items,
                 );
               },

@@ -56,7 +56,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
     setState(() {
       teacher = userInfo;
       navStrategy = NavBarStrategyMapper.getNavBarStrategy(userInfo.role);
-      debugPrint('navStrategy $navStrategy');
+      //debugPrint('navStrategy $navStrategy');
     });
   }
 
