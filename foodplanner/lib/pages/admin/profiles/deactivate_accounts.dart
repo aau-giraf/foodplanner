@@ -1,4 +1,4 @@
-import 'dart:developer' as developer;
+/*import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
@@ -201,4 +201,4 @@ class _DeactivateAccountsPageState extends State<DeactivateAccountsPage> {
       ),
     );
   }
-}
+}*/

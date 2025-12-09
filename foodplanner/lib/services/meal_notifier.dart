@@ -48,6 +48,7 @@ class MealNotifier with ChangeNotifier {
     final role = await AuthProvider().retrieveRole();
     if(role == null){developer.log("Role was null"); return;}
     Meal? mealData;
+    
     if (role.hasRole(Role.pupil)||role.hasRole(Role.guardian)) {
       mealData = await mealService
           .fetchMealData(DateFormat('yyyy-MM-dd').format(selectedDate));

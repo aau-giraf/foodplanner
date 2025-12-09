@@ -5,11 +5,13 @@ import 'package:foodplanner/config/colors.dart';
 class CustomScrollbar extends StatelessWidget {
   final Widget child;
   final ScrollController controller;
+  final EdgeInsets padding;
 
   const CustomScrollbar({
     super.key,
     required this.child,
     required this.controller,
+    this.padding = const EdgeInsets.only(bottom: 20, right: 10),
   });
 
 
@@ -25,7 +27,7 @@ class CustomScrollbar extends StatelessWidget {
         thickness: 14,
         radius: const Radius.circular(20),
         interactive: true,
-        padding: EdgeInsets.only(bottom: 20, right: 10),
+        padding: padding,
         child: child,
     );
   }
