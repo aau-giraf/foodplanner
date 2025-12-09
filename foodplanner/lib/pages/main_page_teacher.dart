@@ -48,7 +48,7 @@ class TeacherMainPageState extends State<TeacherMainPage> {
           setState(() {
             _user = userData;
             navStrategy = NavBarStrategyMapper.getNavBarStrategy(userData.role);
-            debugPrint('navStrategy $navStrategy');
+            //debugPrint('navStrategy $navStrategy');
             //debugPrint('_user ${_user.role}');
           });
         });

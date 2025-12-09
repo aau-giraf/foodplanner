@@ -38,6 +38,7 @@ class NavBarStrategyMapper {
     } else if (role.hasAllRoles([Role.admin, Role.teacher])) {
       //debugPrint('Returning admin teacher nav strategy');
       return new AdminRolesNavStrategy();
+      
     } else if (role.hasOnlyRole(Role.admin)) {
       //debugPrint('Returning admin nav strategy');
       return new AdminNavStrategy();
