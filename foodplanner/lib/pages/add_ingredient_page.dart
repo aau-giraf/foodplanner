@@ -57,12 +57,15 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     super.initState();
     client = http.Client();
 
-    authProvider = widget.authProvider ?? AuthProvider();
+    authProvider =  AuthProvider();
 
+    // Load all ingrediens that should be displayed
     _getIngredients();
   }
 
   Future<void> _getIngredients() async {
+
+    // Loading animation while data is loading
     setState(() {
       _isLoading = true;
       _error = null;
@@ -114,9 +117,9 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
           ..addAll(_ingredients);
       });
     } catch (e) {
-      developer.log('Failed to fetch ingredients: $e');
+      developer.log('Failed fetching ingredients: $e');
       setState(() {
-        _error = 'Kunne ikke hente ingredienser';
+        _error = 'Kunne ikke hente ingredienser....';
       });
     } finally {
       if (mounted) {
@@ -285,9 +288,9 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                       padding: const EdgeInsets.all(12),
                       child: Column(
                         children: [
-                          _buildSearchAndAddRow(),
+                          _searchField(),
                           const SizedBox(height: 12),
-                          if (_error != null) _buildErrorBanner(),
+                          if (_error != null) _customErrorBanner(mes: _error),
                           if (_filteredIngredients.isEmpty)
                             _buildEmptyState()
                           else
@@ -358,7 +361,7 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     );
   }
 
-  Widget _buildSearchAndAddRow() {
+  Widget _searchField() {
     return Row(
       children: [
         Expanded(
@@ -372,29 +375,37 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     );
   }
 
-  Widget _buildErrorBanner() {
+// Should probably be made as a component 
+  Widget _customErrorBanner({String? mes}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.red.shade50,
+        color: Colors.red,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.red.shade200),
+        border: Border.all(color: Colors.white),
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline, color: Colors.red),
+          const Icon(Icons.error_outline, color: Colors.white),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              _error ?? '',
-              style: AppTextStyles.buttonTextSmall.copyWith(color: Colors.red),
+              mes ?? 'Der opstod en fejl',
+              style: AppTextStyles.buttonTextSmall.copyWith(color: Colors.white),
             ),
           ),
+       
           TextButton(
             onPressed: _getIngredients,
-            child: const Text('Prøv igen'),
+            child: Row(
+              children: [
+                 Icon(Icons.refresh_outlined,color: Colors.white,),
+                const Text('Prøv igen', style: TextStyle(color: Colors.white),),
+              ],
+            ),
           ),
+          
         ],
       ),
     );
@@ -435,16 +446,20 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: .08),
                 blurRadius: 12,
                 offset: const Offset(0, 6),
               ),
+
             ],
+            
           ),
           child: InkWell(
             borderRadius: BorderRadius.circular(24),
             onTap: () {
+              // Not allowing to select ings when they are in eidt mode
               if (_isEditMode) return;
+
               controller.value = !controller.value;
             },
             child: Container(
@@ -465,19 +480,21 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
                         )
                       : Icon(
                           Icons.image_outlined,
-                          size: 32,
+                          size: 40,
                           color: AppColors.secondary,
                         ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      ingredient['name'] as String,
+                      ingredient['name'],
                       style: AppTextStyles.bigText.copyWith(
                         color: isSelected ? Colors.white : Colors.black,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
+
+                  
                   if (_isEditMode)
                     InkWell(
                       onTap: () {

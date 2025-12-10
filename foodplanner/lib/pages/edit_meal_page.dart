@@ -279,6 +279,7 @@ bool isTemplate = false;
                       .map((p) => {
                             'id': p.ingredient.id,
                             'name': p.ingredient.name,
+                            'foodImageId': p.ingredient.foodImageId,
                           })
                       .toList());
           final bool showNoMealData = meal == null && _tempIng == null;
@@ -299,7 +300,7 @@ bool isTemplate = false;
                       borderRadius: BorderRadius.circular(10),
                     ),
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -385,19 +386,19 @@ bool isTemplate = false;
                     
                         ),
                         const SizedBox(height: 20),
-                        Text('Ingredienser', style: AppTextStyles.headline4,),
+                        Center(child: Text('Ingredienser', style: AppTextStyles.headline4,)),
                     
                        const SizedBox(height: 8),
                        if (showNoMealData)
                          const Text('Ingen ingrediens data for  .')
                        else if (displayedIngredients.isEmpty)
                          const Text('Ingen ingredienser for denne dato.')
-                       else
+                       else 
                          ListView.separated(
                            shrinkWrap: true,
                            itemCount: displayedIngredients.length,
                           separatorBuilder: (_, __) => const Divider(height: 0),
-                           itemBuilder: (context, index) {
+                           itemBuilder: (context, index)  {
                              final ingredient = displayedIngredients[index];
                              
                             return  Padding(
@@ -421,7 +422,7 @@ bool isTemplate = false;
                            },
                          ),
 
-
+ const SizedBox(height: 10),
                         CustomButton(onTab:   () async{
                          final meal = context.read<MealNotifier>().meal;
                                final preSelected = _tempIng ??
@@ -446,10 +447,10 @@ bool isTemplate = false;
                                  _updateIngredients(result as List<Map<String, dynamic>>);
                                }
                         }, 
-                        text: 'Tilføj eller fjern ingredienser',
+                        text: 'Fjern eller tilføj ingredienser',
                         foregroundColor: AppColors.textPrimary,
                         backgroundColor: Colors.white,
-                        // trailingIcon: SFIcon(SFIcons.sf_chevron_right),
+                        trailingIcon: SFIcon(SFIcons.sf_chevron_right),
                         size: ButtonSize.medium
                         
                         ),
@@ -502,6 +503,7 @@ bool isTemplate = false;
                   text: _isSaving ? 'Gemmer...' : 'Gem Ændringer',
                   size: ButtonSize.medium,
                 ),
+                 const SizedBox(height: 10),
               ],
             ),
           );

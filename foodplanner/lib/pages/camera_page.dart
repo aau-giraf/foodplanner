@@ -87,7 +87,6 @@ class _MealPageState extends State<CameraPage> {
           child: InkWell(
             onTap: () {
               Navigator.pop(context);
-              Navigator.pop(context);
             },
             child: Row(
               children: [

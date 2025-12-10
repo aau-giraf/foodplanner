@@ -8,6 +8,7 @@ import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
+import 'package:foodplanner/models/sub_ingredient_relation.dart';
 import 'package:foodplanner/pages/add_ingredient_page.dart';
 import 'package:foodplanner/pages/camera_page.dart';
 import 'package:foodplanner/components/image.dart';
@@ -15,6 +16,7 @@ import 'package:foodplanner/pages/food_template_page.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/meal_services.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
+import 'package:foodplanner/services/sub_ingredient_relation_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
@@ -45,6 +47,15 @@ class _MealFormPageState extends State<MealFormPage> {
   int mealId = 0;
   bool isUploadingImage = false;
   bool saveAsTemplate = false;
+  final Set<int> _expandedIngredientIds = <int>{};
+
+  // List of sub-ingredient names for each ingredient id
+  final Map<int, Future<List<String>>> _ingredientSubIngredientNames = {};
+
+  final http.Client _client = http.Client();
+  final subIngredientRelationServices = SubIngredientRelationServices(
+    apiUrl: ApiConfig.baseUrl,
+  );
 
   @override
   void initState() {
@@ -184,7 +195,29 @@ class _MealFormPageState extends State<MealFormPage> {
   @override
   void dispose() {
     mealNameController.dispose(); // Dispose of the controller.
+    _client.close();
     super.dispose(); // Call the superclass dispose method.
+  }
+
+  Future<List<String>> _getSubIngredientNames(int ingredientId) {
+    return _ingredientSubIngredientNames.putIfAbsent(
+      ingredientId,
+      () async {
+        
+        final authProvider = AuthProvider();
+      final subIngredientRelations = await subIngredientRelationServices.getSubIngByIngId(authProvider,ingredientId, client: _client);
+       
+        final List<String> names = [];
+
+        for (final subIngredientRelation in subIngredientRelations){
+            names.add(subIngredientRelation.subIngredient!.name);
+        }
+      
+        
+      // print(names);
+        return names;
+      },
+    );
   }
 
   @override
@@ -357,20 +390,122 @@ class _MealFormPageState extends State<MealFormPage> {
                       padding: const EdgeInsets.only(bottom: 20),
                       child: ListView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: selectedIngredients.length,
                         itemBuilder: (BuildContext context, index) {
-                        
                           final ingredient = selectedIngredients[index];
-                          return SettingsWidget(
-                            leftWidget: FoodImage(
-                              foodImageId: ingredient['foodImageId'],
-                              width: 50,
-                              height: 50,
-                              borderRadius: 8.0,
+                          final int ingredientId = ingredient['id'] as int;
+                          final bool isExpanded =
+                              _expandedIngredientIds.contains(ingredientId);
+
+                          return Container(
+                            margin: const EdgeInsets.symmetric(vertical: 6),
+                            decoration: BoxDecoration(
+                              color: AppColors.background,
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                            title: ingredient['name'],
-                            type: SettingsType.items,
+                            child: Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      if (isExpanded) {
+                                        _expandedIngredientIds
+                                            .remove(ingredientId);
+                                      } else {
+                                        _expandedIngredientIds
+                                            .add(ingredientId);
+                                      }
+                                    });
+                                  },
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: SettingsWidget(
+                                    leftWidget: FoodImage(
+                                      foodImageId: ingredient['foodImageId'],
+                                      width: 50,
+                                      height: 50,
+                                      borderRadius: 8.0,
+                                    ),
+                                    title: ingredient['name'],
+                                    type: SettingsType.items,
+                                    cta: Icon(
+                                      isExpanded
+                                          ? Icons.keyboard_arrow_up
+                                          : Icons.keyboard_arrow_down,
+                                      color: AppColors.secondary,
+                                    ),
+                                  ),
+                                ),
+                                if (isExpanded)
+                                  FutureBuilder<List<String>>(
+                                    future: _getSubIngredientNames(
+                                      ingredientId,
+                                    ),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        );
+                                      }
+
+                                      final subNames =
+                                          snapshot.data ?? <String>[];
+
+                                      if (subNames.isEmpty) {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text('Ingen underingredienser'),
+                                        );
+                                      }
+
+                                      return Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            30, 0, 16, 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const SizedBox(height: 4),
+                                            ...subNames.map(
+                                              (name) => Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 2),
+                                                child: Row(
+                                                  children: [
+                                                    const Icon(
+                                                      Icons.circle,
+                                                      size: 6,
+                                                      color:
+                                                          AppColors.secondary,
+                                                    ),
+                                                    const SizedBox(width: 6),
+                                                    Expanded(
+                                                      child: Text(
+                                                        name,
+                                                        style: AppTextStyles
+                                                            .mediumText
+                                                            .copyWith(
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                              ],
+                            ),
                           );
                         },
                       ),
