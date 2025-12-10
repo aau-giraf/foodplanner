@@ -117,6 +117,7 @@ void main() {
           "food_image_id": ${meal.foodImageId}, 
           "user_ref": 1, 
           "date": "${meal.date?.toIso8601String()}", 
+          "template": ${meal.template}
           "ingredients": [
             {
               "id": ${meal.ingredients[0].id}, 
@@ -138,7 +139,7 @@ void main() {
           ]
         }''', 201));
         
-        final response = await createMeal(authProvider, meal.name, meal.foodImageId, meal.date, client: client);
+        final response = await createMeal(authProvider, meal.name,meal.template, meal.foodImageId, meal.date, client: client);
 
         expect(response.statusCode, 201);
       });
