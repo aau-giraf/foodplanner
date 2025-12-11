@@ -21,14 +21,14 @@ class Settings extends StatefulWidget {
   const Settings({super.key});
 
   @override
-  State<Settings> createState() => _SettingsState();
+  State<Settings> createState() => SettingsState();
 }
 
-class _SettingsState extends State<Settings> {
-  final UserService _userService = UserService(apiUrl: ApiConfig.baseUrl);
-  late User _currentUser;
-  late SettingsData _editedData;
-  int _numberOfEdits = 0;
+class SettingsState extends State<Settings> {
+  UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
+  late User currentUser;
+  late SettingsData editedData;
+  int numberOfEdits = 0;
   List<User> totalAdminUsers = [];
 
   int edits = 0;
@@ -36,7 +36,7 @@ class _SettingsState extends State<Settings> {
   @override
   void initState(){
     super.initState();
-    _currentUser = User(
+    currentUser = User(
       id: 0,
       email: 'Unknown',
       firstName: 'Unknown',
@@ -44,18 +44,18 @@ class _SettingsState extends State<Settings> {
       role: UserRoles.empty(),
       archived: false, 
     );
-    _editedData = SettingsData.fromUser(_currentUser);
+    editedData = SettingsData.fromUser(currentUser);
     _fetchUserInfo();
   }
 
-  bool get hasChanges => _numberOfEdits > 0;
+  bool get hasChanges => numberOfEdits > 0;
 
-  bool get isFirstNameEdited => _editedData.firstName.trim() != _currentUser.firstName.trim();
-  bool get isLastNameEdited => _editedData.lastName.trim() != _currentUser.lastName.trim();
-  bool get isEmailEdited => _editedData.email.trim() != _currentUser.email.trim();
-  bool get isPasswordEdited => _editedData.password.isNotEmpty;
-  bool get isPincodeEdited => _editedData.pincode.isNotEmpty;
-  bool get isAdmin => _currentUser.role.hasRole(Role.admin);
+  bool get isFirstNameEdited => editedData.firstName.trim() != currentUser.firstName.trim();
+  bool get isLastNameEdited => editedData.lastName.trim() != currentUser.lastName.trim();
+  bool get isEmailEdited => editedData.email.trim() != currentUser.email.trim();
+  bool get isPasswordEdited => editedData.password.isNotEmpty;
+  bool get isPincodeEdited => editedData.pincode.isNotEmpty;
+  bool get isAdmin => currentUser.role.hasRole(Role.admin);
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _showSnackBar(String text, Color color){
     final messenger = ScaffoldMessenger.of(context);
@@ -68,50 +68,50 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-  void _calculateNumberOfEdits() {
+  void calculateNumberOfEdits() {
     setState(() {
-      _numberOfEdits = 0;
-      if (isFirstNameEdited) _numberOfEdits++;
-      if (isLastNameEdited) _numberOfEdits++;
-      if (isEmailEdited) _numberOfEdits++;
-      if (isPasswordEdited) _numberOfEdits++;
-      if (isPincodeEdited) _numberOfEdits++;
+      numberOfEdits = 0;
+      if (isFirstNameEdited) numberOfEdits++;
+      if (isLastNameEdited) numberOfEdits++;
+      if (isEmailEdited) numberOfEdits++;
+      if (isPasswordEdited) numberOfEdits++;
+      if (isPincodeEdited) numberOfEdits++;
     });
   }
 
   // Helper methods for updating daata
   void updateFirstName(String value) {
-    _editedData.firstName = value;
-    _calculateNumberOfEdits();
+    editedData.firstName = value;
+    calculateNumberOfEdits();
   }
 
   void updateLastName(String value) {
-    _editedData.lastName = value;
-    _calculateNumberOfEdits();
+    editedData.lastName = value;
+    calculateNumberOfEdits();
   }
 
   void updateEmail(String value) {
-    _editedData.email = value;
-    _calculateNumberOfEdits();
+    editedData.email = value;
+    calculateNumberOfEdits();
   }
 
   void updatePassword(String value) {
-    _editedData.password = value;
-    _calculateNumberOfEdits();
+    editedData.password = value;
+    calculateNumberOfEdits();
   }
 
   void updatePincode(String value) {
-    _editedData.pincode = value;
-    _calculateNumberOfEdits();
+    editedData.pincode = value;
+    calculateNumberOfEdits();
   }
 
   Future<void> _fetchUserInfo() async {
     try {
-      final userInfo = await _userService.fetchLoggedInUser();
+      final userInfo = await userService.fetchLoggedInUser();
       setState((){
-        _currentUser = userInfo;
-        _editedData = SettingsData.fromUser(userInfo);
-        _calculateNumberOfEdits();
+        currentUser = userInfo;
+        editedData = SettingsData.fromUser(userInfo);
+        calculateNumberOfEdits();
       });
     } catch (e) {
       print('Error fetching user info: $e');
@@ -120,19 +120,19 @@ class _SettingsState extends State<Settings> {
 
   Future<void> saveChanges() async {
     try {
-      await _userService.updateUser(
-        _currentUser.id, 
-        isFirstNameEdited ? _editedData.firstName : _currentUser.firstName, 
-        isLastNameEdited ? _editedData.lastName : _currentUser.lastName, 
-        isEmailEdited ? _editedData.email : _currentUser.email,
+      await userService.updateUser(
+        currentUser.id, 
+        isFirstNameEdited ? editedData.firstName : currentUser.firstName, 
+        isLastNameEdited ? editedData.lastName : currentUser.lastName, 
+        isEmailEdited ? editedData.email : currentUser.email,
       );
 
       if (isPincodeEdited) {
-        await _userService.updatePincode(_editedData.pincode);
+        await userService.updatePincode(editedData.pincode);
       }
 
       if (isPasswordEdited) {
-        await _userService.updatePassword(_editedData.password);
+        await userService.updatePassword(editedData.password);
       }
 
       resetPage();
@@ -161,26 +161,26 @@ class _SettingsState extends State<Settings> {
   Future<void> resetPage() async {
     await _fetchUserInfo();
     setState(() {
-      _editedData.password = '';
-      _editedData.pincode = '';
-      _numberOfEdits = 0;
+      editedData.password = '';
+      editedData.pincode = '';
+      numberOfEdits = 0;
     });
   }
 
   void discardChanges() {
     setState(() {
-      _editedData.firstName = _currentUser.firstName;
-      _editedData.lastName = _currentUser.lastName;
-      _editedData.email = _currentUser.email;
-      _editedData.password = '';
-      _editedData.pincode = '';
-      _numberOfEdits = 0;
+      editedData.firstName = currentUser.firstName;
+      editedData.lastName = currentUser.lastName;
+      editedData.email = currentUser.email;
+      editedData.password = '';
+      editedData.pincode = '';
+      numberOfEdits = 0;
     });
   }
 
   Future<List<User>> findAdminUsers() async {
     totalAdminUsers.clear();
-    var allUsers = await _userService.fetchAllUsers();
+    var allUsers = await userService.fetchAllUsers();
     for (var user in allUsers){
       if (user.role.hasRole(Role.admin)){
         totalAdminUsers.add(user);
@@ -192,7 +192,7 @@ class _SettingsState extends State<Settings> {
   void deleteLoggedInUser() async {
     try {
       
-      var response = await _userService.deleteLoggedInUser();
+      var response = await userService.deleteLoggedInUser();
 
       if (response.statusCode == 204){
         _showSnackBar('Bruger er slettet', Colors.green);
@@ -269,7 +269,7 @@ class _SettingsState extends State<Settings> {
       children: [
         SizedBox(height: 20),
         CustomButton(
-          text: _numberOfEdits > 1 ? 'Gem ændringer' : 'Gem ændring',
+          text: numberOfEdits > 1 ? 'Gem ændringer' : 'Gem ændring',
           onTab: saveChanges,
         ),
         SizedBox(height: 20),
@@ -334,8 +334,8 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    final user = _currentUser;
-    final data = _editedData;
+    final user = currentUser;
+    final data = editedData;
 
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -373,7 +373,7 @@ class _SettingsState extends State<Settings> {
                       ),
                     ),
                     Visibility(
-                      visible: _numberOfEdits > 0,
+                      visible: numberOfEdits > 0,
                       child: _buildSaveButton(),
                     ),
                   ],
