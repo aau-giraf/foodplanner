@@ -50,7 +50,11 @@ void main() {
 
     //inject mock
     final state = tester.state<SettingsState>(find.byType(Settings));
-    //state.userService = mockUserService;
+    
+    //aktiver mocken
+    state.userService = mockUserService;
+    
+    //tving opdatering via mocken
     await state.resetPage();
     
     //vent på UI updatere med ny data
@@ -64,6 +68,49 @@ void main() {
 
       verify(mockUserService.fetchLoggedInUser()).called(1);
       expect(state.currentUser.firstName, 'Test');
+      expect(state.numberOfEdits, 0);
+    });
+
+    testWidgets('Ændringer i felter opdaterer "numberOfEdits', (tester) async {
+      final state = await loadSettingsState(tester);
+
+      state.updateFirstName('John');
+      expect(state.isFirstNameEdited, true);
+      expect(state.numberOfEdits, 1);
+
+      state.updateLastName('Doe');
+      expect(state.numberOfEdits, 2);
+
+      state.updateFirstName('Test');
+      expect(state.numberOfEdits, 1);
+    });
+
+    testWidgets('saveChanges kalder API med korrekte data', (tester) async {
+      final state = await loadSettingsState(tester);
+
+      //arrange
+      state.updateFirstName('NewName');
+      state.updatePassword('Testing123');
+
+      //act
+      await state.saveChanges();
+
+      //assert
+      verify(mockUserService.updateUser(any, 'NewName', any, any));
+      verify(mockUserService.updatePassword('Testing123'));
+
+      //man kan også teste at det andet ikke blev kaldt
+      verifyNever(mockUserService.updatePassword(any));
+    });
+
+    testWidgets('discardChanges nulstiller alt', (tester) async {
+      final state = await loadSettingsState(tester);
+
+      state.updateFirstName('WrongName');
+
+      state.discardChanges();
+
+      expect(state.editedData.firstName, 'Test');
       expect(state.numberOfEdits, 0);
     });
   });
