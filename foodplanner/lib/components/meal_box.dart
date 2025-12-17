@@ -9,8 +9,9 @@ import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:provider/provider.dart';
 
 class ReusableMealBox extends StatefulWidget {
-  const ReusableMealBox({super.key});
+  const ReusableMealBox({super.key, this.isPupil});
 
+  final bool? isPupil;
   @override
   State<ReusableMealBox> createState() => _ReusableMealBoxState();
 }
@@ -74,7 +75,7 @@ class _ReusableMealBoxState extends State<ReusableMealBox> {
                   }),
             ),
             SizedBox(height: 20),
-            Mealboxcontent()
+            Mealboxcontent(isPupil: widget.isPupil ?? false)
           ],
         ),
       ),

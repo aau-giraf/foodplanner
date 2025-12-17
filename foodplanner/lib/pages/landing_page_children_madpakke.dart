@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/meal_box.dart';
@@ -93,7 +92,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: userRole!.hasRole(Role.teacher) ||userRole!.hasRole(Role.admin)
+        leading: userRole?.hasRole(Role.teacher) ?? false || (userRole?.hasRole(Role.admin) ?? false)
             ? IconButton(
                 onPressed: () {
                   GoRouter.of(context).go(TEACHER_ROOT);
@@ -106,7 +105,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
           style: AppTextStyles.headline4,
         ),
         centerTitle: true,
-        actions: !(userRole!.hasRole(Role.teacher)) && !(userRole!.hasRole(Role.admin))
+        actions: !(userRole?.hasRole(Role.teacher) ?? false) && !(userRole?.hasRole(Role.admin) ?? false)
             ? [
                 IconButton(
                   onPressed: () {
@@ -141,7 +140,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
                             return Text('Data for barnet kunne ikke hentes');
                           }
 
-                          return ReusableMealBox();
+                          return ReusableMealBox(isPupil: true);
                         } else {
                           return CircularProgressIndicator();
                         }

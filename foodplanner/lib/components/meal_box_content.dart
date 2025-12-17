@@ -7,7 +7,9 @@ import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:provider/provider.dart';
 
 class Mealboxcontent extends StatelessWidget {
-  const Mealboxcontent({super.key});
+  final bool isPupil;
+  const Mealboxcontent({super.key, required this.isPupil});
+  
 
   @override
   Widget build(BuildContext context) {
@@ -28,21 +30,22 @@ class Mealboxcontent extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-           /*  Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: CustomButton(
-                onTab: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PupilLandingPageSeMadpakke()
-                    ),
-                  );
-                },
-                text: 'Se madpakke',
-                size: ButtonSize.medium,
+            if(isPupil)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: CustomButton(
+                  onTab: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PupilLandingPageSeMadpakke()
+                      ),
+                    );
+                  },
+                  text: 'Se madpakke',
+                  size: ButtonSize.medium,
+                ),
               ),
-            ), */
           ],
         );
       },
