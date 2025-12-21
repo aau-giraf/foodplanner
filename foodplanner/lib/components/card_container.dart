@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CardContainer extends StatelessWidget{
   final String? title;
-  final Widget childWidget;
+  final Widget child;
   final Clip? clipBehavior;
   final Color color;
 
@@ -11,7 +11,7 @@ class CardContainer extends StatelessWidget{
     this.title,
     this.clipBehavior,
     required this.color,
-    required this.childWidget,
+    required this.child,
   });
 
   @override
@@ -24,7 +24,7 @@ class CardContainer extends StatelessWidget{
       elevation: 3,
       margin: const EdgeInsets.all(15),
       clipBehavior: clipBehavior,
-      child: childWidget,
+      child: child,
     );
   }
 }

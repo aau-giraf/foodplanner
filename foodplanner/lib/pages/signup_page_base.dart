@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/password_requirements.dart';
 import 'package:foodplanner/components/text_field.dart';
@@ -63,7 +63,7 @@ class SignupPageBaseState extends State<SignupPageBase> {
     'hasLength': false,
   };
 
-    // Text error messages
+  // Text error messages
   String firstNameError = '',
         lastNameError = '',
         emailError = '',
@@ -364,4 +364,4 @@ class SignupPageBaseState extends State<SignupPageBase> {
       ),
     );
   }
-}
+}*/

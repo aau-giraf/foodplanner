@@ -22,7 +22,7 @@ class TextFieldCard extends StatelessWidget{
   Widget build(BuildContext context) {
     return CardContainer(
       color: Colors.white,
-      childWidget: Padding(
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: CustomTextField(
           controller: controller,

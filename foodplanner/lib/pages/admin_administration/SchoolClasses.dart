@@ -353,7 +353,7 @@ class _SchoolClasses extends State<SchoolClasses> {
               child: CardContainer(
                 clipBehavior: Clip.antiAlias,
                 color: AppColors.background,
-                childWidget: Column(
+                child: Column(
                   children: [
                     SearchField(
                       controller: _searchFieldController, 

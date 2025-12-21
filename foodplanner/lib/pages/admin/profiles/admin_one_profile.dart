@@ -36,6 +36,9 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
 
   bool _loadingGuardians = false;
 
+  int get userId => widget.user.id;
+
+  String get fullName => '${widget.user.firstName} ${widget.user.lastName}';
 
   @override
   void initState() {
@@ -43,6 +46,8 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
 
     if(isPupil) {
       getGuardiansByPupil();
+      
+      print("HERE IS THE USERS ID: ${widget.user.id}");
     }
   }
 
@@ -68,7 +73,7 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
   Future<void> _deleteProfile() async {
     try {
       
-      var response = await userService.deleteUser(widget.user.id);
+      var response = await userService.deleteUser(userId);
       
       if (!mounted) return;
 
@@ -90,7 +95,7 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
   Future<void> _acceptProfile() async {
     try {
       
-      bool success = await userService.updateApproveUsers(widget.user.id);
+      bool success = await userService.updateApproveUsers(userId);
 
       if (!mounted) return;
 
@@ -110,7 +115,7 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
     return showIPhonePopupBox(
       context: context,
       title: title,
-      message: 'Er du sikker på, at du vil $action ${widget.user.firstName} ${widget.user.lastName}?',
+      message: 'Er du sikker på, at du vil $action $fullName?',
       confirmText: 'Ja',
       cancelText: 'Nej',
       onConfirm: () async {
@@ -229,6 +234,7 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
     try {
 
       final fetchedGuardians = await userService.fetchAllGuardiansByPupilUserId(widget.user.id);
+      print(fetchedGuardians);
 
       setState(() {
         guardiansOfPupil = fetchedGuardians;
@@ -245,20 +251,21 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
     return _loadingGuardians; // futher add for fetching pupils of a guardian, etc
   }
 
+  Widget _buildRelationRowPupil() {
+    final guardiansNames = guardiansOfPupil!.map((guardian) => '${guardian.firstName} ${guardian.lastName}').join(',');
+    if (guardiansNames.isEmpty){
+      return _buildInfoRow('Tilknytning:', 'Ingen');
+    }
+    return _buildInfoRow('Tilknytning:', guardiansNames);
+  }
+
   Widget _buildRelationRow() {
     if (isPupil){
-      final guardiansNames = guardiansOfPupil!.map((guardian) => '${guardian.firstName} ${guardian.lastName}').join(',');
-
-      if (guardiansNames.isEmpty){
-        return _buildInfoRow('Tilknytning:', 'Ingen');
-      }
-
-      return _buildInfoRow('Tilknytning:', guardiansNames);
+      return _buildRelationRowPupil();
     } else if (isGuardian) {
       // add logic for fetching a parent's relations when the endpoint is created
       return _buildInfoRow('Tilknytning:', 'barn');
     }
-
     return const SizedBox.shrink();
   }
   
@@ -322,7 +329,7 @@ class _AdminOneProfilePageState extends State<AdminOneProfilePage> {
           children: [
             if (!widget.isApproved) _buildConfirmationBox(),
             Text(
-              '${widget.user.firstName} ${widget.user.lastName}',
+              fullName,
               style: TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),

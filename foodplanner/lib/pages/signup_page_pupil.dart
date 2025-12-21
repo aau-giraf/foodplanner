@@ -4,10 +4,10 @@ import 'package:dropdown_button2/dropdown_button2.dart' show ButtonStyleData, Dr
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/signup_form.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/schoolClass.dart';
-import 'package:foodplanner/pages/signup_page_base.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
@@ -68,34 +68,30 @@ class _CreatePupilPageState extends State<CreatePupilPage> {
     return null;
   }
 
-  /*Future<void> createGuardianPupilRelation (int childId, int parentId) async {
-    try {
-      final relationResponse = await CreatePupilPage.pupilService.addParentToChild(childId, parentId);
-
-      if(relationResponse.statusCode == 200) {
-          developer.log('Parent-child relation created succesfully');
-      } else if (relationResponse.statusCode == 409) {
-          developer.log('Parent-child relation already exists');
-      } 
-
-    } catch (e) {
-      developer.log("Failed to add parent to child.");
-    }
-  }*/
-
   Future<String> createPupilUser (String firstName, String lastName, String email, String password, List<int> parentIds, int classId) async {
     try {
-      final userResponse = await SignupPageBase.userService.createUserPupil(firstName, lastName, email, password, parentIds, classId);
+      final userResponse = await SignupForm.userService.createUserPupil(firstName, lastName, email, password, parentIds, classId);
 
       if (userResponse.statusCode != 201) {
         var error = jsonDecode(userResponse.body);
-        (context as Element).findAncestorStateOfType<SignupPageBaseState>()?.handleErrors(error);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Fejl ved oprettelse af bruger: $error'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 5),
+          ),
+        );
       }
       print(userResponse.body);
       return userResponse.body;
-
     } catch (e) {
-      developer.log("User for pupil could not be created.");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Fejl ved oprettelse af bruger: $e'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
     }
     return '';
   }
@@ -125,12 +121,7 @@ class _CreatePupilPageState extends State<CreatePupilPage> {
         if (userResponseBody == "") {
           throw Exception("User creation failed.");
         }
-
-        /*final int childId = jsonDecode(userResponseBody);
-
-
-        await createGuardianPupilRelation(childId, parentId);*/
-
+        
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Barn oprettet!'),
@@ -263,7 +254,7 @@ class _CreatePupilPageState extends State<CreatePupilPage> {
 
   @override
   Widget build (BuildContext context) {
-    return SignupPageBase(
+    return SignupForm(
       title: 'Opret barn', 
       buttonText: 'Opret barn', 
       selection: classSelection(), 
