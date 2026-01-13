@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
@@ -369,7 +367,7 @@ class _PupilSettingsPage extends State<PupilSettings> with SingleTickerProviderS
         },
       ];
 
-  _handlePopWithSave() {
+  void _handlePopWithSave() {
 
     Future.microtask(() =>
       Navigator.pop(context, widget.pupil)

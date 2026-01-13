@@ -2,20 +2,14 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
 import 'package:foodplanner/pages/signup_page_adult.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/pages/forgot_password_page.dart';
-import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/user_service.dart';
-import 'package:http/http.dart';
-import 'signup_page.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/models/user_roles.dart';
@@ -151,8 +145,6 @@ class LoginPagePupilState extends State<LoginPagePupil> {
       }
     }
   }
-
-  void loginInpage() {}
 
   void directSignUpPage(BuildContext context) {
     Navigator.push(

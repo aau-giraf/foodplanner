@@ -60,7 +60,8 @@ class GuardianLandingPageMadpakkeState extends State<GuardianLandingPageMadpakke
               Expanded(
                 child: Center(
                   child: Text(
-                    'Velkommen ${_user?.firstName ?? 'Forældre'}',
+                    // 'Velkommen ${_user?.firstName ?? 'Forældre'}',
+                    'Velkommen ${'Forældre'}',
                     style: AppTextStyles.headline4,
                   ),
                 ),

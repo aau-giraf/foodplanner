@@ -195,8 +195,6 @@ class PupilService {
       },
     );
 
-    // print(jsonDecode(response.body));
-    // // return jsonDecode(response.body);
     return response;
   }
 
