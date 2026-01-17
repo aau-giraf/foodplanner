@@ -126,7 +126,7 @@ class PupilService {
         });
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return Pupil.fromJson(data);
+      return Pupil.fromChildJson(data);
     } else {
       throw Exception('Failed to load child data');
     }

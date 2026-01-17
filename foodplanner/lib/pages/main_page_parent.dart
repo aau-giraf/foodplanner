@@ -40,7 +40,7 @@ class ParentMainPageState extends State<ParentMainPage> {
           setState(() {
             _user = userData;
             navStrategy = NavBarStrategyMapper.getNavBarStrategy(userData.role);
-            debugPrint('navStrategy $navStrategy');
+            //debugPrint('navStrategy $navStrategy');
           });
         });
       });
@@ -73,7 +73,7 @@ class ParentMainPageState extends State<ParentMainPage> {
             InkWell(
               hoverColor: const Color.fromRGBO(0, 0, 0, 0),
               onTap: (){
-                debugPrint('navStrategy = $navStrategy');
+                //debugPrint('navStrategy = $navStrategy');
                 navStrategy?.goToPage(CHOOSE_CHILD_PARENT, context);
               },
               
@@ -118,7 +118,7 @@ class ParentMainPageState extends State<ParentMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                debugPrint('navStrategy = $navStrategy');
+                //debugPrint('navStrategy = $navStrategy');
                 navStrategy?.goToPage(SETTINGS_PAGE, context);
               },
               child: Container(

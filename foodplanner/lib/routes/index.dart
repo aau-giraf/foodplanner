@@ -212,7 +212,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
           future:
-              authProvider.hasOneOfRoles([Role.guardian, Role.teacher, Role.admin]),
+              authProvider.hasOneOfRoles([Role.guardian, Role.teacher, Role.admin, Role.pupil]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -262,7 +262,7 @@ final router = GoRouter(
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         return FutureBuilder<bool>(
           future:
-              authProvider.hasOneOfRoles([Role.guardian, Role.teacher, Role.admin]),
+              authProvider.hasOneOfRoles([Role.guardian, Role.teacher, Role.admin, Role.pupil]),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

@@ -37,7 +37,7 @@ class _LandingPageAdminState extends State<AdminLandingPage> {
     setState(() {
       admin = userInfo;
       navStrategy = NavBarStrategyMapper.getNavBarStrategy(userInfo.role);
-      debugPrint('navStrategy $navStrategy');
+      //debugPrint('navStrategy $navStrategy');
     });
   }
   model.User admin = model.User(
