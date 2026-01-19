@@ -176,7 +176,7 @@ class _AdminAllProfilesPageState extends State<AdminAllProfilesPage> {
             Expanded(
               child: CardContainer(
                 color: AppColors.background,
-                childWidget: _buildUserList(),
+                child: _buildUserList(),
               ),
             ),
           ],

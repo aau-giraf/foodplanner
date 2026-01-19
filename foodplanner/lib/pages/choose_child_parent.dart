@@ -17,14 +17,15 @@ import 'package:foodplanner/pages/signup_page_pupil.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/pupil_service.dart';
-import 'package:foodplanner/services/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'dart:developer' as developer;
 
 class ChooseChildGuardian extends StatefulWidget {
-  const ChooseChildGuardian({super.key});
+  const ChooseChildGuardian({super.key, this.pupilService});
+
+  final PupilService? pupilService;
 
   @override
   State<ChooseChildGuardian> createState() =>
@@ -35,9 +36,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
 
   AuthProvider get authProvider => Provider.of<AuthProvider>(context, listen: false);
 
-  final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
-  final PupilService pupilService = PupilService(apiUrl: ApiConfig.baseUrl);
-
+  late final PupilService pupilService;
   final _singleUseCodeController = TextEditingController();
   final _searchFieldController = TextEditingController();
   final _scrollController = ScrollController();
@@ -52,6 +51,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
   @override
   void initState() {
     super.initState();
+    pupilService = widget.pupilService ?? PupilService(apiUrl: ApiConfig.baseUrl);
     _loadChildren(); // loads all children to initialize collapsible list 
   }
 
@@ -89,7 +89,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
   }
 
   // method for filtering the collapsible list based on input in search field
-  void searchFunction(String input){
+  void _searchFunction(String input){
     setState(() {
       _currentlyExpandedIndex = null;
       _isExpanded = false;
@@ -102,7 +102,6 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
     });
   }
 
-  
   Future<void> findExistingChild(String email) async {
     // OBS: Placeholder method - should be used for finding a child based on single-use code
   }
@@ -110,7 +109,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
   Widget _buildSingleUseComponent(){
     return CardContainer(
       color: AppColors.background,
-        childWidget: Column(
+        child: Column(
           children: [
             SizedBox(height: 10),
             Text(
@@ -129,7 +128,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
   Widget buildSearchField(){
     return SearchField(
       controller: _searchFieldController, 
-      onChanged: searchFunction, 
+      onChanged: _searchFunction, 
       borderRadius: 30, 
       backgroundColor: Colors.white, 
       horizontalPadding: 5, 
@@ -148,7 +147,7 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
     return CardContainer(
       clipBehavior: Clip.antiAlias,
       color: AppColors.background,
-      childWidget: Column(
+      child: Column(
         children: [
           buildSearchField(),
           Flexible(
@@ -190,11 +189,9 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
     );
   }
 
-  Widget _buildBodyColumn(double screenWidth){
-    Widget content;
-
+  Widget _buildChildrensList(double screenWidth){
     if(_children.isEmpty){
-      content = Padding(
+      return Padding(
         padding: const EdgeInsets.all(20.0),
         child: Text(
           "Du har lige nu ingen børn tilknyttet. Tilføj et barn eller en relation (med engangskode) nedenfor.",
@@ -203,19 +200,23 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
         ),
       );
     } else if(_children.length == 1) {
-      content = buildSinglePupilView(screenWidth);
+      return buildSinglePupilView(screenWidth);
 
     } else if (_children.length > 1) {
-      content = Flexible(child: buildScrollableView());
+      return Flexible(child: buildScrollableView());
 
     } else {
       throw Exception('Amount of children not handled');
     }
+  }
+
+  Widget _buildBodyColumn(double screenWidth){
 
     return Column (
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          content,
+          
+          _buildChildrensList(screenWidth),
 
           // "Opret barn" button
           Padding (
@@ -245,16 +246,6 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // animation shown if the children are still being loaded
-    if(_isLoading) {
-      return const Center(
-        child: LoadingAnimation(
-          imagePath: 'assets/images/logo.png',
-          size: 50.0, 
-        )
-      );
-    }
-
     return Scaffold(
       appBar: CustomAppBar(
         title: "Vælg barn", materialIcon: 
@@ -266,8 +257,16 @@ class _ChooseChildGuardianState extends State<ChooseChildGuardian> {
       ),
       backgroundColor: Colors.white, 
 
-      // If there is a single child, wrap the body in a scrollable view
-      body: _children.length > 1 
+      // if the children are loaded, show the loading animation
+      body: _isLoading ? 
+        Center(
+          child: LoadingAnimation(
+            imagePath: 'assets/images/logo.png',
+            size: 50.0, 
+          )
+        )
+      // If there is a single child, wrap the whole page in a scrollable view
+      : _children.length > 1 
       ? _buildBodyColumn(screenWidth) 
       : SingleChildScrollView(
         child: _buildBodyColumn(screenWidth)

@@ -136,21 +136,23 @@ class PupilService {
     List<dynamic> jsonList = [];
     final jwtToken = await AuthProvider().retrieveToken();
 
-    var apiClient = ApiClient(basePath: ApiConfig.baseUrl);
-    apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
-    
-    final childrensApi = ChildrensApi(apiClient);
-    
-    final response = await childrensApi.apiChildrensGetChildrenByParentIdGetWithHttpInfo(
-      authorization: 'Bearer $jwtToken',
-      );
+    final response = await http.get(
+      Uri.parse('$apiUrl/api/Childrens/GetChildrenByParentId'),
+      headers: <String, String>{
+        'accept': '*/*',
+        'Authorization': 'Bearer $jwtToken',
+      }
+    );
 
     if (response.statusCode == 200) {
-        jsonList = response.body is List
-          ? response.body
-          : json.decode(response.body);
+      jsonList = response.body is List
+        ? response.body
+        : json.decode(response.body);
+
+      print(jsonList);
 
       return jsonList.map((jsonItem) => Pupil.fromChildJson(jsonItem)).toList();
+
     } else {
       throw Exception('Failed to load children (status ${response.statusCode})');
     }

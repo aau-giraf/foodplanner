@@ -138,7 +138,7 @@ class CollapsibleList extends StatelessWidget {
             // Animated rotation is used for the rotation of the arrow icon to the right of the header
             AnimatedRotation(
               turns: isExpanded ? 0.25 : 0, 
-              duration: Duration(milliseconds: 250),
+              duration: Duration(milliseconds: 300),
               child: SFIcon(
                 SFIcons.sf_chevron_right,
                 fontSize: 22,
@@ -163,8 +163,8 @@ class CollapsibleList extends StatelessWidget {
 
         // Animated size is used for the collapsible element that can be hidden or shown
         AnimatedSize(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeIn,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
           // if isExpanded is true, the buttons should be shown
           child: isExpanded 
             ? Padding (

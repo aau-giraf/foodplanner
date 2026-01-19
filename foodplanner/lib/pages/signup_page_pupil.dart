@@ -4,6 +4,7 @@ import 'package:dropdown_button2/dropdown_button2.dart' show ButtonStyleData, Dr
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
+import 'package:foodplanner/components/signup_form.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/schoolClass.dart';
@@ -13,6 +14,7 @@ import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:provider/provider.dart';
+import 'package:foodplanner/pages/signup_page_base.dart';
 import 'dart:developer' as developer;
 
 class CreatePupilPage extends StatefulWidget {
@@ -56,7 +58,7 @@ class _CreatePupilPageState extends State<CreatePupilPage> {
     try {
 
       var loggedInUser = await CreatePupilPage.userService.fetchLoggedInUser();
-      
+
       print("HER ER PARENT ID: ${loggedInUser.id}");
 
       final int parentId = loggedInUser.id;
@@ -70,17 +72,29 @@ class _CreatePupilPageState extends State<CreatePupilPage> {
 
   Future<String> createPupilUser (String firstName, String lastName, String email, String password, List<int> parentIds, int classId) async {
     try {
-      final userResponse = await SignupPageBase.userService.createUserPupil(firstName, lastName, email, password, parentIds, classId);
+      final userResponse = await SignupForm.userService.createUserPupil(firstName, lastName, email, password, parentIds, classId);
 
       if (userResponse.statusCode != 201) {
         var error = jsonDecode(userResponse.body);
-        (context as Element).findAncestorStateOfType<SignupPageBaseState>()?.handleErrors(error);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Fejl ved oprettelse af bruger: $error'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 5),
+          ),
+        ); 
       }
       print(userResponse.body);
       return userResponse.body;
 
     } catch (e) {
-      developer.log("User for pupil could not be created.");
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Fejl ved oprettelse af bruger: $e'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 5),
+          ),
+        );
     }
     return '';
   }
@@ -243,7 +257,7 @@ class _CreatePupilPageState extends State<CreatePupilPage> {
 
   @override
   Widget build (BuildContext context) {
-    return SignupPageBase(
+    return SignupForm(
       title: 'Opret barn', 
       buttonText: 'Opret barn', 
       selection: classSelection(), 

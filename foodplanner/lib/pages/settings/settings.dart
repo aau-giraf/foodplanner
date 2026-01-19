@@ -200,11 +200,11 @@ class SettingsState extends State<Settings> {
       } else if (response.statusCode == 404) {
         _showSnackBar('Bruger forsøgt slettet kunne ikke findes.', AppColors.errorText);
       } else {
-        _showSnackBar('Der opstod en ukent fejl under sletning af bruger', AppColors.errorText);
+        _showSnackBar('Der opstod en ukendt fejl under sletning af bruger', AppColors.errorText);
       }
 
     } catch (e) {
-      _showSnackBar('Der opstod en ukent fejl under sletning af bruger', AppColors.errorText);
+      _showSnackBar('Der opstod en ukendt fejl under sletning af bruger', AppColors.errorText);
     }
   }
 
@@ -274,7 +274,7 @@ class SettingsState extends State<Settings> {
         ),
         SizedBox(height: 20),
         CustomButton(
-          text: 'Fortryd',
+          text: numberOfEdits > 1 ? 'Annuller ændringer' : 'Annuller ændring',
           onTab: discardChanges,
           backgroundColor: AppColors.background,
           foregroundColor: Colors.black,

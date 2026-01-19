@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/segment_button.dart';
+import 'package:foodplanner/components/signup_form.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/signup_page_base.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
@@ -72,7 +72,7 @@ class _SignupPageAdultState extends State<SignupPageAdult> {
 
     try {
 
-      final response = await SignupPageBase.userService
+      final response = await SignupForm.userService
           .createUser(firstName, lastName, email, password, role.first);
 
       if (!context.mounted) return;
@@ -103,10 +103,10 @@ class _SignupPageAdultState extends State<SignupPageAdult> {
       );
     }
   }
-  
+
   @override
   Widget build(BuildContext context){
-    return SignupPageBase(
+    return SignupForm(
       title: "Opret mig", 
       buttonText: "Opret mig", 
       selection: roleSelection(), 

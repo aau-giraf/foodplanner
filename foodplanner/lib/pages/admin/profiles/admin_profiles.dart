@@ -189,7 +189,7 @@ class _AdminProfilesPageState extends State<AdminProfilesPage> {
           Expanded(
               child: CardContainer(
                 color: AppColors.background,
-                childWidget: _buildRequestList(),
+                child: _buildRequestList(),
               ),
             ),
           Padding(
