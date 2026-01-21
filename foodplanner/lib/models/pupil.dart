@@ -10,7 +10,6 @@ class Pupil {
     required this.firstName,
     required this.lastName,
     this.guardianId,
-    this.guardianId,
     required this.classId,
   });
 

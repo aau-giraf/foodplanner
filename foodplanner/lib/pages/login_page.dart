@@ -7,12 +7,8 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
-import 'package:foodplanner/pages/signup_page_base.dart';
-import 'package:foodplanner/pages/signup_page_pupil.dart';
-/*import 'package:foodplanner/pages/signup_page.dart';*/
 import 'package:foodplanner/pages/signup_page_adult.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
-import 'package:foodplanner/models/user_roles.dart';
 
 //test push
 class LoginPage extends StatefulWidget {

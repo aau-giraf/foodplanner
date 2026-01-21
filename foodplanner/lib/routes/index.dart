@@ -5,7 +5,8 @@ import 'package:foodplanner/pages/admin/profiles/admin_profiles.dart';
 import 'package:foodplanner/pages/change_role_page.dart';
 import 'package:foodplanner/pages/add_meal_form_page.dart';
 import 'package:foodplanner/pages/choose_child_teacher.dart';
-import 'package:foodplanner/pages/create_pupil_page.dart';
+import 'package:foodplanner/pages/choose_child_parent.dart';
+//import 'package:foodplanner/pages/create_pupil_page.dart';
 import 'package:foodplanner/pages/edit_meal_form_page.dart';
 import 'package:foodplanner/pages/feedback_chat_page.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
@@ -14,15 +15,15 @@ import 'package:foodplanner/pages/main_page_admin.dart';
 import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
 import 'package:foodplanner/pages/main_page_guardian.dart';
 import 'package:foodplanner/pages/main_page_teacher.dart';
-import 'package:foodplanner/pages/settings/SchoolClasses.dart';
+import 'package:foodplanner/pages/admin_administration/schoolClasses.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/pages/profile_page.dart';
-import 'package:foodplanner/pages/signup_page.dart';
+import 'package:foodplanner/pages/signup_page_base.dart';
 import 'package:foodplanner/pages/main_page_pupil.dart';
 import 'package:foodplanner/pages/signup_page_adult.dart';
 import 'package:foodplanner/pages/signup_page_pupil.dart';
-import 'package:foodplanner/pages/main_page_student.dart';
+import 'package:foodplanner/pages/main_page_pupil.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:go_router/go_router.dart';
@@ -120,7 +121,7 @@ final router = GoRouter(
     ),
     */
     GoRoute(path: CHOOSE_PUPIL_GUARDIAN,
-      builder: (context, state) => ChooseChildParent(),
+      builder: (context, state) => ChooseChildGuardian(),
     ),
     
     GoRoute(path: CHOOSE_PUPIL_TEACHER,

@@ -69,7 +69,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                     if (!context.mounted) {
                       return;
                     }
-                    GoRouter.of(context).go(STUDENT_ROOT);
+                    GoRouter.of(context).go(PUPIL_ROOT);
                   },
                   icon: SFIcon(SFIcons.sf_lock_open_fill)),
             ],

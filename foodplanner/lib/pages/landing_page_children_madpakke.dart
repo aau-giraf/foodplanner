@@ -22,10 +22,6 @@ class PupilLandingPageMadpakke extends StatefulWidget {
   final Map<String, String> pupil;
   const PupilLandingPageMadpakke(
       {super.key, /* required Map<String, String> */ required this.pupil});
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/sw12_158_nav_parents
   @override
   State<PupilLandingPageMadpakke> createState() =>
       _PupilLandingPageMadpakkeState();
@@ -54,13 +50,6 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
 
     setState(() {
       userRole = role;
-<<<<<<< HEAD
-      _hasRolesFuture =
-          authProvider.hasOneOfRoles([Role.guardian, Role.pupil, Role.teacher]);
-    });
-
-    Pupil? childData;
-=======
 
       _hasRolesFuture = authProvider.hasOneOfRoles([Role.guardian, Role.pupil, Role.teacher]);
     });
@@ -85,28 +74,11 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
       setState(() {
         _pupil = pupilData;
       });
->>>>>>> origin/sw12_158_nav_parents
-
-      if (authProvider.userRole!.hasRole(Role.pupil) || authProvider.userRole!.hasRole(Role.guardian)) {
-        final userService = UserService(apiUrl: ApiConfig.baseUrl);
-        final loggedInUser = await userService.fetchLoggedInUser();
-        
-        int userId = loggedInUser.id;
-
-        childData = await pupilService.getByPupilId(userId);
-
-        setState(() {
-          _pupil = childData;
-        });
     } else if (authProvider.userRole!.hasRole(Role.teacher)) {
-<<<<<<< HEAD
-      int tempChildId = int.parse(widget.pupil['id']!);
-      final childData = await pupilService.getByPupilId(tempChildId);
-=======
+
       int tempPupilId = int.parse(widget.pupil['id']!);
       pupilData = await pupilService.getByPupilId(tempPupilId);
   
->>>>>>> origin/sw12_158_nav_parents
       setState(() {
         _pupil = pupilData;
       });
