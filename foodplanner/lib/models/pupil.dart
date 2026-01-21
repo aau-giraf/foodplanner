@@ -10,20 +10,21 @@ class Pupil {
     required this.firstName,
     required this.lastName,
     this.guardianId,
+    this.guardianId,
     required this.classId,
   });
 
   factory Pupil.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
-        'childId': int childId,
+        'childId': int pupilId,
         'firstName': String firstName,
         'lastName': String lastName,
         'parentId': int guardianId,
         'classId': int classId,
       } =>
         Pupil(
-          pupilId: childId,
+          pupilId: pupilId,
           firstName: firstName,
           lastName: lastName,
           guardianId: guardianId,

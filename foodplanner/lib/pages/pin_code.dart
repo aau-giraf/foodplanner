@@ -118,12 +118,12 @@ class PinCodeState extends State<PinCode> with SingleTickerProviderStateMixin {
         navigationStrategy.goToPage(TEACHER_ROOT, context);
     
       } else if (role.hasOnlyRole(Role.guardian)) {
-        navigationStrategy.goToPage(PARENT_ROOT, context);
+        navigationStrategy.goToPage(GUARDIAN_ROOT, context);
 
       } else if (role.hasOnlyRole(Role.pupil)
       //|| role.hasOnlyRole(Role.child)
       ) {
-        navigationStrategy.goToPage(STUDENT_UNLOCKED, context);
+        navigationStrategy.goToPage(PUPIL_UNLOCKED, context);
     
       } else {
         throw Exception("No pin navigation is handled for this role $role");

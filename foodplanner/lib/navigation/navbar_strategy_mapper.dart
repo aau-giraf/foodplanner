@@ -1,9 +1,9 @@
 import 'package:foodplanner/navigation/user_nav_strategies/admin_nav_strategy.dart';
 import 'package:foodplanner/navigation/user_nav_strategies/admin_roles_nav_strategy.dart';
 import 'package:foodplanner/navigation/user_nav_strategies/admin_teacher_nav_strategy.dart';
-import 'package:foodplanner/navigation/user_nav_strategies/parent_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/guardian_nav_strategy.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
-import 'package:foodplanner/navigation/user_nav_strategies/student_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/pupil_nav_strategy.dart';
 import 'package:foodplanner/navigation/user_nav_strategies/teacher_nav_strategy.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/active_role_service.dart';
@@ -19,10 +19,12 @@ class NavBarStrategyMapper {
       return new TeacherNavStrategy();
     
     } else if (role.hasOnlyRole(Role.guardian)) {
-      return new ParentNavStrategy();
+      //debugPrint('Returning parent nav strategy');
+      return new GuardianNavStrategy();
     
-    } else if (role.hasOnlyRole(Role.pupil) || role.hasOnlyRole(Role.pupil)) {
-      return new StudentUnlockedNavStrategy();
+    } else if (role.hasOnlyRole(Role.pupil)) {
+      //debugPrint('Returning student nav strategy');
+      return new PupilUnlockedNavStrategy();
     
     } else if (activeRole == Role.admin && role.hasAllRoles([Role.admin, Role.teacher])) {
       return new AdminNavStrategy();

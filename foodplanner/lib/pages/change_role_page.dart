@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/user_roles.dart';
+import 'package:foodplanner/pages/main_page_admin.dart';
+import 'package:foodplanner/pages/main_page_admin_teacher.dart';
+import 'package:foodplanner/pages/main_page_guardian.dart';
+import 'package:foodplanner/pages/main_page_teacher.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/active_role_service.dart';
 import 'package:go_router/go_router.dart';

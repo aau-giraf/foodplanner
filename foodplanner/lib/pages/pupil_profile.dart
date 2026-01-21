@@ -76,6 +76,7 @@ class PupilProfileState extends State<PupilProfile>
     selectedClassId = widget.pupil.classId.toString();
     initialClassId = widget.pupil.classId.toString();
     //fetchGuardian();
+    //fetchGuardian();
     selectedGuardian = guardian;
     /*selectedGuardianId = widget.pupil.guardianId;
     initialGuardianId = widget.pupil.guardianId;*/

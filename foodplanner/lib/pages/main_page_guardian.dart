@@ -3,7 +3,7 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/nav_bar.dart';
 import 'package:foodplanner/navigation/navbar_strategy_mapper.dart';
 import 'package:foodplanner/navigation/navigation_strategy.dart';
-import 'package:foodplanner/navigation/user_nav_strategies/parent_nav_strategy.dart';
+import 'package:foodplanner/navigation/user_nav_strategies/guardian_nav_strategy.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -24,7 +24,7 @@ class ParentMainPageState extends State<ParentMainPage> {
   final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
   dynamic _user;
 
-  final nav = ParentNavStrategy();
+  final nav = GuardianNavStrategy();
   NavigationStrategy? navStrategy;
 
   @override
@@ -73,8 +73,7 @@ class ParentMainPageState extends State<ParentMainPage> {
             InkWell(
               hoverColor: const Color.fromRGBO(0, 0, 0, 0),
               onTap: (){
-                //debugPrint('navStrategy = $navStrategy');
-                navStrategy?.goToPage(CHOOSE_CHILD_PARENT, context);
+                navStrategy?.goToPage(CHOOSE_PUPIL_GUARDIAN, context);
               },
               
               child: Container(
@@ -118,8 +117,7 @@ class ParentMainPageState extends State<ParentMainPage> {
             InkWell(
               hoverColor: Colors.transparent,
               onTap: (){
-                //debugPrint('navStrategy = $navStrategy');
-                navStrategy?.goToPage(SETTINGS_PAGE, context);
+               navStrategy?.goToPage(SETTINGS_PAGE, context);
               },
               child: Container(
                 height: 59,

@@ -17,21 +17,27 @@ import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+
 class PupilLandingPageMadpakke extends StatefulWidget {
   final Map<String, String> pupil;
   const PupilLandingPageMadpakke(
       {super.key, /* required Map<String, String> */ required this.pupil});
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/sw12_158_nav_parents
   @override
   State<PupilLandingPageMadpakke> createState() =>
       _PupilLandingPageMadpakkeState();
 }
 
 class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
-  //ignore: unused_field 
   late Future<bool> _hasRolesFuture;
   Pupil? _pupil;
+  User? _user;
   final PupilService pupilService = PupilService(apiUrl: ApiConfig.baseUrl);
+  final UserService userService = UserService(apiUrl: ApiConfig.baseUrl);
+
   UserRoles? userRole;
   Future<void>? _callerFuture;
 
@@ -48,11 +54,38 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
 
     setState(() {
       userRole = role;
+<<<<<<< HEAD
       _hasRolesFuture =
           authProvider.hasOneOfRoles([Role.guardian, Role.pupil, Role.teacher]);
     });
 
     Pupil? childData;
+=======
+
+      _hasRolesFuture = authProvider.hasOneOfRoles([Role.guardian, Role.pupil, Role.teacher]);
+    });
+
+    Pupil? pupilData;
+
+    //debugPrint('authProvider.userRole: ${authProvider.userRole}');
+    //debugPrint('Role.student: ${Role.student}');
+
+    //baseret på userRole henter den barnets data ud fra personens egen profil eller fra den map man sendte ind via widgetten.
+    if (authProvider.userRole!.hasRole(Role.pupil) ||
+        authProvider.userRole!.hasRole(Role.guardian)) {
+      final loggedInUser = await userService.fetchLoggedInUser();
+      //debugPrint('loggedInUser: $loggedInUser');
+
+      int userId = loggedInUser.id;
+      //debugPrint('uderId: $userId');
+
+      pupilData = await pupilService.getByPupilId(userId);
+      //debugPrint('pupilData = $pupilData');
+      
+      setState(() {
+        _pupil = pupilData;
+      });
+>>>>>>> origin/sw12_158_nav_parents
 
       if (authProvider.userRole!.hasRole(Role.pupil) || authProvider.userRole!.hasRole(Role.guardian)) {
         final userService = UserService(apiUrl: ApiConfig.baseUrl);
@@ -66,27 +99,33 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
           _pupil = childData;
         });
     } else if (authProvider.userRole!.hasRole(Role.teacher)) {
+<<<<<<< HEAD
       int tempChildId = int.parse(widget.pupil['id']!);
       final childData = await pupilService.getByPupilId(tempChildId);
+=======
+      int tempPupilId = int.parse(widget.pupil['id']!);
+      pupilData = await pupilService.getByPupilId(tempPupilId);
+  
+>>>>>>> origin/sw12_158_nav_parents
       setState(() {
-        _pupil = childData;
+        _pupil = pupilData;
       });
     }
 
-    if(childData != null) {
+    if(pupilData != null) {
       setState(() {
         _callerFuture = caller();
       });
-    } else if (childData == null) {
-      throw Exception('ChildData er null');
+    } else if (pupilData == null) {
+      throw Exception('pupilData er null');
     }
   }
 
   Future<void> caller() async {
-    if(_pupil?.guardianId != null) {
-      await MealNotifier().teacherUpdateChildId(_pupil!.guardianId!);
-    }
-    await MealNotifier().updateDate(DateTime.now());
+    final mealNotifier = Provider.of<MealNotifier>(context, listen: false);
+    
+    await mealNotifier.teacherUpdateChildId(_pupil!.pupilId);
+    await mealNotifier.updateDate(DateTime.now());
   }
 
   @override
@@ -155,7 +194,7 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
                       child: CustomButton(
                         onTab: () {
                           GoRouter.of(context).go(
-                            FEEDBACK_Page,
+                            FEEDBACK_PAGE,
                             extra: {
                               'from': TEACHER_ROOT,
                               'childId': _pupil!.pupilId.toString()

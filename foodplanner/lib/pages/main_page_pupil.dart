@@ -111,7 +111,7 @@ class ParentLandingPageMadpakkeState extends State<ParentLandingPageMadpakke> {
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: CustomButton(
                             onTab: () {
-                              GoRouter.of(context).go(FEEDBACK_Page);
+                              GoRouter.of(context).go(FEEDBACK_PAGE);
                             },
                             text: 'Se Feedback',
                           ),

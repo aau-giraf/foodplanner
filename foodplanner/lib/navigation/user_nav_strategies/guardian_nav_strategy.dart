@@ -9,9 +9,9 @@ import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:provider/provider.dart';
 
-class ParentNavStrategy extends NavigationStrategy {
+class GuardianNavStrategy extends NavigationStrategy {
  
-  List<String> _pages = [PARENT_ROOT, CHOOSE_CHILD_PARENT, SETTINGS_PAGE, LOGIN_PAGE];
+  List<String> _pages = [GUARDIAN_ROOT, CHOOSE_PUPIL_GUARDIAN, SETTINGS_PAGE, LOGIN_PAGE];
 
   @override
   set pages(List<String> pages) {
