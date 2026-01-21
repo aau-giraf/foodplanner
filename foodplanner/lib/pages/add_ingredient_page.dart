@@ -5,6 +5,7 @@ import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/custom_checkbox.dart';
 import 'package:foodplanner/components/image.dart';
+import 'package:foodplanner/components/loading_animation.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
 import 'package:foodplanner/config/colors.dart';
@@ -33,7 +34,6 @@ class AddIngredientPage extends StatefulWidget {
 }
 
 class _AddIngredientPageState extends State<AddIngredientPage> {
-  
   late final AuthProvider authProvider;
 
   final List<Map<String, dynamic>> _ingredients = [];
@@ -43,6 +43,9 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
   final Map<dynamic, ValueNotifier<bool>> _controllersById = {};
   Client? client;
   bool _isEditMode = false;
+
+  bool _isLoading = true;
+  String? _error;
 
   final ingredientServices = IngredientServices(
     apiUrl: ApiConfig.baseUrl,
@@ -54,20 +57,34 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
     super.initState();
     client = http.Client();
 
-    authProvider = widget.authProvider ?? AuthProvider();
+    authProvider =  AuthProvider();
 
+    // Load all ingrediens that should be displayed
     _getIngredients();
   }
 
   Future<void> _getIngredients() async {
+
+    // Loading animation while data is loading
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
     try {
-      // final authProvider = AuthProvider(); // This should be injected so we can test it
       final ingredients =
           await ingredientServices.fetchIngredientsByUserID(authProvider);
       setState(() {
-        _ingredients.addAll(
-            ingredients.map((e) => {'id': e.id, 'name': e.name, 'foodImageId': e.foodImageId}).toList());
-             _ingredients.sort((a, b ) => (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
+        _ingredients
+          ..clear()
+          ..addAll(ingredients
+              .map((e) =>
+                  {'id': e.id, 'name': e.name, 'foodImageId': e.foodImageId})
+              .toList());
+        _ingredients.sort((a, b) => (a['name'] as String)
+            .toLowerCase()
+            .compareTo((b['name'] as String).toLowerCase()));
+
         // Preserve existing controllers where possible so selection isn't lost
         final Map<dynamic, ValueNotifier<bool>> newControllers = {};
         for (final ing in _ingredients) {
@@ -76,7 +93,9 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
             newControllers[id] = _controllersById[id]!;
           } else {
             // Check if this ingredient is preselected
-            final isPreSelected = widget.preSelectedIngredients?.any((selected) => selected['id'] == id) ?? false;
+            final isPreSelected = widget.preSelectedIngredients
+                    ?.any((selected) => selected['id'] == id) ??
+                false;
             newControllers[id] = ValueNotifier<bool>(isPreSelected);
           }
         }
@@ -93,12 +112,21 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
           ..addAll(newControllers);
 
         // Initialize filtered list to show all ingredients initially
-        _filteredIngredients.clear();
-        _filteredIngredients.addAll(_ingredients);
+        _filteredIngredients
+          ..clear()
+          ..addAll(_ingredients);
       });
     } catch (e) {
-      // Handle error
-      developer.log('Failed to fetch ingredients: $e');
+      developer.log('Failed fetching ingredients: $e');
+      setState(() {
+        _error = 'Kunne ikke hente ingredienser....';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -232,104 +260,268 @@ class _AddIngredientPageState extends State<AddIngredientPage> {
         scrolledUnderElevation: 0,
       ),
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          SettingsWidget(
-            leftIcon: SFIcons.sf_person_crop_circle_fill_badge_checkmark,
-            title: 'Tilføj ingredienser',
-            subTitle:
-                'Her kan du tilføje ingredienser til din madpakke.\nDu kan tilføje ingredienser fra din egen liste eller tilføje nye ingredienser.',
-            type: SettingsType.header,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: SearchField(
-                  controller: _controller,
-                  hintText: 'Søg efter ingredienser',
-                  onChanged: _runFilter,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: CustomButton(
-                  onTab: () async {
-                    // Clear search input and show full list before navigating
-                    _controller.clear();
-                    _runFilter('');
-                    // go to create ingredient page
-                    final ingredient = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CreateIngredientPage(),
-                      ),
-                    );
-
-                    if (ingredient != null) {
-                      final tempIngredient = ingredient as Ingredient;
-                        setState(() {
-                          _ingredients.add({
-                            'id': tempIngredient.id,
-                            'name': tempIngredient.name,
-                            'foodImageId': tempIngredient.foodImageId
-                          });
-                          _ingredients.sort((a, b) =>  (a['name'] as String).toLowerCase().compareTo((b['name'] as String).toLowerCase()));
-                          _controllersById[tempIngredient.id] = ValueNotifier<bool>(false);
-                        });
-                        _runFilter(_controller.text);
-                    }
-                  },
-                  text: 'Tilføj',
-                  customWidth: 100,
-                ),
-              ), 
-            ],
-          ),
-          SizedBox(height: 20),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _filteredIngredients.length,
-              itemBuilder: (BuildContext context, index) {
-                // Find the index of the filtered item in the original list to get the right controller
-                final filteredItem = _filteredIngredients[index];
-                final id = filteredItem['id'];
-                // Ensure a stable controller exists for this id (create if missing)
-                final controller = _controllersById.putIfAbsent(id, () {
-                  // Checking if this ingredient is preselected
-                  final isPreSelected = widget.preSelectedIngredients?.any((selected) => selected['id'] == id) ?? false;
-                  return ValueNotifier<bool>(isPreSelected);
-                });
-
-                return SettingsWidget(
-                  key: ValueKey(id),
-                  leftWidget: FoodImage(
-                    foodImageId: _filteredIngredients[index]['foodImageId'],
-                    width: 50,
-                    height: 50,
-                    borderRadius: 8.0,
-                  ),
-                  title: _filteredIngredients[index]['name'],
-                  type: SettingsType.items,
-                  cta: _isEditMode
-                    ? InkWell(
-                        onTap: () => _deleteIngredient(index),
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.red,
-                          size: 45,
-                        ),
-                      )
-                    : CustomCheckbox(
-                        controller: controller,
-                        activeColor: AppColors.primary,
-                        size: 40,
+      body: _isLoading
+          ? const Center(
+              child: LoadingAnimation(imagePath: 'assets/images/logo.png'),
+            )
+          : RefreshIndicator(
+              onRefresh: _getIngredients,
+              child: ListView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                physics: AlwaysScrollableScrollPhysics(),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      'Ingredienser',
+                      style: AppTextStyles.headline2,
+                      textAlign: TextAlign.center,
                     ),
-                );
-              },
+                  ),
+                  Card(
+                    color: AppColors.background,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          _searchField(),
+                          const SizedBox(height: 12),
+                          if (_error != null) _customErrorBanner(mes: _error),
+                          if (_filteredIngredients.isEmpty)
+                            _buildEmptyState()
+                          else
+                           SizedBox(
+            height: 600, 
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: _filteredIngredients.length,
+              itemBuilder: (context, index) {
+                return _buildIngredientCard(_filteredIngredients[index]);
+              })),
+              
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: CustomButton(
+                      text: 'Vælg ingredienser',
+                      size: ButtonSize.medium,
+                      onTab: () {
+                        Navigator.pop(context, _getSelectedIngredients());
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 70, right: 4),
+        child: FloatingActionButton(
+          backgroundColor: AppColors.primary,
+          onPressed: () async {
+            // Clear search input and show full list before navigating
+            _controller.clear();
+            _runFilter('');
+
+            final ingredient = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CreateIngredientPage(),
+              ),
+            );
+
+            if (ingredient != null) {
+              final tempIngredient = ingredient as Ingredient;
+              setState(() {
+                _ingredients.add({
+                  'id': tempIngredient.id,
+                  'name': tempIngredient.name,
+                  'foodImageId': tempIngredient.foodImageId
+                });
+                _ingredients.sort((a, b) => (a['name'] as String)
+                    .toLowerCase()
+                    .compareTo((b['name'] as String).toLowerCase()));
+                _controllersById[tempIngredient.id] =
+                    ValueNotifier<bool>(false);
+              });
+              _runFilter(_controller.text);
+            }
+          },
+          child: const Icon(Icons.add, color: Colors.white, size: 30),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
+  }
+
+  Widget _searchField() {
+    return Row(
+      children: [
+        Expanded(
+          child: SearchField(
+            controller: _controller,
+            hintText: 'Søg efter ingredienser',
+            onChanged: _runFilter,
+          ),
+        ),
+      ],
+    );
+  }
+
+// Should probably be made as a component 
+  Widget _customErrorBanner({String? mes}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.error_outline, color: Colors.white),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              mes ?? 'Der opstod en fejl',
+              style: AppTextStyles.buttonTextSmall.copyWith(color: Colors.white),
+            ),
+          ),
+       
+          TextButton(
+            onPressed: _getIngredients,
+            child: Row(
+              children: [
+                 Icon(Icons.refresh_outlined,color: Colors.white,),
+                const Text('Prøv igen', style: TextStyle(color: Colors.white),),
+              ],
+            ),
+          ),
+          
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 40),
+      child: Column(
+        children: [
+          const Icon(Icons.inbox_sharp, size: 48, color: Colors.grey),
+          const SizedBox(height: 12),
+          Text(
+            'Ingen ingredienser at vise',
+            style: AppTextStyles.mediumText,
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildIngredientCard(Map<String, dynamic> ingredient) {
+    final id = ingredient['id'];
+    final controller = _controllersById.putIfAbsent(id, () {
+      final isPreSelected = widget.preSelectedIngredients
+              ?.any((selected) => selected['id'] == id) ??
+          false;
+      return ValueNotifier<bool>(isPreSelected);
+    });
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: controller,
+      builder: (context, isSelected, _) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: .08),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+
+            ],
+            
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(24),
+            onTap: () {
+              // Not allowing to select ings when they are in eidt mode
+              if (_isEditMode) return;
+
+              controller.value = !controller.value;
+            },
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.primary : Colors.white,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Row(
+                children: [
+                  ingredient['foodImageId'] != null
+                      ? FoodImage(
+                          foodImageId: ingredient['foodImageId'],
+                          width: 40,
+                          height: 40,
+                          borderRadius: 8.0,
+                        )
+                      : Icon(
+                          Icons.image_outlined,
+                          size: 40,
+                          color: AppColors.secondary,
+                        ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      ingredient['name'],
+                      style: AppTextStyles.bigText.copyWith(
+                        color: isSelected ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+
+                  
+                  if (_isEditMode)
+                    InkWell(
+                      onTap: () {
+                        final index =
+                            _filteredIngredients.indexOf(ingredient);
+                        if (index != -1) {
+                          _deleteIngredient(index);
+                        }
+                      },
+                      child: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                        size: 30,
+                      ),
+                    )
+                  else
+                    Icon(
+                      Icons.chevron_right,
+                      color: isSelected ? Colors.white : AppColors.secondary,
+                      size: 30,
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 

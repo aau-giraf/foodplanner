@@ -64,3 +64,4 @@ class CollapsibleListScrollable<T> extends StatelessWidget {
       );
   }
 }
+
