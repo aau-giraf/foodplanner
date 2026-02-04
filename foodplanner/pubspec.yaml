@@ -41,6 +41,7 @@ dependencies:
     flutter_advanced_switch: ^3.1.0
     flutter_advanced_segment: ^3.0.2
     http_parser: ^4.0.2
+    flutter_dotenv: ^5.2.1
 
 dev_dependencies:
     flutter_test:
@@ -57,3 +58,4 @@ flutter:
     uses-material-design: true
     assets:
         - assets/images/logo.png
+        - .env

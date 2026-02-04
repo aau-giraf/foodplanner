@@ -48,3 +48,8 @@ openapi/
 
 # linux
 linux/
+
+# Environment files (keep .env.example)
+.env
+.env.local
+.env.*.local
