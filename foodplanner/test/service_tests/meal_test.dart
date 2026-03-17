@@ -152,18 +152,19 @@ void main() {
 
         // Arrange: Set up the stub to return a 200 response
         when(client.put(
-          Uri.parse('${ApiConfig.baseUrl}/api/Meals/Update/${meal.id}'), // Specify the API endpoint for meal creation.
+          Uri.parse('${ApiConfig.baseUrl}/api/Meals/Update/${meal.id}'),
           headers: {
-            'Content-Type': 'application/json; charset=UTF-8', // Specify that the content is JSON.
+            'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer mocked_token_value',
           },
-          body:jsonEncode({
+          body: jsonEncode({
             'id': meal.id,
             'name': meal.name,
             'food_image_id': meal.foodImageId,
             'date': meal.date != null ? DateFormat('yyyy-MM-dd').format(meal.date!) : null,
             'ingredients': meal.ingredients.map((e) => e.toJson()).toList(),
-          }) ,
+            'template': meal.template,
+          }),
         )).thenAnswer((_) async => http.Response(
           jsonEncode({
             'id': meal.id,
