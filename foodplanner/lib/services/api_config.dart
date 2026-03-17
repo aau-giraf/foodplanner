@@ -4,5 +4,8 @@ import 'package:foodplanner/services/fetch_auth.dart';
 class ApiConfig {
   static String get baseUrl => dotenv.env['API_URL'] ?? 'http://localhost:8080';
 
-  static AuthService get authService => AuthService(apiUrl: baseUrl);
+  static AuthService? _authService;
+  static AuthService get authService {
+    return _authService ??= AuthService(apiUrl: baseUrl);
+  }
 }

@@ -49,7 +49,6 @@ openapi/
 # linux
 linux/
 
-# Environment files (keep .env.example)
-.env
+# Local environment overrides (keep .env and .env.example committed)
 .env.local
 .env.*.local

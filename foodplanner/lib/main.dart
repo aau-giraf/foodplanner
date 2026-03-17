@@ -9,8 +9,12 @@ Future<void> main() async {
   // Ensure that plugin services are initialized ex so that `availableCameras()` work among others.
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load environment variables
-  await dotenv.load(fileName: '.env');
+  // Load environment variables (fallback to defaults if .env is missing)
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (_) {
+    // .env not found — ApiConfig will use built-in defaults
+  }
 
   runApp(
     // For future, if you want to wrap app in another provider, add it to the list below
