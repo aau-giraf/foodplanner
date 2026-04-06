@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:provider/provider.dart';
 import '../routes/index.dart';
 
-void main() {
+Future<void> main() async {
   // Ensure that plugin services are initialized ex so that `availableCameras()` work among others.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables (fallback to defaults if .env is missing)
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (_) {
+    // .env not found — ApiConfig will use built-in defaults
+  }
+
   runApp(
     // For future, if you want to wrap app in another provider, add it to the list below
     MultiProvider(
