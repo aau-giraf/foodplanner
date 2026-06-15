@@ -23,12 +23,9 @@ jobs:
       issues: write
       id-token: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          persist-credentials: false
-
+      # No checkout needed: the review reads the diff via the GitHub MCP server
+      # (API), not the local tree. (The repo also has a broken `foodplanner/flutter`
+      # gitlink that makes actions/checkout fail.)
       - name: Prepare prompt context
         shell: bash
         env:
