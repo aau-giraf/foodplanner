@@ -9,6 +9,23 @@ class UserService {
 
   UserService({required this.apiUrl});
 
+  /// Normalises the `role` field, which some endpoints return as the backend
+  /// UserRole int bitflag (Admin=1, Child=2, Teacher=4, Parent=8) while the
+  /// frontend User model expects a role string ("admin"/"child"/"teacher"/"parent").
+  static String _roleString(dynamic role) {
+    if (role is String) return role;
+    if (role is int) {
+      return switch (role) {
+        1 => 'admin',
+        2 => 'child',
+        4 => 'teacher',
+        8 => 'parent',
+        _ => 'parent',
+      };
+    }
+    return 'parent';
+  }
+
   Future<User> fetchUser(int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(Uri.parse('$apiUrl/api/Admin/Get/$id'),
@@ -23,7 +40,7 @@ class UserService {
         'first_name': json['firstName'],
         'last_name': json['lastName'],
         'email': json['email'],
-        'role': json['role'],
+        'role': _roleString(json['role']),
         'archived': json['archived'],
       };
       return User.fromJson(filteredJson);
@@ -43,10 +60,10 @@ class UserService {
       final Map<String, dynamic> json = jsonDecode(response.body);
       final filteredJson = {
         'id': json['id'],
-        'first_name': json['first_name'],
-        'last_name': json['last_name'],
+        'first_name': json['firstName'],
+        'last_name': json['lastName'],
         'email': json['email'],
-        'role': json['role'],
+        'role': _roleString(json['role']),
         'archived': json['archived'],
       };
       return User.fromJson(filteredJson);
@@ -211,10 +228,10 @@ class UserService {
       final Map<String, dynamic> json = jsonDecode(response.body);
       final filteredJson = {
         'id': json['id'],
-        'first_name': json['first_name'],
-        'last_name': json['last_name'],
+        'first_name': json['firstName'],
+        'last_name': json['lastName'],
         'email': json['email'],
-        'role': json['role'],
+        'role': _roleString(json['role']),
         'archived': json['archived'],
       };
       return User.fromJson(filteredJson);
