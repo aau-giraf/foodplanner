@@ -97,10 +97,14 @@ class GuardianProfileState extends State<GuardianProfile>
 
   Future<void> fetchGuardianAndPupil() async {
     final userInfo = await GuardianProfile.userService.userInfo(guardian.id);
-    final fetchedPupil = await GuardianProfile.pupilService.fetchPupilById();
+    // A parent may have several children now; show the first one here.
+    final fetchedPupils =
+        await GuardianProfile.pupilService.fetchPupilsByParent();
     setState(() {
       guardian = userInfo;
-      pupil = fetchedPupil;
+      if (fetchedPupils.isNotEmpty) {
+        pupil = fetchedPupils.first;
+      }
       firstNameController.text = guardian.firstName;
       lastNameController.text = guardian.lastName;
       emailController.text = guardian.email;

@@ -26,13 +26,21 @@ class CreatePupilPage extends StatefulWidget {
 class _SignupChildState extends State<CreatePupilPage> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   // Text error messages
   String firstNameError = '';
   String lastNameError = '';
+  String emailError = '';
+  String passwordError = '';
 
   //Regular expression for vildationg full name, Email, password¨
   final RegExp nameRegExp = RegExp(r'^[a-z A-ZæøåÆØÅ]+$');
+  final RegExp emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+  final RegExp upperCase = RegExp(r'[A-ZÆØÅ]');
+  final RegExp lowerCase = RegExp(r'[a-zæøå]');
+  final RegExp digit = RegExp(r'\d');
 
   Future<List<SchoolClass>> classesFuture =
       CreatePupilPage.schoolClassService.fetchAllClasses();
@@ -43,6 +51,8 @@ class _SignupChildState extends State<CreatePupilPage> {
     super.initState();
     firstNameController.addListener(_updateButtonState);
     lastNameController.addListener(_updateButtonState);
+    emailController.addListener(_updateButtonState);
+    passwordController.addListener(_updateButtonState);
     classesFuture.then((classes) {
       setState(() {
         this.classes = classes;
@@ -54,8 +64,12 @@ class _SignupChildState extends State<CreatePupilPage> {
   void dispose() {
     firstNameController.removeListener(_updateButtonState);
     lastNameController.removeListener(_updateButtonState);
+    emailController.removeListener(_updateButtonState);
+    passwordController.removeListener(_updateButtonState);
     firstNameController.dispose();
     lastNameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
@@ -72,6 +86,12 @@ class _SignupChildState extends State<CreatePupilPage> {
         case 'Last_name':
           lastNameError = error;
           break;
+        case 'Email':
+          emailError = error;
+          break;
+        case 'Password':
+          passwordError = error;
+          break;
       }
     });
   }
@@ -81,16 +101,24 @@ class _SignupChildState extends State<CreatePupilPage> {
         error['First_name'] != null ? error['First_name'][0] : '');
     updateErrorState(
         'Last_name', error['Last_name'] != null ? error['Last_name'][0] : '');
+    updateErrorState('Email', error['Email'] != null ? error['Email'][0] : '');
+    updateErrorState(
+        'Password', error['Password'] != null ? error['Password'][0] : '');
   }
 
   //Function to validate form inputs
   void validateInputs(BuildContext context) {
     String firstName = firstNameController.text.trim();
     String lastName = lastNameController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
     int selectedClassId =
         selectedValue!.isNotEmpty ? int.parse(selectedValue!) : 0;
     //Step 1: Check om alle felter er udfyldt
-    if (firstName.isEmpty || lastName.isEmpty) {
+    if (firstName.isEmpty ||
+        lastName.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty) {
       // Show an error message if any field is empty
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -99,6 +127,7 @@ class _SignupChildState extends State<CreatePupilPage> {
           duration: Duration(seconds: 5),
         ),
       );
+      return;
     }
 
     //Step 2: Full Name Validation
@@ -124,8 +153,37 @@ class _SignupChildState extends State<CreatePupilPage> {
       });
     }
 
+    //Step 3: Email Validation
+    if (!emailRegExp.hasMatch(email)) {
+      setState(() {
+        emailError = 'Det er ikke en gyldig email.';
+      });
+      return;
+    } else {
+      setState(() {
+        emailError = '';
+      });
+    }
+
+    //Step 4: Password Validation
+    if (!password.contains(upperCase) ||
+        !password.contains(lowerCase) ||
+        !password.contains(digit) ||
+        password.length < 8 ||
+        password.length > 30) {
+      setState(() {
+        passwordError = 'Adgangskoden overholder ikke alle krav.';
+      });
+      return;
+    } else {
+      setState(() {
+        passwordError = '';
+      });
+    }
+
     //proceed with sign-up logic if everything is correct
-    createChildHandler(context, firstName, lastName, selectedClassId);
+    createChildHandler(
+        context, firstName, lastName, email, password, selectedClassId);
   }
 
   //Placeholder function for sign-up logic
@@ -133,11 +191,13 @@ class _SignupChildState extends State<CreatePupilPage> {
     BuildContext context,
     String firstName,
     String lastName,
+    String email,
+    String password,
     int classId,
   ) async {
     try {
       final response = await CreatePupilPage.childService
-          .createPupil(firstName, lastName, classId);
+          .createPupil(firstName, lastName, email, password, classId);
 
       if (!context.mounted) return;
 
@@ -150,6 +210,15 @@ class _SignupChildState extends State<CreatePupilPage> {
           ),
         );
         context.go('/');
+      } else if (response.body.isEmpty) {
+        // Guard against an empty body (nothing to decode).
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Barn kunne ikke oprettes.'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 5),
+          ),
+        );
       } else {
         var error = jsonDecode(response.body);
         handleErrors(error);
@@ -171,6 +240,8 @@ class _SignupChildState extends State<CreatePupilPage> {
   bool showButton() {
     return firstNameController.text.isNotEmpty &&
         lastNameController.text.isNotEmpty &&
+        emailController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty &&
         selectedValue != null;
   }
 
@@ -228,6 +299,33 @@ class _SignupChildState extends State<CreatePupilPage> {
                           controller: lastNameController,
                           errorText: lastNameError,
                           hintText: "Efternavn"),
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      'Email',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomTextField(
+                          controller: emailController,
+                          errorText: emailError,
+                          hintText: "Email"),
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      'Adgangskode',
+                      style: AppTextStyles.bigText
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: CustomTextField(
+                          controller: passwordController,
+                          errorText: passwordError,
+                          obscureText: true,
+                          hintText: "Adgangskode"),
                     ),
                     SizedBox(height: 15),
                     Text(

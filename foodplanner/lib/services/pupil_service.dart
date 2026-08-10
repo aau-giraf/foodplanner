@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/models/pupil.dart';
+import 'package:foodplanner/services/user_service.dart';
 import 'package:http/http.dart' as http;
 
 class PupilService {
@@ -29,7 +30,9 @@ class PupilService {
     }
   }
 
-  Future<Pupil> fetchPupilById() async {
+  /// Returns all children linked to the logged-in parent. A parent can now have
+  /// several children, so this returns a list.
+  Future<List<Pupil>> fetchPupilsByParent() async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(
       Uri.parse('$apiUrl/api/Childrens/GetChildrenByParentId'),
@@ -39,33 +42,47 @@ class PupilService {
     );
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return Pupil.fromJson(data);
+      final List<dynamic> data = jsonDecode(response.body) as List<dynamic>;
+      return data
+          .map((child) => Pupil.fromJson(child as Map<String, dynamic>))
+          .toList();
     } else {
       throw Exception('Failed to load child data');
     }
   }
 
-  Future<http.Response> createPupil(
-      String firstName, String lastName, int classId) async {
+  /// Loads the record of the currently logged-in child. Children are now their
+  /// own user accounts, so we resolve their id from the logged-in user and then
+  /// fetch the matching child record.
+  Future<Pupil> fetchOwnChild() async {
+    final user = await UserService(apiUrl: apiUrl).fetchLoggedInUser();
+    return getByPupilId(user.id);
+  }
+
+  /// Creates a child as a separate user account. Requires the logged-in parent's
+  /// JWT; the backend links the new child to the parent.
+  Future<http.Response> createPupil(String firstName, String lastName,
+      String email, String password, int classId) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.post(
-      Uri.parse('$apiUrl/api/Childrens/Create'),
+      Uri.parse('$apiUrl/api/Users/CreateUserChildren'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $jwtToken',
       },
-      body: jsonEncode(<String, String>{
+      body: jsonEncode(<String, dynamic>{
         'firstName': firstName,
         'lastName': lastName,
-        'classId': classId.toString(),
+        'email': email,
+        'password': password,
+        'classId': classId,
       }),
     );
     return response;
   }
 
   Future<http.Response> updatePupil(int id, String firstName, String lastName,
-      int parentId, int classId) async {
+      int? parentId, int classId) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.put(
       Uri.parse('$apiUrl/api/Admin/UpdateChild'),
@@ -74,10 +91,10 @@ class PupilService {
         'Authorization': 'Bearer $jwtToken',
       },
       body: jsonEncode(<String, dynamic>{
-        'ChildId': id,
+        'childId': id,
         'firstName': firstName,
         'lastName': lastName,
-        'parentId': parentId,
+        if (parentId != null) 'parentId': parentId,
         'classId': classId,
       }),
     );
@@ -85,10 +102,12 @@ class PupilService {
     return response;
   }
 
+  /// Deletes a child. A child is now a user, so deleting the user (which
+  /// cascades to the child record) is the correct operation.
   Future<http.Response> deletePupil(int id) async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.delete(
-      Uri.parse('$apiUrl/api/Childrens/Delete/$id'),
+      Uri.parse('$apiUrl/api/Admin/$id'),
       headers: <String, String>{
         'Authorization': 'Bearer $jwtToken',
       },

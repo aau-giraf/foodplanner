@@ -48,13 +48,19 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
           authProvider.hasOneOfRoles([Role.guardian, Role.pupil, Role.teacher]);
     });
 
-    if (authProvider.userRole == Role.pupil ||
-        authProvider.userRole == Role.guardian) {
-      final childData = await pupilService.fetchPupilById();
+    if (role?.hasRole(Role.pupil) ?? false) {
+      // A child is now its own user account; load their own child record.
+      final childData = await pupilService.fetchOwnChild();
       setState(() {
         _pupil = childData;
       });
-    } else if (authProvider.userRole == Role.teacher) {
+    } else if (role?.hasRole(Role.guardian) ?? false) {
+      // A parent may have several children; show the first one here.
+      final children = await pupilService.fetchPupilsByParent();
+      setState(() {
+        _pupil = children.isNotEmpty ? children.first : null;
+      });
+    } else if (role?.hasRole(Role.teacher) ?? false) {
       int tempChildId = int.parse(widget.pupil['id']!);
       final childData = await pupilService.getByPupilId(tempChildId);
       setState(() {
@@ -62,13 +68,16 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
       });
     }
 
-    setState(() {
-      _callerFuture = caller();
-    });
+    if (_pupil != null) {
+      setState(() {
+        _callerFuture = caller();
+      });
+    }
   }
 
   Future<void> caller() async {
-    await MealNotifier().teacherUpdateChildId(_pupil!.guardianId);
+    // Meals belong to the child's own user account now, so target the child id.
+    await MealNotifier().teacherUpdateChildId(_pupil!.pupilId);
     await MealNotifier().updateDate(DateTime.now());
   }
 
@@ -76,7 +85,8 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: userRole == Role.teacher || userRole == Role.admin
+        leading: (userRole?.hasRole(Role.teacher) ?? false) ||
+                (userRole?.hasRole(Role.admin) ?? false)
             ? IconButton(
                 onPressed: () {
                   GoRouter.of(context).go(TEACHER_ROOT);
@@ -89,7 +99,8 @@ class _PupilLandingPageMadpakkeState extends State<PupilLandingPageMadpakke> {
           style: AppTextStyles.headline4,
         ),
         centerTitle: true,
-        actions: userRole != Role.teacher && userRole != Role.admin
+        actions: !(userRole?.hasRole(Role.teacher) ?? false) &&
+                !(userRole?.hasRole(Role.admin) ?? false)
             ? [
                 IconButton(
                   onPressed: () {
