@@ -90,7 +90,13 @@ class PupilProfileState extends State<PupilProfile>
   }
 
   void fetchGuardian() {
-    PupilProfile.userService.fetchUser(widget.pupil.guardianId).then((result) {
+    // A child can now have several parents and most endpoints no longer return
+    // a single parent id, so there may be no guardian to prefetch.
+    final guardianId = widget.pupil.guardianId;
+    if (guardianId == null) {
+      return;
+    }
+    PupilProfile.userService.fetchUser(guardianId).then((result) {
       setState(() {
         guardian = result;
         selectedGuardian = result;
