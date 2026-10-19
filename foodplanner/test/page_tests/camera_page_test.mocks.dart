@@ -4,14 +4,15 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i7;
+import 'dart:ui' as _i8;
 
 import 'package:camera/camera.dart' as _i3;
 import 'package:camera_platform_interface/camera_platform_interface.dart'
     as _i2;
 import 'package:flutter/foundation.dart' as _i5;
 import 'package:flutter/material.dart' as _i4;
-import 'package:flutter/services.dart' as _i8;
-import 'package:image_picker/image_picker.dart' as _i9;
+import 'package:flutter/services.dart' as _i9;
+import 'package:image_picker/image_picker.dart' as _i10;
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart'
     as _i6;
 import 'package:mockito/mockito.dart' as _i1;
@@ -372,7 +373,7 @@ class MockCameraController extends _i1.Mock implements _i3.CameraController {
       ) as _i7.Future<void>);
 
   @override
-  _i7.Future<void> setExposurePoint(dynamic point) => (super.noSuchMethod(
+  _i7.Future<void> setExposurePoint(_i8.Offset? point) => (super.noSuchMethod(
         Invocation.method(
           #setExposurePoint,
           [point],
@@ -419,7 +420,7 @@ class MockCameraController extends _i1.Mock implements _i3.CameraController {
 
   @override
   _i7.Future<void> lockCaptureOrientation(
-          [_i8.DeviceOrientation? orientation]) =>
+          [_i9.DeviceOrientation? orientation]) =>
       (super.noSuchMethod(
         Invocation.method(
           #lockCaptureOrientation,
@@ -450,7 +451,7 @@ class MockCameraController extends _i1.Mock implements _i3.CameraController {
       ) as _i7.Future<void>);
 
   @override
-  _i7.Future<void> setFocusPoint(dynamic point) => (super.noSuchMethod(
+  _i7.Future<void> setFocusPoint(_i8.Offset? point) => (super.noSuchMethod(
         Invocation.method(
           #setFocusPoint,
           [point],
@@ -470,7 +471,7 @@ class MockCameraController extends _i1.Mock implements _i3.CameraController {
       ) as _i7.Future<void>);
 
   @override
-  void removeListener(dynamic listener) => super.noSuchMethod(
+  void removeListener(_i8.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],
@@ -479,7 +480,7 @@ class MockCameraController extends _i1.Mock implements _i3.CameraController {
       );
 
   @override
-  void addListener(dynamic listener) => super.noSuchMethod(
+  void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -500,7 +501,7 @@ class MockCameraController extends _i1.Mock implements _i3.CameraController {
 /// A class which mocks [ImagePicker].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockImagePicker extends _i1.Mock implements _i9.ImagePicker {
+class MockImagePicker extends _i1.Mock implements _i10.ImagePicker {
   MockImagePicker() {
     _i1.throwOnMissingStub(this);
   }

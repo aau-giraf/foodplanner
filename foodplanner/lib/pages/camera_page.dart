@@ -22,7 +22,7 @@ class CameraPage extends StatefulWidget {
   const CameraPage({
     super.key,
     this.mockController,
-    this.mockImagePicker
+    this.mockImagePicker,
   });
 
   @override
@@ -196,6 +196,11 @@ class _MealPageState extends State<CameraPage> {
 class DisplayPictureScreen extends StatelessWidget {
   final XFile image;
   late MultipartFile croppedImage;
+  var aspectRatios = {
+    '4by3' : 1.33,
+    '1by1' : 1.00,
+    '16by9': 1.77,
+  };
 
   DisplayPictureScreen({super.key, required this.image});
 
@@ -228,7 +233,7 @@ class DisplayPictureScreen extends StatelessWidget {
       ),
       backgroundColor: Colors.white,
       body: FutureBuilder(
-          future: cropImageToSquare(image),
+          future: cropImageToSquare(image, aspectRatios),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return Center(
@@ -278,7 +283,8 @@ class DisplayPictureScreen extends StatelessWidget {
 }
 
 // A method for cropping the inputted image's size.
-Future<Uint8List> cropImageToSquare(XFile image) async {
+Future<Uint8List> cropImageToSquare(XFile image, Map<String,double>aspectRatios) async {
+  
   var multipartFile = MultipartFile.fromBytes(
     'imageFile',
     await image.readAsBytes(),
@@ -292,14 +298,10 @@ Future<Uint8List> cropImageToSquare(XFile image) async {
   if (decodedImage != null) {
     final width = decodedImage.width;
     final height = decodedImage.height;
-    final squareSize = width < height ? width : height;
-    final croppedImage = img.copyCrop(
-      decodedImage,
-      (width - squareSize) ~/ 2,
-      (height - squareSize) ~/ 2,
-      squareSize,
-      squareSize,
-    );
+    final ratio = width/height;
+    //NOTE: write "search" algo for finding best matching ratio for given image, maybe new method?
+
+
     final croppedBytes = img.encodeJpg(croppedImage);
 
     // Updates the state.
@@ -313,3 +315,5 @@ Future<Uint8List> cropImageToSquare(XFile image) async {
     return multipartFile.finalize().toBytes();
   }
 }
+
+
