@@ -44,8 +44,10 @@ class _SettingsPage extends State<Settings> {
               itemPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
               sliderColor: AppColors.primary,
               sliderOffset: 0,
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-              backgroundColor: AppColors.lightSecondary),
+              decoration: BoxDecoration(
+                color: AppColors.lightSecondary,
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              )),
         },
         {
           'title': "Notifikationer",

@@ -15,13 +15,13 @@ import 'package:foodplanner/pages/landing_page_teacher.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
 import 'package:foodplanner/pages/meal_list_page.dart';
 import 'package:foodplanner/pages/profile_page.dart';
-import 'package:foodplanner/pages/signup_page.dart';
+import 'package:foodplanner/pages/signupPage.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../pages/login_page.dart';
+import '../pages/loginPage.dart';
 import '../pages/unauthorized_page.dart';
 
 // Import HomePage
@@ -128,7 +128,7 @@ final router = GoRouter(
         );
       },
     ),
-    GoRoute(
+    GoRoute( // This whole thing is most likely redundant and should be removed since it is an auth for students to log in, which should not be possible
       path: STUDENT_ROOT,
       builder: (context, state) {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);

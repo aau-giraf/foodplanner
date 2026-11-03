@@ -7,7 +7,7 @@ import 'package:foodplanner/components/segment_button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/login_page.dart';
+import 'package:foodplanner/pages/loginPage.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/api_config.dart';

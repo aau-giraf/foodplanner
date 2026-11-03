@@ -5,10 +5,10 @@ import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/routes/paths.dart';
+// import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/pages/forgot_password_page.dart';
-import 'signup_page.dart';
+import 'signupPage.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/models/user_roles.dart';
@@ -95,7 +95,10 @@ class LoginPageState extends State<LoginPage> {
         developer.log('Has teacher role: ${role.hasRole(Role.teacher)}');
         developer.log('Has admin role: ${role.hasRole(Role.admin)}');
 
-        if(role.hasRole(Role.pupil)){GoRouter.of(context).go(STUDENT_CREATE);}
+        // this shit is what makes it broke
+        // if(role.hasRole(Role.pupil)){GoRouter.of(context).go(STUDENT_CREATE);}
+        if(role.hasRole(Role.pupil)){Navigator.push(context, MaterialPageRoute(builder: (context) => StudentCreatePage()));}
+        
         else if(role.hasRole(Role.guardian)){GoRouter.of(context).go(PARENT_ROOT);}
         else if(role.hasRole(Role.teacher)){GoRouter.of(context).go(TEACHER_ROOT);}
         else if(role.hasRole(Role.admin)){GoRouter.of(context).go(ADMIN_ROOT);}
@@ -243,7 +246,7 @@ class LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 25),
                     ],
                   ),
-                ),
+                ),LoginPageState
                 const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -259,6 +262,7 @@ class LoginPageState extends State<LoginPage> {
                     Expanded(
                       child: CustomButton(
                         text: "Login",
+                        // if I am not entirely mistaken, this is where the log in function is called, meaning routing should be changed here
                         onTab: () => signUserIn(context),
                       ),
                     ),
