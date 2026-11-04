@@ -9,7 +9,7 @@ import 'package:foodplanner/components/image.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/camera_page.dart';
+import 'package:foodplanner/pages/cameraPage.dart';
 import 'package:foodplanner/services/food_image_service.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/sub_ingredient.dart';

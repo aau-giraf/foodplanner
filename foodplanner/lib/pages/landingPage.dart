@@ -1,7 +1,7 @@
 import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/pages/pin_code.dart';
+import 'package:foodplanner/pages/pinCode.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/routes/paths.dart';

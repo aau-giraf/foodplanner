@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/popup_box.dart';
-import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/components/popupBox.dart';
+import 'package:foodplanner/components/settingsWidget.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';

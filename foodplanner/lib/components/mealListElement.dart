@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/icon_button.dart';
+import 'package:foodplanner/components/iconButton.dart';
 import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/month_picker.dart';

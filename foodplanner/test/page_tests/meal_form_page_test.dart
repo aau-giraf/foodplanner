@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:foodplanner/pages/add_meal_form_page.dart';
+import 'package:foodplanner/pages/addMealFormPage.dart';
 import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
 import 'package:foodplanner/components/button.dart';

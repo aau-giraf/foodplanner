@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/components/settingsWidget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/components/settings_header.dart';
+import 'package:foodplanner/components/settingsHeader.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/models/user.dart';
 

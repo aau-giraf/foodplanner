@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/components/date_time_picker.dart';
-import 'package:foodplanner/components/meal_box_content.dart';
+import 'package:foodplanner/components/dateTimePicker.dart';
+import 'package:foodplanner/components/mealBoxContent.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/meal_notifier.dart';

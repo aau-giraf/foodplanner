@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/components/settingsWidget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/pupil.dart';
@@ -8,8 +8,8 @@ import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/pages/pupil_profile.dart';
-import 'package:foodplanner/components/search_field.dart';
+import 'package:foodplanner/pages/pupilProfile.dart';
+import 'package:foodplanner/components/searchField.dart';
 
 class AdministratePupils extends StatefulWidget {
   const AdministratePupils({super.key});

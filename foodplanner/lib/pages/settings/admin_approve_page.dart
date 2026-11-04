@@ -1,13 +1,13 @@
 import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/components/settingsWidget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/user.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/popup_box.dart';
+import 'package:foodplanner/components/popupBox.dart';
 
 class AdminApprovePage extends StatefulWidget {
   const AdminApprovePage({super.key});

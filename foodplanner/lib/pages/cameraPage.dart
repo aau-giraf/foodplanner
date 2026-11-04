@@ -10,7 +10,7 @@ import 'package:foodplanner/config/text_styles.dart';
 import 'package:http/http.dart';
 import 'package:image/image.dart' as img;
 import 'package:http_parser/http_parser.dart';
-import 'package:foodplanner/components/custom_square_camera_overlay.dart';
+import 'package:foodplanner/components/customSquareCameraOverlay.dart';
 
 import 'package:foodplanner/config/colors.dart';
 import 'package:image_picker/image_picker.dart';

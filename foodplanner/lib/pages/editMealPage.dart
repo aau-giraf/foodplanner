@@ -7,11 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/image.dart';
-import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/components/settingsWidget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/meal.dart';
-import 'package:foodplanner/pages/camera_page.dart';
+import 'package:foodplanner/pages/cameraPage.dart';
 import 'package:foodplanner/services/food_image_service.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:foodplanner/services/meal_services.dart';
@@ -19,7 +19,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 /* import 'package:go_router/go_router.dart';
 import 'package:foodplanner/routes/paths.dart'; */
-import 'package:foodplanner/pages/add_ingredient_page.dart';
+import 'package:foodplanner/pages/addIngredientPage.dart';
 import 'package:foodplanner/services/packed_ingredient_services.dart';
 
 class EditMealPage extends StatefulWidget {

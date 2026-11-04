@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/components/segment_button.dart';
+import 'package:foodplanner/components/segmentButton.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
@@ -14,7 +14,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:go_router/go_router.dart';
-import 'package:foodplanner/components/password_requirements.dart';
+import 'package:foodplanner/components/passwordRequirements.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});

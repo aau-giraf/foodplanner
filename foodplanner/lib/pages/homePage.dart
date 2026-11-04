@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/pages/landing_page_guardian.dart';
+import 'package:foodplanner/pages/landingPageGuardian.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'landing_page_children_madpakke.dart';
+import 'landingPageChildrenMadpakke.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'landing_page_teacher.dart';
+import 'landingPageTeacher.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

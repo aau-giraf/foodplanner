@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/collapsible_list.dart';
-import 'package:foodplanner/components/scroll_bar.dart';
+import 'package:foodplanner/components/collapsibleList.dart';
+import 'package:foodplanner/components/scrollBar.dart';
 import 'package:foodplanner/models/pupil.dart';
 import 'package:foodplanner/models/schoolClass.dart';
 

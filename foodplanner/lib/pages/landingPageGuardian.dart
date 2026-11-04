@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/button.dart';
-import 'package:foodplanner/components/meal_box.dart';
-import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/components/mealBox.dart';
+import 'package:foodplanner/components/navBar.dart';
 import 'package:foodplanner/config/text_styles.dart';
-import 'package:foodplanner/pages/add_meal_form_page.dart';
-import 'package:foodplanner/pages/edit_meal_page.dart';
+import 'package:foodplanner/pages/addMealFormPage.dart';
+import 'package:foodplanner/pages/editMealPage.dart';
 import 'package:foodplanner/routes/paths.dart';
 
 import 'package:foodplanner/models/user_roles.dart';

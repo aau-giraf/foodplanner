@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/components/image.dart';
-import 'package:foodplanner/pages/landing_page_children_se_madpakke.dart';
+import 'package:foodplanner/pages/landingPageChildrenSeMadpakke.dart';
 import 'package:foodplanner/services/meal_notifier.dart';
 import 'package:provider/provider.dart';
 

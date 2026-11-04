@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/components/settingsWidget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/pupil.dart';
@@ -12,7 +12,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:foodplanner/pages/choose_guardian.dart';
+import 'package:foodplanner/pages/chooseGuardian.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user_roles.dart';
 

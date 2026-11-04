@@ -8,7 +8,7 @@ import 'package:foodplanner/services/api_config.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart'; // Import GoRouter
 import 'package:foodplanner/services/fetch_feedback_messages.dart';
-import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/components/navBar.dart';
 
 class Message {
   int messageID;

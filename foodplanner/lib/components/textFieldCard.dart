@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:foodplanner/components/card_container.dart';
+import 'package:foodplanner/components/cardContainer.dart';
 import 'package:foodplanner/components/text_field.dart';
 
 // New class for text fields with rounded corners to match new styling

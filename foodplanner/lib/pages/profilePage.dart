@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
-import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/components/settingsWidget.dart';
 import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 import 'package:foodplanner/models/pupil.dart';
@@ -12,13 +12,13 @@ import 'package:foodplanner/models/user_roles.dart';
 import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/api_config.dart';
 import 'package:foodplanner/services/user_service.dart';
-import 'package:foodplanner/components/settings_header.dart';
+import 'package:foodplanner/components/settingsHeader.dart';
 import 'package:foodplanner/components/text_field.dart';
 import 'package:foodplanner/components/button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/components/nav_bar.dart';
+import 'package:foodplanner/components/navBar.dart';
 import 'package:foodplanner/routes/paths.dart';
 
 class GuardianProfile extends StatefulWidget {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:foodplanner/components/edit_meal_element.dart';
+import 'package:foodplanner/components/editMealElement.dart';
 import 'package:foodplanner/models/ingredient.dart';
 import 'package:foodplanner/models/meal.dart';
 import 'package:foodplanner/models/packed_ingredient.dart';
-import 'package:foodplanner/pages/edit_meal_form_page.dart';
+import 'package:foodplanner/pages/editMealFormPage.dart';
 import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
 import 'package:network_image_mock/network_image_mock.dart';

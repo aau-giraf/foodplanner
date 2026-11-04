@@ -7,11 +7,14 @@ import 'package:foodplanner/config/colors.dart';
 import 'package:foodplanner/config/text_styles.dart';
 // import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/services/api_config.dart';
-import 'package:foodplanner/pages/forgot_password_page.dart';
+import 'package:foodplanner/pages/forgotPasswordPage.dart';
 import 'signupPage.dart';
 import 'package:foodplanner/services/fetch_auth.dart';
-import 'package:go_router/go_router.dart';
+// import 'package:go_router/go_router.dart';
 import 'package:foodplanner/models/user_roles.dart';
+import 'package:foodplanner/pages/createPupilPage.dart';
+import 'package:foodplanner/pages/landingPageGuardian.dart';
+import 'package:foodplanner/pages/landingPageTeacher.dart';
 
 //test push
 class LoginPage extends StatefulWidget {
@@ -95,15 +98,13 @@ class LoginPageState extends State<LoginPage> {
         developer.log('Has teacher role: ${role.hasRole(Role.teacher)}');
         developer.log('Has admin role: ${role.hasRole(Role.admin)}');
 
-        // this shit is what makes it broke
-        // if(role.hasRole(Role.pupil)){GoRouter.of(context).go(STUDENT_CREATE);}
-        if(role.hasRole(Role.pupil)){Navigator.push(context, MaterialPageRoute(builder: (context) => StudentCreatePage()));}
-        
-        else if(role.hasRole(Role.guardian)){GoRouter.of(context).go(PARENT_ROOT);}
-        else if(role.hasRole(Role.teacher)){GoRouter.of(context).go(TEACHER_ROOT);}
-        else if(role.hasRole(Role.admin)){GoRouter.of(context).go(ADMIN_ROOT);}
-        else {GoRouter.of(context).go(LOGIN_PAGE);}
-
+        if (role.hasRole(Role.pupil)) {Navigator.push(context,MaterialPageRoute(builder: (context) => const CreatePupilPage()),);} 
+        else if (role.hasRole(Role.guardian)){Navigator.push(context,MaterialPageRoute(builder: (context) => const GuardianLandingPageMadpakke()),);}
+        else if (role.hasRole(Role.teacher)){Navigator.push(context,MaterialPageRoute(builder: (context) => const TeacherLandingPage()),);}
+        // hør lige software om vi hvordan vi kan håndtere admin rollen på den her minecraft server -Niller
+        // else if (role.hasRole(Role.admin)){Navigator.push(context,MaterialPageRoute(builder: (context) => const TeacherLandingPage()),);}
+        // else {GoRouter.of(context).go(LOGIN_PAGE);}
+        else {Navigator.push(context,MaterialPageRoute(builder: (context) => const LoginPage()),);}
   }
     catch (e) {
       if (e is AuthException) {
@@ -246,7 +247,7 @@ class LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 25),
                     ],
                   ),
-                ),LoginPageState
+                ),
                 const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

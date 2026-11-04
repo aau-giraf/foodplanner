@@ -2,19 +2,19 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
-import 'package:foodplanner/components/loading_animation.dart';
-import 'package:foodplanner/components/nav_bar.dart';
-import 'package:foodplanner/pages/add_meal_form_page.dart';
-import 'package:foodplanner/pages/create_pupil_page.dart';
-import 'package:foodplanner/pages/feedback_chat_page.dart';
-import 'package:foodplanner/pages/forgot_password_page.dart';
-import 'package:foodplanner/pages/home_page.dart';
-import 'package:foodplanner/pages/landing_page_children_madpakke.dart';
-import 'package:foodplanner/pages/landing_page_guardian.dart';
-import 'package:foodplanner/pages/landing_page_teacher.dart';
+import 'package:foodplanner/components/loadingAnimation.dart';
+import 'package:foodplanner/components/navBar.dart';
+import 'package:foodplanner/pages/addMealFormPage.dart';
+import 'package:foodplanner/pages/createPupilPage.dart';
+import 'package:foodplanner/pages/feedbackChatPage.dart';
+import 'package:foodplanner/pages/forgotPasswordPage.dart';
+import 'package:foodplanner/pages/homePage.dart';
+import 'package:foodplanner/pages/landingPageChildrenMadpakke.dart';
+import 'package:foodplanner/pages/landingPageGuardian.dart';
+import 'package:foodplanner/pages/landingPageTeacher.dart';
 import 'package:foodplanner/pages/settings/settings.dart';
-import 'package:foodplanner/pages/meal_list_page.dart';
-import 'package:foodplanner/pages/profile_page.dart';
+import 'package:foodplanner/pages/mealListPage.dart';
+import 'package:foodplanner/pages/profilePage.dart';
 import 'package:foodplanner/pages/signupPage.dart';
 import 'package:foodplanner/routes/paths.dart';
 import 'package:foodplanner/models/user_roles.dart';
@@ -22,7 +22,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../pages/loginPage.dart';
-import '../pages/unauthorized_page.dart';
+import '../pages/unauthorizedPage.dart';
 
 // Import HomePage
 
