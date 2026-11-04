@@ -776,6 +776,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  pact_dart:
+    dependency: "direct dev"
+    description:
+      path: "."
+      ref: "5a8bca5370cc63addf17f5b1155ed580f96b5c63"
+      resolved-ref: "5a8bca5370cc63addf17f5b1155ed580f96b5c63"
+      url: "https://github.com/matthewshirley/pact_dart.git"
+    source: git
+    version: "0.8.0"
   path:
     dependency: transitive
     description:
