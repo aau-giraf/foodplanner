@@ -96,7 +96,7 @@ To run **service_tests** run
 `flutter test test/service_tests`
 
 #### Pact tests
-Pact tests are skipped by default, because they need a native library that `flutter pub get` does not install. You only need this if you work on contracts.
+Pact tests are skipped by default, because they need a native library that `flutter pub get` does not install and the tests are only relevant when you want to ensure that integration tests between core or foodplanner-api and foodplanner app pass. 
 
 Set this up once per machine:
 1. Set `PACT_DART_LIB_DOWNLOAD_PATH` to a folder you own (for example `$HOME/.pact/lib`) in your shell profile, such as `~/.zshrc` or `~/.bashrc`. On Windows, use `setx`.
