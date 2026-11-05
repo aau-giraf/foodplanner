@@ -5,14 +5,9 @@
   "interactions": [
     {
       "description": "a request for all classes",
-      "providerStates": [
-        {
-          "name": "classes exists"
-        }
-      ],
       "request": {
         "method": "GET",
-        "path": "/api/Classrooms/GetAll"
+        "path": "/legacy/foodplanner/api/Classrooms/GetAll"
       },
       "response": {
         "body": [

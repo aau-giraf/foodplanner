@@ -1,0 +1,5 @@
+# Pact tests need a native library, so they are skipped by default.
+# Run them with: flutter test test/pact --run-skipped
+tags:
+  pact:
+    skip: "Needs the Pact native library, see the README"

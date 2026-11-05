@@ -95,6 +95,16 @@ To run **page_tests**
 To run **service_tests** run
 `flutter test test/service_tests`
 
+#### Pact tests
+Pact tests are skipped by default, because they need a native library that `flutter pub get` does not install. You only need this if you work on contracts.
+
+Set this up once per machine:
+1. Set `PACT_DART_LIB_DOWNLOAD_PATH` to a folder you own (for example `$HOME/.pact/lib`) in your shell profile, such as `~/.zshrc` or `~/.bashrc`. On Windows, use `setx`.
+2. Open a new terminal and run `dart run pact_dart:install`
+
+To run them
+`flutter test test/pact --run-skipped`
+
 
 # Contributing
 Contributions are welcome! Follow these steps:
