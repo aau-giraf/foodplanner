@@ -49,6 +49,13 @@ dev_dependencies:
     openapi_generator: ^6.0.0
     build_runner: ^2.4.13
     mockito: ^5.4.4
+    # pinned to a specific commit, so we can use the current version of HTTP listed in this file. 
+    # This is only a dev-dependency but at a later point, check if pact_dart can be set to its latest version; 
+    # this requires that the commit, which it currently points at, is released to pub.dev
+    pact_dart:
+        git:                
+            url: https://github.com/matthewshirley/pact_dart.git
+            ref: 5a8bca5370cc63addf17f5b1155ed580f96b5c63
     network_image_mock:
 
     flutter_lints: ^5.0.0
