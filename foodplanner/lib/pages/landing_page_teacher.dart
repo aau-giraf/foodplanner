@@ -4,6 +4,9 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
+import 'package:foodplanner/models/schoolClass.dart';
+import 'package:foodplanner/services/pupil_service.dart';
+import 'package:foodplanner/services/school_class_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:foodplanner/api/openapi/lib/api.dart';
 import 'package:foodplanner/services/api_config.dart';
@@ -15,6 +18,8 @@ import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user.dart' as model;
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/models/user_roles.dart';
+import 'package:foodplanner/services/pupil_service.dart';
+import 'package:foodplanner/services/school_class_service.dart';
 
 class TeacherLandingPage extends StatefulWidget {
   const TeacherLandingPage({super.key});
@@ -59,33 +64,32 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
       String? jwtToken = await AuthProvider().retrieveToken();
       var apiClient = ApiClient(basePath: ApiConfig.baseUrl);
       apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
-      final childrensApi = ChildrensApi(apiClient);
-      final List<ChildrenGetAllDTO>? data =
-          await childrensApi.apiChildrensGetAllChildrenClassesGet();
+      final adminApi = AdminApi(apiClient);
+      final data = await adminApi.apiAdminGetAllChildrenGet();
+
+      final pupils = await PupilService(apiUrl: ApiConfig.baseUrl).fetchPupil();
+      final classes = await SchoolClassService(apiUrl:ApiConfig.baseUrl).fetchAllClasses();
+
+      final classNames = {
+        for (final SchoolClass in classes)
+          SchoolClass.classId.toString(): SchoolClass.className,
+      };
+
+      setState((){
+        students = pupils
+          .map((pupil) => {
+            'id': pupil.pupilId.toString(),
+            'name': '${pupil.firstName} ${pupil.lastName}',
+            'classId' : pupil.classId.toString(),
+            'className': classNames[pupil.classId.toString()] ?? 'Ukendt',
+          })
+        .toList();
+      filteredStudents = students;
+      });
 
       if (data != null) {
         setState(() {
-          students = data
-              .map((ChildrenGetAllDTO e) => {
-                    'id': e.childId.toString(),
-                    'name': '${e.firstName} ${e.lastName}',
-                    'classId': e.classId.toString(),
-                    'className': e.className,
-                  })
-              .toList();
-          filteredStudents = students;
 
-          // Extract unique class IDs and names from students
-          final uniqueClasses = <String, String>{};
-          for (var student in students) {
-            uniqueClasses[student['classId']!] = student['className']!;
-          }
-          schoolClasses = uniqueClasses.entries
-              .map((entry) => {'id': entry.key, 'name': entry.value})
-              .toList();
-
-          // Sort school classes alphabetically in ascending order
-          schoolClasses.sort((a, b) => a['name']!.compareTo(b['name']!));
         });
       } else {
         throw Exception('Failed to load children data');

@@ -58,11 +58,11 @@ class FoodImage extends StatelessWidget {
     }
 
     try {
-      String? tempImageUrl = await imagesApi.apiImagesGetPresignedImageLinkGet(
-          foodImageId: foodImageId);
+      final tempImageUrl = await imagesApi.apiImagesGetImageLinkIdGet(foodImageId!);
 
-      tempImageUrl = tempImageUrl?.replaceFirst(
-          'http://localhost:9000', 'http://localhost:9000');
+      if (tempImageUrl == null || tempImageUrl.isEmpty){
+        return NetworkImage(imageUrl);
+      }
 
       final response = await http.get(Uri.parse(tempImageUrl!));
       if (response.statusCode == 200) {

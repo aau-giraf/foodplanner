@@ -1,4 +1,4 @@
-// Openapi Generator last run: : 2025-11-04T13:20:24.499642
+// Openapi Generator last run: : 2026-11-24T10:07:41.311456
 import 'package:openapi_generator_annotations/openapi_generator_annotations.dart';
 
 @Openapi(
@@ -7,5 +7,9 @@ import 'package:openapi_generator_annotations/openapi_generator_annotations.dart
     inputSpec:
         RemoteSpec(path: 'http://localhost:8080/swagger/v1/swagger.json'),
     generatorName: Generator.dart,
-    outputDirectory: 'lib/api/openapi')
+    outputDirectory: 'lib/api/openapi',
+    forceAlwaysRun: true,
+    skipIfSpecIsUnchanged: false,
+    debugLogging: true,
+    )
 class ApiGenerator {}
