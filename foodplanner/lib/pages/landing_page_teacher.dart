@@ -4,7 +4,6 @@ import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:foodplanner/auth/auth_provider.dart';
 import 'package:foodplanner/components/search_field.dart';
 import 'package:foodplanner/components/settings_widget.dart';
-import 'package:foodplanner/models/schoolClass.dart';
 import 'package:foodplanner/services/pupil_service.dart';
 import 'package:foodplanner/services/school_class_service.dart';
 import 'package:go_router/go_router.dart';
@@ -18,8 +17,6 @@ import 'package:foodplanner/components/button.dart';
 import 'package:foodplanner/models/user.dart' as model;
 import 'package:foodplanner/services/user_service.dart';
 import 'package:foodplanner/models/user_roles.dart';
-import 'package:foodplanner/services/pupil_service.dart';
-import 'package:foodplanner/services/school_class_service.dart';
 
 class TeacherLandingPage extends StatefulWidget {
   const TeacherLandingPage({super.key});
