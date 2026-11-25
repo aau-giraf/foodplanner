@@ -9,7 +9,11 @@ class SchoolClassService {
   SchoolClassService({required this.apiUrl});
 
   Future<List<SchoolClass>> fetchAllClasses() async {
-    final response = await http.get(Uri.parse('$apiUrl/api/Classrooms/GetAll'));
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.get(
+      Uri.parse('$apiUrl/api/Classroom/GetAll'),
+      headers: {'Authorization': 'Bearer $jwtToken'},
+    );
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = jsonDecode(response.body);

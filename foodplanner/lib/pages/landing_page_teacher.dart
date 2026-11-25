@@ -64,15 +64,16 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
       String? jwtToken = await AuthProvider().retrieveToken();
       var apiClient = ApiClient(basePath: ApiConfig.baseUrl);
       apiClient.addDefaultHeader('Authorization', 'Bearer $jwtToken');
-      final adminApi = AdminApi(apiClient);
-      final data = await adminApi.apiAdminGetAllChildrenGet();
+
+      final classroomsApi = ClassroomsApi(apiClient);
+      final data = await classroomsApi.apiClassroomsGetAllGet();
 
       final pupils = await PupilService(apiUrl: ApiConfig.baseUrl).fetchPupil();
       final classes = await SchoolClassService(apiUrl:ApiConfig.baseUrl).fetchAllClasses();
 
       final classNames = {
-        for (final SchoolClass in classes)
-          SchoolClass.classId.toString(): SchoolClass.className,
+        for (final schoolClass in classes)
+          schoolClass.classId.toString(): schoolClass.className,
       };
 
       setState((){
