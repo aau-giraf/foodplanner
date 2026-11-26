@@ -73,18 +73,25 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
       
       final classNames = {
         for (final schoolClass in classes)
-          schoolClass.classId.toString(): schoolClass.className,
+          schoolClass.classId.toString(): schoolClass.className
       };
 
       setState((){
+        schoolClasses = classes
+          .map((schoolClass) => {
+            'id': schoolClass.classId.toString(),
+            'name': schoolClass.className,
+          }).toList();
+
+
         students = pupils
           .map((pupil) => {
             'id': pupil.pupilId.toString(),
             'name': '${pupil.firstName} ${pupil.lastName}',
             'classId' : pupil.classId.toString(),
             'className': classNames[pupil.toString()] ?? 'Ukendt',
-          })
-        .toList();
+          }).toList();
+          
       filteredStudents = students;
       });
 

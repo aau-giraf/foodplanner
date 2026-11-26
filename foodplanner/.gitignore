@@ -52,3 +52,5 @@ linux/
 # Local environment overrides (keep .env and .env.example committed)
 .env.local
 .env.*.local
+# Widget Preview related
+.widget_preview/
