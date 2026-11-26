@@ -31,6 +31,22 @@ class UserRoles {
 
   UserRoles add(Role role) => UserRoles._({...roles, role});
 
+  factory UserRoles.fromApiValue(Object? value){
+    if (value is String) return UserRoles.fromString(value);
+
+    if (value is int) {
+      return switch (value){
+        1 => UserRoles.of([Role.admin]),
+        2 => UserRoles.of([Role.pupil]),
+        4 => UserRoles.of([Role.teacher]),
+        8 => UserRoles.of([Role.guardian]),
+        _ => throw FormatException('Unknown role value: $value'),
+      };
+    }
+
+    throw FormatException('Invalid role type: ${value.runtimeType}');
+  }
+
   factory UserRoles.fromString(String value) =>
       UserRoles.of(value.split(",").map((str) =>
     switch (str.trim().toLowerCase()){

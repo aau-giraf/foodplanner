@@ -38,13 +38,13 @@ class UserService {
         headers: <String, String>{
           'Authorization': 'Bearer $jwtToken',
         });
-
+    print(response.body);
     if (response.statusCode == 200) {
       final Map<String, dynamic> json = jsonDecode(response.body);
       final filteredJson = {
         'id': json['id'],
-        'first_name': json['first_name'],
-        'last_name': json['last_name'],
+        'firstName': json['firstName'],
+        'lastName': json['lastName'],
         'email': json['email'],
         'role': json['role'],
         'archived': json['archived'],
@@ -211,8 +211,8 @@ class UserService {
       final Map<String, dynamic> json = jsonDecode(response.body);
       final filteredJson = {
         'id': json['id'],
-        'first_name': json['first_name'],
-        'last_name': json['last_name'],
+        'firstName': json['firstName'],
+        'lastName': json['lastName'],
         'email': json['email'],
         'role': json['role'],
         'archived': json['archived'],

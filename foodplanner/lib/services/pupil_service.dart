@@ -30,6 +30,26 @@ class PupilService {
     }
   }
 
+  Future<List<Pupil>> fetchPupilsByTeacherId(int teacherId) async {
+    final jwtToken = await AuthProvider().retrieveToken();
+    final response = await http.get(
+      Uri.parse('$apiUrl/api/Children/GetChildrenByTeacherId/$teacherId'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $jwtToken',
+      });
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      var responseList = jsonResponse
+        .map((pupil) => Pupil.fromJson(pupil as Map<String,dynamic>))
+        .toList();
+      return responseList;
+    } else if (response.statusCode == 403) {
+      throw Exception('Du er ikke autherized til denne funktion');
+    } else {
+      throw Exception('Børn kunne ikke hentes');
+    }
+  }
+
   /// Returns all children linked to the logged-in parent. A parent can now have
   /// several children, so this returns a list.
   Future<List<Pupil>> fetchPupilsByParent() async {

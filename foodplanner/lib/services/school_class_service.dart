@@ -11,7 +11,7 @@ class SchoolClassService {
   Future<List<SchoolClass>> fetchAllClasses() async {
     final jwtToken = await AuthProvider().retrieveToken();
     final response = await http.get(
-      Uri.parse('$apiUrl/api/Classroom/GetAll'),
+      Uri.parse('$apiUrl/api/Classrooms/GetAll'),
       headers: {'Authorization': 'Bearer $jwtToken'},
     );
 

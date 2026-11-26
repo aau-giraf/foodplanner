@@ -45,8 +45,12 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
   @override
   void initState() {
     super.initState();
-    fetchPupilsData();
-    fetchUser();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    await fetchUser();
+    await fetchPupilsData();
   }
 
   Future<void> fetchUser() async {
@@ -64,10 +68,9 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
 
       final classroomsApi = ClassroomsApi(apiClient);
       final data = await classroomsApi.apiClassroomsGetAllGet();
-
-      final pupils = await PupilService(apiUrl: ApiConfig.baseUrl).fetchPupil();
+      final pupils = await PupilService(apiUrl: ApiConfig.baseUrl).fetchPupilsByTeacherId(teacher.id);
       final classes = await SchoolClassService(apiUrl:ApiConfig.baseUrl).fetchAllClasses();
-
+      
       final classNames = {
         for (final schoolClass in classes)
           schoolClass.classId.toString(): schoolClass.className,
@@ -79,7 +82,7 @@ class _LandingPageTeacherState extends State<TeacherLandingPage> {
             'id': pupil.pupilId.toString(),
             'name': '${pupil.firstName} ${pupil.lastName}',
             'classId' : pupil.classId.toString(),
-            'className': classNames[pupil.classId.toString()] ?? 'Ukendt',
+            'className': classNames[pupil.toString()] ?? 'Ukendt',
           })
         .toList();
       filteredStudents = students;

@@ -22,10 +22,10 @@ class User {
     return switch (json) {
       {
         'id': int id,
-        'first_name': String firstName,
-        'last_name': String lastName,
+        'firstName': String firstName,
+        'lastName': String lastName,
         'email': String email,
-        'role': String role,
+        'role': final roleValue,
         'archived': bool archived,
       } =>
         User(
@@ -33,7 +33,7 @@ class User {
           firstName: firstName,
           lastName: lastName,
           email: email,
-          role: UserRoles.fromString(role),
+          role: UserRoles.fromApiValue(roleValue),
           archived: archived,
         ),
       _ => throw const FormatException('Bruger kunne ikke findes.'),
